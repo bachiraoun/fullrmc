@@ -9,7 +9,7 @@ fullrmc is unique in its approach, among other functionalities:
 1. Atomic and molecular systems are supported.
 2. All types (not limited to cubic) of periodic boundary conditions systems are supported.
 3. Atoms can be grouped into groups so the system can evolve atomistically, clusterly, molecularly or any combination of those.
-4. Every group can be assigned a different move generator.
+4. Every group can be assigned a different move generator (translation, rotation, a combination of moves generators, etc).
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
 

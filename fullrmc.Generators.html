@@ -1,0 +1,948 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fullrmc.Generators package &mdash; fullrmc, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="next" title="fullrmc.Constraints package" href="fullrmc.Constraints.html" />
+    <link rel="prev" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Constraints.html" title="fullrmc.Constraints package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fullrmc.Generators package</a><ul>
+<li><a class="reference internal" href="#module-fullrmc.Generators.Rotations">Rotations</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Generators.Translations">Translations</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fullrmc.Selectors.html"
+                        title="previous chapter">fullrmc.Selectors package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fullrmc.Constraints.html"
+                        title="next chapter">fullrmc.Constraints package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/fullrmc.Generators.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="fullrmc-generators-package">
+<h1>fullrmc.Generators package<a class="headerlink" href="#fullrmc-generators-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-fullrmc.Generators.Rotations">
+<span id="rotations"></span><h2>Rotations<a class="headerlink" href="#module-fullrmc.Generators.Rotations" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/inheritance-a9b925c7f8120ac521377c8fa1b8f75c0c187ca5.png" alt="Inheritance diagram of fullrmc.Generators.Rotations" usemap="#inheritance7ebef9e412" class="inheritance"/>
+<map id="inheritance7ebef9e412" name="inheritance7ebef9e412">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="MoveGenerator is the main engine to generate moves upon groups of atoms." alt="" coords="5,31,205,56"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator where moves definitions are pre&#45;stored in a path and get pulled out at every move step." alt="" coords="253,5,451,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Rotations.RotationGenerator" title="Generates random rotational moves upon groups of atoms." alt="" coords="259,55,445,80"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Generates rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="514,5,790,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Generates random rotational moves upon groups of atoms about a pre&#45;defined axis." alt="" coords="529,55,775,80"/>
+<area shape="rect" id="node5" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Generates random rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="499,104,805,129"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationAboutAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.5</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></tt></a></p>
+<p>Generates random rotational moves upon groups of atoms about a pre-defined axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number): The maximum translation angle in degrees.</li>
+<li>axis (list,set,tuple,numpy.ndarray): The rotational axis vector.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rotation axis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the axis along which the rotation will be performed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (list,set,tuple,numpy.ndarray): The rotation axis vector.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationAboutSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></tt></a></p>
+<p>Generates random rotational moves upon groups of atoms about one of their symmetry axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number): The maximum translation angle in degrees.</li>
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rotation axis index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the symmetry axis index to rotate about.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationAboutSymmetryAxisPath</tt><big>(</big><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></tt></a></p>
+<p>Generates rotational moves upon groups of atoms about one of their symmetry axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+<li>path (List): list of angles.</li>
+<li>randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rotation axis index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_path">
+<tt class="descname">check_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (None, list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.normalize_path">
+<tt class="descname">normalize_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.normalize_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms all path angles to radian.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>path (list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the symmetry axis index to rotate about.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>argument (float): The move angle in rad.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Rotations.RotationGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
+<p>Generates random rotational moves upon groups of atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number): the maximum rotation angle in degrees</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Rotations.RotationGenerator.amplitude">
+<tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the maximum angle of rotation in rad</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationGenerator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationGenerator.set_amplitude">
+<tt class="descname">set_amplitude</tt><big>(</big><em>amplitude</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.set_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets maximum rotation angle in degrees</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>amplitude (number): the maximum translation angle in degrees</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Generators.Rotations.generate_random_float">
+<tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Generators.Translations">
+<span id="translations"></span><h2>Translations<a class="headerlink" href="#module-fullrmc.Generators.Translations" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/inheritance-2989ec2d3c3e6b09ef63ccfcda367e68dc613712.png" alt="Inheritance diagram of fullrmc.Generators.Translations" usemap="#inheritance827048bcb9" class="inheritance"/>
+<map id="inheritance827048bcb9" name="inheritance827048bcb9">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="MoveGenerator is the main engine to generate moves upon groups of atoms." alt="" coords="5,56,205,81"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator where moves definitions are pre&#45;stored in a path and get pulled out at every move step." alt="" coords="263,19,460,44"/>
+<area shape="rect" id="node7" href="#fullrmc.Generators.Translations.TranslationGenerator" title="Generates random translations." alt="" coords="253,92,469,117"/>
+<area shape="rect" id="node9" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="532,5,837,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Translations.ExpandGenerator" title="Generates random translation of atoms in a group away from group center." alt="" coords="900,31,1097,56"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="532,55,837,80"/>
+<area shape="rect" id="node5" href="#fullrmc.Generators.Translations.ShrinkGenerator" title="Generates random translation of atoms in a group towards the group center." alt="" coords="903,80,1094,105"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="547,104,822,129"/>
+<area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="517,153,852,179"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.ExpandGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">ExpandGenerator</tt><big>(</big><em>group=None</em>, <em>center=None</em>, <em>amplitude=0.1</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.ExpandGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationCenterDirectionGenerator</span></tt></a></p>
+<p>Generates random translation of atoms in a group away from group center.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.ShrinkGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">ShrinkGenerator</tt><big>(</big><em>group=None</em>, <em>center=None</em>, <em>amplitude=0.1</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.ShrinkGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationCenterDirectionGenerator</span></tt></a></p>
+<p>Generates random translation of atoms in a group towards the group center.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.5</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
+<p>Generates random translation moves upon groups of atoms along a pre-defined axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number): The maximum translation amplitude in Angstroms.</li>
+<li>axis (list,set,tuple,numpy.ndarray): The translation axis vector.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get translation axis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the axis along which the translation will be performed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (list,set,tuple,numpy.ndarray): The translation axis vector.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
+<p>Generates random translation moves upon groups of atoms along one of their symmetry axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number): the maximum translation angle in degrees</li>
+<li>axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rotation axis index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the symmetry axis index to rotate about.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisPath</tt><big>(</big><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></tt></a></p>
+<p>Generates translation moves upon groups of atoms along one of their symmetry axis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+<li>path (List): list of distances.</li>
+<li>randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.axis">
+<tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rotation axis index.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_path">
+<tt class="descname">check_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (None, list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.normalize_path">
+<tt class="descname">normalize_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.normalize_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms all path distances to floating numbers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>path (list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (list): The list of moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.set_axis">
+<tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.set_axis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the symmetry axis index to rotate about.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (float): The move distance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationCenterDirectionGenerator</tt><big>(</big><em>group=None</em>, <em>center=None</em>, <em>amplitude=0.1</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
+<p>Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>center (None, numpy.array): The center value. 
+If None, then center is calculated as the center of geometry of group atoms.
+If numpy.array of indexes than center is calculated as the center of geometry of the given atoms indexes.
+If numpy.array of three float numbers, it is then considered the center.</li>
+<li>amplitude (number): The maximum translation amplitude in Angstroms.</li>
+<li>randomize (boolean): Whether randomize the amplitude and direction (towards or away from center) of translation of every atom in the group.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.center">
+<tt class="descname">center</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the center value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.randomize">
+<tt class="descname">randomize</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.randomize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get randomize value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.set_center">
+<tt class="descname">set_center</tt><big>(</big><em>center</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.set_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets center value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body">#. center (None, numpy.array): The center value. 
+If None, then center is calculated as the center of geometry of group atoms.
+If numpy.array of indexes than center is calculated as the center of geometry of the given atoms indexes.
+If numpy.array of three float numbers, it is then considered the center.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.set_randomize">
+<tt class="descname">set_randomize</tt><big>(</big><em>randomize</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.set_randomize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets randomize flag value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>randomize (boolean): Whether randomize the amplitude and direction (towards or away from center) of translation of every atom in the group.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Generators.Translations.TranslationGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
+<p>Generates random translations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>amplitude (number):  The maximum translation amplitude in Angstroms.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationGenerator.amplitude">
+<tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationGenerator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationGenerator.set_amplitude">
+<tt class="descname">set_amplitude</tt><big>(</big><em>amplitude</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.set_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets maximum translation vector amplitude</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>amplitude (number): the maximum translation vector amplitude</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>arguments (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Generators.Translations.generate_random_float">
+<tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Constraints.html" title="fullrmc.Constraints package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
+             >previous</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Bachir Aoun.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+fullrmc package
+===============
+.. automodule:: fullrmc
+  
+Sub-packages
+-----------
+
+.. toctree::
+ 
+    fullrmc.Core
+    fullrmc.Selectors
+    fullrmc.Generators
+    fullrmc.Constraints
+
+
+Sub-modules
+-----------
+
+.. automodule:: fullrmc.Engine
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :noindex:
+    
+.. automodule:: fullrmc.Globals
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :noindex:
+    
+.. automodule:: fullrmc.log
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :noindex:

@@ -1,0 +1,810 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fullrmc package &mdash; fullrmc, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fullrmc package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Engine">Engine</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Globals">Globals</a></li>
+<li><a class="reference internal" href="#module-fullrmc.log">log</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/fullrmc.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="fullrmc-package">
+<h1>fullrmc package<a class="headerlink" href="#fullrmc-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="fullrmc.Constraints.html">fullrmc.Constraints package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.AngleConstraints">AngleConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.DistanceConstraints">DistanceConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fullrmc.Core.html">fullrmc.Core package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Broadcaster">Broadcaster</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Collection">Collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Constraint">Constraint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Group">Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.GroupSelector">GroupSelector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.MoveGenerator">MoveGenerator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.angles">angles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.bonds">bonds</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.distances">distances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.improper_angles">improper_angles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fullrmc.Generators.html">fullrmc.Generators package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Rotations">Rotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Translations">Translations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="fullrmc.Selectors.html">fullrmc.Selectors package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Selectors.html#module-fullrmc.Selectors.OrderedSelectors">OrderedSelectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Selectors.html#module-fullrmc.Selectors.RandomSelectors">RandomSelectors</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-fullrmc.Engine">
+<span id="engine"></span><h2>Engine<a class="headerlink" href="#module-fullrmc.Engine" title="Permalink to this headline">¶</a></h2>
+<p>Engine is the fullrmc main module. It contains &#8216;Engine&#8217; the main class of fullrmc which is the 
+Reverse Monte Carlo artist. The engine class takes only Protein Data Bank formatted files &#8216;.pdb&#8217; 
+(<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">http://deposit.rcsb.org/adit/docs/pdb_atom_format.html</a>) as atomic/molecular input structure. 
+It handles and fits simultaneously many experimental data while controlling the evolution of the 
+system using user-defined molecular or atomistic constraints such as bond-length, bond-angles, 
+inter-molecular-distances, etc.</p>
+<dl class="class">
+<dt id="fullrmc.Engine.Engine">
+<em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
+It has the capability to use and fit multiple sets of experimental data. 
+One can also define other constraints such as distances, bonds length, angles and many others.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.</li>
+<li>names (None, list): All pdb atoms names list.
+If None names will be calculated automatically by parsing pdb instance.</li>
+<li>elements (None, list): All pdb atoms elements list.
+If None elements will be calculated automatically by parsing pdb instance.</li>
+<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
+If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
+<li>moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+If None, it is automatically generated as the pdb residues name.</li>
+<li>groups (None, list):</li>
+<li>groupSelector (None, GroupSelector): The GroupSelector instance. If None, RandomGroupSelector is set automatically</li>
+<li>constraints (None, list): The list of constraints instances.</li>
+<li>tolerance (number): The runtime tolerance parameters. Its the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.accepted">
+<tt class="descname">accepted</tt><a class="headerlink" href="#fullrmc.Engine.Engine.accepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of accepted moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.add_constraints">
+<tt class="descname">add_constraints</tt><big>(</big><em>constraints</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.add_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add constraints to the engine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>constraints (Constraint, list, set, tuple): A constraint instance or list of constraints instances</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.allElements">
+<tt class="descname">allElements</tt><a class="headerlink" href="#fullrmc.Engine.Engine.allElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all atoms elements.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.allNames">
+<tt class="descname">allNames</tt><a class="headerlink" href="#fullrmc.Engine.Engine.allNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all atoms names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.basisVectors">
+<tt class="descname">basisVectors</tt><a class="headerlink" href="#fullrmc.Engine.Engine.basisVectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the basis vectors in case of PeriodicBoundaries or None in case of InfiniteBoundaries.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.boundaryConditions">
+<tt class="descname">boundaryConditions</tt><a class="headerlink" href="#fullrmc.Engine.Engine.boundaryConditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get boundaryConditions instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.boxCoordinates">
+<tt class="descname">boxCoordinates</tt><a class="headerlink" href="#fullrmc.Engine.Engine.boxCoordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the box coordinates of the current configuration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.chiSquare">
+<tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Engine.Engine.chiSquare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all constraints instances.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.compute_chi_square">
+<tt class="descname">compute_chi_square</tt><big>(</big><em>constraints</em>, <em>current=True</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.compute_chi_square" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the total chiSquare of the given constraints.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>constraints (list): All constraints used to calculate total chiSquare.</li>
+<li>current (bool): If True it uses constraints chiSquare argument, 
+False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>totalChiSquare (list): The computed total chiSquare.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.constraints">
+<tt class="descname">constraints</tt><a class="headerlink" href="#fullrmc.Engine.Engine.constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all constraints instances.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.elements">
+<tt class="descname">elements</tt><a class="headerlink" href="#fullrmc.Engine.Engine.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined elements set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.elementsIndexes">
+<tt class="descname">elementsIndexes</tt><a class="headerlink" href="#fullrmc.Engine.Engine.elementsIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined elements indexes list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.export_pdb">
+<tt class="descname">export_pdb</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.export_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export a pdb file for the last configuration state</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (string): the pdb file path.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.generated">
+<tt class="descname">generated</tt><a class="headerlink" href="#fullrmc.Engine.Engine.generated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of generated moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.get_used_constraints">
+<tt class="descname">get_used_constraints</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.get_used_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses all engine constraints and returns only the active ones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>usedConstraints (list): All types of active constraints that will be used in engine runtime</li>
+<li>constraints (list): All active constraints instances that will contribute to the engine total chiSquare</li>
+<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won&#8217;t contribute to the engine total chiSquare</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.groupSelector">
+<tt class="descname">groupSelector</tt><a class="headerlink" href="#fullrmc.Engine.Engine.groupSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the group selector instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.groups">
+<tt class="descname">groups</tt><a class="headerlink" href="#fullrmc.Engine.Engine.groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get engine defined groups.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.initialize_used_constraints">
+<tt class="descname">initialize_used_constraints</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.initialize_used_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets and returns all active constraints and re-initializes when needed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>usedConstraints (list): All types of active constraints that will be used in engine runtime</li>
+<li>constraints (list): All active constraints instances that will contribute to the engine total chiSquare.</li>
+<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won&#8217;t contribute to the engine total chiSquare.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.lastMovedAtomsIndexes">
+<tt class="descname">lastMovedAtomsIndexes</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedAtomsIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last atoms moved by the engine.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.lastMovedGroup">
+<tt class="descname">lastMovedGroup</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last group instance moved by the engine.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.lastMovedGroupIndex">
+<tt class="descname">lastMovedGroupIndex</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedGroupIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last group instance index in groups list moved by the engine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.load">
+<tt class="descname">load</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and return engine instance. None of the current engine attribute will be updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>path (string): the file path to save the engine</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (Engine): the engine instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.moleculesIndexes">
+<tt class="descname">moleculesIndexes</tt><a class="headerlink" href="#fullrmc.Engine.Engine.moleculesIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all atoms molecules indexes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.moleculesNames">
+<tt class="descname">moleculesNames</tt><a class="headerlink" href="#fullrmc.Engine.Engine.moleculesNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all atoms molecules names.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.names">
+<tt class="descname">names</tt><a class="headerlink" href="#fullrmc.Engine.Engine.names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined atom names set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.namesIndexes">
+<tt class="descname">namesIndexes</tt><a class="headerlink" href="#fullrmc.Engine.Engine.namesIndexes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfAtomsPerElement">
+<tt class="descname">numberOfAtomsPerElement</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtomsPerElement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of atoms per element.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfAtomsPerName">
+<tt class="descname">numberOfAtomsPerName</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtomsPerName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of atoms per element.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfElements">
+<tt class="descname">numberOfElements</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfElements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of defined elements in the configuration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfMolecules">
+<tt class="descname">numberOfMolecules</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfMolecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined number of molecules.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfNames">
+<tt class="descname">numberOfNames</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfNames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined atom names set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.pdb">
+<tt class="descname">pdb</tt><a class="headerlink" href="#fullrmc.Engine.Engine.pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get pdb instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.realCoordinates">
+<tt class="descname">realCoordinates</tt><a class="headerlink" href="#fullrmc.Engine.Engine.realCoordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the real coordinates of the current configuration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.reciprocalBasisVectors">
+<tt class="descname">reciprocalBasisVectors</tt><a class="headerlink" href="#fullrmc.Engine.Engine.reciprocalBasisVectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the basis vectors in case of PeriodicBoundaries or None in case of InfiniteBoundaries.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.remove_constraints">
+<tt class="descname">remove_constraints</tt><big>(</big><em>constraints</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.remove_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove constraints from engine list of constraints.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>constraints (Constraint, list, set, tuple): A constraint instance or list of constraints instances</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.reset_constraints">
+<tt class="descname">reset_constraints</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.reset_constraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset constraints flags.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.reset_engine">
+<tt class="descname">reset_engine</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.reset_engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reinitialize engine and resets constraints flags and data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.reset_groups_as_molecules">
+<tt class="descname">reset_groups_as_molecules</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.reset_groups_as_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset engine groups indexes according to molecules indexes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.run">
+<tt class="descname">run</tt><big>(</big><em>numberOfSteps=2147483647</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>numberOfSteps (integer): The maximum number of steps to run.
+By default maximum integer number allowed is given. 0 Will result in only initializing constraints.</li>
+<li>saveFrequency (integer): Save engine every saveFrequency step.</li>
+<li>savePath (string): Save engine file path.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.save">
+<tt class="descname">save</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save engine to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (string): the file path to save the engine</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_boundary_conditions">
+<tt class="descname">set_boundary_conditions</tt><big>(</big><em>boundaryConditions</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_boundary_conditions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the configuration boundary conditions. Engine and constraintsData will be automatically reset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): the configuration boundary conditions.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_elements_indexes">
+<tt class="descname">set_elements_indexes</tt><big>(</big><em>elements=None</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_elements_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets elements list, assigning a type element to each atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>elements (None, list): All pdb atoms elements list.
+If None elements will be calculated automatically by parsing pdb instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_group_selector">
+<tt class="descname">set_group_selector</tt><big>(</big><em>selector</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_group_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the engine group selector instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>groups (None, GroupSelector): the GroupSelector instance. If None, RandomSelector is set automatically.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_groups">
+<tt class="descname">set_groups</tt><big>(</big><em>groups</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the engine groups of indexes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
+If None, single atom groups of all atoms will be all automatically created.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_molecules_indexes">
+<tt class="descname">set_molecules_indexes</tt><big>(</big><em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_molecules_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets moleculesIndexes list, assigning each atom to a molecule.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
+If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
+<li>moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+If None, it is automatically generated as the pdb residues name.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_names_indexes">
+<tt class="descname">set_names_indexes</tt><big>(</big><em>names=None</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_names_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets names list, assigning a names to each atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>names (None, list): The names indexes list.
+If None names will be calculated automatically by parsing pdb instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_pdb">
+<tt class="descname">set_pdb</tt><big>(</big><em>pdb</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the configuration pdb. Engine and constraintsData will be automatically reset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.</li>
+<li>names (None, list): All pdb atoms names list.
+If None names will be calculated automatically by parsing pdb instance.</li>
+<li>elements (None, list): All pdb atoms elements list.
+If None elements will be calculated automatically by parsing pdb instance.</li>
+<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
+If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
+<li>moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+If None, it is automatically generated as the pdb residues name.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_tolerance">
+<tt class="descname">set_tolerance</tt><big>(</big><em>tolerance</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_tolerance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the runtime engine tolerance value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>tolerance (number): The runtime tolerance parameters. It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.state">
+<tt class="descname">state</tt><a class="headerlink" href="#fullrmc.Engine.Engine.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get engine&#8217;s state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.tolerance">
+<tt class="descname">tolerance</tt><a class="headerlink" href="#fullrmc.Engine.Engine.tolerance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the tolerance in percent.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.tolerated">
+<tt class="descname">tolerated</tt><a class="headerlink" href="#fullrmc.Engine.Engine.tolerated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of tolerated steps in spite of increasing total chiSquare</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.tried">
+<tt class="descname">tried</tt><a class="headerlink" href="#fullrmc.Engine.Engine.tried" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of tried moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.visualize">
+<tt class="descname">visualize</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.visualize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the last configuration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
+If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Engine.Engine.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#fullrmc.Engine.Engine.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get basis volume</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Engine.generate_random_float">
+<tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Globals">
+<span id="globals"></span><h2>Globals<a class="headerlink" href="#module-fullrmc.Globals" title="Permalink to this headline">¶</a></h2>
+<p>This module provides all the global types, variables and some general methods that fullrmc needs.</p>
+<dl class="function">
+<dt id="fullrmc.Globals.generate_random_float">
+<tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Globals.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.log">
+<span id="log"></span><h2>log<a class="headerlink" href="#module-fullrmc.log" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="fullrmc.log.ColorFormatter">
+<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">ColorFormatter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#fullrmc.log.ColorFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">logging.Formatter</span></tt></p>
+<dl class="method">
+<dt id="fullrmc.log.ColorFormatter.format">
+<tt class="descname">format</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#fullrmc.log.ColorFormatter.format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.log.LocalLogger">
+<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">LocalLogger</tt><big>(</big><em>name=None</em>, <em>config_file=None</em><big>)</big><a class="headerlink" href="#fullrmc.log.LocalLogger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>fullrmc logger with different levels of logging. 
+A single instance of the logger is initialized when the module is imported for the first time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Levels:</th><td class="field-body"><ol class="first arabic simple">
+<li>information: Must be used to log some useful information</li>
+<li>warning: Must be used to log some useful warnings</li>
+<li>debugging: Must be used to log for debugging purposes only</li>
+<li>critical: Must be used to log some critical behaviour</li>
+<li>error: Must be used to log errors</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><ol class="first last arabic simple">
+<li>information: LocalLogger().logger.info(&#8220;some message&#8221;)</li>
+<li>warning: LocalLogger().logger.warn(&#8220;some message&#8221;)</li>
+<li>debugging: LocalLogger().logger.debug(&#8220;some message&#8221;)</li>
+<li>critical: LocalLogger().logger.critical(&#8220;some message&#8221;)</li>
+<li>error: LocalLogger().logger.error(&#8220;some message&#8221;)</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Bachir Aoun.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>fullrmc.Selectors package &mdash; fullrmc, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
+    <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Core.html" title="fullrmc.Core package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">fullrmc.Selectors package</a><ul>
+<li><a class="reference internal" href="#module-fullrmc.Selectors.OrderedSelectors">OrderedSelectors</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Selectors.RandomSelectors">RandomSelectors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="fullrmc.Core.html"
+                        title="previous chapter">fullrmc.Core package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="fullrmc.Generators.html"
+                        title="next chapter">fullrmc.Generators package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/fullrmc.Selectors.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="fullrmc-selectors-package">
+<h1>fullrmc.Selectors package<a class="headerlink" href="#fullrmc-selectors-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-fullrmc.Selectors.OrderedSelectors">
+<span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/inheritance-bb6ab23e664cdee1a45e09bd96fc6debb405a8af.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritance336f48ce67" class="inheritance"/>
+<map id="inheritance336f48ce67" name="inheritance336f48ce67">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="245,5,496,31"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector">
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DefinedOrderSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>order=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
+<p>DefinedOrderSelector is a group selector with a defined order of selection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
+If None, order is set automatically to all groups indexes list.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order">
+<tt class="descname">order</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list copy of the order of selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index">
+<tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order">
+<tt class="descname">set_order</tt><big>(</big><em>order</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set selector groups order</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Selectors.RandomSelectors">
+<span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Permalink to this headline">¶</a></h2>
+<p class="graphviz">
+<img src="_images/inheritance-2a06c657e9cc48cc7b9c296c7ab4fcc651a9866a.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance7e9b71e26e" class="inheritance"/>
+<map id="inheritance7e9b71e26e" name="inheritance7e9b71e26e">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection" alt="" coords="245,5,471,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector" title="weightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="519,5,795,31"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em>, <em>recur=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
+<p>RandomSelector generates indexes randomly for engine group selection</p>
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.RandomSelector.select_index">
+<tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Selectors.RandomSelectors.generate_random_float">
+<tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector">
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">weightedRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.RandomSelector</span></tt></a></p>
+<p>weightedRandomSelector generates indexes randomly following groups weighting scheme.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.select_index">
+<tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_group_weight">
+<tt class="descname">set_group_weight</tt><big>(</big><em>groupWeight</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_group_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a single group weight.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>groupWeight (list, set, tuple): Group weight list composed of groupIndex as first element and groupWeight as second.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_weights">
+<tt class="descname">set_weights</tt><big>(</big><em>weights</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set groups selection weighting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.update_selection_scheme">
+<tt class="descname">update_selection_scheme</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.update_selection_scheme" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="fullrmc.Core.html" title="fullrmc.Core package"
+             >previous</a> |</li>
+        <li><a href="index.html">fullrmc, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Bachir Aoun.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

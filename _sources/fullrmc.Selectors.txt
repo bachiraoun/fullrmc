@@ -1,0 +1,18 @@
+fullrmc.Selectors package
+=========================
+
+OrderedSelectors
+----------------
+
+.. automodule:: fullrmc.Selectors.OrderedSelectors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+RandomSelectors
+---------------
+
+.. automodule:: fullrmc.Selectors.RandomSelectors
+    :members:
+    :undoc-members:
+    :show-inheritance:

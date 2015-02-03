@@ -1,0 +1,20 @@
+fullrmc.Generators package
+==========================
+
+Rotations
+---------
+
+.. automodule:: fullrmc.Generators.Rotations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Translations
+------------
+
+.. automodule:: fullrmc.Generators.Translations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+

@@ -1,0 +1,108 @@
+fullrmc.Core package
+====================
+
+Broadcaster
+-----------
+
+.. automodule:: fullrmc.Core.Broadcaster
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Collection
+----------
+
+.. automodule:: fullrmc.Core.Collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Constraint
+----------
+
+.. automodule:: fullrmc.Core.Constraint
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Group
+-----
+
+.. automodule:: fullrmc.Core.Group
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+GroupSelector
+-------------
+
+.. automodule:: fullrmc.Core.GroupSelector
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+MoveGenerator
+-------------
+
+.. automodule:: fullrmc.Core.MoveGenerator
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+angles
+------
+
+.. automodule:: fullrmc.Core.angles
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bonds
+-----
+
+.. automodule:: fullrmc.Core.bonds
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+distances
+---------
+
+.. automodule:: fullrmc.Core.distances
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+get_reciprocal_basis
+--------------------
+
+.. automodule:: fullrmc.Core.get_reciprocal_basis
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+improper_angles
+---------------
+
+.. automodule:: fullrmc.Core.improper_angles
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pair_distribution_histogram
+---------------------------
+
+.. automodule:: fullrmc.Core.pair_distribution_histogram
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+transform_coordinates
+---------------------
+
+.. automodule:: fullrmc.Core.transform_coordinates
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+

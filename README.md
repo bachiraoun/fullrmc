@@ -1,5 +1,5 @@
 ## fullrmc
-It's a Reverse Monte Carlo (RMC) python/Cython package, especially designed to solve an inverse problem whereby an atomic/molecular model is adjusted until its atoms positions have the greatest consistency with a set of experimental data.
+It's a Reverse Monte Carlo (RMC) python/Cython/C package, especially designed to solve an inverse problem whereby an atomic/molecular model is adjusted until its atoms positions have the greatest consistency with a set of experimental data.
 RMC is probably best known for its applications in condensed matter physics and solid state chemistry.
 
 fullrmc is a fully object-oriented package where everything can be overloaded allowing easy implementation and maintenance of the code. It's core sub-package and modules are cython/C wirtten fully optimized. 

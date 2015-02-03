@@ -5,6 +5,7 @@ RMC is probably best known for its applications in condensed matter physics and 
 fullrmc is a fully object-oriented package where everything can be overloaded allowing easy implementation and maintenance of the code. It's core sub-package and modules are fully optimized written in cython/C. 
 
 fullrmc is unique in its approach, among other functionalities:
+
 1. Atomic and molecular systems are supported.
 2. All types (not limited to cubic) of periodic boundary conditions systems are supported.
 3. Atoms can be grouped into groups so the system can evolve atomistically, clusterly, molecularly or any combination of those.

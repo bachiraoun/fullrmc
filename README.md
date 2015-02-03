@@ -14,7 +14,7 @@ fullrmc is unique in its approach, among other functionalities:
 
 
 ## Installation
-fullrmc is still going through testing and further implementations. Amond others, the Core module is not yet uploaded to github for protection purposes. A first version with full access to the code will be released soon only after the package gets published in a scientific journal.
+fullrmc is still going through testing and further implementations. Amond others, the Core module is not yet uploaded to github for protection purposes. A first version with full access to the code will be released soon only after the package gets officially published.
 
 ## Online documentation
 http://bachiraoun.github.io/fullrmc/

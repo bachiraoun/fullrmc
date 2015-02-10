@@ -1,23 +1,40 @@
 """
+BondConstraints contains classes for all constraints related bonds between atoms.
+
 .. inheritance-diagram:: fullrmc.Constraints.BondConstraints
     :parts: 2 
 """
 
 # standard libraries imports
 import itertools
-import warnings
 
 # external libraries imports
 import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.bonds import full_bonds
 
 class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
+    """
+    Its controls the bond between 2 defined atoms.
+    
+    :Parameters:
+        #. engine (None, fullrmc.Engine): The constraint RMC engine.
+        #. bondsMap (list): The bonds map definition.
+               Every item must be a list of four items.\n
+               #. First item is the first atom index.
+               #. Second item the second atom index forming the bond, 
+               #. Third item: The lower limit or the minimum bond length allowed.
+               #. Fourth item: The upper limit or the maximum bond length allowed.
+        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+    """
+    
     def __init__(self, engine, bondsMap=None, rejectProbability=None):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
@@ -44,11 +61,11 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             
     def listen(self, message, argument=None):
         """   
-        listen to any message sent from the Broadcaster.
+        Listens to any message sent from the Broadcaster.
         
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
             self.__initialize_constraint__()        
@@ -66,7 +83,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. result (boolean): True to reject step, False to accept
         """
         if self.activeAtomsDataBeforeMove is None or self.activeAtomsDataAfterMove is None:
-            raise Exception("must compute data before and after group move")
+            raise Exception(log.LocalLogger("fullrmc").logger.error("must compute data before and after group move"))
         reject = False
         for index in self.activeAtomsDataBeforeMove.keys():
             before = self.activeAtomsDataBeforeMove[index]["reducedDistances"]
@@ -91,25 +108,25 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         map = []
         if self.engine is not None:
             if bondsMap is not None:
-                assert isinstance(bondsMap, (list, set, tuple)), "bondsMap must be None or a list"
+                assert isinstance(bondsMap, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("bondsMap must be None or a list")
                 for bond in bondsMap:
-                    assert isinstance(bond, (list, set, tuple)), "bondsMap items must be lists"
+                    assert isinstance(bond, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("bondsMap items must be lists")
                     bond = list(bond)
-                    assert len(bond)==4, "bondsMap items must be lists of 4 items each"
+                    assert len(bond)==4, log.LocalLogger("fullrmc").logger.error("bondsMap items must be lists of 4 items each")
                     idx1, idx2, lower, upper = bond
-                    assert is_integer(idx1), "bondsMap items lists first item must be an integer"
+                    assert is_integer(idx1), log.LocalLogger("fullrmc").logger.error("bondsMap items lists first item must be an integer")
                     idx1 = INT_TYPE(idx1)
-                    assert is_integer(idx2), "bondsMap items lists second item must be an integer"
+                    assert is_integer(idx2), log.LocalLogger("fullrmc").logger.error("bondsMap items lists second item must be an integer")
                     idx2 = INT_TYPE(idx2)
-                    assert idx1>=0, "bondsMap items lists first item must be positive"
-                    assert idx2>=0, "bondsMap items lists second item must be positive"
-                    assert idx1!=idx2, "bondsMap items lists first and second items can't be the same"
-                    assert is_number(lower), "bondsMap items lists of third item must be a number"
+                    assert idx1>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first item must be positive")
+                    assert idx2>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second item must be positive")
+                    assert idx1!=idx2, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and second items can't be the same")
+                    assert is_number(lower), log.LocalLogger("fullrmc").logger.error("bondsMap items lists of third item must be a number")
                     lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), "bondsMap items lists of fourth item must be a number"
+                    assert is_number(upper), log.LocalLogger("fullrmc").logger.error("bondsMap items lists of fourth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=0, "bondsMap items lists third item must be positive"
-                    assert upper>lower, "bondsMap items lists third item must be smaller than the fourth item"
+                    assert lower>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third item must be positive")
+                    assert upper>lower, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third item must be smaller than the fourth item")
                     map.append((idx1, idx2, lower, upper))  
         # set bondsMap definition
         self.__bondsMap = map      
@@ -119,8 +136,8 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             # parse bondsMap
             for bond in self.__bondsMap:
                 idx1, idx2, lower, upper = bond
-                assert idx1<len(self.engine.pdb), "bond atom index must be smaller than maximum number of atoms"
-                assert idx2<len(self.engine.pdb), "bond atom index must be smaller than maximum number of atoms"
+                assert idx1<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("bond atom index must be smaller than maximum number of atoms")
+                assert idx2<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("bond atom index must be smaller than maximum number of atoms")
                 # create bonds
                 if not self.__bonds.has_key(idx1):
                     self.__bonds[idx1] = {"indexes":[],"lower":[],"upper":[]}
@@ -129,14 +146,14 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 # check for redundancy and append
                 if idx2 in self.__bonds[idx1]["indexes"]:
                     index = self.__bonds[idx1]["indexes"].index(idx2)
-                    warnings.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx2, idx1, lower, upper, self.__bonds[idx1]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
+                    log.LocalLogger("fullrmc").logger.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx2, idx1, lower, upper, self.__bonds[idx1]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
                 else:
                     self.__bonds[idx1]["indexes"].append(idx2)
                     self.__bonds[idx1]["lower"].append(lower)
                     self.__bonds[idx1]["upper"].append(upper)
                 if idx1 in self.__bonds[idx2]["indexes"]:
                     index = self.__bonds[idx2]["indexes"].index(idx1)
-                    warnings.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx1, idx2, lower, upper, self.__bonds[idx2]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
+                    log.LocalLogger("fullrmc").logger.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx1, idx2, lower, upper, self.__bonds[idx2]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
                 else:
                     self.__bonds[idx2]["indexes"].append(idx1)
                     self.__bonds[idx2]["lower"].append(lower)
@@ -164,41 +181,43 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Second item: The name of the second atom forming the bond.
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
+        ::
         
-        e.g. (Carbon tetrachloride):  bondsDefinition={"CCL4": [('C','CL1' , 1.55, 1.95),
-                                                                ('C','CL2' , 1.55, 1.95),
-                                                                ('C','CL3' , 1.55, 1.95),                                       
-                                                                ('C','CL4' , 1.55, 1.95) ] }
+            e.g. (Carbon tetrachloride):  bondsDefinition={"CCL4": [('C','CL1' , 1.55, 1.95),
+                                                                    ('C','CL2' , 1.55, 1.95),
+                                                                    ('C','CL3' , 1.55, 1.95),                                       
+                                                                    ('C','CL4' , 1.55, 1.95) ] }
+       
         """
         if self.engine is None:
-            raise Exception("engine is not defined. Can't create bonds")
-        assert isinstance(bondsDefinition, dict), "bondsDefinition must be a dictionary"
+            raise Exception(log.LocalLogger("fullrmc").logger.error("engine is not defined. Can't create bonds"))
+        assert isinstance(bondsDefinition, dict), log.LocalLogger("fullrmc").logger.error("bondsDefinition must be a dictionary")
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))
         bondsDef = {}
         for mol, bonds in bondsDefinition.items():
             if mol not in existingMoleculesNames:
-                warnings.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
+                log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
                 continue
-            assert isinstance(bonds, (list, set, tuple)), "mapDefinition molecule bonds must be a list"
+            assert isinstance(bonds, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition molecule bonds must be a list")
             bonds = list(bonds)
             molBondsMap = []
             for bond in bonds:
-                assert isinstance(bond, (list, set, tuple)), "mapDefinition bonds must be a list"
+                assert isinstance(bond, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds must be a list")
                 bond = list(bond)
-                assert len(bond)==4
+                assert len(bond)==4, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list must be of length 4")
                 at1, at2, lower, upper = bond
-                assert is_number(lower)
+                assert is_number(lower), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list third item must be a number")
                 lower = FLOAT_TYPE(lower)
-                assert is_number(upper)
+                assert is_number(upper), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list fourth item must be a number")
                 upper = FLOAT_TYPE(upper)
-                assert lower>=0
-                assert upper>lower
+                assert lower>=0, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list third item must be bigger than 0")
+                assert upper>lower, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list fourth item must be bigger than the third item")
                 # check for redundancy
                 append = True
                 for b in molBondsMap:
                     if (b[0]==at1 and b[1]==at2) or (b[1]==at1 and b[0]==at2):
-                        warnings.warn("Redundant definition for bondsDefinition found. The later '%s' is ignored"%str(b))
+                        log.LocalLogger("fullrmc").logger.warn("Redundant definition for bondsDefinition found. The later '%s' is ignored"%str(b))
                         append = False
                         break
                 if append:

@@ -1,23 +1,44 @@
 """
+ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.
+
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
     :parts: 2 
 """
 
 # standard libraries imports
 import itertools
-import warnings
 
 # external libraries imports
 import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.improper_angles import full_improper_angles
 
 class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
+    """
+    Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
+    The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.
+    
+    :Parameters:
+        #. engine (None, fullrmc.Engine): The constraint RMC engine.
+        #. anglesMap (list): The angles map definition.
+               Every item must be a list of five items.
+               
+               #. First item: The improper atom index that must be in the plane.
+               #. Second item: The index of the atom 'O' considered the origin of the plane.
+               #. Third item: The index of the atom 'x' used to calculated 'Ox' vector.
+               #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
+               #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
+               #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
+        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+    """
+    
     def __init__(self, engine, anglesMap=None, rejectProbability=None):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
@@ -26,22 +47,22 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     @property
     def anglesMap(self):
-        """ Get angles map"""
+        """ Get angles map."""
         return self.self.__anglesMap
     
     @property
     def angles(self):
-        """ Get angles dictionary"""
+        """ Get angles dictionary."""
         return self.__angles
     
     @property    
     def atomsLUAD(self):
-        """ Get atoms loop up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
+        """ Get look up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
         return self.__atomsLUAD
         
     @property
     def chiSquare(self):
-        """Get constraint's current chi square."""
+        """ Get constraint's current chi square."""
         if self.data is None:
             return None
         else: 
@@ -49,11 +70,11 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             
     def listen(self, message, argument=None):
         """   
-        listen to any message sent from the Broadcaster.
+        Listens to any message sent from the Broadcaster.
         
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
             self.__initialize_constraint__()        
@@ -71,7 +92,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. result (boolean): True to reject step, False to accept
         """
         if self.activeAtomsDataBeforeMove is None or self.activeAtomsDataAfterMove is None:
-            raise Exception("must compute data before and after group move")
+            raise Exception(log.LocalLogger("fullrmc").logger.error("must compute data before and after group move"))
         reject = False
         for index in self.activeAtomsDataBeforeMove.keys():
             before = self.activeAtomsDataBeforeMove[index]["reducedAngles"]
@@ -98,37 +119,37 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         map = []
         if self.engine is not None:
             if anglesMap is not None:
-                assert isinstance(anglesMap, (list, set, tuple)), "anglesMap must be None or a list"
+                assert isinstance(anglesMap, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap must be None or a list")
                 for angle in anglesMap:
-                    assert isinstance(angle, (list, set, tuple)), "anglesMap items must be lists"
+                    assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists")
                     angle = list(angle)
-                    assert len(angle)==6, "anglesMap items must be lists of 6 items each"
+                    assert len(angle)==6, log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists of 6 items each")
                     improperIdx, oIdx, xIdx, yIdx, lower, upper = angle
-                    assert is_integer(improperIdx), "anglesMap items lists of first item must be an integer"
+                    assert is_integer(improperIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of first item must be an integer")
                     improperIdx = INT_TYPE(improperIdx)
-                    assert is_integer(oIdx), "anglesMap items lists of second item must be an integer"
+                    assert is_integer(oIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of second item must be an integer")
                     oIdx = INT_TYPE(oIdx)
-                    assert is_integer(xIdx), "anglesMap items lists of third item must be an integer"
+                    assert is_integer(xIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of third item must be an integer")
                     xIdx = INT_TYPE(xIdx)
-                    assert is_integer(yIdx), "anglesMap items lists of fourth item must be an integer"
+                    assert is_integer(yIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of fourth item must be an integer")
                     yIdx = INT_TYPE(yIdx)
-                    assert improperIdx>=0, "anglesMap items lists first item must be positive"
-                    assert oIdx>=0, "anglesMap items lists second item must be positive"
-                    assert xIdx>=0, "anglesMap items lists third item must be positive"
-                    assert yIdx>=0, "anglesMap items lists fourth item must be positive"
-                    assert improperIdx!=oIdx, "bondsMap items lists first and second items can't be the same"
-                    assert improperIdx!=xIdx, "bondsMap items lists first and third items can't be the same"
-                    assert improperIdx!=yIdx, "bondsMap items lists first and fourth items can't be the same"
-                    assert oIdx!=xIdx, "bondsMap items lists second and third items can't be the same"
-                    assert oIdx!=yIdx, "bondsMap items lists second and fourth items can't be the same"
-                    assert xIdx!=yIdx, "bondsMap items lists third and fourth items can't be the same"
-                    assert is_number(lower), "anglesMap items lists of fifth item must be a number"
+                    assert improperIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists first item must be positive")
+                    assert oIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists second item must be positive")
+                    assert xIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists third item must be positive")
+                    assert yIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be positive")
+                    assert improperIdx!=oIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and second items can't be the same")
+                    assert improperIdx!=xIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and third items can't be the same")
+                    assert improperIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and fourth items can't be the same")
+                    assert oIdx!=xIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second and third items can't be the same")
+                    assert oIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second and fourth items can't be the same")
+                    assert xIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third and fourth items can't be the same")
+                    assert is_number(lower), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of fifth item must be a number")
                     lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), "anglesMap items lists of sixth item must be a number"
+                    assert is_number(upper), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of sixth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=FLOAT_TYPE(-PI/2), "anglesMap items lists fifth item must be bigger than %10f"%FLOAT_TYPE(-PI/2)
-                    assert upper>lower, "anglesMap items lists fifth item must be smaller than the sixth item"
-                    assert upper<=FLOAT_TYPE(PI/2), "anglesMap items lists fifth item must be smaller or equal to %.10f"%FLOAT_TYPE(PI/2)
+                    assert lower>=FLOAT_TYPE(-PI/2), log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be bigger than %10f"%FLOAT_TYPE(-PI/2))
+                    assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller than the sixth item")
+                    assert upper<=FLOAT_TYPE(PI/2), log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%FLOAT_TYPE(PI/2))
                     map.append((improperIdx, oIdx, xIdx, yIdx, lower, upper))  
         # set anglesMap definition
         self.__anglesMap = map      
@@ -139,10 +160,10 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             # parse bondsMap
             for angle in self.__anglesMap:
                 improperIdx, oIdx, xIdx, yIdx, lower, upper = angle
-                assert improperIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
-                assert oIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
-                assert xIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
-                assert yIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
+                assert improperIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert oIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert xIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert yIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
                 # create atoms look up angles dictionary
                 if not self.__atomsLUAD.has_key(improperIdx):
                     self.__atomsLUAD[improperIdx] = []
@@ -159,7 +180,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 elif oIdx in self.__angles[improperIdx]["oIndexes"]:
                     index = self.__angles[improperIdx]["oIndexes"].index(oIndexes)
                     if sorted(oIdx,xIdx,yIdx) == sorted(self.__angles[improperIdx]["oIndexes"][index],self.__angles[improperIdx]["xIndexes"][index],self.__angles[improperIdx]["yIndexes"][index]):
-                        warnings.warn("Improper angle definition for improper atom index '%i' and (O,x,y) atoms indexes (%i,%i,%i)  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(improperIdx, oIdx, xIdx, yIdx, lower, upper, self.__angles[improperIdx]["lower"][index], self.__angles[improperIdx]["upper"][index]))
+                        log.LocalLogger("fullrmc").logger.warn("Improper angle definition for improper atom index '%i' and (O,x,y) atoms indexes (%i,%i,%i)  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(improperIdx, oIdx, xIdx, yIdx, lower, upper, self.__angles[improperIdx]["lower"][index], self.__angles[improperIdx]["upper"][index]))
                         continue
                 # add improper angle definition
                 self.__angles[improperIdx]["oIndexes"].append(oIdx)
@@ -193,7 +214,8 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. anglesDefinition (dict): The angles definition. 
                Every key must be a molecule name (residue name in pdb file). 
                Every key value must be a list of angles definitions. 
-               Every angle definition is a list of five items where:\n
+               Every angle definition is a list of five items where:
+               
                #. First item: The name of the improper atom that must be in the plane.
                #. Second item: The name of the atom 'O' considered the origin of the plane.
                #. Third item: The name of the atom 'x' used to calculated 'Ox' vector.
@@ -201,9 +223,12 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Fifth item: The minimum lower limit or the minimum angle allowed in degrees.
                #. Sixth item: The maximum upper limit or the maximum angle allowed in degrees.
         
-        e.g. (Benzene):  anglesDefinition={"BENZ": [('C3','C1','C2','C6', -10, 10),
-                                                    ('C4','C1','C2','C6', -10, 10),
-                                                    ('C5','C1','C2','C6', -10, 10) ] }
+        ::
+        
+            e.g. (Benzene):  anglesDefinition={"BENZ": [('C3','C1','C2','C6', -10, 10),
+                                                        ('C4','C1','C2','C6', -10, 10),
+                                                        ('C5','C1','C2','C6', -10, 10) ] }
+                                                  
         """
         if self.engine is None:
             raise Exception("Engine is not defined. Can't create angles")
@@ -213,13 +238,13 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         anglesDef = {}
         for mol, angles in anglesDefinition.items():
             if mol not in existingMoleculesNames:
-                warnings.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
+                log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
-            assert isinstance(angles, (list, set, tuple)), "mapDefinition molecule angles must be a list"
+            assert isinstance(angles, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition molecule angles must be a list")
             angles = list(angles)
             molAnglesMap = []
             for angle in angles:
-                assert isinstance(angle, (list, set, tuple)), "mapDefinition angles must be a list"
+                assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition angles must be a list")
                 angle = list(angle)
                 assert len(angle)==6
                 improperAt, oAt, xAt, yAt, lower, upper = angle
@@ -227,9 +252,9 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 lower = FLOAT_TYPE(lower)
                 assert is_number(upper)
                 upper = FLOAT_TYPE(upper)
-                assert lower>=-90, "anglesMap items lists fifth item must be bigger or equal to -90 deg."
-                assert upper>lower, "anglesMap items lists fifth item must be smaller than the sixth item"
-                assert upper<=90, "anglesMap items lists sixth item must be smaller or equal to 90"
+                assert lower>=-90, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
+                assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller than the sixth item")
+                assert upper<=90, log.LocalLogger("fullrmc").logger.error("anglesMap items lists sixth item must be smaller or equal to 90")
                 lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # check for redundancy
@@ -237,7 +262,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 for b in molAnglesMap:
                     if (b[0]==improperAt):
                         if sorted(oAt,xAt,yAt) == sorted(b[1],b[2],b[3]):
-                            warnings.warn("Improper angle definition for improper atom index '%i' and (O,x,y) atoms indexes (%i,%i,%i)  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(improperIdx, oIdx, xIdx, yIdx, lower, upper, self.__angles[improperIdx]["lower"][index], self.__angles[improperIdx]["upper"][index]))
+                            log.LocalLogger("fullrmc").logger.warn("Improper angle definition for improper atom index '%i' and (O,x,y) atoms indexes (%i,%i,%i)  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(improperIdx, oIdx, xIdx, yIdx, lower, upper, self.__angles[improperIdx]["lower"][index], self.__angles[improperIdx]["upper"][index]))
                             append = False
                             break
                 if append:

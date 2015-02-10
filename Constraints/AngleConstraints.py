@@ -1,23 +1,41 @@
 """
+AngleConstraints contains classes for all constraints related angles between atoms.
+
 .. inheritance-diagram:: fullrmc.Constraints.AngleConstraints
     :parts: 2 
 """
 
 # standard libraries imports
 import itertools
-import warnings
 
 # external libraries imports
 import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.angles import full_angles
 
 class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
+    """
+    Its controls the angle between 3 defined atoms.
+    
+    :Parameters:
+        #. engine (None, fullrmc.Engine): The constraint RMC engine.
+        #. anglesMap (list): The angles map definition.
+           Every item must be a list of five items.
+           
+            #. First item: The central atom index.
+            #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
+            #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
+            #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
+            #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
+        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+    """
     def __init__(self, engine, anglesMap=None, rejectProbability=None):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
@@ -26,22 +44,22 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     @property
     def anglesMap(self):
-        """ Get angles map"""
+        """ Get angles map."""
         return self.__anglesMap
     
     @property
     def angles(self):
-        """ Get angles dictionary"""
+        """ Get angles dictionary."""
         return self.__angles
     
     @property    
     def atomsLUAD(self):
-        """ Get atoms loop up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
+        """ Get look up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
         return self.__atomsLUAD
         
     @property
     def chiSquare(self):
-        """Get constraint's current chi square."""
+        """ Get constraint's current chi square."""
         if self.data is None:
             return None
         else: 
@@ -49,11 +67,11 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             
     def listen(self, message, argument=None):
         """   
-        listen to any message sent from the Broadcaster.
+        Listens to any message sent from the Broadcaster.
         
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
             self.__initialize_constraint__()        
@@ -71,7 +89,7 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. result (boolean): True to reject step, False to accept
         """
         if self.activeAtomsDataBeforeMove is None or self.activeAtomsDataAfterMove is None:
-            raise Exception("must compute data before and after group move")
+            raise Exception(log.LocalLogger("fullrmc").logger.error("must compute data before and after group move"))
         reject = False
         for index in self.activeAtomsDataBeforeMove.keys():
             before = self.activeAtomsDataBeforeMove[index]["reducedAngles"]
@@ -88,7 +106,8 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
         :Parameters:
             #. anglesMap (list): The angles map definition.
-               Every item must be a list of five items.\n
+               Every item must be a list of five items.
+               
                #. First item: The central atom index.
                #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
                #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
@@ -98,31 +117,31 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         map = []
         if self.engine is not None:
             if anglesMap is not None:
-                assert isinstance(anglesMap, (list, set, tuple)), "anglesMap must be None or a list"
+                assert isinstance(anglesMap, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap must be None or a list")
                 for angle in anglesMap:
-                    assert isinstance(angle, (list, set, tuple)), "anglesMap items must be lists"
+                    assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists")
                     angle = list(angle)
-                    assert len(angle)==5, "anglesMap items must be lists of 5 items each"
+                    assert len(angle)==5, log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists of 5 items each")
                     centralIdx, leftIdx, rightIdx, lower, upper = angle
-                    assert is_integer(centralIdx), "anglesMap items lists of first item must be an integer"
+                    assert is_integer(centralIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of first item must be an integer")
                     centralIdx = INT_TYPE(centralIdx)
-                    assert is_integer(leftIdx), "anglesMap items lists of second item must be an integer"
+                    assert is_integer(leftIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of second item must be an integer")
                     leftIdx = INT_TYPE(leftIdx)
-                    assert is_integer(rightIdx), "anglesMap items lists of third item must be an integer"
+                    assert is_integer(rightIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of third item must be an integer")
                     rightIdx = INT_TYPE(rightIdx)
-                    assert centralIdx>=0, "anglesMap items lists first item must be positive"
-                    assert leftIdx>=0, "anglesMap items lists second item must be positive"
-                    assert rightIdx>=0, "anglesMap items lists third item must be positive"
-                    assert centralIdx!=leftIdx, "bondsMap items lists first and second items can't be the same"
-                    assert centralIdx!=rightIdx, "bondsMap items lists first and third items can't be the same"
-                    assert leftIdx!=rightIdx, "bondsMap items lists second and third items can't be the same"
-                    assert is_number(lower), "anglesMap items lists of third item must be a number"
+                    assert centralIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists first item must be positive")
+                    assert leftIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists second item must be positive")
+                    assert rightIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists third item must be positive")
+                    assert centralIdx!=leftIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and second items can't be the same")
+                    assert centralIdx!=rightIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and third items can't be the same")
+                    assert leftIdx!=rightIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second and third items can't be the same")
+                    assert is_number(lower), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of third item must be a number")
                     lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), "anglesMap items lists of fourth item must be a number"
+                    assert is_number(upper), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of fourth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=0, "anglesMap items lists fourth item must be positive"
-                    assert upper>lower, "anglesMap items lists fourth item must be smaller than the fifth item"
-                    assert upper<=PI, "anglesMap items lists fifth item must be smaller or equal to %.10f"%PI
+                    assert lower>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be positive")
+                    assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be smaller than the fifth item")
+                    assert upper<=PI, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%PI)
                     map.append((centralIdx, leftIdx, rightIdx, lower, upper))  
         # set anglesMap definition
         self.__anglesMap = map     
@@ -133,9 +152,9 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             # parse bondsMap
             for angle in self.__anglesMap:
                 centralIdx, leftIdx, rightIdx, lower, upper = angle
-                assert centralIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
-                assert leftIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
-                assert rightIdx<len(self.engine.pdb), "angle atom index must be smaller than maximum number of atoms"
+                assert centralIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert leftIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert rightIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
                 # create atoms look up angles dictionary
                 if not self.__atomsLUAD.has_key(centralIdx):
                     self.__atomsLUAD[centralIdx] = []
@@ -150,12 +169,12 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 elif leftIdx in self.__angles[centralIdx]["leftIndexes"]:
                     index = self.__angles[centralIdx]["leftIndexes"].index(leftIdx)
                     if rightIdx == self.__angles[centralIdx]["rightIndexes"][index]:
-                        warnings.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
+                        log.LocalLogger("fullrmc").logger.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
                         continue
                 elif leftIdx in self.__angles[centralIdx]["rightIndexes"]:
                     index = self.__angles[centralIdx]["rightIndexes"].index(leftIdx)
                     if rightIdx == self.__angles[centralIdx]["leftIndexes"][index]:
-                        warnings.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
+                        log.LocalLogger("fullrmc").logger.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
                         continue
                 # add angle definition
                 self.__angles[centralIdx]["leftIndexes"].append(leftIdx)
@@ -186,33 +205,37 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. anglesDefinition (dict): The angles definition. 
                Every key must be a molecule name (residue name in pdb file). 
                Every key value must be a list of angles definitions. 
-               Every angle definition is a list of five items where:\n
+               Every angle definition is a list of five items where:
+               
                #. First item: The name of the central atom forming the angle.
                #. Second item: The name of the left atom forming the angle (interchangeable with the right atom).
                #. Third item: The name of the right atom forming the angle (interchangeable with the left atom).
                #. Fourth item: The minimum lower limit or the minimum angle allowed in degrees.
                #. Fifth item: The maximum upper limit or the maximum angle allowed in degrees.
         
-        e.g. (Carbon tetrachloride):  anglesDefinition={"CCL4": [('C','CL1','CL2' , 105, 115),
-                                                                 ('C','CL2','CL3' , 105, 115),
-                                                                 ('C','CL3','CL4' , 105, 115),                                      
-                                                                 ('C','CL4','CL1' , 105, 115) ] }
+        ::
+        
+            e.g. (Carbon tetrachloride):  anglesDefinition={"CCL4": [('C','CL1','CL2' , 105, 115),
+                                                                     ('C','CL2','CL3' , 105, 115),
+                                                                     ('C','CL3','CL4' , 105, 115),                                      
+                                                                     ('C','CL4','CL1' , 105, 115) ] }
+                                                                 
         """
         if self.engine is None:
-            raise Exception("Engine is not defined. Can't create angles")
-        assert isinstance(anglesDefinition, dict), "anglesDefinition must be a dictionary"
+            raise Exception(log.LocalLogger("fullrmc").logger.error("Engine is not defined. Can't create angles"))
+        assert isinstance(anglesDefinition, dict), log.LocalLogger("fullrmc").logger.error("anglesDefinition must be a dictionary")
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))
         anglesDef = {}
         for mol, angles in anglesDefinition.items():
             if mol not in existingMoleculesNames:
-                warnings.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
+                log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
-            assert isinstance(angles, (list, set, tuple)), "mapDefinition molecule angles must be a list"
+            assert isinstance(angles, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition molecule angles must be a list")
             angles = list(angles)
             molAnglesMap = []
             for angle in angles:
-                assert isinstance(angle, (list, set, tuple)), "mapDefinition angles must be a list"
+                assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition angles must be a list")
                 angle = list(angle)
                 assert len(angle)==5
                 centralAt, leftAt, rightAt, lower, upper = angle
@@ -220,16 +243,16 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 lower = FLOAT_TYPE(lower)
                 assert is_number(upper)
                 upper = FLOAT_TYPE(upper)
-                assert lower>=0, "anglesMap items lists fourth item must be positive"
-                assert upper>lower, "anglesMap items lists fourth item must be smaller than the fifth item"
-                assert upper<=180, "anglesMap items lists fifth item must be smaller or equal to 180"
+                assert lower>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be positive")
+                assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be smaller than the fifth item")
+                assert upper<=180, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller or equal to 180")
                 lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # check for redundancy
                 append = True
                 for b in molAnglesMap:
                     if (b[0]==centralAt) and ( (b[1]==leftAt and b[2]==rightAt) or (b[1]==rightAt and b[2]==leftAt) ):
-                        warnings.warn("Redundant definition for anglesDefinition found. The later '%s' is ignored"%str(b))
+                        log.LocalLogger("fullrmc").logger.warn("Redundant definition for anglesDefinition found. The later '%s' is ignored"%str(b))
                         append = False
                         break
                 if append:
@@ -266,7 +289,7 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
     
     def compute_chi_square(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Computes the chi square of data not satisfying constraint conditions. 
         
         :Parameters:
             #. data (numpy.array): The constraint value data to compute chiSquare.
@@ -281,7 +304,7 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
 
     def get_constraint_value(self):
         """
-        Compute all partial Mean Pair Distances (MPD) below the defined minimum distance. 
+        Computes all partial Mean Pair Distances (MPD) below the defined minimum distance. 
         
         :Returns:
             #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
@@ -311,10 +334,10 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     def compute_before_move(self, indexes):
         """ 
-        Compute constraint before move is executed
+        Compute constraint before move is executed.
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
         """
         # get angles dictionary slice
         anglesIndexes = []
@@ -335,7 +358,7 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     def compute_after_move(self, indexes, movedBoxCoordinates):
         """ 
-        Compute constraint after move is executed
+        Compute constraint after move is executed.
         
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
@@ -364,10 +387,10 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
   
     def accept_move(self, indexes):
         """ 
-        Accept move
+        Accept move.
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
         """
         # get indexes
         anglesIndexes = []
@@ -382,10 +405,10 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
 
     def reject_move(self, indexes):
         """ 
-        Reject move
+        Reject move.
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)

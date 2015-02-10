@@ -62,7 +62,7 @@ class DefinedOrderSelector(GroupSelector):
             for idx in order:
                 assert is_integer(idx), log.LocalLogger("fullrmc").logger.error("order indexes must be integers")
                 idx = int(idx)
-                assert idx>=0, "order indexes must be positive"log.LocalLogger("fullrmc").logger.error()
+                assert idx>=0, log.LocalLogger("fullrmc").logger.error("order indexes must be positive")
                 assert idx<len(self.engine.groups), log.LocalLogger("fullrmc").logger.error("order indexes must be smaller than engine's number of groups")
                 newOrder.append(idx)
         # set order

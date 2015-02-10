@@ -1,11 +1,12 @@
 """
+PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.
+
 .. inheritance-diagram:: fullrmc.Constraints.PairDistributionConstraints
     :parts: 2 
 """
 
 # standard libraries imports
 import itertools
-import warnings
 
 # external libraries imports
 import numpy as np
@@ -13,6 +14,7 @@ from pdbParser.Utilities.Database import is_element_property, get_element_proper
 from pdbParser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
@@ -26,6 +28,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
+        #. weighting (string): The elements weighting.
     """
     def __init__(self, engine, experimentalData, weighting="atomicNumber"):
         # initialize constraint
@@ -85,11 +88,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         
     def listen(self, message, argument=None):
         """   
-        listen to any message sent from the Broadcaster.
+        Listens to any message sent from the Broadcaster.
         
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed", "update molecules indexes"):
             if self.engine is not None:
@@ -109,8 +112,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Parameters:
             #. weighting (string): The elements weighting.
         """
-        assert is_element_property(weighting), "weighting is not a valid pdbParser atoms database entry"
-        assert weighting != "atomicFormFactor", "atomicFormFactor weighting is not allowed in fullrmc"
+        assert is_element_property(weighting),log.LocalLogger("fullrmc").logger.error( "weighting is not a valid pdbParser atoms database entry")
+        assert weighting != "atomicFormFactor", log.LocalLogger("fullrmc").logger.error("atomicFormFactor weighting is not allowed")
         self.__weighting = weighting
         
     def set_experimental_data(self, experimentalData):
@@ -183,7 +186,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         #import time
         #startTime = time.clock()
         if self.data is None:
-            warnings.warn("data must be computed first using 'compute_data' method.")
+            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
             return {}
         output = {}
         for pair in self.__elementsPairs:
@@ -237,12 +240,12 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # check for unexpected errors  
-        assert len(edges)==len(self.__edges), "edges shape mis-match" 
-        assert np.abs(self.__minimumDistance-edges[0]) <=PRECISION , "minimum distances mismatch. Difference of %.12f found"%(self.__minimumDistance-edges[0])   
-        assert np.abs(self.__maximumDistance-edges[-1])<=PRECISION , "maximum distances mismatch. Difference of %.12f found"%(self.__maximumDistance-edges[-1])  
-        assert np.abs(self.__bin-edges[1]+edges[0])<=PRECISION , "distances bin mismatch. Difference of %.12f found"%(self.__bin-edges[1]+edges[0])           
+        assert len(edges)==len(self.__edges), log.LocalLogger("fullrmc").logger.error("edges shape mis-match")
+        assert np.abs(self.__minimumDistance-edges[0]) <=PRECISION , log.LocalLogger("fullrmc").logger.error("minimum distances mismatch. Difference of %.12f found"%(self.__minimumDistance-edges[0])) 
+        assert np.abs(self.__maximumDistance-edges[-1])<=PRECISION , log.LocalLogger("fullrmc").logger.error("maximum distances mismatch. Difference of %.12f found"%(self.__maximumDistance-edges[-1]))
+        assert np.abs(self.__bin-edges[1]+edges[0])<=PRECISION , log.LocalLogger("fullrmc").logger.error("distances bin mismatch. Difference of %.12f found"%(self.__bin-edges[1]+edges[0]))         
         for diff in self.__edges-edges:
-            assert abs(diff)<=PRECISION, "calculated edges doesn't match"
+            assert abs(diff)<=PRECISION, log.LocalLogger("fullrmc").logger.error("calculated edges doesn't match")
         # set chiSquare
         totalPDF = self.get_constraint_value()["pdf_total"]
         self.set_chi_square(self.compute_chi_square(data = totalPDF))

@@ -1,17 +1,19 @@
 """
+DistanceConstraints contains classes for all constraints related distances between atoms.
+
 .. inheritance-diagram:: fullrmc.Constraints.DistanceConstraints
     :parts: 2 
 """
 
 # standard libraries imports
 import itertools
-import warnings
 
 # external libraries imports
 import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
@@ -28,10 +30,13 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         #. pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
            A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
            First defined elements pair distance will cancel all redundant. 
-           If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value .e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+           If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
+           ::
+           
+               e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+           
         #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
            If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
-
     """
     def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=None):
         # initialize constraint
@@ -83,7 +88,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed", "update molecules indexes"):
             if self.engine is not None:
@@ -102,9 +107,9 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         :Parameters:
             #. defaultDistance (number): The default minimum distance.
         """
-        assert is_number(defaultDistance), "defaultDistance must be a number"
+        assert is_number(defaultDistance), log.LocalLogger("fullrmc").logger.error("defaultDistance must be a number")
         defaultDistance = FLOAT_TYPE(defaultDistance)
-        assert defaultDistance>=0, "defaultDistance must be positive"
+        assert defaultDistance>=0, log.LocalLogger("fullrmc").logger.error("defaultDistance must be positive")
         self.__defaultDistance = defaultDistance
         
     def set_pairs_distance(self, pairsDistance):
@@ -113,9 +118,13 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         
         :Parameters:
             #. pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
-              A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
-              First defined elements pair distance will cancel all redundant. 
-              If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value .e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+               A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
+               First defined elements pair distance will cancel all redundant. 
+               If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
+               ::
+               
+                   e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+               
         """
         if self.engine is None:
             newPairsDistance = None
@@ -127,32 +136,32 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                     newPairsDistance[el1][el2] = self.__defaultDistance
         else:
             newPairsDistance = {}
-            assert isinstance(pairsDistance, (list, set, tuple)), "pairsDistance must be a list"
+            assert isinstance(pairsDistance, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("pairsDistance must be a list")
             for pair in pairsDistance:
-                assert isinstance(pair, (list, set, tuple)), "pairsDistance list items must be lists as well"
+                assert isinstance(pair, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("pairsDistance list items must be lists as well")
                 pair = list(pair)
-                assert len(pair)==3, "pairsDistance list pair item list must have three items"
+                assert len(pair)==3, log.LocalLogger("fullrmc").logger.error("pairsDistance list pair item list must have three items")
                 if pair[0] not in self.engine.elements:
-                    warnings.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[0])
+                    log.LocalLogger("fullrmc").logger.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[0])
                     continue
                 if pair[1] not in self.engine.elements: 
-                    warnings.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[1])
+                    log.LocalLogger("fullrmc").logger.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[1])
                     continue
                 # create elements keys
                 if not newPairsDistance.has_key(pair[0]):
                     newPairsDistance[pair[0]] = {}
                 if not newPairsDistance.has_key(pair[1]):
                     newPairsDistance[pair[1]] = {}
-                assert is_number(pair[2]), "pairsDistance list pair item list third item must be a number"
+                assert is_number(pair[2]), log.LocalLogger("fullrmc").logger.error("pairsDistance list pair item list third item must be a number")
                 distance = FLOAT_TYPE(pair[2])
-                assert distance>=0, "pairsDistance list pair item list third item must be bigger than 0"
+                assert distance>=0, log.LocalLogger("fullrmc").logger.error("pairsDistance list pair item list third item must be bigger than 0")
                 # set minimum distance
                 if newPairsDistancepair[0].has_key(pair[1]):
-                    warnings.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
+                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
                 else:
                     newPairsDistance[pair[0]][pair[1]] = distance
                 if newPairsDistancepair[1].has_key(pair[0]):
-                    warnings.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
+                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
                 else:
                     newPairsDistance[pair[1]][pair[0]] = distance
         # set new pairsDistance value
@@ -166,7 +175,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                 for idx2 in range(self.engine.numberOfElements): 
                     el1  = self.engine.elements[idx1]
                     dist = self.__pairsDistance[el1][el2]
-                    assert dist == self.__pairsDistance[el2][el1], "pairsDistance must be symmetric"
+                    assert dist == self.__pairsDistance[el2][el1], log.LocalLogger("fullrmc").logger.error("pairsDistance must be symmetric")
                     self.__upperLimitArray[idx1,idx2,0] = FLOAT_TYPE(dist)
                     self.__upperLimitArray[idx2,idx1,0] = FLOAT_TYPE(dist)
         else:
@@ -193,8 +202,8 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             el1, el2 = k.split("intermd_")[1].split("-")
             dist = self.__pairsDistance[el1][el2]
             diff = dist-val
-            assert diff>0 , "difference must be positive. %.6f is found for val:%.6f and minimumDistance: %.6f. Try recomputing constraint data using 'compute_data' method"%(diff, val, dist)
-            assert diff<=dist, "difference must be smaller than minimum distance. %.6f is found for val:%.6f and minimumDistance: %.6f .Try recomputing constraint data using 'compute_data' method"%(diff, val, dist)
+            assert diff>0 , log.LocalLogger("fullrmc").logger.error("difference must be positive. %.6f is found for val:%.6f and minimumDistance: %.6f. Try recomputing constraint data using 'compute_data' method"%(diff, val, dist))
+            assert diff<=dist, log.LocalLogger("fullrmc").logger.error("difference must be smaller than minimum distance. %.6f is found for val:%.6f and minimumDistance: %.6f .Try recomputing constraint data using 'compute_data' method"%(diff, val, dist))
             # normalize to make it between 0 and 1
             chiSquare += (diff/dist)**2
         # normalize
@@ -210,7 +219,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
         """
         if self.data is None:
-            warnings.warn("data must be computed first using 'compute_data' method.")
+            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
             return {}
         output = {}
         for pair in self.__elementsPairs:
@@ -369,13 +378,18 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         #. pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
            A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
            First defined elements pair distance will cancel all redundant. 
-           If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value .e.g. [('c','h',0.9, 1.2), ...] 
+           If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value 
+           ::
+           
+               e.g. [('c','h',0.9, 1.2), ...] 
+           
         #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
            If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
         #. mode (string): Defines the way chiSquare is calculated. In such constraints the definition of chiSquare
            can be confusing because many parameters play different roles in this type of calculation. The number of
            unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
            Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:
+            
             #. distance (Default): chiSquare is simply calculated as the square summation of the reduced out of limits distances.
                This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.
             #. number: chiSquare is calculated such as the number of non-satisfied constraints must decrease 
@@ -488,7 +502,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         :Parameters:
             #. mode (object): The mode of calculation
         """
-        assert mode in self.__chiSquareModes.keys(), "allowed modes are %s"%self.__chiSquareModes.keys()
+        assert mode in self.__chiSquareModes.keys(), log.LocalLogger("fullrmc").logger.error("allowed modes are %s"%self.__chiSquareModes.keys())
         self.__mode = mode
         # reinitialize constraint
         self.__initialize_constraint__()
@@ -500,9 +514,9 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         :Parameters:
             #. defaultMinDistance (number): The default minimum distance.
         """
-        assert is_number(defaultMinDistance), "defaultMinDistance must be a number"
+        assert is_number(defaultMinDistance), log.LocalLogger("fullrmc").logger.error("defaultMinDistance must be a number")
         defaultMinDistance = FLOAT_TYPE(defaultMinDistance)
-        assert defaultMinDistance>=0, "defaultMinDistance must be positive"
+        assert defaultMinDistance>=0, log.LocalLogger("fullrmc").logger.error("defaultMinDistance must be positive")
         self.__defaultMinDistance = defaultMinDistance
     
     def set_type_definition(self, typeDefinition, pairsLimitsDefinition=None):
@@ -510,7 +524,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         Its an alias to set_pairs_limits with pairsLimits argument passed as the already defined pairsLimitsDefinitions
         """
         # set typeDefinition
-        assert typeDefinition in ("name", "element"), "typeDefinition must be either 'name' or 'element'"
+        assert typeDefinition in ("name", "element"), log.LocalLogger("fullrmc").logger.error("typeDefinition must be either 'name' or 'element'")
         if self.engine is None:
             self.__types                = None
             self.__allTypes             = None
@@ -541,7 +555,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                     lut = {}
                     lastMolIdx = molIdx
                 if lut.has_key(name):
-                    raise Exception( "molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, self.__typeDefinition, name, self.__class__.__name__) )
+                    raise Exception( log.LocalLogger("fullrmc").logger.error("molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, self.__typeDefinition, name, self.__class__.__name__)) )
                 else:
                     lut[name] = 1
         # set pairs limits
@@ -555,9 +569,13 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         
         :Parameters:
             #. pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
-              A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
-              First defined elements pair distance will cancel all redundant. 
-              If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value .e.g. [('c','h',0.9, 1.2), ...] 
+               A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
+               First defined elements pair distance will cancel all redundant. 
+               If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value.
+               ::
+               
+                   e.g. [('c','h',0.9, 1.2), ...] 
+        
         """
         # set types pairs
         if self.__types is not None:
@@ -570,35 +588,35 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             pairsLimitsDict = None
         elif pairsLimitsDefinition is not None:
             pairsLimitsDict = {}
-            assert isinstance(pairsLimitsDefinition, (list, set, tuple)), "pairsLimitsDefinition must be a list"
+            assert isinstance(pairsLimitsDefinition, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition must be a list")
             for pair in pairsLimitsDefinition:
-                assert isinstance(pair, (list, set, tuple)), "pairsLimitsDefinition list items must be lists as well"
+                assert isinstance(pair, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list items must be lists as well")
                 pair = list(pair)
-                assert len(pair)==4, "pairsLimitsDefinition list pair item list must have four items"
+                assert len(pair)==4, log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list pair item list must have four items")
                 if pair[0] not in self.__types:
-                    warning.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[0])
+                    log.LocalLogger("fullrmc").logger.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[0])
                     continue
                 if pair[1] not in self.__types: 
-                    warning.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[1])
+                    log.LocalLogger("fullrmc").logger.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[1])
                     continue
                 # create type keys
                 if not pairsLimitsDict.has_key(pair[0]):
                     pairsLimitsDict[pair[0]] = {}
                 if not pairsLimitsDict.has_key(pair[1]):
                     pairsLimitsDict[pair[1]] = {}
-                assert is_number(pair[2]), "pairsLimitsDefinition list pair item list third item must be a number"
+                assert is_number(pair[2]), log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list pair item list third item must be a number")
                 lower = FLOAT_TYPE(pair[2])
-                assert is_number(pair[3]), "pairsLimitsDefinition list pair item list foruth item must be a number"
+                assert is_number(pair[3]), log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list pair item list foruth item must be a number")
                 upper = FLOAT_TYPE(pair[3])
-                assert lower>=0, "pairsLimitsDefinition list pair item list third item must be bigger than 0"
-                assert upper>lower, "pairsLimitsDefinition list pair item list fourth item must be bigger than the third item"
+                assert lower>=0, log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list pair item list third item must be bigger than 0")
+                assert upper>lower, log.LocalLogger("fullrmc").logger.error("pairsLimitsDefinition list pair item list fourth item must be bigger than the third item")
                 # set minimum distance
                 if pairsLimitsDict[pair[0]].has_key(pair[1]):
-                    warnings.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
+                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
                 else:
                     pairsLimitsDict[pair[0]][pair[1]] = (lower, upper)
                 if pairsLimitsDict[pair[1]].has_key(pair[0]):
-                    warnings.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
+                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
                 else:
                     pairsLimitsDict[pair[1]][pair[0]] = (lower, upper)
         # complete pairsLimitsDict to all elements
@@ -675,7 +693,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
         """
         if self.data is None:
-            warnings.warn("data must be computed first using 'compute_data' method.")
+            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
             return {}
         output = {}
         for pair in self.__typesPairs:

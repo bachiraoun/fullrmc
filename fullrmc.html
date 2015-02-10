@@ -93,7 +93,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fullrmc.Core.html">fullrmc.Core package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Broadcaster">Broadcaster</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Collection">Collection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Constraint">Constraint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.Group">Group</a></li>
@@ -137,7 +136,7 @@ inter-molecular-distances, etc.</p>
 <em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
-It has the capability to use and fit multiple sets of experimental data. 
+It has the capability to use and fit simultaneously multiple sets of experimental data. 
 One can also define other constraints such as distances, bonds length, angles and many others.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -145,18 +144,25 @@ One can also define other constraints such as distances, bonds length, angles an
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.</li>
-<li>names (None, list): All pdb atoms names list.
-If None names will be calculated automatically by parsing pdb instance.</li>
+<li>names (None, list): All pdb atoms names list. 
+List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+If None names will be assigned automatically by parsing pdbParser instance.</li>
 <li>elements (None, list): All pdb atoms elements list.
-If None elements will be calculated automatically by parsing pdb instance.</li>
+List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+If None elements will be assigned automatically by parsing pdbParser instance.</li>
 <li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
-<li>moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+If None moleculesIndexes will be assigned automatically by parsing pdbParser instance.</li>
+<li>moleculesNames (None, list): The molecules names list. 
+List length must be equal to the number of atoms in the pdbParser instance or pdb file.
 If None, it is automatically generated as the pdb residues name.</li>
-<li>groups (None, list):</li>
-<li>groupSelector (None, GroupSelector): The GroupSelector instance. If None, RandomGroupSelector is set automatically</li>
+<li>groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
+If None, single atom groups of all atoms will be all automatically created.</li>
+<li>groupSelector (None, GroupSelector): The GroupSelector instance. 
+If None, RandomGroupSelector is set automatically.</li>
 <li>constraints (None, list): The list of constraints instances.</li>
-<li>tolerance (number): The runtime tolerance parameters. Its the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
+<li>tolerance (number): The runtime tolerance parameters. 
+It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
 </ol>
 </td>
 </tr>
@@ -212,13 +218,13 @@ If None, it is automatically generated as the pdb residues name.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.boxCoordinates">
 <tt class="descname">boxCoordinates</tt><a class="headerlink" href="#fullrmc.Engine.Engine.boxCoordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the box coordinates of the current configuration.</p>
+<dd><p>Get the box coordinates of the current configuration or None in case of InfiniteBoundaries..</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.chiSquare">
 <tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Engine.Engine.chiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of all constraints instances.</p>
+<dd><p>Get the last recorded chiSquare of the current configuration.</p>
 </dd></dl>
 
 <dl class="method">
@@ -248,7 +254,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.constraints">
 <tt class="descname">constraints</tt><a class="headerlink" href="#fullrmc.Engine.Engine.constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list of all constraints instances.</p>
+<dd><p>Get a list copy of all constraints instances.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -289,15 +295,15 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.get_used_constraints">
 <tt class="descname">get_used_constraints</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.get_used_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses all engine constraints and returns only the active ones.</p>
+<dd><p>Parses all engine constraints and returns different lists of the active ones.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>usedConstraints (list): All types of active constraints that will be used in engine runtime</li>
-<li>constraints (list): All active constraints instances that will contribute to the engine total chiSquare</li>
-<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won&#8217;t contribute to the engine total chiSquare</li>
+<li>usedConstraints (list): All types of active constraints that will be used in engine runtime.</li>
+<li>constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare</li>
+<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won&#8217;t contribute to the engine total chiSquare</li>
 </ol>
 </td>
 </tr>
@@ -314,21 +320,21 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.groups">
 <tt class="descname">groups</tt><a class="headerlink" href="#fullrmc.Engine.Engine.groups" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get engine defined groups.</p>
+<dd><p>Get engine&#8217;s defined groups.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.initialize_used_constraints">
 <tt class="descname">initialize_used_constraints</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.initialize_used_constraints" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets and returns all active constraints and re-initializes when needed</p>
+<dd><p>Calls get_used_constraints method, re-initializes constraints when needed and return them all.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>usedConstraints (list): All types of active constraints that will be used in engine runtime</li>
-<li>constraints (list): All active constraints instances that will contribute to the engine total chiSquare.</li>
-<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won&#8217;t contribute to the engine total chiSquare.</li>
+<li>usedConstraints (list): All types of active constraints that will be used in engine runtime.</li>
+<li>constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare</li>
+<li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won&#8217;t contribute to the engine total chiSquare</li>
 </ol>
 </td>
 </tr>
@@ -339,19 +345,19 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.lastMovedAtomsIndexes">
 <tt class="descname">lastMovedAtomsIndexes</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedAtomsIndexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last atoms moved by the engine.</p>
+<dd><p>Get the last moved atoms indexes.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.lastMovedGroup">
 <tt class="descname">lastMovedGroup</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last group instance moved by the engine.</p>
+<dd><p>Get the last moved group instance.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.lastMovedGroupIndex">
 <tt class="descname">lastMovedGroupIndex</tt><a class="headerlink" href="#fullrmc.Engine.Engine.lastMovedGroupIndex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last group instance index in groups list moved by the engine.</p>
+<dd><p>Get the last moved group instance index in groups list.</p>
 </dd></dl>
 
 <dl class="method">
@@ -402,13 +408,13 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.numberOfAtomsPerElement">
 <tt class="descname">numberOfAtomsPerElement</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtomsPerElement" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of atoms per element.</p>
+<dd><p>Get the number of atoms per element dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.numberOfAtomsPerName">
 <tt class="descname">numberOfAtomsPerName</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtomsPerName" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of atoms per element.</p>
+<dd><p>Get the number of atoms per name dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -426,13 +432,13 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.numberOfNames">
 <tt class="descname">numberOfNames</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfNames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the defined atom names set.</p>
+<dd><p>Get the number of defined atom names set.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.pdb">
 <tt class="descname">pdb</tt><a class="headerlink" href="#fullrmc.Engine.Engine.pdb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get pdb instance.</p>
+<dd><p>Get pdbParser instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -473,7 +479,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.reset_engine">
 <tt class="descname">reset_engine</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.reset_engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reinitialize engine and resets constraints flags and data.</p>
+<dd><p>Re-initialize engine and resets constraints flags and data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -492,8 +498,9 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>numberOfSteps (integer): The maximum number of steps to run.
-By default maximum integer number allowed is given. 0 Will result in only initializing constraints.</li>
-<li>saveFrequency (integer): Save engine every saveFrequency step.</li>
+By default maximum integer number allowed is given. 
+0 Will result in only initializing constraints.</li>
+<li>saveFrequency (integer): Save engine every saveFrequency steps.</li>
 <li>savePath (string): Save engine file path.</li>
 </ol>
 </td>
@@ -522,13 +529,17 @@ By default maximum integer number allowed is given. 0 Will result in only initia
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.set_boundary_conditions">
 <tt class="descname">set_boundary_conditions</tt><big>(</big><em>boundaryConditions</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_boundary_conditions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the configuration boundary conditions. Engine and constraintsData will be automatically reset</p>
+<dd><p>Sets the configuration boundary conditions. Any type of periodic boundary conditions are allowed and not restricted to cubic.
+Engine and constraintsData will be automatically reset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): the configuration boundary conditions.</li>
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.</li>
 </ol>
 </td>
 </tr>
@@ -557,13 +568,14 @@ If None elements will be calculated automatically by parsing pdb instance.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.set_group_selector">
 <tt class="descname">set_group_selector</tt><big>(</big><em>selector</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_group_selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the engine group selector instance</p>
+<dd><p>Sets the engine group selector instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, GroupSelector): the GroupSelector instance. If None, RandomSelector is set automatically.</li>
+<li>groups (None, GroupSelector): the GroupSelector instance. 
+If None, RandomSelector is set automatically.</li>
 </ol>
 </td>
 </tr>
@@ -612,14 +624,14 @@ If None, it is automatically generated as the pdb residues name.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.set_names_indexes">
 <tt class="descname">set_names_indexes</tt><big>(</big><em>names=None</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_names_indexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets names list, assigning a names to each atom.</p>
+<dd><p>Sets names list, assigning a name to each atom.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>names (None, list): The names indexes list.
-If None names will be calculated automatically by parsing pdb instance.</li>
+If None names will be generated automatically by parsing pdbParser instance.</li>
 </ol>
 </td>
 </tr>
@@ -661,7 +673,8 @@ If None, it is automatically generated as the pdb residues name.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>tolerance (number): The runtime tolerance parameters. It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
+<li>tolerance (number): The runtime tolerance parameters. 
+It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
 </ol>
 </td>
 </tr>
@@ -696,25 +709,13 @@ If None, it is automatically generated as the pdb residues name.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.visualize">
 <tt class="descname">visualize</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.visualize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Visualize the last configuration.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>Visualize the last configuration using pdbParser visualize method.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.volume">
 <tt class="descname">volume</tt><a class="headerlink" href="#fullrmc.Engine.Engine.volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get basis volume</p>
+<dd><p>Get basis volume or None in case of InfiniteBoundaries.</p>
 </dd></dl>
 
 </dd></dl>

@@ -51,7 +51,6 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc.Core package</a><ul>
-<li><a class="reference internal" href="#module-fullrmc.Core.Broadcaster">Broadcaster</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.Collection">Collection</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.Constraint">Constraint</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.Group">Group</a></li>
@@ -102,22 +101,17 @@
             
   <div class="section" id="fullrmc-core-package">
 <h1>fullrmc.Core package<a class="headerlink" href="#fullrmc-core-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-fullrmc.Core.Broadcaster">
-<span id="broadcaster"></span><h2>Broadcaster<a class="headerlink" href="#module-fullrmc.Core.Broadcaster" title="Permalink to this headline">¶</a></h2>
-<p class="graphviz">
-<img src="_images/inheritance-663bc848e3329c998b55e633c384fed0d479e9b6.png" alt="Inheritance diagram of fullrmc.Core.Broadcaster" usemap="#inheritance659315ff23" class="inheritance"/>
-<map id="inheritance659315ff23" name="inheritance659315ff23">
-<area shape="rect" id="node1" href="#fullrmc.Core.Broadcaster.Broadcaster" title="A broadcaster is a singleton that broadcasts a message to all listener throughout execution." alt="" coords="5,5,172,31"/>
-</map>
-</p>
+<div class="section" id="module-fullrmc.Core.Collection">
+<span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Core.Collection" title="Permalink to this headline">¶</a></h2>
+<p>It contains a collection of methods and classes that are useful for the package.</p>
 <dl class="class">
-<dt id="fullrmc.Core.Broadcaster.Broadcaster">
-<em class="property">class </em><tt class="descclassname">fullrmc.Core.Broadcaster.</tt><tt class="descname">Broadcaster</tt><a class="headerlink" href="#fullrmc.Core.Broadcaster.Broadcaster" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Collection.Broadcaster">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">Broadcaster</tt><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>A broadcaster is a singleton that broadcasts a message to all listener throughout execution.</p>
+<p>A broadcaster broadcasts a message to all listener throughout execution.</p>
 <dl class="method">
-<dt id="fullrmc.Core.Broadcaster.Broadcaster.add_listener">
-<tt class="descname">add_listener</tt><big>(</big><em>listener</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Broadcaster.Broadcaster.add_listener" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Collection.Broadcaster.add_listener">
+<tt class="descname">add_listener</tt><big>(</big><em>listener</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster.add_listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add listener to the list of listeners</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -133,8 +127,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Broadcaster.Broadcaster.broadcast">
-<tt class="descname">broadcast</tt><big>(</big><em>message</em>, <em>arguments=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Broadcaster.Broadcaster.broadcast" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Collection.Broadcaster.broadcast">
+<tt class="descname">broadcast</tt><big>(</big><em>message</em>, <em>arguments=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster.broadcast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcast a message to all the listeners</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -151,8 +145,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Broadcaster.Broadcaster.remove_listener">
-<tt class="descname">remove_listener</tt><big>(</big><em>listener</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Broadcaster.Broadcaster.remove_listener" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Collection.Broadcaster.remove_listener">
+<tt class="descname">remove_listener</tt><big>(</big><em>listener</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster.remove_listener" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove listener to the list of listeners</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -169,14 +163,10 @@
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-fullrmc.Core.Collection">
-<span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Core.Collection" title="Permalink to this headline">¶</a></h2>
-<p>Defines a collection of methods and classes that are useful for the package.</p>
 <dl class="function">
 <dt id="fullrmc.Core.Collection.SingletonDecorator">
-<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">SingletonDecorator</tt><big>(</big><em>klass</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.SingletonDecorator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorating with this method works perfectly fine but decorated class itself becomes a function! Therefore one can&#8217;t call class methods from it.</p>
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">SingletonDecorator</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.SingletonDecorator" title="Permalink to this definition">¶</a></dt>
+<dd><p>A class singleton decorator.</p>
 </dd></dl>
 
 <dl class="function">
@@ -314,10 +304,13 @@ None is accepted for equivalent weighting.</p>
 </div>
 <div class="section" id="module-fullrmc.Core.Constraint">
 <span id="constraint"></span><h2>Constraint<a class="headerlink" href="#module-fullrmc.Core.Constraint" title="Permalink to this headline">¶</a></h2>
+<p>Constraint contains parent classes for all constraints.
+A Constraint is used to set certain rules to evolve the configuration.
+Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
 <p class="graphviz">
-<img src="_images/inheritance-6d140a4490347e43a261b20ac7ada472766db96e.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance0f80670324" class="inheritance"/>
+<img src="_images/inheritance-cabe411ccbaa66f2c062e8c17ba0f5cca91fb57f.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance0f80670324" class="inheritance"/>
 <map id="inheritance0f80670324" name="inheritance0f80670324">
-<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,55,149,80"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,149,80"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="199,55,419,80"/>
 <area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,104,404,129"/>
@@ -327,13 +320,13 @@ None is accepted for equivalent weighting.</p>
 <dt id="fullrmc.Core.Constraint.Constraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">Constraint</tt><big>(</big><em>engine</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>A constraint is used to direct the evolution of the configuration towards the desired and physical one.</p>
+<p>A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
 </ol>
 </td>
 </tr>
@@ -347,7 +340,7 @@ None is accepted for equivalent weighting.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.accepted">
 <tt class="descname">accepted</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the constraints number of accepted moves</p>
+<dd><p>Get constraint&#8217;s number of accepted moves.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -397,7 +390,7 @@ None is accepted for equivalent weighting.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.contribution">
 <tt class="descname">contribution</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.contribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the constraint contribution factor used in the engine run time to calculate the total chi square.</p>
+<dd><p>Get constraint&#8217;s contribution factor used in the engine run time to calculate the total chi square.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -409,7 +402,7 @@ None is accepted for equivalent weighting.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.engine">
 <tt class="descname">engine</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the engine instance</p>
+<dd><p>Get the engine fullrmc instance.</p>
 </dd></dl>
 
 <dl class="method">
@@ -420,19 +413,19 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.increment_accepted">
 <tt class="descname">increment_accepted</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.increment_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>increment engine accepted moves</p>
+<dd><p>Increment engine accepted moves.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.increment_tried">
 <tt class="descname">increment_tried</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.increment_tried" title="Permalink to this definition">¶</a></dt>
-<dd><p>increment engine tried moves</p>
+<dd><p>Increment engine tried moves.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listen&#8217;s to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -455,13 +448,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reset_constraint">
 <tt class="descname">reset_constraint</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset all flags to: state (None), tried (0) and accepted (0). And all data to None</p>
+<dd><p>Resets all flags to: state (None), tried (0) and accepted (0) and all data to None</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_accepted">
 <tt class="descname">set_accepted</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint engine accepted moves.</p>
+<dd><p>Sets constraint&#8217;s engine accepted moves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -478,13 +471,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_active_atoms_data_after_move">
 <tt class="descname">set_active_atoms_data_after_move</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_active_atoms_data_after_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint after move happens active atoms data value</p>
+<dd><p>Sets constraint&#8217;s after move happens active atoms data value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value</li>
+<li>value (number): data value</li>
 </ol>
 </td>
 </tr>
@@ -495,13 +488,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_active_atoms_data_before_move">
 <tt class="descname">set_active_atoms_data_before_move</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_active_atoms_data_before_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint before move happens active atoms data value</p>
+<dd><p>Sets constraint&#8217;s before move happens active atoms data value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value</li>
+<li>value (number): data value</li>
 </ol>
 </td>
 </tr>
@@ -512,13 +505,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_after_move_chi_square">
 <tt class="descname">set_after_move_chi_square</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint chiSquare value after move happens</p>
+<dd><p>Sets constraint&#8217;s chiSquare value after move happens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value</li>
+<li>value (number): chiSquare value.</li>
 </ol>
 </td>
 </tr>
@@ -529,7 +522,7 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_chi_square">
 <tt class="descname">set_chi_square</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint chiSquare value.</p>
+<dd><p>Sets constraint&#8217;s chiSquare value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -546,13 +539,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_constribution">
 <tt class="descname">set_constribution</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_constribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the constraint contribution factor to the total chi square.</p>
+<dd><p>Sets constraint&#8217;s contribution factor to the total chi square.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): Any number between 0 and 1</li>
+<li>value (number): Any number between 0 and 1.</li>
 </ol>
 </td>
 </tr>
@@ -563,13 +556,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_data">
 <tt class="descname">set_data</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint data value</p>
+<dd><p>Sets constraint&#8217;s data value</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value</li>
+<li>value (number): chiSquare value.</li>
 </ol>
 </td>
 </tr>
@@ -587,7 +580,7 @@ None is accepted for equivalent weighting.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
 </ol>
 </td>
 </tr>
@@ -598,7 +591,8 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_state">
 <tt class="descname">set_state</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint state. When constraint state and engine state doesn&#8217;t match, constraint data must be recalculated.</p>
+<dd><p>Sets constraint&#8217;s state. 
+When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be recalculated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -615,7 +609,7 @@ None is accepted for equivalent weighting.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_tried">
 <tt class="descname">set_tried</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_tried" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint engine tried moves.</p>
+<dd><p>Sets constraint&#8217;s engine tried moves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -649,13 +643,13 @@ None is accepted for equivalent weighting.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.state">
 <tt class="descname">state</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the constraints state</p>
+<dd><p>Get constraint&#8217;s state.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.tried">
 <tt class="descname">tried</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.tried" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the constraints number of tried moves</p>
+<dd><p>Get constraint&#8217;s number of tried moves.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -672,14 +666,14 @@ None is accepted for equivalent weighting.</p>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
 <p>An enhance only constraint is a constraint that doesn&#8217;t count into the total chiSquare of the Engine.
 But it&#8217;s internal chiSquare must monotonously decrease or remain the same from one engine step to another.
-If chiSquare of an EnhanceOnlyConstraint increases the step will be rejected even if the engine&#8217;s chiSquare decreases.</p>
+If chiSquare of an EnhanceOnlyConstraint increases the step will be rejected even before engine&#8217;s new chiSquare get computed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>rejectProbability (None, numpy.ndarray): rejection probability numpy.array. 
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+<li>rejectProbability (None, numpy.ndarray): rejection probability numpy.array of dimension (100,). 
 If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where chiSquare increases.</li>
 </ol>
 </td>
@@ -689,7 +683,7 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.EnhanceOnlyConstraint.rejectProbability">
 <tt class="descname">rejectProbability</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint.rejectProbability" title="Permalink to this definition">¶</a></dt>
-<dd><p>get rejection probability function</p>
+<dd><p>Gets rejection probability function.</p>
 </dd></dl>
 
 <dl class="method">
@@ -701,7 +695,7 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+<li>rejectProbability (None, numpy.ndarray): The rejection probability numpy.array of dimension (100,).
 If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where chiSquare increases.</li>
 </ol>
 </td>
@@ -776,7 +770,8 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data">
 <tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the constraint&#8217;s experimental data</p>
+<dd><p>Checks the constraint&#8217;s experimental data
+This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -824,7 +819,7 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 <dt id="fullrmc.Core.Constraint.SingularConstraint.assert_singular">
 <tt class="descname">assert_singular</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.assert_singular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether only one instance of this constraint type is present in the engine.
-raise Exception if multiple instances are present</p>
+Raises Exception if multiple instances are present.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -845,17 +840,21 @@ True for only itself found, False for other instance of the same __class__.__nam
 </div>
 <div class="section" id="module-fullrmc.Core.Group">
 <span id="group"></span><h2>Group<a class="headerlink" href="#module-fullrmc.Core.Group" title="Permalink to this headline">¶</a></h2>
+<p>Group contains parent classes for all groups.
+A Group is a set of atoms indexes used to gather atoms and apply actions  such as moves upon them. 
+Therefore it has become possible to fully customize and separate atoms to groups and perform reverse monte carlo actions
+on groups rather than on single atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-ca1b8107adca16f833efd8c4bc9880a29c2675d2.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritance8a01418a0b" class="inheritance"/>
+<img src="_images/inheritance-0f5e18b0b24b240cbeee5151cc8c5d9511650013.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritance8a01418a0b" class="inheritance"/>
 <map id="inheritance8a01418a0b" name="inheritance8a01418a0b">
-<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is an atoms indexes container. " alt="" coords="5,5,101,31"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,101,31"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Core.Group.Group">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Group.</tt><tt class="descname">Group</tt><big>(</big><em>indexes</em>, <em>moveGenerator=None</em>, <em>refine=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Group.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>A Group is an atoms indexes container.</p>
+<p>A Group is a set of atoms indexes container.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -863,7 +862,7 @@ True for only itself found, False for other instance of the same __class__.__nam
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>indexes (np.ndarray, list, set, tuple): list of atoms indexes.</li>
 <li>moveGenerator (None, MoveGenerator): Move generator instance.
-If None is given TranslationGenerator is considered by default</li>
+If None is given TranslationGenerator is considered by default.</li>
 <li>refine (bool): The refinement flag used by the Engine.</li>
 </ol>
 </td>
@@ -945,10 +944,14 @@ If None is given TranslationGenerator is considered by default.</li>
 </div>
 <div class="section" id="module-fullrmc.Core.GroupSelector">
 <span id="groupselector"></span><h2>GroupSelector<a class="headerlink" href="#module-fullrmc.Core.GroupSelector" title="Permalink to this headline">¶</a></h2>
+<p>GroupSelector contains parent classes for all group selectors.
+A GroupSelector is used at the Engine runtime to select groups upon which a move will be applied.
+Therefore it has become possible to fully customize the selection of groups of atoms and to choose 
+when and how frequently a group can be chosen to perform a move upon.</p>
 <p class="graphviz">
-<img src="_images/inheritance-c8d819ff059bfeac5c92d5f5a678fc4e5a050f26.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance50d5c68fbf" class="inheritance"/>
+<img src="_images/inheritance-019e7387f25640e09f558882910b69b54724c56e.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance50d5c68fbf" class="inheritance"/>
 <map id="inheritance50d5c68fbf" name="inheritance50d5c68fbf">
-<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="245,5,493,31"/>
 </map>
 </p>
@@ -956,13 +959,13 @@ If None is given TranslationGenerator is considered by default.</li>
 <dt id="fullrmc.Core.GroupSelector.GroupSelector">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.GroupSelector.</tt><tt class="descname">GroupSelector</tt><big>(</big><em>engine=None</em>, <em>recur=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>GroupSelector is the class that selects groups to perform moves upon engine runtime.</p>
+<p>GroupSelector is the parent class that selects groups to perform moves upon engine runtime.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The selector fullrmc engine instance.</li>
 <li>recur (None, integer): Set number of times to recur.
 If None, recur is equivalent to 0.
 Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
@@ -981,13 +984,13 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.isRefining">
 <tt class="descname">isRefining</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.isRefining" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get whether selection must be refined.
-This option will always return False unless selector is a RecursiveGroupSelector instance with refine flag set to True</p>
+This option will always return False unless selector is a RecursiveGroupSelector instance with refine flag set to True.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1011,7 +1014,7 @@ This option will always return False unless selector is a RecursiveGroupSelector
 <dl class="method">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.select_index">
 <tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method must be overloaded in every GroupSelector child class</p>
+<dd><p>This method must be overloaded in every GroupSelector sub-class</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1034,7 +1037,7 @@ This option will always return False unless selector is a RecursiveGroupSelector
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The selector fullrmc engine.</li>
 </ol>
 </td>
 </tr>
@@ -1073,11 +1076,11 @@ It is used as a wrapper around a GroupSelector instance.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>selector (fullrmc.Core.GroupSelector.GroupSelector): The selector instance to wrap.</li>
-<li>override (boolean): Overridden recur value is temporary and totally selected group dependant.
-Value or recur will be overridden only when selected group move generator is a PathGenerator instance.
+<li>override (boolean): Override temporary wrapped selector recur value.
+recur value will be overridden only when selected group move generator is a PathGenerator instance.
 In this particular case, recur value will be temporary changed to the number of moves stored in the PathGenerator.
 If selected group move generator is not a PathGenerator instance, 
-recur value will take back its original value which is the selector recur value.</li>
+recur value will take back its original value which is the wrapped selector recur value.</li>
 <li>refine (boolean): Its an engine flag. It forces the engine to calculate all moves until a recurrence expires, 
 then choose the best move if it exist to update configuration coordinates.</li>
 </ol>
@@ -1106,20 +1109,19 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.isRefining">
 <tt class="descname">isRefining</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.isRefining" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether selection must be refined.
-This option will always return False unless selector is a RecursiveGroupSelector instance with refine flag set to True</p>
+<dd><p>Get whether selection must be refined.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.lastSelectedIndex">
 <tt class="descname">lastSelectedIndex</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.lastSelectedIndex" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last selected group index</p>
+<dd><p>Get the last selected group index.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.override">
 <tt class="descname">override</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.override" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get override value.</p>
+<dd><p>Get override flag value.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1137,7 +1139,7 @@ This option will always return False unless selector is a RecursiveGroupSelector
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.refine">
 <tt class="descname">refine</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.refine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get refine value.</p>
+<dd><p>Get refine flag value.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1160,7 +1162,7 @@ This option will always return False unless selector is a RecursiveGroupSelector
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.selector">
 <tt class="descname">selector</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.selector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the last selected group index</p>
+<dd><p>Get the wrapped selector instance.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1172,7 +1174,7 @@ This option will always return False unless selector is a RecursiveGroupSelector
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The selector fullrmc engine.</li>
 </ol>
 </td>
 </tr>
@@ -1237,7 +1239,7 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.willSelect">
 <tt class="descname">willSelect</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.willSelect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether next step a new selection is going to be made or still the same group is going to be selected again.</p>
+<dd><p>Get whether next step a new selection is occur or still the same group is going to be selected again.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1245,26 +1247,31 @@ then choose the best move if it exist to update configuration coordinates.</li>
 </div>
 <div class="section" id="module-fullrmc.Core.MoveGenerator">
 <span id="movegenerator"></span><h2>MoveGenerator<a class="headerlink" href="#module-fullrmc.Core.MoveGenerator" title="Permalink to this headline">¶</a></h2>
+<p>MoveGenerator contains parent classes for all move generators.
+A MoveGenerator sub-class is used at the Engine runtime to generate moves upon selected groups.
+Every group has its own MoveGenerator class and definitions, therefore it has become possible
+to fully customize how a group of atoms should move.</p>
 <p class="graphviz">
-<img src="_images/inheritance-666e3b15e21ae1d6008f39175d57e31c17ff4da5.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance043573f191" class="inheritance"/>
+<img src="_images/inheritance-2b231ce5dd2911e313a56f8ac5d43e0bb0a45c92.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance043573f191" class="inheritance"/>
 <map id="inheritance043573f191" name="inheritance043573f191">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="MoveGenerator is the main engine to generate moves upon groups of atoms." alt="" coords="5,55,205,80"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,55,205,80"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="264,5,515,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="253,55,525,80"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator where moves definitions are pre&#45;stored in a path and get pulled out at every move step." alt="" coords="291,104,488,129"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="291,104,488,129"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">MoveGenerator</tt><big>(</big><em>group=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>MoveGenerator is the main engine to generate moves upon groups of atoms.</p>
+<p>It is the parent class for all moves generators.
+This class can&#8217;t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>group (None, Group): The constraint RMC engine.</li>
+<li>group (None, Group): The group instance.</li>
 </ol>
 </td>
 </tr>
@@ -1273,7 +1280,8 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the generator&#8217;s group</p>
+<dd><p>Checks the generator&#8217;s group. 
+This method must be overloaded in all MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1296,7 +1304,7 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1314,18 +1322,19 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.move">
 <tt class="descname">move</tt><big>(</big><em>coordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Moves coordinates. This method must NOT be overloaded in MoveGenerator child classes</p>
+<dd><p>Moves coordinates. 
+This method must NOT be overloaded in MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>coordinates (np.ndarray): The coordinates on which to apply the transformation</li>
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>coordinates (np.ndarray): The new coordinates after applying the transformation</li>
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation.</li>
 </ol>
 </td>
 </tr>
@@ -1342,7 +1351,7 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>group (None, Group): Move generator group.</li>
+<li>group (None, Group): group instance.</li>
 </ol>
 </td>
 </tr>
@@ -1354,20 +1363,20 @@ then choose the best move if it exist to update configuration coordinates.</li>
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.transform_coordinates">
 <tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform coordinates. This method is called in every move.
-It must be overloaded in EVERY MoveGenerator class</p>
+This method must be overloaded in all MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>coordinates (np.ndarray): The coordinates on which to apply the move</li>
+<li>coordinates (np.ndarray): The coordinates on which to apply the move.</li>
 <li>argument (object): Any other argument needed to perform the move.
-In General it&#8217;s not needed</li>
+In General it&#8217;s not needed.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>coordinates (np.ndarray): The new coordinates after applying the move</li>
+<li>coordinates (np.ndarray): The new coordinates after applying the move.</li>
 </ol>
 </td>
 </tr>
@@ -1398,13 +1407,15 @@ In General it&#8217;s not needed</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the generator&#8217;s group</p>
+<dd><p>Checks the generator&#8217;s group.
+This methods always returns True because normally all collection MoveGenerator instances groups are checked.
+This method must NOT be overloaded unless needed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>group (Group): the Group instance</li>
+<li>group (Group): the Group instance.</li>
 </ol>
 </td>
 </tr>
@@ -1415,7 +1426,7 @@ In General it&#8217;s not needed</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.collection">
 <tt class="descname">collection</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the list of MoveGenerator instances</p>
+<dd><p>Get the list of MoveGenerator instances.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1443,7 +1454,7 @@ In General it&#8217;s not needed</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.randomize">
 <tt class="descname">randomize</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.randomize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get randomize flag</p>
+<dd><p>Get randomize flag.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1503,7 +1514,9 @@ In General it&#8217;s not needed</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the generator&#8217;s group</p>
+<dd><p>Checks the generator&#8217;s group.
+This methods always returns True because normally all combination MoveGenerator instances groups are checked.
+This method must NOT be overloaded unless needed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1520,7 +1533,8 @@ In General it&#8217;s not needed</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.combination">
 <tt class="descname">combination</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.combination" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the combination list of MoveGenerator instances.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.move">
@@ -1553,7 +1567,7 @@ In General it&#8217;s not needed</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>combination (list): The list of move generator instance.</li>
+<li>combination (list): The list of MoveGenerator instances.</li>
 </ol>
 </td>
 </tr>
@@ -1581,7 +1595,8 @@ In General it&#8217;s not needed</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.shuffle">
 <tt class="descname">shuffle</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.shuffle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get shuffle flag.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -1589,13 +1604,15 @@ In General it&#8217;s not needed</li>
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">PathGenerator</tt><big>(</big><em>group=None</em>, <em>path=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
-<p>PathGenerator is a MoveGenerator where moves definitions are pre-stored in a path and get pulled out at every move step.</p>
+<p>PathGenerator is a MoveGenerator sub-class where moves definitions are pre-stored in a path 
+and get pulled out at every move step.
+This class can&#8217;t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>group (None, Group): The constraint RMC engine.</li>
+<li>group (None, Group): The group instance.</li>
 <li>path (None, list): The list of moves.</li>
 <li>randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.</li>
 </ol>
@@ -1607,7 +1624,7 @@ In General it&#8217;s not needed</li>
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.check_path">
 <tt class="descname">check_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.check_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the generator&#8217;s path.
-Must be overloaded in all child classes</p>
+This method must be overloaded in all PathGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1646,8 +1663,9 @@ Must be overloaded in all child classes</p>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.normalize_path">
 <tt class="descname">normalize_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.normalize_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalizes all path moves. It is called automatically upon set_path method is called.
-Can be overloaded in child classes when needed.</p>
+<dd><p>Normalizes all path moves. 
+It is called automatically upon set_path method is called.
+This method can be overloaded in all MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1669,19 +1687,19 @@ Can be overloaded in child classes when needed.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.path">
 <tt class="descname">path</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the path list of moves</p>
+<dd><p>Get the path list of moves.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.randomize">
 <tt class="descname">randomize</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.randomize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get randomize flag</p>
+<dd><p>Get randomize flag.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.set_path">
 <tt class="descname">set_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.set_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the moves path</p>
+<dd><p>Sets the moves path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1715,7 +1733,7 @@ Can be overloaded in child classes when needed.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.step">
 <tt class="descname">step</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the current step</p>
+<dd><p>Get the current step number.</p>
 </dd></dl>
 
 </dd></dl>

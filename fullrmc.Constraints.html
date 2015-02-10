@@ -89,29 +89,58 @@
 <h1>fullrmc.Constraints package<a class="headerlink" href="#fullrmc-constraints-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
+<p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-129dfc9314129eb8199a35c54a7f7a8a128071e4.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancece57878805" class="inheritance"/>
+<img src="_images/inheritance-c38786ec809d185e9a9f60c3576daf219b965527.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancece57878805" class="inheritance"/>
 <map id="inheritancece57878805" name="inheritancece57878805">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="AngleConstraints.BondsAngleConstraint" alt="" coords="468,31,723,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="468,31,723,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,55,404,80"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,31,149,56"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,149,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">BondsAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<p>Its controls the angle between 3 defined atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><p class="first">anglesMap (list): The angles map definition.
+Every item must be a list of five items.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>First item: The central atom index.</li>
+<li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
+<li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed in rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept move</p>
+<dd><p>Accept move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 </ol>
 </td>
 </tr>
@@ -122,19 +151,19 @@
 <dl class="attribute">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles">
 <tt class="descname">angles</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles dictionary</p>
+<dd><p>Get angles dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesMap">
 <tt class="descname">anglesMap</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles map</p>
+<dd><p>Get angles map.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.atomsLUAD">
 <tt class="descname">atomsLUAD</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.atomsLUAD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get atoms loop up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
+<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -146,7 +175,7 @@
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move">
 <tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute constraint after move is executed</p>
+<dd><p>Compute constraint after move is executed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -164,13 +193,13 @@
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move">
 <tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute constraint before move is executed</p>
+<dd><p>Compute constraint before move is executed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 </ol>
 </td>
 </tr>
@@ -181,7 +210,7 @@
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_chi_square">
 <tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square of data not satisfying constraint conditions.</p>
+<dd><p>Computes the chi square of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -232,18 +261,18 @@ Every angle definition is a list of five items where:<ol class="arabic">
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>e.g. (Carbon tetrachloride):  anglesDefinition={&#8220;CCL4&#8221;: [(&#8216;C&#8217;,&#8217;CL1&#8217;,&#8217;CL2&#8217; , 105, 115),</dt>
-<dd>(&#8216;C&#8217;,&#8217;CL2&#8217;,&#8217;CL3&#8217; , 105, 115),
-(&#8216;C&#8217;,&#8217;CL3&#8217;,&#8217;CL4&#8217; , 105, 115),                                      
-(&#8216;C&#8217;,&#8217;CL4&#8217;,&#8217;CL1&#8217; , 105, 115) ] }</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre>e.g. (Carbon tetrachloride):  anglesDefinition={&quot;CCL4&quot;: [(&#39;C&#39;,&#39;CL1&#39;,&#39;CL2&#39; , 105, 115),
+                                                         (&#39;C&#39;,&#39;CL2&#39;,&#39;CL3&#39; , 105, 115),
+                                                         (&#39;C&#39;,&#39;CL3&#39;,&#39;CL4&#39; , 105, 115),                                      
+                                                         (&#39;C&#39;,&#39;CL4&#39;,&#39;CL1&#39; , 105, 115) ] }
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.get_constraint_value">
 <tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute all partial Mean Pair Distances (MPD) below the defined minimum distance.</p>
+<dd><p>Computes all partial Mean Pair Distances (MPD) below the defined minimum distance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -260,14 +289,14 @@ Every angle definition is a list of five items where:<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
 </ol>
 </td>
 </tr>
@@ -278,13 +307,13 @@ Every angle definition is a list of five items where:<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move">
 <tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move</p>
+<dd><p>Reject move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 </ol>
 </td>
 </tr>
@@ -346,19 +375,48 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </div>
 <div class="section" id="module-fullrmc.Constraints.BondConstraints">
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
+<p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-1ee16fb1dc167e56f017f55839201dba4c47043e.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritancee8e5ab40c4" class="inheritance"/>
+<img src="_images/inheritance-63bebbf0a50740053270966911545ca3eb8c6778.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritancee8e5ab40c4" class="inheritance"/>
 <map id="inheritancee8e5ab40c4" name="inheritancee8e5ab40c4">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="BondConstraints.BondConstraint" alt="" coords="468,31,679,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="468,31,679,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,55,404,80"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,31,149,56"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,149,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.BondConstraints.</tt><tt class="descname">BondConstraint</tt><big>(</big><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<p>Its controls the bond between 2 defined atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><dl class="first docutils">
+<dt>bondsMap (list): The bonds map definition.</dt>
+<dd><p class="first">Every item must be a list of four items.</p>
+<ol class="last arabic simple">
+<li>First item is the first atom index.</li>
+<li>Second item the second atom index forming the bond,</li>
+<li>Third item: The lower limit or the minimum bond length allowed.</li>
+<li>Fourth item: The upper limit or the maximum bond length allowed.</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
@@ -482,12 +540,12 @@ Every bond definition is a list of four items where:<ol class="arabic">
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>e.g. (Carbon tetrachloride):  bondsDefinition={&#8220;CCL4&#8221;: [(&#8216;C&#8217;,&#8217;CL1&#8217; , 1.55, 1.95),</dt>
-<dd>(&#8216;C&#8217;,&#8217;CL2&#8217; , 1.55, 1.95),
-(&#8216;C&#8217;,&#8217;CL3&#8217; , 1.55, 1.95),                                       
-(&#8216;C&#8217;,&#8217;CL4&#8217; , 1.55, 1.95) ] }</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre>e.g. (Carbon tetrachloride):  bondsDefinition={&quot;CCL4&quot;: [(&#39;C&#39;,&#39;CL1&#39; , 1.55, 1.95),
+                                                        (&#39;C&#39;,&#39;CL2&#39; , 1.55, 1.95),
+                                                        (&#39;C&#39;,&#39;CL3&#39; , 1.55, 1.95),                                       
+                                                        (&#39;C&#39;,&#39;CL4&#39; , 1.55, 1.95) ] }
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -510,14 +568,14 @@ Every bond definition is a list of four items where:<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
 </ol>
 </td>
 </tr>
@@ -595,10 +653,11 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </div>
 <div class="section" id="module-fullrmc.Constraints.DistanceConstraints">
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
+<p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-91b57a4e15351174b5d12c7a1cc9cc762e4c715a.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritance8eabb776f3" class="inheritance"/>
+<img src="_images/inheritance-e917cd8b6f5a3439b3cb1c2bde485b2cb6def57e.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritance8eabb776f3" class="inheritance"/>
 <map id="inheritance8eabb776f3" name="inheritance8eabb776f3">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,31,149,56"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,149,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,55,404,80"/>
 <area shape="rect" id="node4" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="468,5,803,31"/>
@@ -614,15 +673,22 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>defaultDistance (number): The minimum distance allowed set by default for all atoms type.</li>
-<li>pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all atoms type.</p>
+</li>
+<li><p class="first">pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
 A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
 First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value .e.g. [(&#8216;h&#8217;,&#8217;h&#8217;,1.5), (&#8216;h&#8217;,&#8217;c&#8217;,2.015), ...]</li>
-<li>rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</li>
+If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
+<div class="highlight-python"><div class="highlight"><pre>e.g. [(&#39;h&#39;,&#39;h&#39;,1.5), (&#39;h&#39;,&#39;c&#39;,2.015), ...] 
+</pre></div>
+</div>
+</li>
+<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+</li>
 </ol>
 </td>
 </tr>
@@ -747,7 +813,7 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
 </ol>
 </td>
 </tr>
@@ -816,14 +882,16 @@ for InterMolecularDistanceConstraint it&#8217;s always a numpy.zeros array</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements.</li>
-</ol>
-<blockquote class="last">
-<div><p>A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
 First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value .e.g. [(&#8216;h&#8217;,&#8217;h&#8217;,1.5), (&#8216;h&#8217;,&#8217;c&#8217;,2.015), ...]</p>
-</div></blockquote>
+If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
+<div class="highlight-python"><div class="highlight"><pre>e.g. [(&#39;h&#39;,&#39;h&#39;,1.5), (&#39;h&#39;,&#39;c&#39;,2.015), ...] 
+</pre></div>
+</div>
+</li>
+</ol>
 </td>
 </tr>
 </tbody>
@@ -858,7 +926,10 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 <li><p class="first">pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
 A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
 First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value .e.g. [(&#8216;c&#8217;,&#8217;h&#8217;,0.9, 1.2), ...]</p>
+If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value</p>
+<div class="highlight-python"><div class="highlight"><pre>e.g. [(&#39;c&#39;,&#39;h&#39;,0.9, 1.2), ...] 
+</pre></div>
+</div>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
 If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
@@ -1109,14 +1180,16 @@ from one step to another while the square summation of the reduced out of limits
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements.</li>
-</ol>
-<blockquote class="last">
-<div><p>A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
+A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
 First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value .e.g. [(&#8216;c&#8217;,&#8217;h&#8217;,0.9, 1.2), ...]</p>
-</div></blockquote>
+If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value.</p>
+<div class="highlight-python"><div class="highlight"><pre>e.g. [(&#39;c&#39;,&#39;h&#39;,0.9, 1.2), ...] 
+</pre></div>
+</div>
+</li>
+</ol>
 </td>
 </tr>
 </tbody>
@@ -1164,19 +1237,51 @@ If None is given all pairs will be automatically generated and assigned the give
 </div>
 <div class="section" id="module-fullrmc.Constraints.ImproperAngleConstraints">
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
+<p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-f9c58b882a30bd7abef12f1df39f2840356028a4.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance35172eb396" class="inheritance"/>
+<img src="_images/inheritance-78f846f2bc8f07c60ea5d9f6bfbed3edf6590752.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance35172eb396" class="inheritance"/>
 <map id="inheritance35172eb396" name="inheritance35172eb396">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,31,149,56"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,149,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,55,404,80"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="ImproperAngleConstraints.ImproperAngleConstraint" alt="" coords="468,31,785,56"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="468,31,785,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</tt><tt class="descname">ImproperAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<p>Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
+The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><dl class="first docutils">
+<dt>anglesMap (list): The angles map definition.</dt>
+<dd><p class="first">Every item must be a list of five items.</p>
+<ol class="last arabic simple">
+<li>First item: The improper atom index that must be in the plane.</li>
+<li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
+<li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
+<li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
+<li>Fifth item: The minimum lower limit or the minimum angle allowed in rad.</li>
+<li>Sixth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
+If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
@@ -1197,19 +1302,19 @@ If None is given all pairs will be automatically generated and assigned the give
 <dl class="attribute">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.angles">
 <tt class="descname">angles</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles dictionary</p>
+<dd><p>Get angles dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesMap">
 <tt class="descname">anglesMap</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles map</p>
+<dd><p>Get angles map.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD">
 <tt class="descname">atomsLUAD</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get atoms loop up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
+<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1308,11 +1413,11 @@ Every angle definition is a list of five items where:<ol class="arabic">
 </tr>
 </tbody>
 </table>
-<dl class="docutils">
-<dt>e.g. (Benzene):  anglesDefinition={&#8220;BENZ&#8221;: [(&#8216;C3&#8217;,&#8217;C1&#8217;,&#8217;C2&#8217;,&#8217;C6&#8217;, -10, 10),</dt>
-<dd>(&#8216;C4&#8217;,&#8217;C1&#8217;,&#8217;C2&#8217;,&#8217;C6&#8217;, -10, 10),
-(&#8216;C5&#8217;,&#8217;C1&#8217;,&#8217;C2&#8217;,&#8217;C6&#8217;, -10, 10) ] }</dd>
-</dl>
+<div class="highlight-python"><div class="highlight"><pre>e.g. (Benzene):  anglesDefinition={&quot;BENZ&quot;: [(&#39;C3&#39;,&#39;C1&#39;,&#39;C2&#39;,&#39;C6&#39;, -10, 10),
+                                            (&#39;C4&#39;,&#39;C1&#39;,&#39;C2&#39;,&#39;C6&#39;, -10, 10),
+                                            (&#39;C5&#39;,&#39;C1&#39;,&#39;C2&#39;,&#39;C6&#39;, -10, 10) ] }
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -1335,14 +1440,14 @@ Every angle definition is a list of five items where:<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
 </ol>
 </td>
 </tr>
@@ -1422,10 +1527,11 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </div>
 <div class="section" id="module-fullrmc.Constraints.PairDistributionConstraints">
 <span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
+<p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
 <p class="graphviz">
-<img src="_images/inheritance-54c98a52b1cf6f84f222f63257f5a4c06783e4a2.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance9c537a060e" class="inheritance"/>
+<img src="_images/inheritance-be8ff48d86dbb2f23d647546c3f91d4d5a54cb01.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance9c537a060e" class="inheritance"/>
 <map id="inheritance9c537a060e" name="inheritance9c537a060e">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and physical one." alt="" coords="5,5,149,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,149,31"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="197,5,417,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function of the system." alt="" coords="465,5,792,31"/>
 </map>
@@ -1442,6 +1548,7 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+<li>weighting (string): The elements weighting.</li>
 </ol>
 </td>
 </tr>
@@ -1582,14 +1689,14 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
 </ol>
 </td>
 </tr>

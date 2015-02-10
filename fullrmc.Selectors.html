@@ -93,10 +93,11 @@
 <h1>fullrmc.Selectors package<a class="headerlink" href="#fullrmc-selectors-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-fullrmc.Selectors.OrderedSelectors">
 <span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Permalink to this headline">¶</a></h2>
+<p>OrderedSelectors contains GroupSelector classes of defined order of selection.</p>
 <p class="graphviz">
-<img src="_images/inheritance-bb6ab23e664cdee1a45e09bd96fc6debb405a8af.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritance336f48ce67" class="inheritance"/>
+<img src="_images/inheritance-d85da8edd1cb092e254ca9ba3d14d05e4294bb77.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritance336f48ce67" class="inheritance"/>
 <map id="inheritance336f48ce67" name="inheritance336f48ce67">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
 <area shape="rect" id="node2" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="245,5,496,31"/>
 </map>
 </p>
@@ -133,7 +134,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<li>index (integer): The selected group index in engine groups list.</li>
 </ol>
 </td>
 </tr>
@@ -144,13 +145,13 @@ If None, order is set automatically to all groups indexes list.</li>
 <dl class="method">
 <dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order">
 <tt class="descname">set_order</tt><big>(</big><em>order</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set selector groups order</p>
+<dd><p>Set selector groups order.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups</li>
+<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.</li>
 </ol>
 </td>
 </tr>
@@ -163,11 +164,12 @@ If None, order is set automatically to all groups indexes list.</li>
 </div>
 <div class="section" id="module-fullrmc.Selectors.RandomSelectors">
 <span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Permalink to this headline">¶</a></h2>
+<p>RandomSelectors contains GroupSelector classes of random order of selections.</p>
 <p class="graphviz">
-<img src="_images/inheritance-2a06c657e9cc48cc7b9c296c7ab4fcc651a9866a.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance7e9b71e26e" class="inheritance"/>
+<img src="_images/inheritance-f4b19e97595766aafefbbf2341fdc771dc799d1e.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance7e9b71e26e" class="inheritance"/>
 <map id="inheritance7e9b71e26e" name="inheritance7e9b71e26e">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
-<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection" alt="" coords="245,5,471,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="245,5,471,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector" title="weightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="519,5,795,31"/>
 </map>
 </p>
@@ -175,7 +177,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
 <em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em>, <em>recur=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
-<p>RandomSelector generates indexes randomly for engine group selection</p>
+<p>RandomSelector generates indexes randomly for engine group selection.</p>
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector.select_index">
 <tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
@@ -212,7 +214,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
-<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples</li>
+<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 </ol>
 </td>
 </tr>
@@ -255,13 +257,13 @@ If None, order is set automatically to all groups indexes list.</li>
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_weights">
 <tt class="descname">set_weights</tt><big>(</big><em>weights</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.set_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set groups selection weighting</p>
+<dd><p>Set groups selection weighting scheme.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples</li>
+<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 </ol>
 </td>
 </tr>
@@ -272,7 +274,8 @@ If None, order is set automatically to all groups indexes list.</li>
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.weightedRandomSelector.update_selection_scheme">
 <tt class="descname">update_selection_scheme</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.weightedRandomSelector.update_selection_scheme" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Updates selection scheme.</p>
+</dd></dl>
 
 </dd></dl>
 

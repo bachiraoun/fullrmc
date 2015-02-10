@@ -1,4 +1,6 @@
 """
+Rotations contains all rotation like MoveGenerator classes.
+
 .. inheritance-diagram:: fullrmc.Generators.Rotations
     :parts: 2 
 """
@@ -10,6 +12,7 @@ import numpy as np
 from pdbParser.Utilities.Geometry import get_rotation_matrix
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float
 from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
@@ -20,8 +23,8 @@ class RotationGenerator(MoveGenerator):
     Generates random rotational moves upon groups of atoms.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): the maximum rotation angle in degrees
+        #. group (None, Group): The group instance.
+        #. amplitude (number): the maximum rotation angle allowed in degrees.
     """
     def __init__(self, group=None, amplitude=2):
         super(RotationGenerator, self).__init__(group=group)
@@ -30,29 +33,29 @@ class RotationGenerator(MoveGenerator):
         
     @property
     def amplitude(self):
-        """Get the maximum angle of rotation in rad"""
+        """ Get the maximum allowed angle of rotation in rad."""
         return self.__amplitude
         
     def set_amplitude(self, amplitude):
         """
-        Sets maximum rotation angle in degrees
+        Sets maximum rotation angle in degrees and transforms it to rad.
         
         :Parameters:
-            #. amplitude (number): the maximum translation angle in degrees
+            #. amplitude (number): the maximum allowed rotation angle in degrees.
         """
-        assert is_number(amplitude), "rotation amplitude must be a number"
+        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("rotation amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, "rotation amplitude must be bigger than 0 deg."
-        assert amplitude<360, "rotation amplitude must be smaller than 360 deg."
+        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("rotation amplitude must be bigger than 0 deg.")
+        assert amplitude<360, log.LocalLogger("fullrmc").logger.error("rotation amplitude must be smaller than 360 deg.")
         # convert to radian and store amplitude
         self.__amplitude = FLOAT_TYPE(PI*amplitude/180.)
         
     def check_group(self, group):
         """
-        Checks the generator's group
+        Checks the generator's group.
         
         :Parameters:
-            #. group (Group): the Group instance
+            #. group (Group): the Group instance.
         """
         if len(group.indexes)<=1:
             return False, "At least two atoms needed in a group to perform rotation."
@@ -64,11 +67,11 @@ class RotationGenerator(MoveGenerator):
         Rotate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the rotation
+            #. argument (object): Any python object. Not used in this generator.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation axis
         n = 0
@@ -96,8 +99,8 @@ class RotationAboutAxisGenerator(RotationGenerator):
     Generates random rotational moves upon groups of atoms about a pre-defined axis.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum translation angle in degrees.
+        #. group (None, Group): The group instance.
+        #. amplitude (number): The maximum allowed rotation angle in degrees.
         #. axis (list,set,tuple,numpy.ndarray): The rotational axis vector.
     """
     
@@ -118,25 +121,25 @@ class RotationAboutAxisGenerator(RotationGenerator):
         :Parameters:
             #. axis (list,set,tuple,numpy.ndarray): The rotation axis vector.
         """
-        assert isinstance(axis, list,set,tuple,np.ndarray), "axis must be a list"
+        assert isinstance(axis, list,set,tuple,np.ndarray), log.LocalLogger("fullrmc").logger.error("axis must be a list")
         axis = list(axis)
-        assert len(axis)==3, "axis list must have 3 items"
+        assert len(axis)==3, log.LocalLogger("fullrmc").logger.error("axis list must have 3 items")
         for pos in axis:
-            assert is_number(pos), "axis items must be numbers"
+            assert is_number(pos), log.LocalLogger("fullrmc").logger.error("axis items must be numbers")
         axis = [FLOAT_TYPE(pos) for pos in axis]
         axis =  np.array(axis, dtype=FLOAT_TYPE)
         self.__axis = axis/FLOAT_TYPE( np.linalg.norm(axis) )
     
     def transform_coordinates(self, coordinates, argument=None):
         """
-        translate coordinates.
+        rotate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the rotation.
+            #. argument (object): Any python object. Not used in this generator.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
         rotationAngle  = generate_random_float()*self.amplitude
@@ -158,8 +161,8 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
     Generates random rotational moves upon groups of atoms about one of their symmetry axis.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum translation angle in degrees.
+        #. group (None, fullrmc.Engine): The constraint fullrmc engine.
+        #. amplitude (number): The maximum rotation angle in degrees.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
     """
     
@@ -180,10 +183,10 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), "rotation symmetry axis must be an integer"
+        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, "rotation symmetry axis must be positive."
-        assert axis<=2, "rotation symmetry axis must be smaller or equal to 2"
+        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
+        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
     
@@ -192,11 +195,11 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         Rotate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the rotation.
+            #. argument (object): Any python object. Not used in this generator.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
         rotationAngle  = generate_random_float()*self.amplitude
@@ -219,8 +222,8 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
     Generates rotational moves upon groups of atoms about one of their symmetry axis.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
+        #. group (None, fullrmc.Engine): The constraint fullrmc engine.
+        #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis.
         #. path (List): list of angles.
         #. randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.
     """
@@ -243,10 +246,10 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), "rotation symmetry axis must be an integer"
+        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, "rotation symmetry axis must be positive."
-        assert axis<=2, "rotation symmetry axis must be smaller or equal to 2"
+        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
+        assert axis<=2,log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
         
@@ -282,10 +285,10 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         
     def check_group(self, group):
         """
-        Checks the generator's group
+        Checks the generator's group.
         
         :Parameters:
-            #. group (Group): the Group instance
+            #. group (Group): the Group instance.
         """
         if len(group.indexes)<=1:
             return False, "At least two atoms needed in a group to perform rotation."
@@ -297,11 +300,11 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         Rotate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the rotation.
+            #. argument (object): The rotation angle.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. argument (float): The move angle in rad.
+            #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get atoms group center and rotation axis
         center,_,_,_,X,Y,Z =get_principal_axis(coordinates)

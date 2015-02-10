@@ -1,4 +1,6 @@
 """
+Translations contains all translation like MoveGenerator classes.
+
 .. inheritance-diagram:: fullrmc.Generators.Translations
     :parts: 2 
 """
@@ -9,6 +11,7 @@
 import numpy as np
 
 # fullrmc imports
+from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float
 from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
@@ -16,10 +19,10 @@ from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 class TranslationGenerator(MoveGenerator):
     """
-    Generates random translations.
+    Generates random translations moves upon groups of atoms.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
+        #. group (None, Group): The group instance.
         #. amplitude (number):  The maximum translation amplitude in Angstroms.
     """
  
@@ -34,22 +37,22 @@ class TranslationGenerator(MoveGenerator):
         
     def set_amplitude(self, amplitude):
         """
-        Sets maximum translation vector amplitude
+        Sets maximum translation vector allowed amplitude.
         
         :Parameters:
-            #. amplitude (number): the maximum translation vector amplitude
+            #. amplitude (number): the maximum allowed translation vector amplitude.
         """
-        assert is_number(amplitude), "Translation amplitude must be a number"
+        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("Translation amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, "Translation amplitude must be bigger than 0"
+        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("Translation amplitude must be bigger than 0")
         self.__amplitude = FLOAT_TYPE(amplitude)
         
     def check_group(self, group):
         """
-        Checks the generator's group
+        Checks the generator's group.
         
         :Parameters:
-            #. group (Group): the Group instance
+            #. group (Group): the Group instance.
         """
         return True, ""
         
@@ -58,11 +61,11 @@ class TranslationGenerator(MoveGenerator):
         Translate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
         """
         # generate random vector
         vector = np.array(np.random.random(3)-np.random.random(3), dtype=FLOAT_TYPE)
@@ -80,7 +83,7 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
     
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum translation amplitude in Angstroms.
+        #. amplitude (number): The maximum allowed translation amplitude in Angstroms.
         #. axis (list,set,tuple,numpy.ndarray): The translation axis vector.
     """
     def __init__(self, group=None, amplitude=0.5, axis=0):
@@ -100,25 +103,25 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
         :Parameters:
             #. axis (list,set,tuple,numpy.ndarray): The translation axis vector.
         """
-        assert isinstance(axis, list,set,tuple,np.ndarray), "axis must be a list"
+        assert isinstance(axis, list,set,tuple,np.ndarray), log.LocalLogger("fullrmc").logger.error("axis must be a list")
         axis = list(axis)
-        assert len(axis)==3, "axis list must have 3 items"
+        assert len(axis)==3, log.LocalLogger("fullrmc").logger.error("axis list must have 3 items")
         for pos in axis:
-            assert is_number(pos), "axis items must be numbers"
+            assert is_number(pos), log.LocalLogger("fullrmc").logger.error( "axis items must be numbers")
         axis = [FLOAT_TYPE(pos) for pos in axis]
         axis =  np.array(axis, dtype=FLOAT_TYPE)
         self.__axis = axis/FLOAT_TYPE( np.linalg.norm(axis) )
     
     def transform_coordinates(self, coordinates, argument=None):
         """
-        translate coordinates.
+        translates coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
         """
         # get translation amplitude
         amplitude = (generate_random_float()-generate_random_float())*self.amplitude
@@ -133,9 +136,9 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
     Generates random translation moves upon groups of atoms along one of their symmetry axis.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): the maximum translation angle in degrees
-        #. axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis 
+        #. group (None, Group): The group instance.
+        #. amplitude (number): the maximum translation angle in Angstroms.
+        #. axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.
     """
     
     def __init__(self, group=None, amplitude=2, axis=0):
@@ -145,20 +148,20 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
     
     @property
     def axis(self):
-        """ Get rotation axis index."""
+        """ Get translation axis index."""
         return self.__axis
         
     def set_axis(self, axis):
         """
-        Sets the symmetry axis index to rotate about.
+        Sets the symmetry axis index to translate along.
         
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), "rotation symmetry axis must be an integer"
+        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, "rotation symmetry axis must be positive."
-        assert axis<=2, "rotation symmetry axis must be smaller or equal to 2"
+        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
+        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
     
@@ -167,11 +170,11 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         translate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
         """
         # get translation amplitude
         amplitude = (generate_random_float()-generate_random_float())*self.amplitude
@@ -189,7 +192,7 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
     Generates translation moves upon groups of atoms along one of their symmetry axis.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
+        #. group (None, Group): The group instance.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
         #. path (List): list of distances.
         #. randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.
@@ -203,20 +206,20 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
     
     @property
     def axis(self):
-        """ Get rotation axis index."""
+        """ Get translation axis index."""
         return self.__axis
         
     def set_axis(self, axis):
         """
-        Sets the symmetry axis index to rotate about.
+        Sets the symmetry axis index to translate along.
         
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), "rotation symmetry axis must be an integer"
+        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer.")
         axis = INT_TYPE(axis)
-        assert axis>=0, "rotation symmetry axis must be positive."
-        assert axis<=2, "rotation symmetry axis must be smaller or equal to 2"
+        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
+        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2.")
         # convert to radian and store amplitude
         self.__axis = axis
         
@@ -251,10 +254,10 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         
     def check_group(self, group):
         """
-        Checks the generator's group
+        Checks the generator's group.
         
         :Parameters:
-            #. group (Group): the Group instance
+            #. group (Group): the Group instance.
         """
         return True, ""
         
@@ -263,11 +266,11 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         Rotate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (float): The move distance.
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (float): The move distance.
         """
         # get translation amplitude
         amplitude = FLOAT_TYPE(argument)
@@ -285,7 +288,7 @@ class TranslationCenterDirectionGenerator(TranslationGenerator):
     Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group.
     
     :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
+        #. group (None, Group): The group instance.
         #. center (None, numpy.array): The center value. 
            If None, then center is calculated as the center of geometry of group atoms.
            If numpy.array of indexes than center is calculated as the center of geometry of the given atoms indexes.
@@ -318,7 +321,7 @@ class TranslationCenterDirectionGenerator(TranslationGenerator):
         :Parameters:
             #. randomize (boolean): Whether randomize the amplitude and direction (towards or away from center) of translation of every atom in the group.
         """
-        assert isinstance(randomize, bool), "randomize must be boolean"
+        assert isinstance(randomize, bool), log.LocalLogger("fullrmc").logger.error("randomize must be boolean")
         self.__randomize = randomize
     
     def set_center(self, center):
@@ -353,11 +356,11 @@ class TranslationCenterDirectionGenerator(TranslationGenerator):
         Translate coordinates.
         
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the transformation
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
             
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the transformation
-            #. arguments (object): Any python object. Not used in this generator.
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
         """
         # compute center
         center = np.mean(coordinates, 0)

@@ -28,8 +28,7 @@ from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicB
 from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float
 from fullrmc.Core.transform_coordinates import transform_coordinates
-from fullrmc.Core.Collection import is_number, is_integer, get_elapsed_time
-from fullrmc.Core.Broadcaster import Broadcaster
+from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.Group import Group
 from fullrmc.Core.GroupSelector import GroupSelector

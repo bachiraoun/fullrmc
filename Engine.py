@@ -21,8 +21,6 @@ try:
     import cPickle as pickle
 except:
     import pickle
-
-# pdbParser library imports
 from pdbParser.pdbParser import pdbParser
 from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
 
@@ -41,23 +39,30 @@ from fullrmc.Selectors.RandomSelectors import RandomSelector
 class Engine(object):
     """ 
     The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
-    It has the capability to use and fit multiple sets of experimental data. 
+    It has the capability to use and fit simultaneously multiple sets of experimental data. 
     One can also define other constraints such as distances, bonds length, angles and many others.   
     
     :Parameters:
             #. pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.
-            #. names (None, list): All pdb atoms names list.
-               If None names will be calculated automatically by parsing pdb instance.
+            #. names (None, list): All pdb atoms names list. 
+               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+               If None names will be assigned automatically by parsing pdbParser instance.
             #. elements (None, list): All pdb atoms elements list.
-               If None elements will be calculated automatically by parsing pdb instance.
+               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+               If None elements will be assigned automatically by parsing pdbParser instance.
             #. moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-               If None moleculesIndexes will be calculated automatically by parsing pdb instance.
-            #. moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
+               If None moleculesIndexes will be assigned automatically by parsing pdbParser instance.
+            #. moleculesNames (None, list): The molecules names list. 
+               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
                If None, it is automatically generated as the pdb residues name.
-            #. groups (None, list):
-            #. groupSelector (None, GroupSelector): The GroupSelector instance. If None, RandomGroupSelector is set automatically
+            #. groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
+               If None, single atom groups of all atoms will be all automatically created.
+            #. groupSelector (None, GroupSelector): The GroupSelector instance. 
+               If None, RandomGroupSelector is set automatically.
             #. constraints (None, list): The list of constraints instances.
-            #. tolerance (number): The runtime tolerance parameters. Its the percentage of allowed unsatisfactory 'tried' moves. 
+            #. tolerance (number): The runtime tolerance parameters. 
+               It's the percentage of allowed unsatisfactory 'tried' moves. 
     """
     
     def __init__(self, pdb, names=None, elements=None, 
@@ -102,19 +107,19 @@ class Engine(object):
         
     @property
     def lastMovedGroupIndex(self):
-        """ Get the last group instance index in groups list moved by the engine. """
+        """ Get the last moved group instance index in groups list. """
         return self.__lastMovedGroupIndex
     
     @property
     def lastMovedGroup(self):
-        """ Get the last group instance moved by the engine. """
+        """ Get the last moved group instance. """
         if self.__lastMovedGroupIndex is None:
             return None
         return self.__groups[self.__lastMovedGroupIndex]
     
     @property
     def lastMovedAtomsIndexes(self):
-        """ Get the last atoms moved by the engine. """
+        """ Get the last moved atoms indexes. """
         if self.__lastMovedGroupIndex is None:
             return None
         return self.lastMovedGroup.indexes
@@ -151,12 +156,12 @@ class Engine(object):
     
     @property
     def groups(self):
-        """ Get engine defined groups. """
+        """ Get engine's defined groups. """
         return self.__groups
     
     @property
     def pdb(self):
-        """ Get pdb instance. """
+        """ Get pdbParser instance. """
         return self.__pdb
     
     @property
@@ -176,7 +181,7 @@ class Engine(object):
     
     @property
     def volume(self):
-        """ Get basis volume """
+        """ Get basis volume or None in case of InfiniteBoundaries. """
         return self.__volume
         
     @property
@@ -186,7 +191,7 @@ class Engine(object):
         
     @property
     def boxCoordinates(self):
-        """ Get the box coordinates of the current configuration. """
+        """ Get the box coordinates of the current configuration or None in case of InfiniteBoundaries.. """
         return self.__boxCoordinates
         
     @property
@@ -236,12 +241,12 @@ class Engine(object):
         
     @property
     def numberOfNames(self):
-        """ Get the defined atom names set. """
+        """ Get the number of defined atom names set. """
         return len(self.__names)
     
     @property
     def numberOfAtomsPerName(self):
-        """ Get the number of atoms per element. """
+        """ Get the number of atoms per name dictionary. """
         return self.__numberOfAtomsPerName
         
     @property
@@ -251,12 +256,12 @@ class Engine(object):
      
     @property
     def numberOfAtomsPerElement(self):
-        """ Get the number of atoms per element. """
+        """ Get the number of atoms per element dictionary. """
         return self.__numberOfAtomsPerElement
     
     @property
     def constraints(self):
-        """ Get a list of all constraints instances. """
+        """ Get a list copy of all constraints instances. """
         return [c for c in self.__constraints]
     
     @property
@@ -266,7 +271,7 @@ class Engine(object):
         
     @property
     def chiSquare(self):
-        """ Get a list of all constraints instances. """
+        """ Get the last recorded chiSquare of the current configuration. """
         return self.__chiSquare
     
     def save(self, path):
@@ -280,7 +285,7 @@ class Engine(object):
         dirPath  = os.path.os.path.dirname(path)
         fileName = os.path.basename(path)
         fileName = fileName.split(".")[0]
-        assert len(fileName), log.LocalLogger("fullrmc").logger.error("path filename must be a non zero string")
+        assert len(fileName), log.LocalLogger("fullrmc").logger.error("Path filename must be a non zero string")
         fileName += ".rmc"
         path = os.path.join(dirPath,fileName)
         # open file
@@ -339,7 +344,8 @@ class Engine(object):
         Sets the runtime engine tolerance value.
         
         :Parameters:
-            #. tolerance (number): The runtime tolerance parameters. It's the percentage of allowed unsatisfactory 'tried' moves. 
+            #. tolerance (number): The runtime tolerance parameters. 
+               It's the percentage of allowed unsatisfactory 'tried' moves. 
         """
         assert is_number(tolerance), log.LocalLogger("fullrmc").logger.error("tolerance must be a number")
         tolerance = FLOAT_TYPE(tolerance)
@@ -349,10 +355,11 @@ class Engine(object):
         
     def set_group_selector(self, selector):
         """
-        Sets the engine group selector instance
+        Sets the engine group selector instance.
         
         :Parameters:
-            #. groups (None, GroupSelector): the GroupSelector instance. If None, RandomSelector is set automatically.
+            #. groups (None, GroupSelector): the GroupSelector instance. 
+               If None, RandomSelector is set automatically.
 
         """
         if selector is None:
@@ -418,10 +425,14 @@ class Engine(object):
             
     def set_boundary_conditions(self, boundaryConditions):
         """
-        Sets the configuration boundary conditions. Engine and constraintsData will be automatically reset
+        Sets the configuration boundary conditions. Any type of periodic boundary conditions are allowed and not restricted to cubic.
+        Engine and constraintsData will be automatically reset.
         
         :Parameters:
-            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): the configuration boundary conditions.
+            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
+               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
         """
         if boundaryConditions is None:
             boundaryConditions = InfiniteBoundaries()
@@ -433,8 +444,8 @@ class Engine(object):
                 self.__basisVectors = np.array(bc.get_vectors(), dtype=FLOAT_TYPE)
                 self.__reciprocalBasisVectors = np.array(bc.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
                 self.__volume = FLOAT_TYPE(bc.get_box_volume())
-            except:
-                raise Exception("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy array or a positive number")
+            except: 
+                raise Exception( log.LocalLogger("fullrmc").logger.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy array or a positive number") )
         elif not isinstance(boundaryConditions, PeriodicBoundaries):
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = None
@@ -449,18 +460,13 @@ class Engine(object):
         if isinstance(self.__boundaryConditions, PeriodicBoundaries):
             self.__boxCoordinates = np.array( self.__boundaryConditions.real_to_box_array(self.__realCoordinates), dtype=FLOAT_TYPE)
         else:
-            raise Exception("not implemented yet")
+            self.__boxCoordinates = None
+            raise Exception( log.LocalLogger("fullrmc").logger.error("Not periodic boundary conditions is not implemented yet") )
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
         
     def visualize(self):
-        """
-        Visualize the last configuration.
-        
-        :Parameters:
-            #. moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-               If None moleculesIndexes will be calculated automatically by parsing pdb instance.
-        """
+        """ Visualize the last configuration using pdbParser visualize method. """
         self.__pdb.visualize(coordinates=self.__realCoordinates)
         
     def set_pdb(self, pdb, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
@@ -487,7 +493,8 @@ class Engine(object):
             try:
                 pdb = pdbParser(pdb)
             except:
-                raise Exception("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.")
+                
+                raise Exception( log.LocalLogger("fullrmc").logger.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
         # set pdb
         self.__pdb = pdb        
         # get coordinates
@@ -549,7 +556,7 @@ class Engine(object):
                     try:
                         idx = float(idx)
                     except:
-                        raise Exception("moleculesIndexes must be a list of numbers")
+                        raise Exception(log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be a list of numbers"))
                     assert is_integer(idx), log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be a list of integers")
         # check molecules names
         if moleculesNames is not None:
@@ -607,11 +614,11 @@ class Engine(object):
         
     def set_names_indexes(self, names=None):
         """
-        Sets names list, assigning a names to each atom.
+        Sets names list, assigning a name to each atom.
         
         :Parameters:
             #. names (None, list): The names indexes list.
-               If None names will be calculated automatically by parsing pdb instance.
+               If None names will be generated automatically by parsing pdbParser instance.
         """
         if names is None:
             names = self.__pdb.names
@@ -687,7 +694,7 @@ class Engine(object):
             c.reset_constraint()
     
     def reset_engine(self):
-        """ Reinitialize engine and resets constraints flags and data. """
+        """ Re-initialize engine and resets constraints flags and data. """
         self.__initialize_engine__()
         # reset constraints flags
         self.reset_constraints()
@@ -712,7 +719,7 @@ class Engine(object):
         for c in constraints:
             chi = getattr(c, attr)
             assert chi is not None, log.LocalLogger("fullrmc").logger.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
-            chis.append(chi)
+            chis.append(c.contribution*chi)
         return np.sum(chis)
     
     def __runtime_get_arguments__(self, numberOfSteps, saveFrequency, savePath):
@@ -731,12 +738,12 @@ class Engine(object):
     
     def get_used_constraints(self):
         """
-        Parses all engine constraints and returns only the active ones.
+        Parses all engine constraints and returns different lists of the active ones.
         
         :Returns:
-            #. usedConstraints (list): All types of active constraints that will be used in engine runtime
-            #. constraints (list): All active constraints instances that will contribute to the engine total chiSquare
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won't contribute to the engine total chiSquare
+            #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
+            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
+            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
         usedConstraints = []
         for c in self.__constraints:
@@ -755,12 +762,12 @@ class Engine(object):
         
     def initialize_used_constraints(self):
         """
-        Gets and returns all active constraints and re-initializes when needed
+        Calls get_used_constraints method, re-initializes constraints when needed and return them all.
         
         :Returns:
-            #. usedConstraints (list): All types of active constraints that will be used in engine runtime
-            #. constraints (list): All active constraints instances that will contribute to the engine total chiSquare.
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances that won't contribute to the engine total chiSquare.
+            #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
+            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
+            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
         # get used constraints
         usedConstraints, constraints, enhanceOnlyConstraints = self.get_used_constraints()
@@ -780,8 +787,9 @@ class Engine(object):
         
         :Parameters:
             #. numberOfSteps (integer): The maximum number of steps to run.
-               By default maximum integer number allowed is given. 0 Will result in only initializing constraints.
-            #. saveFrequency (integer): Save engine every saveFrequency step.
+               By default maximum integer number allowed is given. 
+               0 Will result in only initializing constraints.
+            #. saveFrequency (integer): Save engine every saveFrequency steps.
             #. savePath (string): Save engine file path.
         """
         # get arguments

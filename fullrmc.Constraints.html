@@ -524,7 +524,8 @@ Calls set_bonds(bondsMap) and generates bonds attribute.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><blockquote class="first">
+<div><ol class="arabic simple">
 <li>bondsDefinition (dict): The bonds definition. 
 Every key must be a molecule name (residue name in pdb file). 
 Every key value must be a list of bonds definitions. 
@@ -536,16 +537,17 @@ Every bond definition is a list of four items where:<ol class="arabic">
 </ol>
 </li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-python"><div class="highlight"><pre>e.g. (Carbon tetrachloride):  bondsDefinition={&quot;CCL4&quot;: [(&#39;C&#39;,&#39;CL1&#39; , 1.55, 1.95),
+</div></blockquote>
+<div class="last highlight-python"><div class="highlight"><pre>e.g. (Carbon tetrachloride):  bondsDefinition={&quot;CCL4&quot;: [(&#39;C&#39;,&#39;CL1&#39; , 1.55, 1.95),
                                                         (&#39;C&#39;,&#39;CL2&#39; , 1.55, 1.95),
                                                         (&#39;C&#39;,&#39;CL3&#39; , 1.55, 1.95),                                       
                                                         (&#39;C&#39;,&#39;CL4&#39; , 1.55, 1.95) ] }
 </pre></div>
 </div>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

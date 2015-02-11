@@ -1,14 +1,6 @@
 fullrmc.Core package
 ====================
 
-Broadcaster
------------
-
-.. automodule:: fullrmc.Core.Broadcaster
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 Collection
 ----------
 
@@ -16,7 +8,8 @@ Collection
     :members:
     :undoc-members:
     :show-inheritance:
-
+    
+    
 Constraint
 ----------
 

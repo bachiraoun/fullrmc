@@ -21,3 +21,7 @@ http://bachiraoun.github.io/fullrmc/
 
 ## Author
 Bachir Aoun
+
+
+## Copyright and license
+No license is provided, therefore the code is copyrighted by default. People can read the code, but they have no legal right to use it. To use the code, you must contact the author directly and ask permission.

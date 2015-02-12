@@ -176,18 +176,19 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. bondsDefinition (dict): The bonds definition. 
                Every key must be a molecule name (residue name in pdb file). 
                Every key value must be a list of bonds definitions. 
-               Every bond definition is a list of four items where:\n
+               Every bond definition is a list of four items where:
+               
                #. First item: The name of the first atom forming the bond.
                #. Second item: The name of the second atom forming the bond.
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
-        ::
-        
-            e.g. (Carbon tetrachloride):  bondsDefinition={"CCL4": [('C','CL1' , 1.55, 1.95),
-                                                                    ('C','CL2' , 1.55, 1.95),
-                                                                    ('C','CL3' , 1.55, 1.95),                                       
-                                                                    ('C','CL4' , 1.55, 1.95) ] }
-       
+           ::
+           
+                e.g. (Carbon tetrachloride):  bondsDefinition={"CCL4": [('C','CL1' , 1.55, 1.95),
+                                                                        ('C','CL2' , 1.55, 1.95),
+                                                                        ('C','CL3' , 1.55, 1.95),                                       
+                                                                        ('C','CL4' , 1.55, 1.95) ] }
+                                                                    
         """
         if self.engine is None:
             raise Exception(log.LocalLogger("fullrmc").logger.error("engine is not defined. Can't create bonds"))

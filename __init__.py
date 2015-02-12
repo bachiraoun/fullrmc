@@ -13,11 +13,7 @@ other definitions and attributes such as:
        A group is a set of atom indexes, allowing no indexes redundancy 
        within the same group definition. A Group instance can contain any set of indexes and as many atom indexes as needed. 
        Grouping atoms is essential to make clusters of atoms (residues, molecules, etc) evolve and move together. A group of 
-<<<<<<< HEAD
        a single atom index can be used to make a single atom move separately from the others. Engine's 'groups' attribute 
-=======
-       a single atom index can be used to make a single atom move separately from the others. An engine 'groups' attribute 
->>>>>>> c6fc99fbe751f485c18f4cb26b97b44481a00a28
        is a simple list of group instances containing all the desired and defined groups that one wants to move.
     #. Group selector: Engine requires a GroupSelector instance which is the artist that selects a group from the engine's
        groups list at every engine runtime step. Among other properties, depending on which group selector is used by the
@@ -26,7 +22,6 @@ other definitions and attributes such as:
     #. Move generator: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
        the engine's group selector at the engine's runtime can perform a customizable and different kind of moves. 
     #. Constraint: A constraint is a rule that controls certain aspect of the configuration upon moving atoms. 
-<<<<<<< HEAD
        Engine's 'constraints' attribute is a list of all defined and used constraint instances, it is 
        the judge that controls the evolution of the system by accepting or rejecting the move of a group. 
        If engine's constraints list is empty and contains no constraint definition, this will result
@@ -168,15 +163,3 @@ __version__ = 1.0
  
  
  
-=======
-       An engine 'constraints' attribute is a list of all defined and used constraint instances, it is 
-       the judge that controls the evolution of the system by accepting or rejecting the move of a group. 
-       If engine's constraints list is empty and contains no constraint definition, this will result
-       in accepting all the generated moves.
-"""
-__version__ = 1.0
-
-    
-    
-    
->>>>>>> c6fc99fbe751f485c18f4cb26b97b44481a00a28

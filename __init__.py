@@ -1,4 +1,4 @@
-"""
+""" 
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
 model is adjusted until its atoms positions have the greatest consistency with a set of experimental data.\n
@@ -27,24 +27,24 @@ other definitions and attributes such as:
        If engine's constraints list is empty and contains no constraint definition, this will result
        in accepting all the generated moves.
 
-fullrmc simple example yet complete and straight to the point
-==============================================================
+Tetrahydrofuran simple example yet complete and straight to the point
+=====================================================================
 .. code-block:: python
     
-    # Tetrahydrofuran (THF) molecule sketch
-    # 
-    #              O
-    #   H41      /   \      H11
-    #      \  /         \  /
-    # H42-- C4    THF    C1 --H12
-    #        \  MOLECULE /
-    #         \         /
-    #   H31-- C3-------C2 --H21
-    #        /         \\
-    #     H32            H22 
-    #
+    ## Tetrahydrofuran (THF) molecule sketch
+    ## 
+    ##              O
+    ##   H41      /   \      H11
+    ##      \  /         \  /
+    ## H42-- C4    THF    C1 --H12
+    ##        \  MOLECULE /
+    ##         \         /
+    ##   H31-- C3-------C2 --H21
+    ##        /         \\
+    ##     H32            H22 
+    ##
     
-    # imports
+    ## imports
     import numpy as np
     from fullrmc.Engine import Engine
     from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
@@ -53,8 +53,8 @@ fullrmc simple example yet complete and straight to the point
     from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
     from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
     from fullrmc.Core.MoveGenerator import MoveGeneratorCollector
-    from fullrmc.Generators.Translations import TranslationGenerator
-    from fullrmc.Generators.Rotations import RotationGenerator
+    from fullrmc.Generators.Translations import TranslationGenerator, TranslationAlongSymmetryAxisGenerator
+    from fullrmc.Generators.Rotations import RotationGenerator, RotationAboutSymmetryAxisGenerator
     
     #   #####################################################################################   #
     #   ############################# DECLARE USEFUL VARIABLES ##############################   #
@@ -64,17 +64,17 @@ fullrmc simple example yet complete and straight to the point
     
     #   #####################################################################################   #
     #   ################################# CREATE RMC SYSTEM #################################   #
-    # create and initialize engine
+    ## create and initialize engine
     ENGINE = Engine(pdb=structurePdbFile, constraints=None)
-    # set structure boundary conditions
+    ## set structure boundary conditions
     ENGINE.set_boundary_conditions(np.array([48.860,0,0, 0,48.860,0, 0,0,48.860]))
-    # create and add pair distribution constraint to the engine
+    ## create and add pair distribution constraint to the engine
     PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=experimentalDataPath, weighting="atomicNumber")
     ENGINE.add_constraints([PDF_CONSTRAINT])
-    # create and add intermolecular distances constraint to the engine
+    ## create and add intermolecular distances constraint to the engine
     EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
     ENGINE.add_constraints([EMD_CONSTRAINT])
-    # create and add bonds constraint to the engine
+    ## create and add bonds constraint to the engine
     B_CONSTRAINT = BondConstraint(engine=None)
     ENGINE.add_constraints([B_CONSTRAINT])
     B_CONSTRAINT.creates_bonds_by_definition( bondsDefinition={"THF": [('O' ,'C1' , 1.20, 1.70),
@@ -86,7 +86,7 @@ fullrmc simple example yet complete and straight to the point
                                                                        ('C2','H21', 0.88, 1.16),('C2','H22', 0.88, 1.16),
                                                                        ('C3','H31', 0.88, 1.16),('C3','H32', 0.88, 1.16),
                                                                        ('C4','H41', 0.88, 1.16),('C4','H42', 0.88, 1.16)] })
-    # create and add angles constraint to the engine
+    ## create and add angles constraint to the engine
     BA_CONSTRAINT = BondsAngleConstraint(engine=None)
     ENGINE.add_constraints([BA_CONSTRAINT])
     BA_CONSTRAINT.creates_angles_by_definition( anglesDefinition={"THF": [ ('O'  ,'C1' ,'C4' , 105, 125),
@@ -117,20 +117,20 @@ fullrmc simple example yet complete and straight to the point
                                                                            ('C3' ,'H32','C4' , 103, 123),
                                                                            ('C4' ,'H41','C3' , 103, 123),
                                                                            ('C4' ,'H42','C3' , 103, 123) ] })
-    # create and add improper angles constraint to the engine keeping THF molecules' atoms in the plane
+    ## create and add improper angles constraint to the engine keeping THF molecules' atoms in the plane
     IA_CONSTRAINT = ImproperAngleConstraint(engine=None)
     ENGINE.add_constraints([IA_CONSTRAINT])
     IA_CONSTRAINT.creates_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
                                                                            ('C3','O','C1','C4', -15, 15) ] })
-    # initialize constraints data
+    ## initialize constraints data
     ENGINE.initialize_used_constraints()
-    # Uncomment in order not to use a constraint in the next engine run
+    ## Uncomment in order not to use a constraint in the next engine run
     #PDF_CONSTRAINT.set_used(False)
     #EMD_CONSTRAINT.set_used(False)
     #B_CONSTRAINT.set_used(False)
     #BA_CONSTRAINT.set_used(False)
     #IA_CONSTRAINT.set_used(False)
-    # initialize constraints data
+    ## initialize constraints data
     ENGINE.initialize_used_constraints()
     
     #   #####################################################################################   #
@@ -139,23 +139,47 @@ fullrmc simple example yet complete and straight to the point
     
     #   #####################################################################################   #
     #   ############################### RUN RMC ON MOLECULES ################################   #
-    # set groups as molecules instead of atoms
+    ## set groups as molecules instead of atoms
     ENGINE.reset_groups_as_molecules()  
     # set moves generators to all groups to a collection of random translations and rotations
     for g in ENGINE.groups:
         mg = MoveGeneratorCollector(collection=[TranslationGenerator(amplitude=0.1),RotationGenerator()], randomize=True)
         g.set_move_generator( mg )
-    # Molecular constraints are not necessary any more because groups are set to molecules.
-    # At every engine step a whole molecule is rotate or translated therefore its internal
-    # distances and properties are safe from any changes. At any time constraints can be 
-    # turn on again using the same method with a True flag. e.g. B_CONSTRAINT.set_used(True)
+    ## Uncomment to use any of the following moves generators
+    ## Also other moves generators can be used to achieve a better fit for instance:
+    #[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]
+    #[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]
+    #[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]
+    #[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]
+    #[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]
+    #[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]
+    ## Molecular constraints are not necessary any more because groups are set to molecules.
+    ## At every engine step a whole molecule is rotate or translated therefore its internal
+    ## distances and properties are safe from any changes. At any time constraints can be 
+    ## turn on again using the same method with a True flag. e.g. B_CONSTRAINT.set_used(True)
     B_CONSTRAINT.set_used(False)
     BA_CONSTRAINT.set_used(False)
     IA_CONSTRAINT.set_used(False)
-    # run engine and perform RMC on molecules
+    ## run engine and perform RMC on molecules
     ENGINE.run(numberOfSteps=100000, saveFrequency=1000, savePath=engineSavePath)
-     
+
+The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
+Position optimization is achieved by alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used
+to fit the ring orientation, then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful
+directions. At the end, the Engine is run for additional several hours on atomic groups to enhance intra-molecular structure.
+
++----------------------------------------+----------------------------------------+----------------------------------------+ 
+|.. figure:: thfBox.png                  |.. figure:: beforeFit.png               |.. figure:: afterFit.png                | 
+|   :width: 300px                        |   :width: 300px                        |   :width: 300px                        | 
+|   :height: 300px                       |   :height: 300px                       |   :height: 300px                       |
+|   :align: left                         |   :align: left                         |   :align: left                         | 
+|                                        |                                        |                                        |
+|   a) Structure containing 800          |   b) Initial pair distribution function|   c) pair distribution function        |
+|   Tetrahydrofuran randomly generated.  |   calculated before any fitting.       |   calculated after about 20 hours of   |
+|                                        |                                        |   Engine runtime.                      |
++----------------------------------------+----------------------------------------+----------------------------------------+
 """
+
 __version__ = 1.0
 
  

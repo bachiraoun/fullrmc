@@ -47,7 +47,7 @@
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc package</a><ul>
-<li><a class="reference internal" href="#fullrmc-simple-example-yet-complete-and-straight-to-the-point">fullrmc simple example yet complete and straight to the point</a></li>
+<li><a class="reference internal" href="#tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point">Tetrahydrofuran simple example yet complete and straight to the point</a></li>
 <li><a class="reference internal" href="#sub-packages">Sub-packages</a></li>
 <li><a class="reference internal" href="#sub-modules">Sub-modules</a></li>
 </ul>
@@ -115,22 +115,22 @@ If engine&#8217;s constraints list is empty and contains no constraint definitio
 in accepting all the generated moves.</li>
 </ol>
 </div></blockquote>
-<div class="section" id="fullrmc-simple-example-yet-complete-and-straight-to-the-point">
-<h2>fullrmc simple example yet complete and straight to the point<a class="headerlink" href="#fullrmc-simple-example-yet-complete-and-straight-to-the-point" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Tetrahydrofuran (THF) molecule sketch</span>
-<span class="c"># </span>
-<span class="c">#              O</span>
-<span class="c">#   H41      /   \      H11</span>
-<span class="c">#      \  /         \  /</span>
-<span class="c"># H42-- C4    THF    C1 --H12</span>
-<span class="c">#        \  MOLECULE /</span>
-<span class="c">#         \         /</span>
-<span class="c">#   H31-- C3-------C2 --H21</span>
-<span class="c">#        /         \</span>
-<span class="c">#     H32            H22 </span>
-<span class="c">#</span>
+<div class="section" id="tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point">
+<h2>Tetrahydrofuran simple example yet complete and straight to the point<a class="headerlink" href="#tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## Tetrahydrofuran (THF) molecule sketch</span>
+<span class="c">## </span>
+<span class="c">##              O</span>
+<span class="c">##   H41      /   \      H11</span>
+<span class="c">##      \  /         \  /</span>
+<span class="c">## H42-- C4    THF    C1 --H12</span>
+<span class="c">##        \  MOLECULE /</span>
+<span class="c">##         \         /</span>
+<span class="c">##   H31-- C3-------C2 --H21</span>
+<span class="c">##        /         \</span>
+<span class="c">##     H32            H22 </span>
+<span class="c">##</span>
 
-<span class="c"># imports</span>
+<span class="c">## imports</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
@@ -139,8 +139,8 @@ in accepting all the generated moves.</li>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.AngleConstraints</span> <span class="kn">import</span> <span class="n">BondsAngleConstraint</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.ImproperAngleConstraints</span> <span class="kn">import</span> <span class="n">ImproperAngleConstraint</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCollector</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span><span class="p">,</span> <span class="n">TranslationAlongSymmetryAxisGenerator</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span><span class="p">,</span> <span class="n">RotationAboutSymmetryAxisGenerator</span>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ############################# DECLARE USEFUL VARIABLES ##############################   #</span>
@@ -150,17 +150,17 @@ in accepting all the generated moves.</li>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ################################# CREATE RMC SYSTEM #################################   #</span>
-<span class="c"># create and initialize engine</span>
+<span class="c">## create and initialize engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="n">structurePdbFile</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="c"># set structure boundary conditions</span>
+<span class="c">## set structure boundary conditions</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_boundary_conditions</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">]))</span>
-<span class="c"># create and add pair distribution constraint to the engine</span>
+<span class="c">## create and add pair distribution constraint to the engine</span>
 <span class="n">PDF_CONSTRAINT</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="n">experimentalDataPath</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF_CONSTRAINT</span><span class="p">])</span>
-<span class="c"># create and add intermolecular distances constraint to the engine</span>
+<span class="c">## create and add intermolecular distances constraint to the engine</span>
 <span class="n">EMD_CONSTRAINT</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">EMD_CONSTRAINT</span><span class="p">])</span>
-<span class="c"># create and add bonds constraint to the engine</span>
+<span class="c">## create and add bonds constraint to the engine</span>
 <span class="n">B_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">B_CONSTRAINT</span><span class="p">])</span>
 <span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">creates_bonds_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;O&#39;</span> <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">),</span>
@@ -172,7 +172,7 @@ in accepting all the generated moves.</li>
                                                                    <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
                                                                    <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
                                                                    <span class="p">(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">)]</span> <span class="p">})</span>
-<span class="c"># create and add angles constraint to the engine</span>
+<span class="c">## create and add angles constraint to the engine</span>
 <span class="n">BA_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">BA_CONSTRAINT</span><span class="p">])</span>
 <span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">creates_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">125</span><span class="p">),</span>
@@ -203,20 +203,20 @@ in accepting all the generated moves.</li>
                                                                        <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
                                                                        <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
                                                                        <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-<span class="c"># create and add improper angles constraint to the engine keeping THF molecules&#39; atoms in the plane</span>
+<span class="c">## create and add improper angles constraint to the engine keeping THF molecules&#39; atoms in the plane</span>
 <span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">IA_CONSTRAINT</span><span class="p">])</span>
 <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">creates_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
                                                                        <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-<span class="c"># initialize constraints data</span>
+<span class="c">## initialize constraints data</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
-<span class="c"># Uncomment in order not to use a constraint in the next engine run</span>
+<span class="c">## Uncomment in order not to use a constraint in the next engine run</span>
 <span class="c">#PDF_CONSTRAINT.set_used(False)</span>
 <span class="c">#EMD_CONSTRAINT.set_used(False)</span>
 <span class="c">#B_CONSTRAINT.set_used(False)</span>
 <span class="c">#BA_CONSTRAINT.set_used(False)</span>
 <span class="c">#IA_CONSTRAINT.set_used(False)</span>
-<span class="c"># initialize constraints data</span>
+<span class="c">## initialize constraints data</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
 
 <span class="c">#   #####################################################################################   #</span>
@@ -225,23 +225,64 @@ in accepting all the generated moves.</li>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ############################### RUN RMC ON MOLECULES ################################   #</span>
-<span class="c"># set groups as molecules instead of atoms</span>
+<span class="c">## set groups as molecules instead of atoms</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">reset_groups_as_molecules</span><span class="p">()</span>  
 <span class="c"># set moves generators to all groups to a collection of random translations and rotations</span>
 <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
     <span class="n">mg</span> <span class="o">=</span> <span class="n">MoveGeneratorCollector</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TranslationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.1</span><span class="p">),</span><span class="n">RotationGenerator</span><span class="p">()],</span> <span class="n">randomize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">mg</span> <span class="p">)</span>
-<span class="c"># Molecular constraints are not necessary any more because groups are set to molecules.</span>
-<span class="c"># At every engine step a whole molecule is rotate or translated therefore its internal</span>
-<span class="c"># distances and properties are safe from any changes. At any time constraints can be </span>
-<span class="c"># turn on again using the same method with a True flag. e.g. B_CONSTRAINT.set_used(True)</span>
+<span class="c">## Uncomment to use any of the following moves generators</span>
+<span class="c">## Also other moves generators can be used to achieve a better fit for instance:</span>
+<span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]</span>
+<span class="c">## Molecular constraints are not necessary any more because groups are set to molecules.</span>
+<span class="c">## At every engine step a whole molecule is rotate or translated therefore its internal</span>
+<span class="c">## distances and properties are safe from any changes. At any time constraints can be </span>
+<span class="c">## turn on again using the same method with a True flag. e.g. B_CONSTRAINT.set_used(True)</span>
 <span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
-<span class="c"># run engine and perform RMC on molecules</span>
+<span class="c">## run engine and perform RMC on molecules</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="n">engineSavePath</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
+Position optimization is achieved by alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used
+to fit the ring orientation, then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful
+directions. At the end, the Engine is run for additional several hours on atomic groups to enhance intra-molecular structure.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/thfBox.png"><img alt="_images/thfBox.png" src="_images/thfBox.png" style="width: 300px; height: 300px;" /></a>
+<p class="caption">a) Structure containing 800
+Tetrahydrofuran randomly generated.</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/beforeFit.png"><img alt="_images/beforeFit.png" src="_images/beforeFit.png" style="width: 300px; height: 300px;" /></a>
+<p class="caption">b) Initial pair distribution function
+calculated before any fitting.</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/afterFit.png"><img alt="_images/afterFit.png" src="_images/afterFit.png" style="width: 300px; height: 300px;" /></a>
+<p class="caption">c) pair distribution function
+calculated after about 20 hours of
+Engine runtime.</p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="sub-packages">
 <h2>Sub-packages<a class="headerlink" href="#sub-packages" title="Permalink to this headline">¶</a></h2>

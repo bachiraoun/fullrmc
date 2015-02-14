@@ -182,6 +182,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Second item: The name of the second atom forming the bond.
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
+               
            ::
            
                 e.g. (Carbon tetrachloride):  bondsDefinition={"CCL4": [('C','CL1' , 1.55, 1.95),

@@ -1,27 +1,27 @@
 """ 
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
-model is adjusted until its atoms positions have the greatest consistency with a set of experimental data.\n
+model is adjusted until its atoms position have the greatest consistency with a set of experimental data.\n
 fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. 
 fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure. 
-fullrmc package sub-module Engine is the main module and contains the definition of 'Engine' which 
-is the main and only class used to launch and RMC calculation. Engine reads only Protein Data Bank formatted 
+fullrmc's Engine sub-module is the main module that contains the definition of 'Engine' which 
+is the main and only class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
 atomic configuration files '.pdb' (http://deposit.rcsb.org/adit/docs/pdb_atom_format.html) and handles  
 other definitions and attributes such as:
 
-    #. Group: Engine doesn't understand atoms or molecules but group of atom indexes instead. 
+    #. **Group**: Engine doesn't understand atoms or molecules but group of atom indexes instead. 
        A group is a set of atom indexes, allowing no indexes redundancy 
        within the same group definition. A Group instance can contain any set of indexes and as many atom indexes as needed. 
        Grouping atoms is essential to make clusters of atoms (residues, molecules, etc) evolve and move together. A group of 
        a single atom index can be used to make a single atom move separately from the others. Engine's 'groups' attribute 
        is a simple list of group instances containing all the desired and defined groups that one wants to move.
-    #. Group selector: Engine requires a GroupSelector instance which is the artist that selects a group from the engine's
+    #. **Group selector**: Engine requires a GroupSelector instance which is the artist that selects a group from the engine's
        groups list at every engine runtime step. Among other properties, depending on which group selector is used by the
        engine, a GroupSelector can allow weighting which means selecting groups more or less frequently than the others, 
        it can also allow selection recurrence and refinement of a single group, ordered and random selection is also possible.
-    #. Move generator: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
+    #. **Move generator**: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
        the engine's group selector at the engine's runtime can perform a customizable and different kind of moves. 
-    #. Constraint: A constraint is a rule that controls certain aspect of the configuration upon moving atoms. 
+    #. **Constraint**: A constraint is a rule that controls certain aspect of the configuration upon moving groups. 
        Engine's 'constraints' attribute is a list of all defined and used constraint instances, it is 
        the judge that controls the evolution of the system by accepting or rejecting the move of a group. 
        If engine's constraints list is empty and contains no constraint definition, this will result
@@ -164,9 +164,13 @@ Tetrahydrofuran simple example yet complete and straight to the point
     ENGINE.run(numberOfSteps=100000, saveFrequency=1000, savePath=engineSavePath)
 
 The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
-Position optimization is achieved by alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used
-to fit the ring orientation, then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful
-directions. At the end, the Engine is run for additional several hours on atomic groups to enhance intra-molecular structure.
+Position optimization is achieved by using a RecursiveGroupSelector to refine every selected group position
+and alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used to fit the ring orientation, 
+then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful directions. 
+At the end, groups a reset to single atom index and RandomSelector is used to select groups randomly.
+the Engine is run for additional several hours to refine atoms positions separately.
+
+single atom groups to enhance intra-molecular structure.
 
 +----------------------------------------+----------------------------------------+----------------------------------------+ 
 |.. figure:: thfBox.png                  |.. figure:: beforeFit.png               |.. figure:: afterFit.png                | 

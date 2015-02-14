@@ -87,28 +87,28 @@
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
 <p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (<a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a>) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
-model is adjusted until its atoms positions have the greatest consistency with a set of experimental data.</p>
+model is adjusted until its atoms position have the greatest consistency with a set of experimental data.</p>
 <p>fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. 
 fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure. 
-fullrmc package sub-module Engine is the main module and contains the definition of &#8216;Engine&#8217; which 
-is the main and only class used to launch and RMC calculation. Engine reads only Protein Data Bank formatted 
+fullrmc&#8217;s Engine sub-module is the main module that contains the definition of &#8216;Engine&#8217; which 
+is the main and only class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
 atomic configuration files &#8216;.pdb&#8217; (<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">http://deposit.rcsb.org/adit/docs/pdb_atom_format.html</a>) and handles  
 other definitions and attributes such as:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Group: Engine doesn&#8217;t understand atoms or molecules but group of atom indexes instead. 
+<li><strong>Group</strong>: Engine doesn&#8217;t understand atoms or molecules but group of atom indexes instead. 
 A group is a set of atom indexes, allowing no indexes redundancy 
 within the same group definition. A Group instance can contain any set of indexes and as many atom indexes as needed. 
 Grouping atoms is essential to make clusters of atoms (residues, molecules, etc) evolve and move together. A group of 
 a single atom index can be used to make a single atom move separately from the others. Engine&#8217;s &#8216;groups&#8217; attribute 
 is a simple list of group instances containing all the desired and defined groups that one wants to move.</li>
-<li>Group selector: Engine requires a GroupSelector instance which is the artist that selects a group from the engine&#8217;s
+<li><strong>Group selector</strong>: Engine requires a GroupSelector instance which is the artist that selects a group from the engine&#8217;s
 groups list at every engine runtime step. Among other properties, depending on which group selector is used by the
 engine, a GroupSelector can allow weighting which means selecting groups more or less frequently than the others, 
 it can also allow selection recurrence and refinement of a single group, ordered and random selection is also possible.</li>
-<li>Move generator: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
+<li><strong>Move generator</strong>: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
 the engine&#8217;s group selector at the engine&#8217;s runtime can perform a customizable and different kind of moves.</li>
-<li>Constraint: A constraint is a rule that controls certain aspect of the configuration upon moving atoms. 
+<li><strong>Constraint</strong>: A constraint is a rule that controls certain aspect of the configuration upon moving groups. 
 Engine&#8217;s &#8216;constraints&#8217; attribute is a list of all defined and used constraint instances, it is 
 the judge that controls the evolution of the system by accepting or rejecting the move of a group. 
 If engine&#8217;s constraints list is empty and contains no constraint definition, this will result
@@ -251,9 +251,12 @@ in accepting all the generated moves.</li>
 </pre></div>
 </div>
 <p>The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
-Position optimization is achieved by alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used
-to fit the ring orientation, then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful
-directions. At the end, the Engine is run for additional several hours on atomic groups to enhance intra-molecular structure.</p>
+Position optimization is achieved by using a RecursiveGroupSelector to refine every selected group position
+and alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used to fit the ring orientation, 
+then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful directions. 
+At the end, groups a reset to single atom index and RandomSelector is used to select groups randomly.
+the Engine is run for additional several hours to refine atoms positions separately.</p>
+<p>single atom groups to enhance intra-molecular structure.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -691,7 +694,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">run</tt><big>(</big><em>numberOfSteps=2147483647</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
+<tt class="descname">run</tt><big>(</big><em>numberOfSteps=9223372036854775807</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
 <dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

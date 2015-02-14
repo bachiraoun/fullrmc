@@ -170,8 +170,6 @@ then TranslationAlongSymmetryAxisGenerator is used to translate molecules along 
 At the end, groups a reset to single atom index and RandomSelector is used to select groups randomly.
 the Engine is run for additional several hours to refine atoms positions separately.
 
-single atom groups to enhance intra-molecular structure.
-
 +----------------------------------------+----------------------------------------+----------------------------------------+ 
 |.. figure:: thfBox.png                  |.. figure:: beforeFit.png               |.. figure:: afterFit.png                | 
 |   :width: 300px                        |   :width: 300px                        |   :width: 300px                        | 

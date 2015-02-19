@@ -170,6 +170,65 @@
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.generate_points_on_sphere">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">generate_points_on_sphere</tt><big>(</big><em>thetaFrom</em>, <em>thetaTo</em>, <em>phiFrom</em>, <em>phiTo</em>, <em>npoints=1</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.generate_points_on_sphere" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate random points on a sphere of radius 1. Points are generated using spherical coordinates
+arguments as in figure below. Theta [0,Pi] is the angle between the generated point and Z axis.
+Phi [0,2Pi] is the angle between the generated point and x axis.</p>
+<a class="reference internal image-reference" href="_images/sphericalCoordsSystem.png"><img alt="_images/sphericalCoordsSystem.png" class="align-left" src="_images/sphericalCoordsSystem.png" style="width: 200px; height: 200px;" /></a>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>thetaFrom (number): The minimum theta value.</li>
+<li>thetaTo (number): The maximum theta value.</li>
+<li>phiFrom (number): The minimum phi value.</li>
+<li>phiTo (number): The maximum phi value.</li>
+<li>npoints (integer): The number of points to generate</li>
+<li>check (boolean): whether to check arguments before generating points.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>x (numpy.ndarray): The (npoints,1) numpy array of all generated points x coordinates.</li>
+<li>y (numpy.ndarray): The (npoints,1) numpy array of all generated points y coordinates.</li>
+<li>z (numpy.ndarray): The (npoints,1) numpy array of all generated points z coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.generate_vectors_in_solid_angle">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">generate_vectors_in_solid_angle</tt><big>(</big><em>direction</em>, <em>maxAngle</em>, <em>numberOfVectors=1</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.generate_vectors_in_solid_angle" title="Permalink to this definition">¶</a></dt>
+<dd><a class="reference internal image-reference" href="_images/solidAngleGeneratedVectors.png"><img alt="_images/solidAngleGeneratedVectors.png" src="_images/solidAngleGeneratedVectors.png" style="width: 1000px; height: 200px;" /></a>
+<p>Generate random vectors that satisfy angle condition with a direction vector.
+Angle between any generated vector and direction must be smaller than given maxAngle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>direction (number): The direction around which to create the vectors.</li>
+<li>maxAngle (number): The maximum angle allowed.</li>
+<li>numberOfVectors (integer): The number of vectors to generate.</li>
+<li>check (boolean): whether to check arguments before generating vectors.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated vectors.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.get_elapsed_time">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_elapsed_time</tt><big>(</big><em>start</em>, <em>format='%d days</em>, <em>%d hours</em>, <em>%d minutes</em>, <em>%d seconds'</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_elapsed_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets formated time elapsed.</p>
@@ -257,6 +316,37 @@ None is accepted for equivalent weighting.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.get_rotation_matrix">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_rotation_matrix</tt><big>(</big><em>rotationVector</em>, <em>angle</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_rotation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Calculates the rotation (3X3) matrix about an axis by a rotation angle.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rotationVector (list, tuple, numpy.ndarray): the rotation vector coordinates.</li>
+<li>angle (float): the rotation angle in rad.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rotationMatrix (numpy.ndarray): the (3X3) rotation matrix</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.is_integer">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">is_integer</tt><big>(</big><em>number</em>, <em>precision=1e-15</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.is_integer" title="Permalink to this definition">¶</a></dt>
 <dd><p>check if number is convertible to integer.</p>
@@ -294,6 +384,24 @@ None is accepted for equivalent weighting.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>result (bool): True if convertible, False otherwise</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.rotate">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">rotate</tt><big>(</big><em>xyzArray</em>, <em>rotationMatrix</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.rotate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates the records of a pdb using a rotation matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): the xyz (N,3) array to rotate.</li>
+<li>rotationMatrix (numpy.ndarray): the (3X3) rotation matrix.</li>
 </ol>
 </td>
 </tr>

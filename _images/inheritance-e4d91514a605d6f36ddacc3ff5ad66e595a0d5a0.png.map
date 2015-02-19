@@ -1,11 +1,11 @@
 <map id="inheritance827048bcb9" name="inheritance827048bcb9">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,53,215,77"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="272,17,476,41"/>
-<area shape="rect" id="node7" href="#fullrmc.Generators.Translations.TranslationGenerator" title="Generates random translations moves upon groups of atoms." alt="" coords="263,89,486,113"/>
-<area shape="rect" id="node9" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="550,5,859,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Generators.Translations.ExpandGenerator" title="Generates random translation of atoms in a group away from group center." alt="" coords="924,29,1126,53"/>
-<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="547,53,862,77"/>
-<area shape="rect" id="node5" href="#fullrmc.Generators.Translations.ShrinkGenerator" title="Generates random translation of atoms in a group towards the group center." alt="" coords="927,77,1122,101"/>
-<area shape="rect" id="node6" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="564,101,846,125"/>
-<area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="534,149,876,173"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,56,205,81"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="263,19,460,44"/>
+<area shape="rect" id="node7" href="#fullrmc.Generators.Translations.TranslationGenerator" title="Generates random translations moves upon groups of atoms." alt="" coords="253,92,469,117"/>
+<area shape="rect" id="node9" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="532,5,837,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Translations.ExpandGenerator" title="Generates random translation of atoms in a group away from group center." alt="" coords="900,31,1097,56"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationCenterDirectionGenerator" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="532,55,837,80"/>
+<area shape="rect" id="node5" href="#fullrmc.Generators.Translations.ShrinkGenerator" title="Generates random translation of atoms in a group towards the group center." alt="" coords="903,80,1094,105"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="547,104,822,129"/>
+<area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="517,153,852,179"/>
 </map>

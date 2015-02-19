@@ -204,9 +204,39 @@ Phi [0,2Pi] is the angle between the generated point and x axis.</p>
 <dl class="function">
 <dt id="fullrmc.Core.Collection.generate_vectors_in_solid_angle">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">generate_vectors_in_solid_angle</tt><big>(</big><em>direction</em>, <em>maxAngle</em>, <em>numberOfVectors=1</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.generate_vectors_in_solid_angle" title="Permalink to this definition">¶</a></dt>
-<dd><a class="reference internal image-reference" href="_images/solidAngleGeneratedVectors.png"><img alt="_images/solidAngleGeneratedVectors.png" src="_images/solidAngleGeneratedVectors.png" style="width: 1000px; height: 200px;" /></a>
-<p>Generate random vectors that satisfy angle condition with a direction vector.
+<dd><p>Generate random vectors that satisfy angle condition with a direction vector.
 Angle between any generated vector and direction must be smaller than given maxAngle.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/100randomVectors30deg.png"><img alt="_images/100randomVectors30deg.png" src="_images/100randomVectors30deg.png" style="width: 465px; height: 350px;" /></a>
+<p class="caption">a) 100 vectors generated around
+OX axis within a maximum angle
+separation of 30 degrees.</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/200randomVectors45deg.png"><img alt="_images/200randomVectors45deg.png" src="_images/200randomVectors45deg.png" style="width: 465px; height: 350px;" /></a>
+<p class="caption">b) 200 vectors generated around
+[1,-1,1] axis within a maximum angle
+separation of 45 degrees.</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/500randomVectors100deg.png"><img alt="_images/500randomVectors100deg.png" src="_images/500randomVectors100deg.png" style="width: 465px; height: 350px;" /></a>
+<p class="caption">b) 500 vectors generated around
+[2,5,1] axis within a maximum angle
+separation of 100 degrees.</p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -255,15 +285,17 @@ Angle between any generated vector and direction must be smaller than given maxA
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">key (None, string): the path to return. If not None, it can take any of the following</p>
+<li><p class="first">key (None, string): the path to return. If not None, it can take any of the following:</p>
 <blockquote>
-<div><p>cwd:                 current working directory
-script:              the script&#8217;s total path
-exe:                 python executable path
-script_name:         the script name
-relative_script_dir: the script&#8217;s relative directory path
-script_dir:          the script&#8217;s absolute directory path
-fullrmc:             fullrmc package path</p>
+<div><ol class="arabic simple">
+<li>cwd:                 current working directory</li>
+<li>script:              the script&#8217;s total path</li>
+<li>exe:                 python executable path</li>
+<li>script_name:         the script name</li>
+<li>relative_script_dir: the script&#8217;s relative directory path</li>
+<li>script_dir:          the script&#8217;s absolute directory path</li>
+<li>fullrmc:             fullrmc package path</li>
+</ol>
 </div></blockquote>
 </li>
 </ol>
@@ -418,10 +450,10 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <p class="graphviz">
 <img src="_images/inheritance-cabe411ccbaa66f2c062e8c17ba0f5cca91fb57f.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance0f80670324" class="inheritance"/>
 <map id="inheritance0f80670324" name="inheritance0f80670324">
-<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,53,152,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="200,5,427,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="201,53,425,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="215,101,411,125"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,149,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="199,55,419,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,104,404,129"/>
 </map>
 </p>
 <dl class="class">
@@ -955,7 +987,7 @@ on groups rather than on single atoms.</p>
 <p class="graphviz">
 <img src="_images/inheritance-0f5e18b0b24b240cbeee5151cc8c5d9511650013.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritance8a01418a0b" class="inheritance"/>
 <map id="inheritance8a01418a0b" name="inheritance8a01418a0b">
-<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,104,29"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,101,31"/>
 </map>
 </p>
 <dl class="class">
@@ -1059,8 +1091,8 @@ when and how frequently a group can be chosen to perform a move upon.</p>
 <p class="graphviz">
 <img src="_images/inheritance-019e7387f25640e09f558882910b69b54724c56e.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance50d5c68fbf" class="inheritance"/>
 <map id="inheritance50d5c68fbf" name="inheritance50d5c68fbf">
-<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,202,29"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="250,5,505,29"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,197,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="245,5,493,31"/>
 </map>
 </p>
 <dl class="class">
@@ -1362,10 +1394,10 @@ to fully customize how a group of atoms should move.</p>
 <p class="graphviz">
 <img src="_images/inheritance-2b231ce5dd2911e313a56f8ac5d43e0bb0a45c92.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance043573f191" class="inheritance"/>
 <map id="inheritance043573f191" name="inheritance043573f191">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,53,215,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="274,5,536,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="263,53,547,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="303,101,507,125"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,55,205,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="264,5,515,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="253,55,525,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="291,104,488,129"/>
 </map>
 </p>
 <dl class="class">

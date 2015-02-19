@@ -466,6 +466,38 @@
 <area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="517,153,852,179"/>
 </map>
 </p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/500randomTranslations.png"><img alt="_images/500randomTranslations.png" src="_images/500randomTranslations.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">a) Random translation vectors generated from
+origin. (<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a>)</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/10TranslationsAlongAxis.png"><img alt="_images/10TranslationsAlongAxis.png" src="_images/10TranslationsAlongAxis.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">b) Random translation vectors generated from
+origin along axis.
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationAlongAxisGenerator</span></tt></a>)</p>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/translationAlongSymmetryAxis.png"><img alt="_images/translationAlongSymmetryAxis.png" src="_images/translationAlongSymmetryAxis.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">a) Random translation vectors generated along the
+symmetry axis of a group of atoms and applied on
+all the group atoms at the same time.
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationAlongSymmetryAxisGenerator</span></tt></a>)</p>
+</div>
+</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.ExpandGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">ExpandGenerator</tt><big>(</big><em>group=None</em>, <em>center=None</em>, <em>amplitude=0.1</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.ExpandGenerator" title="Permalink to this definition">¶</a></dt>
@@ -482,7 +514,7 @@
 
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.5</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
 <p>Generates random translation moves upon groups of atoms along a pre-defined axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -548,7 +580,7 @@
 
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
 <p>Generates random translation moves upon groups of atoms along one of their symmetry axis.</p>
 <table class="docutils field-list" frame="void" rules="none">

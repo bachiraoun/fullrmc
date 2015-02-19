@@ -76,7 +76,8 @@ class RotationGenerator(MoveGenerator):
         # get rotation axis
         n = 0
         while n<PRECISION:
-            rotationAxis = np.random.random(3)-np.random.random(3)
+            #rotationAxis = np.random.random(3)-np.random.random(3)
+            rotationAxis = 1-2*np.random.random(3)
             n = np.linalg.norm(rotationAxis)
         rotationAxis /= n
         # get rotation angle

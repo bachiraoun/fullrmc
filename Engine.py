@@ -391,19 +391,24 @@ class Engine(object):
             self.__groups = []
             for g in groups:
                 # check group type
-                assert isinstance(g, np.ndarray), log.LocalLogger("fullrmc").logger.error("each group in groups must be a numpy.ndarray")
-                # check group dimension
-                assert len(g.shape) == 1, log.LocalLogger("fullrmc").logger.error("each group must be a numpy.ndarray of dimension 1")
-                if len(g)==0:
-                    continue
-                # check type
-                assert g.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("each group in groups must be of type numpy.int32")
-                # sort and check limits
-                g = sorted(set(g))
-                assert g[0]>=0, log.LocalLogger("fullrmc").logger.error("group index must equal or bigger than 0")
-                assert g[-1]<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+                if isinstance(g, Group):
+                    assert np.max(g.indexes)<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+                    gr = g
+                else:
+                    assert isinstance(g, (np.ndarray)), log.LocalLogger("fullrmc").logger.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
+                    # check group dimension
+                    assert len(g.shape) == 1, log.LocalLogger("fullrmc").logger.error("each group must be a numpy.ndarray of dimension 1")
+                    if len(g)==0:
+                        continue
+                    # check type
+                    assert g.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("each group in groups must be of type numpy.int32")
+                    # sort and check limits
+                    g = sorted(set(g))
+                    assert g[0]>=0, log.LocalLogger("fullrmc").logger.error("group index must equal or bigger than 0")
+                    assert g[-1]<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+                    gr = Group(indexes=g)
                 # append group
-                self.__groups.append( Group(indexes=g) )
+                self.__groups.append( gr )
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
         

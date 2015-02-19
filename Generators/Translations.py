@@ -68,7 +68,8 @@ class TranslationGenerator(MoveGenerator):
             #. argument (object): Any python object. Not used in this generator.
         """
         # generate random vector
-        vector = np.array(np.random.random(3)-np.random.random(3), dtype=FLOAT_TYPE)
+        #vector = np.array(np.random.random(3)-np.random.random(3), dtype=FLOAT_TYPE)
+        vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
         # normalize vector
         vector /= FLOAT_TYPE( np.linalg.norm(vector) )
         # amplify vector
@@ -342,7 +343,8 @@ class TranslationCenterDirectionGenerator(TranslationGenerator):
         # amplify vectorsToCenter
         if self.__randomize:
             length = vector.shape[0]
-            amplitude = self.amplitude * np.array(np.random.random(length)-np.random.random(length), dtype=FLOAT_TYPE)
+            #amplitude = self.amplitude * np.array(np.random.random(length)-np.random.random(length), dtype=FLOAT_TYPE)
+            amplitude = self.amplitude * np.array(1-2*np.random.random(length), dtype=FLOAT_TYPE)
             vector[:,0] *= amplitude
             vector[:,1] *= amplitude
             vector[:,2] *= amplitude

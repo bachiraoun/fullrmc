@@ -3,6 +3,23 @@ Rotations contains all rotation like MoveGenerator classes.
 
 .. inheritance-diagram:: fullrmc.Generators.Rotations
     :parts: 2 
+    
+    
++-----------------------------------------------------+-----------------------------------------------------+
+|.. figure:: randomRotation.png                       |.. figure:: randomtRotationAboutAxis.png             |
+|   :width: 375px                                     |   :width: 375px                                     |
+|   :height: 300px                                    |   :height: 300px                                    |
+|   :align: left                                      |   :align: left                                      |
+|                                                     |                                                     |
+|   Random rotation axis and angle generated and      |   Random rotation generated about a pre-defined axis|
+|   applied on a Tetrahydrofuran molecule. Solid      |   or one of the symmetry axes of the Tetrahydrofuran|
+|   colours are of the origin molecule position while |   molecule. Solid colours are of the origin molecule|
+|   fading ones are of the rotated molecule.          |   position while fading ones are of the rotated     |
+|   (:class:`RotationGenerator`)                      |   molecule.                                         |
+|                                                     |   (:class:`RotationAboutAxisGenerator`              |
+|                                                     |   :class:`RotationAboutSymmetryAxisGenerator`)      |
++-----------------------------------------------------+-----------------------------------------------------+
+
 """
 
 # standard libraries imports
@@ -105,7 +122,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
         #. axis (list,set,tuple,numpy.ndarray): The rotational axis vector.
     """
     
-    def __init__(self, group=None, amplitude=0.5, axis=0):
+    def __init__(self, group=None, amplitude=2, axis=(1,0,0)):
         super(RotationAboutAxisGenerator, self).__init__(group=group, amplitude=amplitude)
         # set amplitude
         self.set_axis(axis)
@@ -122,7 +139,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
         :Parameters:
             #. axis (list,set,tuple,numpy.ndarray): The rotation axis vector.
         """
-        assert isinstance(axis, list,set,tuple,np.ndarray), log.LocalLogger("fullrmc").logger.error("axis must be a list")
+        assert isinstance(axis, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("axis must be a list")
         axis = list(axis)
         assert len(axis)==3, log.LocalLogger("fullrmc").logger.error("axis list must have 3 items")
         for pos in axis:
@@ -143,7 +160,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
-        rotationAngle  = generate_random_float()*self.amplitude
+        rotationAngle  = 1-2*generate_random_float()*self.amplitude
         # get rotation matrix
         rotationMatrix = get_rotation_matrix(self.__axis, rotationAngle)
         # get atoms group center and rotation axis
@@ -203,7 +220,7 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
-        rotationAngle  = generate_random_float()*self.amplitude
+        rotationAngle = 1-2*generate_random_float()*self.amplitude
         # get atoms group center and rotation axis
         center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
         rotationAxis = [X,Y,Z][self.__axis]

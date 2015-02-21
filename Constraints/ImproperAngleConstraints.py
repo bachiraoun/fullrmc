@@ -2,7 +2,7 @@
 ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

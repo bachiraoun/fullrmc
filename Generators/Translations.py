@@ -2,7 +2,7 @@
 Translations contains all translation like MoveGenerator classes.
 
 .. inheritance-diagram:: fullrmc.Generators.Translations
-    :parts: 2 
+    :parts: 1 
     
 +-----------------------------------------------------+-----------------------------------------------------+
 |.. figure:: 500randomTranslations.png                |.. figure:: 10TranslationsAlongAxis.png              |
@@ -15,20 +15,22 @@ Translations contains all translation like MoveGenerator classes.
 |                                                     |   (:class:`TranslationAlongAxisGenerator`)          |
 |                                                     |                                                     |
 |                                                     |                                                     |
+|                                                     |                                                     |
+|                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
 |.. figure:: translationAlongSymmetryAxis.png         | .. figure:: translationTowardsAxis.png              |
 |   :width: 375px                                     |    :width: 375px                                    |
 |   :height: 300px                                    |    :height: 300px                                   |
 |   :align: left                                      |    :align: left                                     |
 |                                                     |                                                     |
-|   Random translation vector generated along the     |    Random translation vectors generated towards an  |
-|   symmetry axis of a C6H14 molecule and applied on  |    axis within some maximum angle.                  |
-|   all the molecule's atoms at the same time.        |    Legend is formatted as axis (angle) (direction)  |
-|   (:class:`TranslationAlongSymmetryAxisGenerator`)  |    (:class:`TranslationTowardsAxisGenerator`        |
-|                                                     |    :class:`TranslationTowardsSymmetryAxisGenerator`)|
+|   Random translation vector generated along a       |    Random translation vectors generated towards an  |
+|   predefined axis or one of the symmetry axes of the|    axis within some maximum angle.                  |
+|   hexane molecule and applied on all the molecule's |    Legend is formatted as axis (angle) (direction)  |
+|   atoms at the same time.                           |    (:class:`TranslationTowardsAxisGenerator`        |
+|   (:class:`TranslationAlongAxisGenerator`           |    :class:`TranslationTowardsSymmetryAxisGenerator`)|
+|   :class:`TranslationAlongSymmetryAxisGenerator`)   |                                                     |
+|                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
-
-
 
 """
 
@@ -262,6 +264,18 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         """ Get translation axis index."""
         return self.__axis
         
+    def check_group(self, group):
+        """
+        Checks the generator's group.
+        
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        if len(group.indexes)<=1:
+            return False, "At least two atoms needed in a group to perform translation along symmetry axis."
+        else:
+            return True, "" 
+            
     def set_axis(self, axis):
         """
         Sets the symmetry axis index to translate along.
@@ -405,6 +419,18 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         """ Get translation axis index."""
         return self.__axis
         
+    def check_group(self, group):
+        """
+        Checks the generator's group.
+        
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        if len(group.indexes)<=1:
+            return False, "At least two atoms needed in a group to perform translation along symmetry axis."
+        else:
+            return True, "" 
+            
     def set_axis(self, axis):
         """
         Sets the symmetry axis index to translate along.
@@ -447,15 +473,6 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
             #. path (list): The list of moves.
         """
         return [FLOAT_TYPE(distance) for distance in path]
-        
-    def check_group(self, group):
-        """
-        Checks the generator's group.
-        
-        :Parameters:
-            #. group (Group): the Group instance.
-        """
-        return True, ""
         
     def transform_coordinates(self, coordinates, argument):
         """

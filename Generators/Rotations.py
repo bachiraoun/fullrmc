@@ -2,7 +2,7 @@
 Rotations contains all rotation like MoveGenerator classes.
 
 .. inheritance-diagram:: fullrmc.Generators.Rotations
-    :parts: 2 
+    :parts: 1 
     
     
 +-----------------------------------------------------+-----------------------------------------------------+

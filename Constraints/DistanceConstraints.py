@@ -2,7 +2,7 @@
 DistanceConstraints contains classes for all constraints related distances between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.DistanceConstraints
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

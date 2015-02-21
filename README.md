@@ -13,9 +13,6 @@ among other functionalities:
 4. Every group can be assigned a different move generator (translation, rotation, a combination of moves generators, etc).
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
-## News
-Developing directional move generators.  
-
 ## Installation
 fullrmc is still going through testing and further implementations. 
 Among others, the Core module is not yet uploaded to github for protection purposes. 
@@ -30,4 +27,4 @@ Bachir Aoun
 ## Copyright and license
 No license is provided, therefore the code is copyrighted by default. 
 People can read the code, but they have no legal right to use it. To use the code, 
-you must contact the author directly and seek permission.
+you must contact the author directly and ask permission.

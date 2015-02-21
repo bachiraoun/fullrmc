@@ -2,7 +2,7 @@
 AngleConstraints contains classes for all constraints related angles between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.AngleConstraints
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

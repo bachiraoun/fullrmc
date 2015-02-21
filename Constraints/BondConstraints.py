@@ -2,7 +2,7 @@
 BondConstraints contains classes for all constraints related bonds between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.BondConstraints
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

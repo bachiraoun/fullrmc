@@ -173,7 +173,7 @@ the Engine is run for additional several hours to refine atoms positions separat
 +----------------------------------------+----------------------------------------+----------------------------------------+ 
 |.. figure:: thfBox.png                  |.. figure:: beforeFit.png               |.. figure:: afterFit.png                | 
 |   :width: 300px                        |   :width: 300px                        |   :width: 300px                        | 
-|   :height: 300px                       |   :height: 300px                       |   :height: 300px                       |
+|   :height: 200px                       |   :height: 200px                       |   :height: 200px                       |
 |   :align: left                         |   :align: left                         |   :align: left                         | 
 |                                        |                                        |                                        |
 |   a) Structure containing 800          |   b) Initial pair distribution function|   c) pair distribution function        |

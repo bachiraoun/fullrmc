@@ -2,7 +2,7 @@
 RandomSelectors contains GroupSelector classes of random order of selections.
 
 .. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

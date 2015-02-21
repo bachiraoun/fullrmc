@@ -2,7 +2,7 @@
 OrderedSelectors contains GroupSelector classes of defined order of selection.
 
 .. inheritance-diagram:: fullrmc.Selectors.OrderedSelectors
-    :parts: 2
+    :parts: 1
 """
 
 # standard libraries imports

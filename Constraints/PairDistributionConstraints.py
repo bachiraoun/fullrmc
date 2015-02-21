@@ -2,7 +2,7 @@
 PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.
 
 .. inheritance-diagram:: fullrmc.Constraints.PairDistributionConstraints
-    :parts: 2 
+    :parts: 1
 """
 
 # standard libraries imports

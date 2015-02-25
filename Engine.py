@@ -43,6 +43,10 @@ class Engine(object):
     
     :Parameters:
             #. pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.
+            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
+               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
             #. names (None, list): All pdb atoms names list. 
                List length must be equal to the number of atoms in the pdbParser instance or pdb file.
                If None names will be assigned automatically by parsing pdbParser instance.
@@ -64,7 +68,8 @@ class Engine(object):
                It's the percentage of allowed unsatisfactory 'tried' moves. 
     """
     
-    def __init__(self, pdb, names=None, elements=None, 
+    def __init__(self, pdb, boundaryConditions=None,
+                       names=None, elements=None, 
                        moleculesIndexes=None, moleculesNames=None,
                        groups=None, groupSelector=None, 
                        constraints=None, tolerance=0.):
@@ -75,7 +80,7 @@ class Engine(object):
         # initialize engine flags and arguments
         self.__initialize_engine__()
         # set pdb
-        self.set_pdb(pdb=pdb, elements=elements, moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
+        self.set_pdb(pdb=pdb, boundaryConditions=boundaryConditions, elements=elements, moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
         # set set groups
         self.set_groups(groups)
         # set set groups
@@ -409,6 +414,8 @@ class Engine(object):
                     gr = Group(indexes=g)
                 # append group
                 self.__groups.append( gr )
+        # set group engine
+        [gr._set_engine(self) for gr in self.__groups]
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
         
@@ -424,6 +431,8 @@ class Engine(object):
         # create groups
         keys = sorted(moleculesIndexes.keys())
         self.__groups = [Group(indexes=moleculesIndexes[k]) for k in keys] 
+        # set group engine
+        [gr._set_engine(self) for gr in self.__groups]
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
             
@@ -473,12 +482,16 @@ class Engine(object):
         """ Visualize the last configuration using pdbParser visualize method. """
         self.__pdb.visualize(coordinates=self.__realCoordinates)
         
-    def set_pdb(self, pdb, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
+    def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
         """
         Sets the configuration pdb. Engine and constraintsData will be automatically reset
         
         :Parameters:
             #. pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.
+            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
+               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
             #. names (None, list): All pdb atoms names list.
                If None names will be calculated automatically by parsing pdb instance.
             #. elements (None, list): All pdb atoms elements list.
@@ -497,7 +510,6 @@ class Engine(object):
             try:
                 pdb = pdbParser(pdb)
             except:
-                
                 raise Exception( log.LocalLogger("fullrmc").logger.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
         # set pdb
         self.__pdb = pdb        
@@ -506,7 +518,9 @@ class Engine(object):
         # reset configuration state
         self.__state = time.time()
         # set boundary conditions
-        self.set_boundary_conditions(pdb.boundaryConditions)
+        if boundaryConditions is None:
+            boundaryConditions = pdb.boundaryConditions
+        self.set_boundary_conditions(boundaryConditions)
         # get elementsIndexes
         self.set_elements_indexes(elements)
         # get namesIndexes

@@ -31,7 +31,19 @@ Translations contains all translation like MoveGenerator classes.
 |   :class:`TranslationAlongSymmetryAxisGenerator`)   |                                                     |
 |                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
-
+|.. figure:: translationTowardsCenter.png             |                                                     |
+|   :width: 375px                                     |                                                     |
+|   :height: 300px                                    |                                                     |
+|   :align: left                                      |                                                     |
+|                                                     |                                                     |
+|   Random translation vectors generated towards a    |                                                     |
+|   pre-defined center or towards the geometric center|                                                     |
+|   of a group of atoms. Here 20 vectors are generated|                                                     |
+|   within a maximum separation angle of 30 deg.      |                                                     |
+|   (:class:`TranslationTowardsCenterGenerator`)      |                                                     |
+|                                                     |                                                     |
+|                                                     |                                                     |
++-----------------------------------------------------+-----------------------------------------------------+
 """
 
 # standard libraries imports
@@ -496,75 +508,146 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         return coordinates+vector
     
 
-class TranslationCenterDirectionGenerator(TranslationGenerator):    
+class TranslationTowardsCenterGenerator(TranslationGenerator):    
     """ 
     Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group.
     
     :Parameters:
         #. group (None, Group): The group instance.
-        #. center (None, numpy.array): The center value. 
-           If None, then center is calculated as the center of geometry of group atoms.
-           If numpy.array of indexes than center is calculated as the center of geometry of the given atoms indexes.
-           If numpy.array of three float numbers, it is then considered the center.
+        #. center (dict): The center value dictionary. Must have a single key and this can only be 'fixed' or 'indexes'.
+           If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
+           If key is indexes, value must be a list or a numpy array of indexes.
         #. amplitude (number): The maximum translation amplitude in Angstroms.
-        #. randomize (boolean): Whether randomize the amplitude and direction (towards or away from center) of translation of every atom in the group.
+        #. angle (None, number): The maximum tolerance angle in degrees between a generated translation vector and the computed direction. 
+           If None is given, all generated translation vectors will be along the direction to center.        
+        #. direction (None, True, False): Whether to generate translation vectors pointing towards the center or not.
+           If None generated axis can be randomly generated towards the center or away from the center.
+           If True all generated vectors point towards the center.
+           If False all generated vectors point away from the center.        
     """
-    def __init__(self, group=None, center=None, amplitude=0.1, randomize=False):
+    def __init__(self, group=None, center={"fixed":(0,0,0)}, amplitude=0.1, angle=30, direction=True):
         # initialize PathGenerator
         TranslationGenerator.__init__(self, group=group, amplitude=amplitude)
-        # set axis
-        self.set_randomize(randomize)
-        # set axis
+        # set direction
+        self.set_direction(direction)
+        # set point
         self.set_center(center)
+        # set angle
+        self.set_angle(angle)
     
     @property
-    def randomize(self):
-        """ Get randomize value."""
-        return self.__randomize
-    
+    def direction(self):
+        """ Get direction value."""
+        return self.__direction
+        
     @property
     def center(self):
         """ Get the center value."""
         return self.__center
-        
-    def set_randomize(self, randomize):
+    
+    @property
+    def angle(self):
+        """ Get the angle value in rad."""
+        return self.__angle    
+    
+    def set_direction(self, direction):
         """
-        Sets randomize flag value.
+        Sets the generated translation vectors direction.
         
         :Parameters:
-            #. randomize (boolean): Whether randomize the amplitude and direction (towards or away from center) of translation of every atom in the group.
+            #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+               If None generated axis can be in the same direction of axis or in the opposite.
+               If True all generated vectors are in the same direction of axis.
+               If False all generated vectors are in the opposite direction of axis.
         """
-        assert isinstance(randomize, bool), log.LocalLogger("fullrmc").logger.error("randomize must be boolean")
-        self.__randomize = randomize
-    
+        assert direction in (None, True, False), log.LocalLogger("fullrmc").logger.error("direction can only be None, True or False")
+        self.__direction = direction
+        
+    def set_angle(self, angle):
+        """
+        Sets the tolerance maximum angle.
+        
+        :Parameters:
+            #. angle (None, number): The maximum tolerance angle in degrees between a generated translation vector and the computed direction. 
+               If None is given, all generated translation vectors will be along the direction to center.        
+        """
+        if angle is not None:
+            assert is_number(angle), log.LocalLogger("fullrmc").logger.error("angle must be numbers")
+            assert angle>0, log.LocalLogger("fullrmc").logger.error("angle must be positive")
+            assert angle<=360, log.LocalLogger("fullrmc").logger.error("angle must be smaller than 360")
+            angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
+        self.__angle = angle
+         
     def set_center(self, center):
         """
         Sets center value.
         
         :Parameters:
-           #. center (None, numpy.array): The center value. 
-              If None, then center is calculated as the center of geometry of group atoms.
-              If numpy.array of indexes than center is calculated as the center of geometry of the given atoms indexes.
-              If numpy.array of three float numbers, it is then considered the center.
+           #. center (dict): The center value dictionary. Must have a single key and this can only be 'fixed' or 'indexes'.
+              If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
+              If key is indexes, value must be a list or a numpy array of indexes.
         """
-        #not implemented yet ! IT NEEDS ACCESS TO THE ENGINE IN SOME WAY
-        pass
-            
-        
-    def __amplify_vector__(self, vector):
-        # amplify vectorsToCenter
-        if self.__randomize:
-            length = vector.shape[0]
-            #amplitude = self.amplitude * np.array(np.random.random(length)-np.random.random(length), dtype=FLOAT_TYPE)
-            amplitude = self.amplitude * np.array(1-2*np.random.random(length), dtype=FLOAT_TYPE)
-            vector[:,0] *= amplitude
-            vector[:,1] *= amplitude
-            vector[:,2] *= amplitude
+        assert isinstance(center, dict), log.LocalLogger("fullrmc").logger.error("center must be a dictionary")
+        assert len(center) == 1, log.LocalLogger("fullrmc").logger.error("center must have a single key")       
+        key = center.keys()[0]
+        val = center[key]
+        assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("center must be a list")
+        if isinstance(center, np.ndarray):
+            assert len(center.shape) == 1, log.LocalLogger("fullrmc").logger.error("center value must have a single dimension")
+        assert len(val)>0, log.LocalLogger("fullrmc").logger.error("center value must be a non-zero list.")
+        for v in val:
+            assert is_number(v), log.LocalLogger("fullrmc").logger.error("center value item must be numbers") 
+        if key == "fixed":
+            self.__mustCompute = False
+            assert len(val) == 3, log.LocalLogger("fullrmc").logger.error("fixed center must have exactly 3 elements corresponding to X,Y and Z coordinates of the center point.")
+            val = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE)
+        elif key == "indexes":
+            self.__mustCompute = True
+            for v in val:
+                assert is_integer(v), log.LocalLogger("fullrmc").logger.error("indexes center items be integers")
+            val =  np.array([INT_TYPE(v) for v in val], dtype=INT_TYPE)
+            for v in val:
+                assert v>=0, log.LocalLogger("fullrmc").logger.error("indexes center items be positive integers")            
         else:
-            amplitude = self.amplitude * FLOAT_TYPE(generate_random_float()-generate_random_float())
-            vector *= amplitude
+            self.__mustCompute = None
+            raise Exception(log.LocalLogger("fullrmc").logger.error("center key must be either 'fixed' or 'indexes'"))        
+        # set center
+        self.__center = {key:val}
+        
+    def __get_amplitude__(self):
+        # get translation amplitude
+        if self.__direction is None:
+            amplitude = (generate_random_float()-generate_random_float())*self.amplitude
+        elif self.__direction:
+            amplitude = generate_random_float()*self.amplitude
+        else:
+            amplitude = -generate_random_float()*self.amplitude
+        return amplitude
+    
+    def __get_translation_vector__(self, direction):
+        # normalize direction
+        norm = np.sqrt(np.add.reduce(direction**2))
+        direction[0] /= norm
+        direction[1] /= norm
+        direction[2] /= norm
+        # get vector
+        if self.__angle is None:
+            vector = direction
+        else:
+            vector = generate_vectors_in_solid_angle(direction=direction,
+                                                     maxAngle=self.__angle,
+                                                     numberOfVectors=1)[0]  
+        # return
         return vector
-            
+        
+    def __get_center__(self):
+        if self.__mustCompute:
+            center  = self.group._get_engine().realCoordinates[self.__center["indexes"]]
+            center = np.mean(center, axis=0).astype(FLOAT_TYPE)
+        else:
+            center  = self.__center["fixed"]
+        return center
+        
     def transform_coordinates(self, coordinates, argument=None):
         """
         Translate coordinates.
@@ -576,53 +659,18 @@ class TranslationCenterDirectionGenerator(TranslationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # compute center
-        center = np.mean(coordinates, 0)
-        # compute vectorsToCenter
-        vectorsToCenter = coordinates-center
-        # normalize vectorsToCenter
-        norm = np.linalg.norm(vectorsToCenter,axis=1)
-        vectorsToCenter[:,0] /= norm
-        vectorsToCenter[:,1] /= norm
-        vectorsToCenter[:,2] /= norm
-        # amplify vectorsToCenter
-        vectorsToCenter = self.__amplify_vector__(vectorsToCenter)
+        # get center
+        center = self.__get_center__()
+        # compute coordinates center
+        coordsCenter = np.mean(coordinates, axis=0)
+        direction    = center-coordsCenter
+        # translation vector
+        vector = self.__get_translation_vector__(direction)
+        # amplify vector
+        vector *= self.__get_amplitude__()
         # translate and return
-        return coordinates+vectorsToCenter
+        return coordinates+vector
  
 
-class ShrinkGenerator(TranslationCenterDirectionGenerator):    
-    """ 
-    Generates random translation of atoms in a group towards the group center.
-    """
-    def __amplify_vector__(self, vector):
-        # amplify vectorsToCenter
-        if self.randomize:
-            length = vector.shape[0]
-            amplitude = -self.amplitude * np.array(np.random.random(length), dtype=FLOAT_TYPE)
-            vector[:,0] *= amplitude
-            vector[:,1] *= amplitude
-            vector[:,2] *= amplitude
-        else:
-            amplitude = -self.amplitude * FLOAT_TYPE(generate_random_float())
-            vector *= amplitude
-        return vector
-        
-class ExpandGenerator(TranslationCenterDirectionGenerator):    
-    """ 
-    Generates random translation of atoms in a group away from group center.
-    """
-    def __amplify_vector__(self, vector):
-        if self.randomize:
-            length = vector.shape[0]
-            amplitude = self.amplitude * np.array(np.random.random(length), dtype=FLOAT_TYPE)
-            vector[:,0] *= amplitude
-            vector[:,1] *= amplitude
-            vector[:,2] *= amplitude
-        else:
-            amplitude = self.amplitude * FLOAT_TYPE(generate_random_float())
-            vector *= amplitude
-        return vector        
-        
 
        

@@ -1,6 +1,6 @@
 <map id="inheritance0f80670324" name="inheritance0f80670324">
-<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,53,152,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="200,5,427,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="201,53,425,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="215,101,411,125"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,149,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="199,55,419,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,104,404,129"/>
 </map>

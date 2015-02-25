@@ -336,7 +336,7 @@ system using user-defined molecular or atomistic constraints such as bond-length
 inter-molecular-distances, etc.</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
 It has the capability to use and fit simultaneously multiple sets of experimental data. 
@@ -347,6 +347,10 @@ One can also define other constraints such as distances, bonds length, angles an
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.</li>
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.</li>
 <li>names (None, list): All pdb atoms names list. 
 List length must be equal to the number of atoms in the pdbParser instance or pdb file.
 If None names will be assigned automatically by parsing pdbParser instance.</li>
@@ -693,7 +697,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">run</tt><big>(</big><em>numberOfSteps=9223372036854775807</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
+<tt class="descname">run</tt><big>(</big><em>numberOfSteps=2147483647</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
 <dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -844,7 +848,7 @@ If None names will be generated automatically by parsing pdbParser instance.</li
 
 <dl class="method">
 <dt>
-<tt class="descname">set_pdb</tt><big>(</big><em>pdb</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><big>)</big></dt>
+<tt class="descname">set_pdb</tt><big>(</big><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><big>)</big></dt>
 <dd><p>Sets the configuration pdb. Engine and constraintsData will be automatically reset</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -852,6 +856,10 @@ If None names will be generated automatically by parsing pdbParser instance.</li
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.</li>
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.</li>
 <li>names (None, list): All pdb atoms names list.
 If None names will be calculated automatically by parsing pdb instance.</li>
 <li>elements (None, list): All pdb atoms elements list.

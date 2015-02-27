@@ -53,6 +53,7 @@
 <li><a class="reference internal" href="#">fullrmc.Generators package</a><ul>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Rotations">Rotations</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Translations">Translations</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Generators.Agitations">Agitations</a></li>
 </ul>
 </li>
 </ul>
@@ -840,7 +841,8 @@ within a maximum separation angle of 30 deg.
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator.amplitude">
 <tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Gets the maximum translation amplitude.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator.check_group">
@@ -1226,6 +1228,183 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dl class="function">
 <dt id="fullrmc.Generators.Translations.generate_random_float">
 <tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Generators.Agitations">
+<span id="agitations"></span><h2>Agitations<a class="headerlink" href="#module-fullrmc.Generators.Agitations" title="Permalink to this headline">¶</a></h2>
+<p>Agitations contains all MoveGenerator classes that agitate and shake structures such as distances, angles, etc.</p>
+<p class="graphviz">
+<img src="_images/inheritance-ecc0dcb81cb61e328dbae0fd4c7ff05b9d899c59.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
+<map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
+<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,5,344,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,5,115,31"/>
+</map>
+</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/distanceAgitation.png"><img alt="_images/distanceAgitation.png" src="_images/distanceAgitation.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">Random H-H bond length agitations generated on
+dihydrogen molecules. At room temperature, H2
+molecule bond length fluctuates around 0.74
+Angstroms. Red hydrogen atoms represent the shrank
+H-H bond length molecule while blue hydrogen atoms
+represent the expanded H-H bond length molecules.
+(<a class="reference internal" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a>)</p>
+</div>
+</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Agitations.</tt><tt class="descname">DistanceAgitationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>symmetric=True</em>, <em>shrink=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
+<p>Generates random agitation moves upon a distance separating two atoms by translating
+both atoms away from each other or closer to each other along the direction line between them.
+This is mainly used to shake two atoms bond distance by increasing and decreasing 
+the bond length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): The group instance.</li>
+<li>amplitude (number):  The maximum translation amplitude in Angstroms applied on every atom.</li>
+<li>symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.</li>
+<li>shrink (None, bool): Whether to always shrink the distance or expand it.
+If True, moves will always bring atoms closer to each other.
+If False, moves will always bring atoms away from each other.
+If None, no orientation is forced, therefore atoms can randomly get closer to each other or away from each other.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.amplitude">
+<tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the maximum agitation amplitude.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_amplitude">
+<tt class="descname">set_amplitude</tt><big>(</big><em>amplitude</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets maximum translation vector allowed amplitude.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>amplitude (number): the maximum allowed translation vector amplitude.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_shrink">
+<tt class="descname">set_shrink</tt><big>(</big><em>shrink</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_shrink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets shrink flag value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>shrink (None, bool): Whether to always shrink the distance or expand it.
+If True, moves will always bring atoms closer to each other.
+If False, moves will always bring atoms away from each other.
+If None, no orientation is forced, therefore distance can increase or decrease randomly at every step.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_symmetric">
+<tt class="descname">set_symmetric</tt><big>(</big><em>symmetric</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets symmetric flag value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.shrink">
+<tt class="descname">shrink</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.shrink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets shrink flag value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.symmetric">
+<tt class="descname">symmetric</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets symmetric flag value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the translation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the translation.</li>
+<li>argument (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Generators.Agitations.generate_random_float">
+<tt class="descclassname">fullrmc.Generators.Agitations.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.generate_random_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>random() -&gt; x in the interval [0, 1).</p>
 </dd></dl>
 

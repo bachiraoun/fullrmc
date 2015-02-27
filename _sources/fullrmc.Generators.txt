@@ -17,4 +17,10 @@ Translations
     :undoc-members:
     :show-inheritance:
 
+Agitations
+------------
 
+.. automodule:: fullrmc.Generators.Agitations
+    :members:
+    :undoc-members:
+    :show-inheritance:

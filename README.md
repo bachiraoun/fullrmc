@@ -13,9 +13,9 @@ among other functionalities:
 4. Every group can be assigned a different move generator (translation, rotation, a combination of moves generators, etc).
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
-## To do
-* Creating specialized move generators such as axial, angular, torisonal, etc
-* Elements transmutation and atoms switching is next on our priority list of implementation.
+## Next on the list
+* Creating specialized move generators such as axial, angular, torisonal, etc.
+* Elements transmutation and atoms switching.
 
 
 ## Installation

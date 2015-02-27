@@ -14,7 +14,7 @@ among other functionalities:
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
 ## Next on the list
-* Creating specialized move generators such as axial, angular, torisonal, etc.
+* Creating molecular specialized move generators such as bondLength, bondsAngle, torsionAngle, etc.
 * Elements transmutation and atoms switching.
 
 

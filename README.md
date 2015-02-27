@@ -14,7 +14,9 @@ among other functionalities:
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
 ## To do
-Elements transmutation and atoms switching is next on our priority list of implementation.
+1. Creating specialized move generators such as axial, angular, torisonal, etc
+2. Elements transmutation and atoms switching is next on our priority list of implementation.
+
 
 ## Installation
 fullrmc is still going through testing and further implementations. 

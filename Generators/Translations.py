@@ -73,6 +73,7 @@ class TranslationGenerator(MoveGenerator):
         
     @property
     def amplitude(self):
+        """Gets the maximum translation amplitude."""
         return self.__amplitude
         
     def set_amplitude(self, amplitude):
@@ -112,7 +113,7 @@ class TranslationGenerator(MoveGenerator):
         # normalize vector
         vector /= FLOAT_TYPE( np.linalg.norm(vector) )
         # amplify vector
-        vector *= FLOAT_TYPE(np.random.random(1)[0]*self.__amplitude)
+        vector *= FLOAT_TYPE(generate_random_float()*self.__amplitude)
         # translate and return
         return coordinates+vector
         

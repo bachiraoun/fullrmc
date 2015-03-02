@@ -1236,10 +1236,11 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <span id="agitations"></span><h2>Agitations<a class="headerlink" href="#module-fullrmc.Generators.Agitations" title="Permalink to this headline">¶</a></h2>
 <p>Agitations contains all MoveGenerator classes that agitate and shake structures such as distances, angles, etc.</p>
 <p class="graphviz">
-<img src="_images/inheritance-ecc0dcb81cb61e328dbae0fd4c7ff05b9d899c59.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
+<img src="_images/inheritance-542f957635f3c4da1efc41bb7c22c58d3a3eca0a.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
 <map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
-<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,5,344,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,5,115,31"/>
+<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="172,5,335,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,31,115,56"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,55,344,80"/>
 </map>
 </p>
 <table border="1" class="docutils">
@@ -1255,17 +1256,199 @@ dihydrogen molecules. At room temperature, H2
 molecule bond length fluctuates around 0.74
 Angstroms. Red hydrogen atoms represent the shrank
 H-H bond length molecule while blue hydrogen atoms
-represent the expanded H-H bond length molecules.
-(<a class="reference internal" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a>)</p>
+represent the expanded H-H bond length molecules.</p>
+<div class="legend">
+(<a class="reference internal" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a>)</div>
 </div>
 </td>
-<td>&nbsp;</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/angleAgitation.png"><img alt="_images/angleAgitation.png" src="_images/angleAgitation.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">Random H-O-H angle agitation generated on water
+molecules. At room temperature, water molecule
+angle formed between the two vectors formed between
+consecutively the Oxygen atom and the two hydrogen
+atoms is about 105 deg. Shrank H-O-H angles are
+represented by the red hydrogen while expanded
+angles are represented in blue.
+(<a class="reference internal" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a>)</p>
+</div>
+</td>
 </tr>
 </tbody>
 </table>
 <dl class="class">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Agitations.</tt><tt class="descname">AngleAgitationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em>, <em>symmetric=True</em>, <em>shrink=None</em>, <em>agitate=(True</em>, <em>True)</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
+<p>Generates random agitation moves upon an angle defined between two vectors left-central and right-central 
+where (central, left, right) are three atoms. Move will be performed on left and/or right atom while 
+central atom will always remain fixed. Distances between left/right and central atoms will remain
+unchanged. This is mainly used to shake bonded atoms angles by increasing and decreasing 
+the bond length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): The group instance. It must contain exactly three indexes in respective
+order (central, left, right) atoms indexes.</li>
+<li>amplitude (number):  The maximum agitation angle amplitude in degrees of left and right atoms separately.</li>
+<li>symmetric (bool): Whether to apply the same amplitude of rotation on both left and right atoms or not.</li>
+<li>shrink (None, bool): Whether to always shrink the angle or expand it.
+If True, moves will always reduce angle.
+If False, moves will always increase angle.
+If None, no orientation is forced, therefore angle can randomly get wider or tighter.</li>
+<li>agitate (tuple): It&#8217;s a tuple of two boolean values for respectively (left, right) atoms, 
+at least one of them must be True. Whether to agitate the left atom, the right or both. 
+This is useful to set an atom fixed while only the other succumb the agitation to adjust the angle.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.agitate">
+<tt class="descname">agitate</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.agitate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets agitate tuple flags value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.amplitude">
+<tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the maximum agitation angle amplitude in rad.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.set_agitate">
+<tt class="descname">set_agitate</tt><big>(</big><em>agitate</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.set_agitate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets agitate tuple value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least one of them must be True.
+Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+logical to adjust the bond length by moving only the hydrogen atom along the bond direction.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.set_amplitude">
+<tt class="descname">set_amplitude</tt><big>(</big><em>amplitude</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.set_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets maximum allowed agitation rotation angle amplitude in degrees of left and right atoms separately and transforms it to rad.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>amplitude (number):  The maximum agitation angle amplitude in degrees of left and right atoms separately.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.set_shrink">
+<tt class="descname">set_shrink</tt><big>(</big><em>shrink</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.set_shrink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets shrink flag value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>shrink (None, bool): Whether to always shrink the distance or expand it.
+If True, moves will always bring atoms closer to each other.
+If False, moves will always bring atoms away from each other.
+If None, no orientation is forced, therefore distance can increase or decrease randomly at every step.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.set_symmetric">
+<tt class="descname">set_symmetric</tt><big>(</big><em>symmetric</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.set_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets symmetric flag value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.shrink">
+<tt class="descname">shrink</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.shrink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets shrink flag value.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.symmetric">
+<tt class="descname">symmetric</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets symmetric flag value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate coordinates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the translation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the translation.</li>
+<li>argument (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Agitations.</tt><tt class="descname">DistanceAgitationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>symmetric=True</em>, <em>shrink=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Agitations.</tt><tt class="descname">DistanceAgitationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>symmetric=True</em>, <em>shrink=None</em>, <em>agitate=(True</em>, <em>True)</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
 <p>Generates random agitation moves upon a distance separating two atoms by translating
 both atoms away from each other or closer to each other along the direction line between them.
@@ -1276,18 +1459,28 @@ the bond length.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>group (None, Group): The group instance.</li>
+<li>group (None, Group): The group instance. It must contain exactly 2 indexes.</li>
 <li>amplitude (number):  The maximum translation amplitude in Angstroms applied on every atom.</li>
 <li>symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.</li>
 <li>shrink (None, bool): Whether to always shrink the distance or expand it.
 If True, moves will always bring atoms closer to each other.
 If False, moves will always bring atoms away from each other.
 If None, no orientation is forced, therefore atoms can randomly get closer to each other or away from each other.</li>
+<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least one of them must be True.
+Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+logical to adjust the bond length by moving only the hydrogen atom along the bond direction.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.agitate">
+<tt class="descname">agitate</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.agitate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets agitate tuple flags value.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.amplitude">
 <tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
@@ -1304,6 +1497,26 @@ If None, no orientation is forced, therefore atoms can randomly get closer to ea
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_agitate">
+<tt class="descname">set_agitate</tt><big>(</big><em>agitate</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.set_agitate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets agitate tuple value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least one of them must be True.
+Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+logical to adjust the bond length by moving only the hydrogen atom along the bond direction.</li>
 </ol>
 </td>
 </tr>

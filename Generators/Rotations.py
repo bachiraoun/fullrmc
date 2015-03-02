@@ -26,12 +26,11 @@ Rotations contains all rotation like MoveGenerator classes.
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.Geometry import get_rotation_matrix
 
 # fullrmc imports
 from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis
+from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, get_rotation_matrix
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 

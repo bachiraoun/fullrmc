@@ -5,18 +5,19 @@ Agitations contains all MoveGenerator classes that agitate and shake structures 
     :parts: 1 
 
 +------------------------------------------------------+------------------------------------------------------+
-|.. figure:: distanceAgitation.png                     |                                                      |
-|   :width: 375px                                      |                                                      |
-|   :height: 300px                                     |                                                      |
-|   :align: left                                       |                                                      |
+|.. figure:: distanceAgitation.png                     |.. figure:: angleAgitation.png                        |
+|   :width: 375px                                      |   :width: 375px                                      |
+|   :height: 300px                                     |   :height: 300px                                     |
+|   :align: left                                       |   :align: left                                       |
 |                                                      |                                                      |
-|   Random H-H bond length agitations generated on     |                                                      |
-|   dihydrogen molecules. At room temperature, H2      |                                                      |
-|   molecule bond length fluctuates around 0.74        |                                                      |
-|   Angstroms. Red hydrogen atoms represent the shrank |                                                      |
-|   H-H bond length molecule while blue hydrogen atoms |                                                      |
-|   represent the expanded H-H bond length molecules.  |                                                      |
-|   (:class:`DistanceAgitationGenerator`)              |                                                      |
+|   Random H-H bond length agitations generated on     |   Random H-O-H angle agitation generated on water    |
+|   dihydrogen molecules. At room temperature, H2      |   molecules. At room temperature, water molecule     |
+|   molecule bond length fluctuates around 0.74        |   angle formed between the two vectors formed between|
+|   Angstroms. Red hydrogen atoms represent the shrank |   consecutively the Oxygen atom and the two hydrogen |
+|   H-H bond length molecule while blue hydrogen atoms |   atoms is about 105 deg. Shrank H-O-H angles are    |
+|   represent the expanded H-H bond length molecules.  |   represented by the red hydrogen while expanded     |
+|                                                      |   angles are represented in blue.                    |
+|   (:class:`DistanceAgitationGenerator`)              |   (:class:`AngleAgitationGenerator`)                 |
 +------------------------------------------------------+------------------------------------------------------+
  
 """
@@ -29,7 +30,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float
-from fullrmc.Core.Collection import is_number, is_integer
+from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -41,15 +42,20 @@ class DistanceAgitationGenerator(MoveGenerator):
     the bond length.
      
     :Parameters:
-        #. group (None, Group): The group instance.
+        #. group (None, Group): The group instance. It must contain exactly 2 indexes.
         #. amplitude (number):  The maximum translation amplitude in Angstroms applied on every atom.
         #. symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.
         #. shrink (None, bool): Whether to always shrink the distance or expand it.
            If True, moves will always bring atoms closer to each other.
            If False, moves will always bring atoms away from each other.
-           If None, no orientation is forced, therefore atoms can randomly get closer to each other or away from each other.         
+           If None, no orientation is forced, therefore atoms can randomly get closer to each other or away from each other.     
+        #. agitate (tuple): It's a tuple of two boolean values, at least one of them must be True.
+           Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+           the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+           logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
+                   
     """
-    def __init__(self, group=None, amplitude=0.2, symmetric=True, shrink=None):
+    def __init__(self, group=None, amplitude=0.2, symmetric=True, shrink=None, agitate=(True,True)):
         super(DistanceAgitationGenerator, self).__init__(group=group)
         # set amplitude
         self.set_amplitude(amplitude)
@@ -57,6 +63,8 @@ class DistanceAgitationGenerator(MoveGenerator):
         self.set_symmetric(symmetric)
         # set shrink
         self.set_shrink(shrink)
+        # set agitated
+        self.set_agitate(agitate)
         
     @property
     def amplitude(self):
@@ -73,6 +81,11 @@ class DistanceAgitationGenerator(MoveGenerator):
         """Gets symmetric flag value."""
         return self.__symmetric
     
+    @property
+    def agitate(self):
+        """Gets agitate tuple flags value."""
+        return self.__agitate
+        
     def check_group(self, group):
         """
         Checks the generator's group.
@@ -81,7 +94,7 @@ class DistanceAgitationGenerator(MoveGenerator):
             #. group (Group): the Group instance.
         """
         if len(group.indexes)!=2:
-            return False, "two atoms are needed in a group to perform bond distance movements."
+            return False, "two atoms are needed in a group to perform distance agitation movements."
         else:
             return True, "" 
             
@@ -119,7 +132,23 @@ class DistanceAgitationGenerator(MoveGenerator):
         """
         assert shrink in (None, True, False), log.LocalLogger("fullrmc").logger.error("shrink can only be None, True or False")
         self.__shrink = shrink
- 
+    
+    def set_agitate(self, agitate):
+        """
+        Sets agitate tuple value.
+        
+        :Parameters:
+            #. agitate (tuple): It's a tuple of two boolean values, at least one of them must be True.
+               Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+               the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+               logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
+        """
+        assert isinstance(agitate, (list,tuple)), log.LocalLogger("fullrmc").logger.error("agitate must be a list or a tuple")
+        assert len(agitate)==2, log.LocalLogger("fullrmc").logger.error("agitate must have 2 items")
+        assert [isinstance(a,bool) for a in agitate]==[True,True], log.LocalLogger("fullrmc").logger.error("agitate items must be boolean")
+        assert agitate[0] or agitate[1], log.LocalLogger("fullrmc").logger.error("agitate both items can't be False")
+        self.__agitate = (agitate[0], agitate[1])     
+
     def transform_coordinates(self, coordinates, argument=None):
         """
         Translate coordinates.
@@ -154,10 +183,181 @@ class DistanceAgitationGenerator(MoveGenerator):
             dir1 = FLOAT_TYPE(-1) 
         # create translation vectors
         translationVectors = np.empty((2,3), dtype=FLOAT_TYPE)
-        translationVectors[0,:] = dir0*amp0*vector
-        translationVectors[1,:] = dir1*amp1*vector
+        translationVectors[0,:] = self.__agitate[0]*dir0*amp0*vector
+        translationVectors[1,:] = self.__agitate[1]*dir1*amp1*vector
         # translate and return
         return coordinates+translationVectors
  
 
-       
+
+
+class AngleAgitationGenerator(MoveGenerator):
+    """
+    Generates random agitation moves upon an angle defined between two vectors left-central and right-central 
+    where (central, left, right) are three atoms. Move will be performed on left and/or right atom while 
+    central atom will always remain fixed. Distances between left/right and central atoms will remain
+    unchanged. This is mainly used to shake bonded atoms angles by increasing and decreasing 
+    the bond length.
+     
+    :Parameters:
+        #. group (None, Group): The group instance. It must contain exactly three indexes in respective
+           order (central, left, right) atoms indexes.
+        #. amplitude (number):  The maximum agitation angle amplitude in degrees of left and right atoms separately.
+        #. symmetric (bool): Whether to apply the same amplitude of rotation on both left and right atoms or not.
+        #. shrink (None, bool): Whether to always shrink the angle or expand it.
+           If True, moves will always reduce angle.
+           If False, moves will always increase angle.
+           If None, no orientation is forced, therefore angle can randomly get wider or tighter.     
+        #. agitate (tuple): It's a tuple of two boolean values for respectively (left, right) atoms, 
+           at least one of them must be True. Whether to agitate the left atom, the right or both. 
+           This is useful to set an atom fixed while only the other succumb the agitation to adjust the angle.
+                   
+    """
+    def __init__(self, group=None, amplitude=2, symmetric=True, shrink=None, agitate=(True,True)):
+        super(AngleAgitationGenerator, self).__init__(group=group)
+        # set amplitude
+        self.set_amplitude(amplitude)
+        # set symmetric
+        self.set_symmetric(symmetric)
+        # set shrink
+        self.set_shrink(shrink)
+        # set agitated
+        self.set_agitate(agitate)
+        
+    @property
+    def amplitude(self):
+        """Gets the maximum agitation angle amplitude in rad."""
+        return self.__amplitude
+    
+    @property
+    def shrink(self):
+        """Gets shrink flag value."""
+        return self.__shrink
+    
+    @property
+    def symmetric(self):
+        """Gets symmetric flag value."""
+        return self.__symmetric
+    
+    @property
+    def agitate(self):
+        """Gets agitate tuple flags value."""
+        return self.__agitate
+        
+    def check_group(self, group):
+        """
+        Checks the generator's group.
+        
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        if len(group.indexes)!=3:
+            return False, "three atoms are needed in a group to perform angle agitation movements."
+        else:
+            return True, "" 
+            
+    def set_amplitude(self, amplitude):
+        """
+        Sets maximum allowed agitation rotation angle amplitude in degrees of left and right atoms separately and transforms it to rad.
+        
+        :Parameters:
+            #. amplitude (number):  The maximum agitation angle amplitude in degrees of left and right atoms separately.
+        """
+        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be a number")
+        amplitude = float(amplitude)
+        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be bigger than 0")
+        assert amplitude<=90, log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be smaller than 90")
+        self.__amplitude = FLOAT_TYPE(amplitude*PI/180.)
+    
+    def set_symmetric(self, symmetric):
+        """
+        Sets symmetric flag value.
+        
+        :Parameters:
+            #. symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.         
+        """
+        assert isinstance(symmetric, bool), log.LocalLogger("fullrmc").logger.error("symmetric must be boolean")
+        self.__symmetric = symmetric
+    
+    def set_shrink(self, shrink):
+        """
+        Sets shrink flag value.
+        
+        :Parameters:
+            #. shrink (None, bool): Whether to always shrink the distance or expand it.
+               If True, moves will always bring atoms closer to each other.
+               If False, moves will always bring atoms away from each other.
+               If None, no orientation is forced, therefore distance can increase or decrease randomly at every step.           
+        """
+        assert shrink in (None, True, False), log.LocalLogger("fullrmc").logger.error("shrink can only be None, True or False")
+        self.__shrink = shrink
+    
+    def set_agitate(self, agitate):
+        """
+        Sets agitate tuple value.
+        
+        :Parameters:
+            #. agitate (tuple): It's a tuple of two boolean values, at least one of them must be True.
+               Whether to agitate the first atom, the second or both. This is useful to set an atom fixed while only 
+               the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
+               logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
+        """
+        assert isinstance(agitate, (list,tuple)), log.LocalLogger("fullrmc").logger.error("agitate must be a list or a tuple")
+        assert len(agitate)==2, log.LocalLogger("fullrmc").logger.error("agitate must have 2 items")
+        assert [isinstance(a,bool) for a in agitate]==[True,True], log.LocalLogger("fullrmc").logger.error("agitate items must be boolean")
+        assert agitate[0] or agitate[1], log.LocalLogger("fullrmc").logger.error("agitate both items can't be False")
+        self.__agitate = (agitate[0], agitate[1])     
+
+    def transform_coordinates(self, coordinates, argument=None):
+        """
+        Translate coordinates.
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
+        """
+        # get atoms group center
+        center = np.sum(coordinates, 0)/coordinates.shape[0]
+        # translate to origin
+        rotatedCoordinates = coordinates-center
+        # get normalized direction vectors
+        leftVector   = FLOAT_TYPE( rotatedCoordinates[1,:]-rotatedCoordinates[0,:] )
+        leftVector  /= FLOAT_TYPE( np.linalg.norm(leftVector) )
+        rightVector  = FLOAT_TYPE( rotatedCoordinates[2,:]-rotatedCoordinates[0,:] )
+        rightVector /= FLOAT_TYPE( np.linalg.norm(rightVector) )
+        # get rotation axis
+        rotationAxis = np.cross(leftVector, rightVector)
+        # create shrink flag
+        if self.__shrink is None:
+            shrink = (1-2*generate_random_float())>0
+        else:
+            shrink = self.__shrink    
+        # get rotation angles
+        if self.__symmetric:
+            angleLeft  = angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+        else:
+            angleLeft  = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+            angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+        # create directions
+        if shrink:
+            angleLeft  *= FLOAT_TYPE(-1)
+            angleRight *= FLOAT_TYPE( 1)            
+        else:
+            angleLeft  *= FLOAT_TYPE( 1)
+            angleRight *= FLOAT_TYPE(-1) 
+        # rotate
+        if self.__agitate[0]:
+            rotationMatrix = get_rotation_matrix(rotationAxis, angleLeft)
+            rotatedCoordinates[1,:] = np.dot( rotationMatrix, rotatedCoordinates[1,:])
+        if self.__agitate[1]:
+            rotationMatrix = get_rotation_matrix(rotationAxis, angleRight)
+            rotatedCoordinates[2,:] = np.dot( rotationMatrix, rotatedCoordinates[2,:])
+        # translate back from center and return
+        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
+        
+        
+        
+        

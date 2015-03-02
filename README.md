@@ -14,9 +14,8 @@ among other functionalities:
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
 ## Next on the list
-* Creating agitation move generators used to agitate quantities such as bondLength, bondsAngle, torsionAngle, etc.
+* Creating additional agitation move generators such as torsionAngle, etc.
 * Elements transmutation and atoms switching.
-
 
 ## Installation
 fullrmc is still going through testing and further implementations. 

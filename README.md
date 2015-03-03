@@ -15,6 +15,8 @@ among other functionalities:
 
 ## Next on the list
 * Creating additional agitation move generators such as torsionAngle, etc.
+* Creating additional translation move generators such as translation along axis defined between two groups or random positions, etc.
+* Creating additional rotation move generators such as allign group to an axis, etc.
 * Elements transmutation and atoms switching.
 
 ## Installation

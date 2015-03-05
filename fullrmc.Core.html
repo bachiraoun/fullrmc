@@ -348,6 +348,28 @@ None is accepted for equivalent weighting.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.get_random_perpendicular_vector">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_random_perpendicular_vector</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_random_perpendicular_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get random normalized perpendicular vector to a given vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>vector (numpy.ndarray, list, set, tuple): the vector to compute a random perpendicular vector to it</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>perpVector (numpy.ndarray): the perpendicular vector  of type fullrmc.Globals.FLOAT_TYPE</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.get_rotation_matrix">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_rotation_matrix</tt><big>(</big><em>rotationVector</em>, <em>angle</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_rotation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
@@ -424,9 +446,29 @@ None is accepted for equivalent weighting.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.orient">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">orient</tt><big>(</big><em>xyzArray</em>, <em>arrayAxis</em>, <em>alignToAxis</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.orient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis to alignToAXis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>xyzArray (numpy.ndarray): the xyz (N,3) array to rotate.</li>
+<li>arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.</li>
+<li>alignToAxis (list, tuple, numpy.ndarray): The axis to align to.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.rotate">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">rotate</tt><big>(</big><em>xyzArray</em>, <em>rotationMatrix</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.rotate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotates the records of a pdb using a rotation matrix.</p>
+<dd><p>Rotates a numpy.array using a rotation matrix.
+The array itself will be rotated and not a copy of it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

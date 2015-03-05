@@ -19,7 +19,19 @@ Rotations contains all rotation like MoveGenerator classes.
 |                                                     |   (:class:`RotationAboutAxisGenerator`              |
 |                                                     |   :class:`RotationAboutSymmetryAxisGenerator`)      |
 +-----------------------------------------------------+-----------------------------------------------------+
-
+|.. figure:: orientationGenerator.png                 |                                                     |
+|   :width: 375px                                     |                                                     |
+|   :height: 300px                                    |                                                     |
+|   :align: left                                      |                                                     |
+|                                                     |                                                     |
+|   Random orientation of hexane molecule to [1,1,1]  |                                                     |
+|   axis with maximumOffsetAngle of 10 degrees is     |                                                     |
+|   generated. First principal axis of hexane molecule|                                                     |
+|   is considered as groupAxis. Solid colors are of   |                                                     |
+|   original molecule while fading ones are of the    |                                                     |
+|   oriented one. (:class:`OrientationGenerator`)     |                                                     |
+|                                                     |                                                     |
++-----------------------------------------------------+-----------------------------------------------------+
 """
 
 # standard libraries imports
@@ -30,7 +42,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc import log
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, get_rotation_matrix
+from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -163,7 +175,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
         # get rotation matrix
         rotationMatrix = get_rotation_matrix(self.__axis, rotationAngle)
         # get atoms group center and rotation axis
-        center,_,_,_,_,_,_ =get_principal_axis(coordinates)        
+        center,_,_,_,_,_,_ = get_principal_axis(coordinates)        
         # translate to origin
         rotatedCoordinates = coordinates-center
         # rotate
@@ -338,5 +350,237 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
 
 
 
+class OrientationGenerator(MoveGenerator):
+    """ 
+    Generates rotational moves upon groups of atoms to align and orient along an axis.
+    Orientation rotations are computed randomly allowing offset angle between grouAxis and orientationAxis 
+    
+    :Parameters:
+        #. group (None, Group): The group instance.
+        #. maximumOffsetAngle (number): The maximum offset angle in degrees between groupAxis and orientationAxis.
+        #. groupAxis (dict): The group axis. Only one key is allowed.
+           If key is 'fixed', value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
+           If key is 'symmetry', in this case the group axis is computed as one of the three 
+           symmetry axis of the group atoms. the value must be even 0, 1 or 2 for respectively 
+           the first, second and tertiary symmetry axis.
+        #. orientationAxis (dict): The axis to align the group with.
+           If key is 'fixed', value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
+           if Key is 'symmetry', in this case the the value must be a list of two items, the first one is a list
+           of atoms indexes to compute symmetry axis and the second item must be even 0, 1 or 2 for respectively 
+           the first, second and tertiary symmetry axis. 
+        #. flip (None, bool): Whether to allow flipping axis orientation or not.
+           If True, orientationAxis will be flipped forcing anti-parallel orientation.
+           If False, orientationAxis will not be flipped forcing parallel orientation.
+           If None, no flipping is forced, flipping can be set randomly to True or False during run time execution.     
+    """
+    def __init__(self, group=None, maximumOffsetAngle=10, groupAxis={"symmetry":0}, orientationAxis={"fixed":(1,0,0)}, flip=None):
+        super(OrientationGenerator, self).__init__(group=group)
+        # set maximumOffsetAngle
+        self.set_maximum_offset_angle(maximumOffsetAngle)
+        # set group axis
+        self.set_group_axis(groupAxis)
+        # set orientation axis
+        self.set_orientation_axis(orientationAxis)
+        # set flip
+        self.set_flip(flip)
+        
+    @property
+    def maximumOffsetAngle(self):
+        """ The maximum offset angle in degrees between groupAxis and orientationAxis in rad."""
+        return self.__maximumOffsetAngle
+      
+    @property
+    def orientationAxis(self):
+        """ The orientation axis value or definition."""
+        return self.__orientationAxis 
+    
+    @property
+    def groupAxis(self):
+        """ The group axis value or definition."""
+        return self.__groupAxis 
+    
+    @property
+    def flip(self):
+        """ The flip value."""
+        return self.__flip
+        
+    def set_maximum_offset_angle(self, maximumOffsetAngle):
+        """
+        Sets the maximum offset angle allowed.
+        
+        :Parameters:
+            #. maximumOffsetAngle (number): The maximum offset angle in degrees between groupAxis and orientationAxis in degrees.
+        """
+        assert is_number(maximumOffsetAngle), log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be a number")
+        maximumOffsetAngle = float(maximumOffsetAngle)
+        assert maximumOffsetAngle>0, log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be bigger than 0 deg.")
+        assert maximumOffsetAngle<180, log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be smaller than 180 deg.")
+        # convert to radian and store amplitude
+        self.__maximumOffsetAngle = FLOAT_TYPE(PI*maximumOffsetAngle/180.)
+        
+    def check_group(self, group):
+        """
+        Checks the generator's group.
+        
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        if len(group.indexes)<=1:
+            return False, "At least two atoms needed in a group to perform rotation."
+        else:
+            return True, "" 
+    
+    def set_flip(self, flip):
+        """
+        Sets flip flag value.
+        
+        :Parameters:
+            #. flip (None, bool): Whether to allow flipping axis orientation or not.
+               If True, orientationAxis will be flipped forcing anti-parallel orientation.
+               If False, orientationAxis will not be flipped forcing parallel orientation.
+               If None, no flipping is forced, flipping can be set randomly to True or False during run time execution. 
+        """
+        assert flip in (None, True, False), log.LocalLogger("fullrmc").logger.error("flip can only be None, True or False")
+        self.__flip = flip
+        
+    def set_group_axis(self, groupAxis):
+        """
+        Sets group axis value.
+        
+        :Parameters:
+           #. groupAxis (dict): The group axis. Only one key is allowed.
+              If key is fixed, value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
+              If key is symmetry, in this case the group axis is computed as one of the three 
+              symmetry axis of the group atoms. the value must be even 0, 1 or 2 for respectively 
+              the first, second and tertiary symmetry axis.
+        """
+        assert isinstance(groupAxis, dict), log.LocalLogger("fullrmc").logger.error("groupAxis must be a dictionary")
+        assert len(groupAxis) == 1, log.LocalLogger("fullrmc").logger.error("groupAxis must have a single key")       
+        key = groupAxis.keys()[0]
+        val = groupAxis[key]
+        if key == "fixed":
+            self.__mustComputeGroupAxis = False
+            assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("groupAxis value must be a list")
+            if isinstance(val, np.ndarray):
+                assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("groupAxis value must have a single dimension")
+            val = list(val)
+            assert len(val)==3, log.LocalLogger("fullrmc").logger.error("groupAxis fixed value must be a vector")
+            for v in val:
+                assert is_number(v), log.LocalLogger("fullrmc").logger.error("groupAxis value item must be numbers") 
+            val  = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE)  
+            norm = FLOAT_TYPE(np.sqrt(np.sum(val**2)))    
+            val /= norm              
+        elif key == "symmetry":
+            self.__mustComputeGroupAxis = True
+            assert is_integer(val), log.LocalLogger("fullrmc").logger.error("groupAxis symmetry value must be an integer") 
+            val = INT_TYPE(val)
+            assert val>=0 and val<3, log.LocalLogger("fullrmc").logger.error("groupAxis symmetry value must be positive smaller than 3") 
+        else:
+            self.__mustComputeGroupAxis = None
+            raise Exception(log.LocalLogger("fullrmc").logger.error("groupAxis key must be either 'fixed' or 'symmetry'"))        
+        # set groupAxis
+        self.__groupAxis = {key:val}
 
+    def set_orientation_axis(self, orientationAxis):
+        """
+        Sets orientation axis value.
+        
+        :Parameters:
+           #. orientationAxis (dict): The axis to align the group axis with.
+              If key is fixed, value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
+              if Key is symmetry, in this case the the value must be a list of two items, the first one is a list
+              of atoms indexes to compute symmetry axis and the second item must be even 0, 1 or 2 for respectively 
+              the first, second and tertiary symmetry axis. 
+        """
+        assert isinstance(orientationAxis, dict), log.LocalLogger("fullrmc").logger.error("orientationAxis must be a dictionary")
+        assert len(orientationAxis) == 1, log.LocalLogger("fullrmc").logger.error("orientationAxis must have a single key")       
+        key = orientationAxis.keys()[0]
+        val = orientationAxis[key]
+        if key == "fixed":
+            self.__mustComputeOrientationAxis = False
+            assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("orientationAxis value must be a list")
+            if isinstance(val, np.ndarray):
+                assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("orientationAxis value must have a single dimension")
+            val = list(val)
+            assert len(val)==3, log.LocalLogger("fullrmc").logger.error("orientationAxis fixed value must be a vector")
+            for v in val:
+                assert is_number(v), log.LocalLogger("fullrmc").logger.error("orientationAxis value item must be numbers") 
+            val  = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE) 
+            norm = FLOAT_TYPE(np.sqrt(np.sum(val**2)))   
+            val /= norm            
+        elif key == "symmetry":
+            self.__mustComputeOrientationAxis = True
+            assert isintance(val, (list, tuple)), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value must be a list") 
+            assert len(val) == 2, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value must be a list of two items")
+            val0 = []
+            for v in val[0]:
+                assert is_integer(v), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list items must be integers") 
+                v0 = INT_TYPE(v)
+                assert v0>=0, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list items must be positive") 
+                val0.append(v0)
+            assert len(set(val0))==len(val[0]), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list redundant items indexes found") 
+            val0 = np.array(val0, dtype=INT_TYPE)
+            val1 = val[1]
+            assert is_integer(val1), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value second item must be an integer") 
+            val1 = INT_TYPE(val1)
+            assert val1>=0 and val1<3, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value second item must be positive smaller than 3") 
+            val = (val0,val1)
+        else:
+            self.__mustComputeOrientationAxis = None
+            raise Exception(log.LocalLogger("fullrmc").logger.error("orientationAxis key must be either 'fixed' or 'symmetry'"))        
+        # set orientationAxis
+        self.__orientationAxis = {key:val}
+
+    def __get_orientation_axis__(self):
+        if self.__mustComputeOrientationAxis:
+            coordinates   = self.group._get_engine().realCoordinates[self.__orientationAxis["symmetry"][0]]
+            _,_,_,_,X,Y,Z = get_principal_axis(coordinates)
+            axis = [X,Y,Z][self.__orientationAxis["symmetry"][1]]
+        else:
+            axis  = self.__orientationAxis["fixed"]
+        return axis
+        
+    def __get_group_axis__(self, coordinates):
+        if self.__mustComputeGroupAxis:
+            _,_,_,_,X,Y,Z = get_principal_axis(coordinates)
+            axis = [X,Y,Z][self.__groupAxis["symmetry"]]
+        else:
+            axis = self.__groupAxis["fixed"]
+        return axis
+
+    def transform_coordinates(self, coordinates, argument=None):
+        """
+        Rotate coordinates.
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the rotation
+            #. argument (object): Any python object. Not used in this generator.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the rotation.
+        """
+         # create flip flag
+        if self.__flip is None:
+            flip = FLOAT_TYPE( np.sign(1-2*generate_random_float()) )
+        elif self.__flip:
+            flip = FLOAT_TYPE(-1)
+        else:
+            flip = FLOAT_TYPE(1)
+        # get group axis
+        groupAxis = self.__get_group_axis__(coordinates)
+        # get align axis within offset angle
+        orientationAxis = flip*self.__get_orientation_axis__()
+        orientationAxis = generate_vectors_in_solid_angle(direction=orientationAxis,
+                                                          maxAngle=self.__maximumOffsetAngle,
+                                                          numberOfVectors=1)[0]  
+        # get coordinates center
+        center = np.array(np.sum(coordinates, 0)/coordinates.shape[0] , dtype=FLOAT_TYPE)
+        # translate to origin
+        rotatedCoordinates = coordinates-center
+        # align coordinates
+        rotatedCoordinates = orient(rotatedCoordinates, groupAxis, orientationAxis)
+        # translate back to center and return rotated coordinates
+        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
+        
+        
         

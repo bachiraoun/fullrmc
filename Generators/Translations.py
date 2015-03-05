@@ -592,9 +592,9 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         assert len(center) == 1, log.LocalLogger("fullrmc").logger.error("center must have a single key")       
         key = center.keys()[0]
         val = center[key]
-        assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("center must be a list")
-        if isinstance(center, np.ndarray):
-            assert len(center.shape) == 1, log.LocalLogger("fullrmc").logger.error("center value must have a single dimension")
+        assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("center value must be a list")
+        if isinstance(val, np.ndarray):
+            assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("center value must have a single dimension")
         assert len(val)>0, log.LocalLogger("fullrmc").logger.error("center value must be a non-zero list.")
         for v in val:
             assert is_number(v), log.LocalLogger("fullrmc").logger.error("center value item must be numbers") 

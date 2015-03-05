@@ -189,8 +189,6 @@ class DistanceAgitationGenerator(MoveGenerator):
         return coordinates+translationVectors
  
 
-
-
 class AngleAgitationGenerator(MoveGenerator):
     """
     Generates random agitation moves upon an angle defined between two vectors left-central and right-central 

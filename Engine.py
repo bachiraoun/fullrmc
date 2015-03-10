@@ -419,8 +419,8 @@ class Engine(object):
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
         
-    def reset_groups_as_molecules(self):
-        """ Reset engine groups indexes according to molecules indexes. """
+    def set_groups_as_molecules(self):
+        """ Automatically set engine groups indexes according to molecules indexes. """
         molecules = list(set(self.__moleculesIndexes))
         moleculesIndexes = {}
         for idx in range(len(self.__moleculesIndexes)):

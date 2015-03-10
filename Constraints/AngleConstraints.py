@@ -196,7 +196,7 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # reset constraint
         self.__initialize_constraint__()
     
-    def creates_angles_by_definition(self, anglesDefinition):
+    def create_angles_by_definition(self, anglesDefinition):
         """ 
         Creates anglesMap using angles definition.
         Calls set_angles(anglesMap) and generates angles attribute.

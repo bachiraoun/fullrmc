@@ -167,7 +167,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # reset constraint
         self.__initialize_constraint__()
     
-    def creates_bonds_by_definition(self, bondsDefinition):
+    def create_bonds_by_definition(self, bondsDefinition):
         """ 
         Creates bondsMap using bonds definition.
         Calls set_bonds(bondsMap) and generates bonds attribute.

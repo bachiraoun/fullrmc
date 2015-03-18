@@ -1531,18 +1531,26 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
 <p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
 <p class="graphviz">
-<img src="_images/inheritance-bf30bfbef24e49d7360d45dc0e7ef1a338279a39.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
+<img src="_images/inheritance-03e8afd143e4adf27bade75dd4fd26e471c869fa.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
 <map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function of the system." alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system. " alt="" coords="340,5,509,31"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
-<p>It controls the total pair distribution function of the system.</p>
+<p>It controls the total pair distribution function (pdf) of the system. 
+The partial pair distribution function (ppdf) is calculated from the normalized partial histograms as the following:</p>
+<div class="math">
+<p><img src="_images/math/e509e85c5361afee4da600be9520a616b38587b8.png" alt="g_{ij}(r) = \frac {\rho_{ij}(r)} {\rho_{j}} = \frac {n_{ij}(r)} {4\pi r^2 \Delta r \rho_{j}}"/></p>
+</div><p>where <img class="math" src="_images/math/a7b2db55baf2a73c102a11b2943700f4ab6d2ecf.png" alt="n_{ij}"/> is the number of elements <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/> at a distance between <img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/> and 
+<img class="math" src="_images/math/9c8d05f9ef99438b2e370dae1d86b209e12e9889.png" alt="r+\Delta r"/> from a central element <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> averaged over all elements <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>. 
+<img class="math" src="_images/math/9f122156899e05621df901c5a3aff1b267145d5c.png" alt="r_{j}"/> is the number density of the elements <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/>.</p>
+<p><strong>NB</strong>:The total pdf is computed as the sum of all ppdf and is noted as g(r) that is related to G(r) as the
+following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db98b3f2.png" alt="g(r)=1+(\frac{G(r)}{r})"/></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

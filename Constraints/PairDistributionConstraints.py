@@ -23,7 +23,18 @@ from fullrmc.Core.pair_distribution_histogram import single_pair_distribution_hi
 
 class PairDistributionConstraint(ExperimentalConstraint):
     """
-    It controls the total pair distribution function of the system.
+    It controls the total pair distribution function (pdf) of the system. 
+    The partial pair distribution function (ppdf) is calculated from the normalized partial histograms as the following:
+    
+    .. math::
+        
+        g_{ij}(r) = \\frac {\\rho_{ij}(r)} {\\rho_{j}} = \\frac {n_{ij}(r)} {4\\pi r^2 \\Delta r \\rho_{j}} 
+    
+    where :math:`n_{ij}` is the number of elements :math:`j` at a distance between :math:`r` and 
+    :math:`r+\\Delta r` from a central element :math:`i` averaged over all elements :math:`i`. 
+    :math:`r_{j}` is the number density of the elements :math:`j`.\n 
+    **NB**:The total pdf is computed as the sum of all ppdf and is noted as g(r) that is related to G(r) as the
+    following :math:`g(r)=1+(\\frac{G(r)}{r})`
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.

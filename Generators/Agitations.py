@@ -250,7 +250,7 @@ class AngleAgitationGenerator(MoveGenerator):
             #. group (Group): the Group instance.
         """
         if len(group.indexes)!=3:
-            return False, "three atoms are needed in a group to perform angle agitation movements."
+            return False, "Exactly three atoms are needed in a group to perform angle agitation movements."
         else:
             return True, "" 
             
@@ -328,6 +328,9 @@ class AngleAgitationGenerator(MoveGenerator):
         rightVector /= FLOAT_TYPE( np.linalg.norm(rightVector) )
         # get rotation axis
         rotationAxis = np.cross(leftVector, rightVector)
+        if rotationAxis[0]==rotationAxis[1]==rotationAxis[2]==0.:
+            rotationAxis = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+            rotationAxis /= FLOAT_TYPE( np.linalg.norm(rotationAxis) )
         # create shrink flag
         if self.__shrink is None:
             shrink = (1-2*generate_random_float())>0

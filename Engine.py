@@ -380,13 +380,51 @@ class Engine(object):
         self.__groupSelector = selector
         # add to broadcaster listeners list
         self.__broadcaster.add_listener(self.__groupSelector)
+    
+    def clear_groups(self):
+        """
+        Clear all engine defined groups
+        """
+        self.__groups = []
         
+    def add_group(self, g, broadcast=True):
+        """
+        Add group to engine groups list.
+        
+        :Parameters:
+            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
+            #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
+        """
+        if isinstance(g, Group):
+            assert np.max(g.indexes)<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+            gr = g
+        else:
+            assert isinstance(g, np.ndarray), log.LocalLogger("fullrmc").logger.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
+            # check group dimension
+            assert len(g.shape) == 1, log.LocalLogger("fullrmc").logger.error("each group must be a numpy.ndarray of dimension 1")
+            assert len(g), log.LocalLogger("fullrmc").logger.error("group found to have no indexes")
+            # check type
+            assert g.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("each group in groups must be of type numpy.int32")
+            # sort and check limits
+            sortedGroup = sorted(set(g))
+            assert len(sortedGroup) == len(g), log.LocalLogger("fullrmc").logger.error("redundant indexes found in group")
+            assert sortedGroup[0]>=0, log.LocalLogger("fullrmc").logger.error("group index must equal or bigger than 0")
+            assert sortedGroup[-1]<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+            gr = Group(indexes=g)
+        # append group
+        self.__groups.append( gr )
+        # set group engine
+        gr._set_engine(self)
+        # broadcast to constraints
+        if broadcast:
+            self.__broadcaster.broadcast("update groups")
+      
     def set_groups(self, groups):
         """
         Sets the engine groups of indexes.
         
         :Parameters:
-            #. groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
+            #. groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
                If None, single atom groups of all atoms will be all automatically created.
         """
         if groups is None:
@@ -395,27 +433,7 @@ class Engine(object):
             assert isinstance(groups, (list,tuple,set)), log.LocalLogger("fullrmc").logger.error("groups must be a list of numpy.ndarray")
             self.__groups = []
             for g in groups:
-                # check group type
-                if isinstance(g, Group):
-                    assert np.max(g.indexes)<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
-                    gr = g
-                else:
-                    assert isinstance(g, (np.ndarray)), log.LocalLogger("fullrmc").logger.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
-                    # check group dimension
-                    assert len(g.shape) == 1, log.LocalLogger("fullrmc").logger.error("each group must be a numpy.ndarray of dimension 1")
-                    if len(g)==0:
-                        continue
-                    # check type
-                    assert g.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("each group in groups must be of type numpy.int32")
-                    # sort and check limits
-                    g = sorted(set(g))
-                    assert g[0]>=0, log.LocalLogger("fullrmc").logger.error("group index must equal or bigger than 0")
-                    assert g[-1]<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
-                    gr = Group(indexes=g)
-                # append group
-                self.__groups.append( gr )
-        # set group engine
-        [gr._set_engine(self) for gr in self.__groups]
+                self.add_group(g, broadcast=False)
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
         
@@ -430,9 +448,11 @@ class Engine(object):
             moleculesIndexes[mol].append(idx)
         # create groups
         keys = sorted(moleculesIndexes.keys())
-        self.__groups = [Group(indexes=moleculesIndexes[k]) for k in keys] 
-        # set group engine
-        [gr._set_engine(self) for gr in self.__groups]
+        # reset groups
+        self.__groups = []
+        # add groups
+        for k in keys:
+            self.add_group(np.array(moleculesIndexes[k], dtype=INT_TYPE), broadcast=False) 
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
             
@@ -795,18 +815,18 @@ class Engine(object):
                 log.LocalLogger("fullrmc").logger.info("Initializing constraint data '%s'"%c.__class__.__name__)
                 c.compute_data()
                 c.set_state(self.__state)
+                if c.originalData is None:
+                    c._set_original_data(c.data)
         # return constraints
         return usedConstraints, constraints, enhanceOnlyConstraints
         
     
-    def run(self, numberOfSteps=sys.maxint, saveFrequency=1000, savePath="restart"):
+    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart"):
         """
         Run the Reverse Monte Carlo engine by performing random moves on engine groups.
         
         :Parameters:
-            #. numberOfSteps (integer): The maximum number of steps to run.
-               By default maximum integer number allowed is given. 
-               0 Will result in only initializing constraints.
+            #. numberOfSteps (integer): The number of steps to run.
             #. saveFrequency (integer): Save engine every saveFrequency steps.
             #. savePath (string): Save engine file path.
         """

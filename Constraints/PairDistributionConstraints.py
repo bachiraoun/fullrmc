@@ -23,29 +23,55 @@ from fullrmc.Core.pair_distribution_histogram import single_pair_distribution_hi
 
 class PairDistributionConstraint(ExperimentalConstraint):
     """
-    It controls the total pair distribution function (pdf) of the system. 
-    The partial pair distribution function (ppdf) is calculated from the normalized partial histograms as the following:
-    
+    It controls the total pair distribution function (pdf) of the system noted as G(r). 
+    The pair distribution function is the directly calculated quantity from a powder diffraction
+    experiments. It is obtained from the experimentally determined total-scattering structure 
+    function S(Q), by a Sine Fourier transform. pdf tells the probability of finding 
+    atomic pairs separated by the real space distance r.
+    The mathematical definition of the G(r) is:
+
     .. math::
         
-        g_{ij}(r) = \\frac {\\rho_{ij}(r)} {\\rho_{j}} = \\frac {n_{ij}(r)} {4\\pi r^2 \\Delta r \\rho_{j}} 
+        G(r) = \\frac{1}{\\pi} \\int_{0}^{\\infty} Q [S(Q)-1]sin(Qr)dQ = 4 \\pi [\\rho(r) - \\rho_{0}] \n
+        G(r) = \\frac{R(r)}{r} - 4 \\pi r \\rho_{0} \n
+        R(r) = 4 \\pi r^2 \\rho(r) =\\frac{1}{N} \\sum \\limits_{i}^{N} \\sum \\limits_{j \\neq i}^{N} \\frac{b_i b_j}{\\langle b \\rangle ^2} \\delta ( r - r_{ij} )  
     
-    where :math:`n_{ij}` is the number of elements :math:`j` at a distance between :math:`r` and 
-    :math:`r+\\Delta r` from a central element :math:`i` averaged over all elements :math:`i`. 
-    :math:`r_{j}` is the number density of the elements :math:`j`.\n 
-    **NB**:The total pdf is computed as the sum of all ppdf and is noted as g(r) that is related to G(r) as the
-    following :math:`g(r)=1+(\\frac{G(r)}{r})`
+    Where:\n
+    :math:`Q` is the momentum transfer. \n
+    :math:`r` is the distance between two atoms. \n
+    :math:`\\rho(r)` is the sperical average defined as :math:`\\int n(r^{'}).n(r-r^{'}) dr`. \n
+    :math:`\\rho_{0}` is the  average number density of the samples. \n
+    :math:`R(r)` is the radial distribution function (rdf). \n
+    :math:`N` is the total number of atoms. \n
+    :math:`b_i` is the scattering length for atom i. \n
+    :math:`r_{ij}` is the distance between atoms i and j. \n
+    :math:`\\langle b \\rangle` is the average scattering length over all atoms  \n
+    :math:`\\sum \\limits_{j \\neq i}^{N} \\delta ( r - r_{ij} )` is the probability density 
+    of some atoms being r distant from each other.
+
+    **NB**: pair distribution function G(r) and the pair correlation function g(r) are directly 
+    related as in the following :math:`G(r)=r(g(r)-1)`
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
         #. weighting (string): The elements weighting.
+        #. scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.
+        #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+           of the system prior to comparing it with the experimental data. In general, the experimental pair
+           distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+           by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+           used to best imitate the numerical artefacts in the experimental data.
     """
-    def __init__(self, engine, experimentalData, weighting="atomicNumber"):
+    def __init__(self, engine, experimentalData, weighting="atomicNumber", scaleFactor=1.0, windowFunction=None):
         # initialize constraint
         super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData)
         # set elements weighting
         self.set_weighting(weighting)
+        # set window function
+        self.set_window_function(windowFunction)
+        # set window function
+        self.set_scale_factor(scaleFactor)
         
     @property
     def bin(self):
@@ -60,7 +86,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
     @property
     def maximumDistance(self):
         """ Gets the experimental data distances maximum. """
-        return self.__minimumDistance
+        return self.__maximumDistance
           
     @property
     def histogramSize(self):
@@ -96,6 +122,16 @@ class PairDistributionConstraint(ExperimentalConstraint):
     def weightingScheme(self):
         """ Get elements weighting scheme. """
         return self.__weightingScheme
+    
+    @property
+    def windowFunction(self):
+        """ Get the window function. """
+        return self.__windowFunction
+    
+    @property
+    def scaleFactor(self):
+        """ Get the scaleFactor. """
+        return self.__scaleFactor
         
     def listen(self, message, argument=None):
         """   
@@ -110,12 +146,14 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
                 elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
                 self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=elementsWeights)
+                for k, v in self.__weightingScheme.items():
+                    self.__weightingScheme[k] = FLOAT_TYPE(v)
             else:
                 self.__elementsPairs   = None
                 self.__weightingScheme = None
         elif message in("update boundary conditions",):
             self.__initialize_constraint__()
-
+            
     def set_weighting(self, weighting):
         """
         Sets elements weighting. It must a valid entry of pdbParser atoms database
@@ -126,7 +164,37 @@ class PairDistributionConstraint(ExperimentalConstraint):
         assert is_element_property(weighting),log.LocalLogger("fullrmc").logger.error( "weighting is not a valid pdbParser atoms database entry")
         assert weighting != "atomicFormFactor", log.LocalLogger("fullrmc").logger.error("atomicFormFactor weighting is not allowed")
         self.__weighting = weighting
+     
+    def set_window_function(self, windowFunction):
+        """
+        Sets the window function.
         
+        :Parameters:
+             #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+                of the system prior to comparing it with the experimental data. In general, the experimental pair
+                distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+                by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+                used to best imitate the numerical artefacts in the experimental data.
+        """
+        if windowFunction is not None:
+            assert isinstance(windowFunction, np.ndarray), log.LocalLogger("fullrmc").logger.error("windowFunction must be a numpy.ndarray")
+            assert windowFunction.dtype.type is FLOAT_TYPE, log.LocalLogger("fullrmc").logger.error("windowFunction type must be %s"%FLOAT_TYPE)
+            assert len(windowFunction.shape) == 1, log.LocalLogger("fullrmc").logger.error("experimentalData must be of dimension 2")
+            # normalize window function
+            windowFunction /= np.sum(windowFunction)
+        # set windowFunction
+        self.__windowFunction = windowFunction
+    
+    def set_scale_factor(self, scaleFactor):
+        """
+        Sets the scale factor.
+        
+        :Parameters:
+             #. scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.
+        """
+        assert is_number(scaleFactor), log.LocalLogger("fullrmc").logger.error("scaleFactor must be a number")
+        self.__scaleFactor = FLOAT_TYPE(scaleFactor)
+    
     def set_experimental_data(self, experimentalData):
         """
         Sets the constraint's experimental data.
@@ -136,15 +204,16 @@ class PairDistributionConstraint(ExperimentalConstraint):
         """
         # get experimental data
         super(PairDistributionConstraint, self).set_experimental_data(experimentalData=experimentalData)
-        self.__bin                   = FLOAT_TYPE(self.experimentalData[1,0]-self.experimentalData[0,0])
+        self.__bin                   = FLOAT_TYPE(self.experimentalData[1,0] - self.experimentalData[0,0])
         self.__minimumDistance       = FLOAT_TYPE(self.experimentalData[0,0] - self.__bin/2. )
         self.__maximumDistance       = FLOAT_TYPE(self.experimentalData[-1,0]+ self.__bin/2. )
-        self.__histogramSize         = INT_TYPE((self.__maximumDistance-self.__minimumDistance+self.__bin)/self.__bin)-1
-        self.__edges                 = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+1)], dtype=FLOAT_TYPE)
+        self.__histogramSize         = INT_TYPE((self.__maximumDistance-self.__minimumDistance+self.__bin)/self.__bin)-INT_TYPE(1)
+        self.__edges                 = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)
         self.__experimentalDistances = self.experimentalData[:,0]
-        self.__shellsCenter          = (self.__edges[1:]+self.__edges[0:-1])/2.
+        self.__shellsCenter          = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
         self.__shellsVolumes         = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin
         self.__experimentalPDF       = self.experimentalData[:,1]    
+           
         # check for experimental distances input error  
         for diff in self.__shellsCenter-self.__experimentalDistances:
             assert abs(diff)<=PRECISION, "experimental data distances are not coherent"
@@ -186,24 +255,15 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # return chi square
         return np.add.reduce((diff)**2)*self.contribution
         
-    def get_constraint_value(self):
-        """
-        Compute all partial Pair Distribution Functions (PDFs). 
-        
-        :Returns:
-            #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
-        """
+    def _get_constraint_value(self, data):
         ###################### THIS SHOULD BE OPTIMIZED ######################
         #import time
         #startTime = time.clock()
-        if self.data is None:
-            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
-            return {}
         output = {}
         for pair in self.__elementsPairs:
-            output["pdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-            output["pdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-            output["pdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
         output["pdf_total"] = np.zeros(self.__histogramSize, dtype=np.float32)
         for pair in self.__elementsPairs:
             # get weighting scheme
@@ -218,45 +278,71 @@ class PairDistributionConstraint(ExperimentalConstraint):
             idj = self.engine.elements.index(pair[1])
             # get nij
             if idi == idj:
-                nij = ni*(ni-1)/2.0  
-                output["pdf_intra_%s-%s" % pair] += self.data["intra"][idi,idj,:] 
-                output["pdf_inter_%s-%s" % pair] += self.data["inter"][idi,idj,:]                 
+                nij = ni*(ni-1)/2.0 
+                output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] 
+                output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:]                
             else:
                 nij = ni*nj
-                output["pdf_intra_%s-%s" % pair] += self.data["intra"][idi,idj,:] + self.data["intra"][idj,idi,:]
-                output["pdf_inter_%s-%s" % pair] += self.data["inter"][idi,idj,:] + self.data["inter"][idj,idi,:]   
+                output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
+                output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
             # calculate intensityFactor
             intensityFactor = (self.engine.volume*w)/(nij*self.__shellsVolumes)
             # divide by factor
-            output["pdf_intra_%s-%s" % pair] *= intensityFactor
-            output["pdf_inter_%s-%s" % pair] *= intensityFactor
-            output["pdf_total_%s-%s" % pair]  = output["pdf_intra_%s-%s" % pair] + output["pdf_inter_%s-%s" % pair]
-            output["pdf_total"] += output["pdf_total_%s-%s" % pair]
+            output["rdf_intra_%s-%s" % pair] *= intensityFactor
+            output["rdf_inter_%s-%s" % pair] *= intensityFactor
+            output["rdf_total_%s-%s" % pair]  = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
+            output["pdf_total_%s-%s" % pair]  = output["rdf_total_%s-%s" % pair]
+            # normalize to g(r)
+            output["pdf_total_%s-%s" % pair]  = (output["pdf_total_%s-%s" % pair]-w)*self.__shellsCenter
+            output["pdf_total"]              += self.__scaleFactor*output["pdf_total_%s-%s" % pair] 
+        # convolve total with window function
+        if self.__windowFunction is not None:
+            output["pdf"] = np.convolve(output["pdf_total"], self.__windowFunction, 'same')
+        else:
+            output["pdf"] = output["pdf_total"]
         #t = time.clock()-startTime
         #print "%.7f(s) -->  %.7f(Ms)"%(t, 1000000*t)
         return output
     
+    def get_constraint_value(self):
+        """
+        Compute all partial Pair Distribution Functions (PDFs). 
+        
+        :Returns:
+            #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
+        """
+        if self.data is None:
+            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
+            return {}
+        return self._get_constraint_value(self.data)
+    
+    def get_constraint_original_value(self):
+        """
+        Compute all partial Pair Distribution Functions (PDFs). 
+        
+        :Returns:
+            #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
+        """
+        if self.data is None:
+            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
+            return {}
+        return self._get_constraint_value(self.originalData)
+        
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        edges,intra,inter = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates,
-                                                               basis=self.engine.basisVectors,
-                                                               moleculeIndex = self.engine.moleculesIndexes,
-                                                               elementIndex = self.engine.elementsIndexes,
-                                                               numberOfElements = self.engine.numberOfElements,
-                                                               minDistance=self.__minimumDistance,
-                                                               maxDistance=self.__maximumDistance,
-                                                               bin=self.__bin )
+        intra,inter = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates,
+                                                         basis=self.engine.basisVectors,
+                                                         moleculeIndex = self.engine.moleculesIndexes,
+                                                         elementIndex = self.engine.elementsIndexes,
+                                                         numberOfElements = self.engine.numberOfElements,
+                                                         minDistance=self.__minimumDistance,
+                                                         maxDistance=self.__maximumDistance,
+                                                         histSize=self.__histogramSize,
+                                                         bin=self.__bin )
         # update data
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # check for unexpected errors  
-        assert len(edges)==len(self.__edges), log.LocalLogger("fullrmc").logger.error("edges shape mis-match")
-        assert np.abs(self.__minimumDistance-edges[0]) <=PRECISION , log.LocalLogger("fullrmc").logger.error("minimum distances mismatch. Difference of %.12f found"%(self.__minimumDistance-edges[0])) 
-        assert np.abs(self.__maximumDistance-edges[-1])<=PRECISION , log.LocalLogger("fullrmc").logger.error("maximum distances mismatch. Difference of %.12f found"%(self.__maximumDistance-edges[-1]))
-        assert np.abs(self.__bin-edges[1]+edges[0])<=PRECISION , log.LocalLogger("fullrmc").logger.error("distances bin mismatch. Difference of %.12f found"%(self.__bin-edges[1]+edges[0]))         
-        for diff in self.__edges-edges:
-            assert abs(diff)<=PRECISION, log.LocalLogger("fullrmc").logger.error("calculated edges doesn't match")
         # set chiSquare
         totalPDF = self.get_constraint_value()["pdf_total"]
         self.set_chi_square(self.compute_chi_square(data = totalPDF))
@@ -268,23 +354,25 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        _,intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
-                                                                 boxCoords=self.engine.boxCoordinates,
-                                                                 basis=self.engine.basisVectors,
-                                                                 moleculeIndex = self.engine.moleculesIndexes,
-                                                                 elementIndex = self.engine.elementsIndexes,
-                                                                 numberOfElements = self.engine.numberOfElements,
-                                                                 minDistance=self.__minimumDistance,
-                                                                 maxDistance=self.__maximumDistance,
-                                                                 bin=self.__bin,
-                                                                 allAtoms = True)
-        _,intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
+        intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
+                                                               boxCoords=self.engine.boxCoordinates,
+                                                               basis=self.engine.basisVectors,
+                                                               moleculeIndex = self.engine.moleculesIndexes,
+                                                               elementIndex = self.engine.elementsIndexes,
+                                                               numberOfElements = self.engine.numberOfElements,
+                                                               minDistance=self.__minimumDistance,
+                                                               maxDistance=self.__maximumDistance,
+                                                               histSize=self.__histogramSize,
+                                                               bin=self.__bin,
+                                                               allAtoms = True)
+        intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
                                                              basis=self.engine.basisVectors,
                                                              moleculeIndex = self.engine.moleculesIndexes[indexes],
                                                              elementIndex = self.engine.elementsIndexes[indexes],
                                                              numberOfElements = self.engine.numberOfElements,
                                                              minDistance=self.__minimumDistance,
                                                              maxDistance=self.__maximumDistance,
+                                                             histSize=self.__histogramSize,
                                                              bin=self.__bin )
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
@@ -301,24 +389,26 @@ class PairDistributionConstraint(ExperimentalConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # calculate pair distribution function
-        _,intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
-                                                                 boxCoords=self.engine.boxCoordinates,
-                                                                 basis=self.engine.basisVectors,
-                                                                 moleculeIndex = self.engine.moleculesIndexes,
-                                                                 elementIndex = self.engine.elementsIndexes,
-                                                                 numberOfElements = self.engine.numberOfElements,
-                                                                 minDistance=self.__minimumDistance,
-                                                                 maxDistance=self.__maximumDistance,
-                                                                 bin=self.__bin,
-                                                                 allAtoms = True)
-        _,intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
-                                                             basis=self.engine.basisVectors,
-                                                             moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                             elementIndex = self.engine.elementsIndexes[indexes],
-                                                             numberOfElements = self.engine.numberOfElements,
-                                                             minDistance=self.__minimumDistance,
-                                                             maxDistance=self.__maximumDistance,
-                                                             bin=self.__bin )
+        intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
+                                                               boxCoords=self.engine.boxCoordinates,
+                                                               basis=self.engine.basisVectors,
+                                                               moleculeIndex = self.engine.moleculesIndexes,
+                                                               elementIndex = self.engine.elementsIndexes,
+                                                               numberOfElements = self.engine.numberOfElements,
+                                                               minDistance=self.__minimumDistance,
+                                                               maxDistance=self.__maximumDistance,
+                                                               histSize=self.__histogramSize,
+                                                               bin=self.__bin,
+                                                               allAtoms = True)
+        intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
+                                                           basis=self.engine.basisVectors,
+                                                           moleculeIndex = self.engine.moleculesIndexes[indexes],
+                                                           elementIndex = self.engine.elementsIndexes[indexes],
+                                                           numberOfElements = self.engine.numberOfElements,
+                                                           minDistance=self.__minimumDistance,
+                                                           maxDistance=self.__maximumDistance,
+                                                           histSize=self.__histogramSize,
+                                                           bin=self.__bin )
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData

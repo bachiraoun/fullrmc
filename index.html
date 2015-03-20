@@ -332,6 +332,7 @@ Engine runtime.</p>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.DistanceConstraints">DistanceConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
 </ul>
 </li>
@@ -410,6 +411,24 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt>
+<tt class="descname">add_group</tt><big>(</big><em>g</em>, <em>broadcast=True</em><big>)</big></dt>
+<dd><p>Add group to engine groups list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.</li>
+<li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;. Keep True unless you know what you are doing.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt>
 <tt class="descname">allElements</tt></dt>
@@ -444,6 +463,12 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <dt>
 <tt class="descname">chiSquare</tt></dt>
 <dd><p>Get the last recorded chiSquare of the current configuration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">clear_groups</tt><big>(</big><big>)</big></dt>
+<dd><p>Clear all engine defined groups</p>
 </dd></dl>
 
 <dl class="method">
@@ -703,16 +728,14 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">run</tt><big>(</big><em>numberOfSteps=2147483647</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
+<tt class="descname">run</tt><big>(</big><em>numberOfSteps=100000</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
 <dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>numberOfSteps (integer): The maximum number of steps to run.
-By default maximum integer number allowed is given. 
-0 Will result in only initializing constraints.</li>
+<li>numberOfSteps (integer): The number of steps to run.</li>
 <li>saveFrequency (integer): Save engine every saveFrequency steps.</li>
 <li>savePath (string): Save engine file path.</li>
 </ol>
@@ -805,7 +828,7 @@ If None, RandomSelector is set automatically.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
+<li>groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
 If None, single atom groups of all atoms will be all automatically created.</li>
 </ol>
 </td>

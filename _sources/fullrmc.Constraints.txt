@@ -33,6 +33,14 @@ ImproperAngleConstraints
     :undoc-members:
     :show-inheritance:
 
+PairCorrelationConstraints
+---------------------------
+
+.. automodule:: fullrmc.Constraints.PairCorrelationConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 PairDistributionConstraints
 ---------------------------
 
@@ -40,4 +48,3 @@ PairDistributionConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-

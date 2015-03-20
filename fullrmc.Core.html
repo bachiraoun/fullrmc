@@ -588,6 +588,11 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.get_constraint_original_value">
+<tt class="descname">get_constraint_original_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.get_constraint_original_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.get_constraint_value">
 <tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -620,6 +625,12 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.originalData">
+<tt class="descname">originalData</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.originalData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s original calculated data upon initialization.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2268,8 +2279,8 @@ It contains the following methods.</p>
 <li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
 <li>hintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
 <li>hinter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
-<li>minDistance (float32): The minimum distance to be conunted in the histogram.</li>
-<li>maxDistance (float32): The maximum distance to be conunted in the histogram.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
 <li>bin (bool): The histogram bin size.</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
 </ol>
@@ -2299,8 +2310,9 @@ single_pair_distribution_histograms method for every desired atom index.</p>
 <li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
-<li>minDistance (float32): The minimum distance to be conunted in the histogram.</li>
-<li>maxDistance (float32): The maximum distance to be conunted in the histogram.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
+<li>histSize(int32): The histograms size.</li>
 <li>bin (bool): The histogram bin size.</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
 </ol>
@@ -2315,7 +2327,7 @@ single_pair_distribution_histograms method for every desired atom index.</p>
 </tbody>
 </table>
 </dd>
-<dt><strong>multiple_pair_distribution_histograms</strong>:  It calculates the pair distribution histograms of all atoms. </dt>
+<dt><strong>full_pair_distribution_histograms</strong>:  It calculates the pair distribution histograms of all atoms. </dt>
 <dd><p class="first">It calls multiple_distances method for all atoms.</p>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2330,6 +2342,7 @@ single_pair_distribution_histograms method for every desired atom index.</p>
 <li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
 <li>minDistance (float32): The minimum distance to be conunted in the histogram.</li>
 <li>maxDistance (float32): The maximum distance to be conunted in the histogram.</li>
+<li>histSize(int32): The histograms size.</li>
 <li>bin (bool): The histogram bin size.</li>
 </ol>
 </td>

@@ -51,6 +51,7 @@
 <li><a class="reference internal" href="#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.DistanceConstraints">DistanceConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
 </ul>
 </li>
@@ -1527,30 +1528,25 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </dd></dl>
 
 </div>
-<div class="section" id="module-fullrmc.Constraints.PairDistributionConstraints">
-<span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
-<p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
+<div class="section" id="module-fullrmc.Constraints.PairCorrelationConstraints">
+<span id="paircorrelationconstraints"></span><h2>PairCorrelationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairCorrelationConstraints" title="Permalink to this headline">¶</a></h2>
+<p>PairCorrelationConstraint contains classes for all constraints related experimental pair correlation functions.</p>
 <p class="graphviz">
-<img src="_images/inheritance-03e8afd143e4adf27bade75dd4fd26e471c869fa.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
-<map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
+<img src="_images/inheritance-4644b332d55d6367c377632069e18ef2d53f3c45.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
+<map id="inheritance225f361433" name="inheritance225f361433">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system. " alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="557,5,724,31"/>
 </map>
 </p>
 <dl class="class">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
-<p>It controls the total pair distribution function (pdf) of the system. 
-The partial pair distribution function (ppdf) is calculated from the normalized partial histograms as the following:</p>
-<div class="math">
-<p><img src="_images/math/e509e85c5361afee4da600be9520a616b38587b8.png" alt="g_{ij}(r) = \frac {\rho_{ij}(r)} {\rho_{j}} = \frac {n_{ij}(r)} {4\pi r^2 \Delta r \rho_{j}}"/></p>
-</div><p>where <img class="math" src="_images/math/a7b2db55baf2a73c102a11b2943700f4ab6d2ecf.png" alt="n_{ij}"/> is the number of elements <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/> at a distance between <img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/> and 
-<img class="math" src="_images/math/9c8d05f9ef99438b2e370dae1d86b209e12e9889.png" alt="r+\Delta r"/> from a central element <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/> averaged over all elements <img class="math" src="_images/math/a581f053bbfa5115f42c13094857cdd12a37ec49.png" alt="i"/>. 
-<img class="math" src="_images/math/9f122156899e05621df901c5a3aff1b267145d5c.png" alt="r_{j}"/> is the number density of the elements <img class="math" src="_images/math/d32c78b759903e3f4bd4fd2ce0b86358f7500c5d.png" alt="j"/>.</p>
-<p><strong>NB</strong>:The total pdf is computed as the sum of all ppdf and is noted as g(r) that is related to G(r) as the
-following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db98b3f2.png" alt="g(r)=1+(\frac{G(r)}{r})"/></p>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></tt></a></p>
+<p>It controls the total pair correlation function (pcf) of the system noted as g(r).
+The pair correlation function g(r) and pair distribution function G(r) are directly 
+related as in the following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db98b3f2.png" alt="g(r)=1+(\frac{G(r)}{r})"/></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1559,6 +1555,121 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 <li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
 <li>weighting (string): The elements weighting.</li>
+<li>scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.</li>
+<li>windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data">
+<tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move">
+<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint after move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move">
+<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint before move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Constraints.PairDistributionConstraints">
+<span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
+<p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
+<p class="graphviz">
+<img src="_images/inheritance-2ff2222f157f3504c336589cc2405200ebf0aa8a.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
+<map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
+<p>It controls the total pair distribution function (pdf) of the system noted as G(r). 
+The pair distribution function is the directly calculated quantity from a powder diffraction
+experiments. It is obtained from the experimentally determined total-scattering structure 
+function S(Q), by a Sine Fourier transform. pdf tells the probability of finding 
+atomic pairs separated by the real space distance r.
+The mathematical definition of the G(r) is:</p>
+<div class="math">
+<p><img src="_images/math/bdebad9420b9cd265438895103cd32b994fd2b93.png" alt="G(r) = \frac{1}{\pi} \int_{0}^{\infty} Q [S(Q)-1]sin(Qr)dQ = 4 \pi [\rho(r) - \rho_{0}] 
+
+G(r) = \frac{R(r)}{r} - 4 \pi r \rho_{0} 
+
+R(r) = 4 \pi r^2 \rho(r) =\frac{1}{N} \sum \limits_{i}^{N} \sum \limits_{j \neq i}^{N} \frac{b_i b_j}{\langle b \rangle ^2} \delta ( r - r_{ij} )"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/7b1816c51f7d31275cd3ad400208fb7b3ce136a0.png" alt="Q"/> is the momentum transfer.</p>
+<p><img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/> is the distance between two atoms.</p>
+<p><img class="math" src="_images/math/3bf6612ed0f348b1de4d1d454612d74a0c9502f3.png" alt="\rho(r)"/> is the sperical average defined as <img class="math" src="_images/math/ca26f811e767fa1f6cdf22140539ff8cb9d55e5c.png" alt="\int n(r^{'}).n(r-r^{'}) dr"/>.</p>
+<p><img class="math" src="_images/math/ed15f691d3f3c8cadde0d1b3df8b533bf40a4f83.png" alt="\rho_{0}"/> is the  average number density of the samples.</p>
+<p><img class="math" src="_images/math/2afb3a5dd6b68b2d487f92dac2667b7b13fb7122.png" alt="R(r)"/> is the radial distribution function (rdf).</p>
+<p><img class="math" src="_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> is the total number of atoms.</p>
+<p><img class="math" src="_images/math/5297a2c39c035905dc16f74a46fcb1b04743f8c5.png" alt="b_i"/> is the scattering length for atom i.</p>
+<p><img class="math" src="_images/math/35bab58b40a77a2e24ecb9f58898f1813de64459.png" alt="r_{ij}"/> is the distance between atoms i and j.</p>
+<p><img class="math" src="_images/math/e9cbc2b1fc662f26efdbd8a1bf32a806addee58e.png" alt="\langle b \rangle"/> is the average scattering length over all atoms</p>
+<p><img class="math" src="_images/math/4eb5bf4923340e72f8623da2515fc38a1b184052.png" alt="\sum \limits_{j \neq i}^{N} \delta ( r - r_{ij} )"/> is the probability density 
+of some atoms being r distant from each other.</p>
+<p><strong>NB</strong>: pair distribution function G(r) and the pair correlation function g(r) are directly 
+related as in the following <img class="math" src="_images/math/fb57218173f6c35c84bb51848ca2c0e9aa53fdf9.png" alt="G(r)=r(g(r)-1)"/></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
+<li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+<li>weighting (string): The elements weighting.</li>
+<li>scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.</li>
+<li>windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</li>
 </ol>
 </td>
 </tr>
@@ -1674,6 +1785,23 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.get_constraint_original_value">
+<tt class="descname">get_constraint_original_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.get_constraint_original_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.get_constraint_value">
 <tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
@@ -1743,6 +1871,12 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.scaleFactor">
+<tt class="descname">scaleFactor</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.scaleFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaleFactor.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_experimental_data">
 <tt class="descname">set_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_experimental_data" title="Permalink to this definition">¶</a></dt>
@@ -1753,6 +1887,23 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_scale_factor">
+<tt class="descname">set_scale_factor</tt><big>(</big><em>scaleFactor</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the scale factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.</li>
 </ol>
 </td>
 </tr>
@@ -1777,6 +1928,27 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_window_function">
+<tt class="descname">set_window_function</tt><big>(</big><em>windowFunction</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_window_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the window function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsCenter">
 <tt class="descname">shellsCenter</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsCenter" title="Permalink to this definition">¶</a></dt>
@@ -1793,6 +1965,12 @@ following <img class="math" src="_images/math/50c5f422da753e96fa75f4cffc802d60db
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weightingScheme">
 <tt class="descname">weightingScheme</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weightingScheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements weighting scheme.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.windowFunction">
+<tt class="descname">windowFunction</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.windowFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the window function.</p>
 </dd></dl>
 
 </dd></dl>

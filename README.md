@@ -18,6 +18,13 @@ among other functionalities:
 * Creating additional translation move generators such as translation along axis defined between two groups or random positions, etc.
 * Elements transmutation and atoms switching.
 
+## News
+* Pair Distribution Function (PDF) and Pair Correlation Function (PCF) are two experimental observables that are directly derived from each other,
+Yet the PDF is more sensitive at high distances. PDF and PCF constraints are now both implemented.  
+* PDF and PCF support scale factor and window function to be able to reproduce the experimental artifacts and 
+wrinkles coming from the reverse Fourrier transform.
+* Minimum and maximum distance now is supported so only a fraction of the experimental data can be fit.
+
 ## Installation
 fullrmc is still going through testing and further implementations. 
 Among others, the Core module is not yet uploaded to github for protection purposes. 

@@ -95,9 +95,10 @@
 <span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Permalink to this headline">¶</a></h2>
 <p>OrderedSelectors contains GroupSelector classes of defined order of selection.</p>
 <p class="graphviz">
-<img src="_images/inheritance-5822fc94c6c15bddc9dfbb9743178a2d2224c015.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance"/>
+<img src="_images/inheritance-57e15d2e317a4c39f1f4e00f745ce44c14fc959d.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance"/>
 <map id="inheritancec550f91c65" name="inheritancec550f91c65">
 <area shape="rect" id="node1" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="159,5,304,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="352,5,515,31"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,111,31"/>
 </map>
 </p>
@@ -157,6 +158,176 @@ If None, order is set automatically to all groups indexes list.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector">
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DirectionalOrderSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'TG': {'angle': 90</em>, <em>'damping': 0.1</em>, <em>'amplitude': 0.1}</em>, <em>'RG': {'amplitude': 10}}</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></tt></a></p>
+<p>DirectionalOrderSelector is a group selector with a defined order of selection.
+The order of selection is computed automatically at engine runtime by computing
+Groups distance to center, and setting the order from the further to the closest 
+if expand argument is True or from the closest to the further if expand is False.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The selector RMC engine.</p>
+</li>
+<li><p class="first">center (None, list, set, tuple, numpy.ndarray): The center of expansion.
+If None, the center is automatically set to the origin (0,0,0).</p>
+</li>
+<li><p class="first">expand (bool): Whether to set the order from the the further to the closest 
+or from the closest to the further if it is set to False.</p>
+</li>
+<li><p class="first">adjustMoveGenerators (bool): If set to True, all groups move generator instances will
+be changed automatically at engine runtime to a MoveGeneratorCollector of 
+TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
+Generators parameters can be given by generatorsParams. It is advisable to 
+set this flag to True in order to take advantage of an automatic and intelligent directional moves.</p>
+</li>
+<li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
+If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
+&#8216;TG&#8217; key is for TranslationTowardsCenterGenerator parameters and &#8216;RG&#8217; key is
+for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
+is not the same for all groups but intelligently allowing certain groups to move more than
+others according to damping parameter.</p>
+<p><strong>Parameters are the following:</strong></p>
+<ul class="simple">
+<li>TG_amp = generatorsParams[&#8216;TG&#8217;][&#8216;amplitude&#8217;]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>TG_ang = generatorsParams[&#8216;TG&#8217;][&#8216;angle&#8217;]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
+<li>TG_dam = generatorsParams[&#8216;TG&#8217;][&#8216;damping&#8217;]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>RG_ang = generatorsParams[&#8216;RG&#8217;][&#8216;amplitude&#8217;]: Used as RotationGenerator angle parameters.</li>
+</ul>
+<p><strong>Parameters are used as the following:</strong></p>
+<ul>
+<li><p class="first">TG = TranslationTowardsCenterGenerator(center={&#8220;fixed&#8221;:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
+</li>
+<li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
+</li>
+<li><p class="first">MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p>
+</li>
+</ul>
+<p><strong>NB: The parameters are not checked for errors until engine runtime.</strong></p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators">
+<tt class="descname">adjustMoveGenerators</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators" title="Permalink to this definition">¶</a></dt>
+<dd><p>adjustMoveGenerators flag.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center">
+<tt class="descname">center</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center" title="Permalink to this definition">¶</a></dt>
+<dd><p>center (X,Y,Z) coordinates.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand">
+<tt class="descname">expand</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>expand flag.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams">
+<tt class="descname">generatorsParams</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatic generators parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators">
+<tt class="descname">set_adjust_move_generators</tt><big>(</big><em>adjustMoveGenerators</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set expand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>expand (bool): Whether to set the order from the the further to the closest 
+or from the closest to the further if it is set to False.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center">
+<tt class="descname">set_center</tt><big>(</big><em>center</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the center.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>center (None, list, set, tuple, numpy.ndarray): The center of expansion.
+If None, the center is automatically set to the origin (0,0,0).</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand">
+<tt class="descname">set_expand</tt><big>(</big><em>expand</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set expand.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>expand (bool): Whether to set the order from the the further to the closest 
+or from the closest to the further if it is set to False.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters">
+<tt class="descname">set_generators_parameters</tt><big>(</big><em>generatorsParams</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set move generators parameters.</p>
+<ol class="arabic">
+<li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
+If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
+&#8216;TG&#8217; key is for TranslationTowardsCenterGenerator parameters and &#8216;RG&#8217; key is
+for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
+is not the same for all groups but intelligently allowing certain groups to move more than
+others according to damping parameter.</p>
+<p><strong>Parameters are the following:</strong></p>
+<ul class="simple">
+<li>TG_amp = generatorsParams[&#8216;TG&#8217;][&#8216;amplitude&#8217;]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>TG_ang = generatorsParams[&#8216;TG&#8217;][&#8216;angle&#8217;]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
+<li>TG_dam = generatorsParams[&#8216;TG&#8217;][&#8216;damping&#8217;]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>RG_ang = generatorsParams[&#8216;RG&#8217;][&#8216;amplitude&#8217;]: Used as RotationGenerator angle parameters.</li>
+</ul>
+<p><strong>Parameters are used as the following:</strong></p>
+<ul>
+<li><p class="first">TG = TranslationTowardsCenterGenerator(center={&#8220;fixed&#8221;:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
+</li>
+<li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
+</li>
+<li><p class="first">MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p>
+</li>
+</ul>
+<p><strong>NB: The parameters are not checked for errors until engine runtime.</strong></p>
+</li>
+</ol>
 </dd></dl>
 
 </dd></dl>

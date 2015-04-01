@@ -1542,7 +1542,7 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></tt></a></p>
 <p>It controls the total pair correlation function (pcf) of the system noted as g(r).
 The pair correlation function g(r) and pair distribution function G(r) are directly 
@@ -1561,6 +1561,10 @@ of the system prior to comparing it with the experimental data. In general, the 
 distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
 by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
 used to best imitate the numerical artefacts in the experimental data.</li>
+<li>limits (None, tuple, list): The distance limits to compute the histograms.
+If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
+If not None, a tuple of exactly two items where the first is of minimum distance or None 
+and the second is the maximum distance or None.</li>
 </ol>
 </td>
 </tr>
@@ -1628,7 +1632,7 @@ used to best imitate the numerical artefacts in the experimental data.</li>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
 <p>It controls the total pair distribution function (pdf) of the system noted as G(r). 
 The pair distribution function is the directly calculated quantity from a powder diffraction
@@ -1670,6 +1674,10 @@ of the system prior to comparing it with the experimental data. In general, the 
 distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
 by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
 used to best imitate the numerical artefacts in the experimental data.</li>
+<li>limits (None, tuple, list): The distance limits to compute the histograms.
+If None, the limits will be automatically set the the min and max distance of the experimental data.
+If not None, a tuple of exactly two items where the first is the minimum distance or None 
+and the second is the maximum distance or None.</li>
 </ol>
 </td>
 </tr>
@@ -1824,6 +1832,12 @@ used to best imitate the numerical artefacts in the experimental data.</li>
 <dd><p>Get the histogram size</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.limits">
+<tt class="descname">limits</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>The histogram computation limits.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen" title="Permalink to this definition">¶</a></dt>
@@ -1887,6 +1901,25 @@ used to best imitate the numerical artefacts in the experimental data.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_limits">
+<tt class="descname">set_limits</tt><big>(</big><em>limits</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the histogram computation limits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>limits (None, tuple, list): The distance limits to compute the histograms and compute with the experimental data.
+If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
+If not None, a tuple of minimum distance or None and maximum distance or None should be given.</li>
 </ol>
 </td>
 </tr>

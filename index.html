@@ -728,7 +728,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">run</tt><big>(</big><em>numberOfSteps=100000</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em><big>)</big></dt>
+<tt class="descname">run</tt><big>(</big><em>numberOfSteps=100000</em>, <em>saveFrequency=1000</em>, <em>savePath='restart'</em>, <em>xyzFrequency=None</em>, <em>xyzPath='trajectory.xyz'</em><big>)</big></dt>
 <dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -736,8 +736,13 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>numberOfSteps (integer): The number of steps to run.</li>
-<li>saveFrequency (integer): Save engine every saveFrequency steps.</li>
+<li>saveFrequency (integer): Save engine every saveFrequency steps.
+Save will be omitted if chiSquare has not decreased.</li>
 <li>savePath (string): Save engine file path.</li>
+<li>xyzFrequency (None, integer): Save coordinates to .xyz file every xyzFrequency steps 
+regardless chiSquare has decreased or not.
+If None, no .xyz file will be generated.</li>
+<li>xyzPath (string): Save coordinates to .xyz file.</li>
 </ol>
 </td>
 </tr>
@@ -954,8 +959,22 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 
 <dl class="method">
 <dt>
-<tt class="descname">visualize</tt><big>(</big><big>)</big></dt>
+<tt class="descname">visualize</tt><big>(</big><em>boxWidth=2</em>, <em>boxColor='yellow'</em>, <em>representation='Lines'</em><big>)</big></dt>
 <dd><p>Visualize the last configuration using pdbParser visualize method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>boxWidth (number): Visualize the simulation box by giving the lines width.
+If 0 then the simulation box is not visualized.</li>
+<li>boxWidth (str): Specify the simulation box color.</li>
+<li>representation(str): Choose representation method.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">

@@ -992,53 +992,16 @@ If 0 then the simulation box is not visualized.</li>
 </dd></dl>
 
 <p>This module provides all the global types, variables and some general methods that fullrmc needs.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">Logger</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">simplelogger.SimpleLogger.Logger</span></tt></p>
+</dd></dl>
+
 <dl class="function">
 <dt>
 <tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big></dt>
 <dd><p>random() -&gt; x in the interval [0, 1).</p>
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">ColorFormatter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">logging.Formatter</span></tt></p>
-<dl class="method">
-<dt>
-<tt class="descname">format</tt><big>(</big><em>record</em><big>)</big></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt>
-<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">LocalLogger</tt><big>(</big><em>name=None</em>, <em>config_file=None</em><big>)</big></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>fullrmc logger with different levels of logging. 
-A single instance of the logger is initialized when the module is imported for the first time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Levels:</th><td class="field-body"><ol class="first arabic simple">
-<li>information: Must be used to log some useful information</li>
-<li>warning: Must be used to log some useful warnings</li>
-<li>debugging: Must be used to log for debugging purposes only</li>
-<li>critical: Must be used to log some critical behaviour</li>
-<li>error: Must be used to log errors</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><ol class="first last arabic simple">
-<li>information: LocalLogger().logger.info(&#8220;some message&#8221;)</li>
-<li>warning: LocalLogger().logger.warn(&#8220;some message&#8221;)</li>
-<li>debugging: LocalLogger().logger.debug(&#8220;some message&#8221;)</li>
-<li>critical: LocalLogger().logger.critical(&#8220;some message&#8221;)</li>
-<li>error: LocalLogger().logger.error(&#8220;some message&#8221;)</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>

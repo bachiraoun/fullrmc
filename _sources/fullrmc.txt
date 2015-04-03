@@ -30,12 +30,5 @@ Globals
     :undoc-members:
     :show-inheritance:
 
-log
----
-
-.. automodule:: fullrmc.log
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 

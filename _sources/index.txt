@@ -28,8 +28,3 @@ Sub-modules
     :show-inheritance:
     :noindex:
     
-.. automodule:: fullrmc.log
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:

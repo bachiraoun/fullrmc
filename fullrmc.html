@@ -47,7 +47,6 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Engine">Engine</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Globals">Globals</a></li>
-<li><a class="reference internal" href="#module-fullrmc.log">log</a></li>
 </ul>
 </li>
 </ul>
@@ -781,56 +780,16 @@ If 0 then the simulation box is not visualized.</li>
 <div class="section" id="module-fullrmc.Globals">
 <span id="globals"></span><h2>Globals<a class="headerlink" href="#module-fullrmc.Globals" title="Permalink to this headline">¶</a></h2>
 <p>This module provides all the global types, variables and some general methods that fullrmc needs.</p>
+<dl class="class">
+<dt id="fullrmc.Globals.Logger">
+<em class="property">class </em><tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">Logger</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#fullrmc.Globals.Logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">simplelogger.SimpleLogger.Logger</span></tt></p>
+</dd></dl>
+
 <dl class="function">
 <dt id="fullrmc.Globals.generate_random_float">
 <tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Globals.generate_random_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>random() -&gt; x in the interval [0, 1).</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-fullrmc.log">
-<span id="log"></span><h2>log<a class="headerlink" href="#module-fullrmc.log" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="fullrmc.log.ColorFormatter">
-<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">ColorFormatter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#fullrmc.log.ColorFormatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">logging.Formatter</span></tt></p>
-<dl class="method">
-<dt id="fullrmc.log.ColorFormatter.format">
-<tt class="descname">format</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#fullrmc.log.ColorFormatter.format" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fullrmc.log.LocalLogger">
-<em class="property">class </em><tt class="descclassname">fullrmc.log.</tt><tt class="descname">LocalLogger</tt><big>(</big><em>name=None</em>, <em>config_file=None</em><big>)</big><a class="headerlink" href="#fullrmc.log.LocalLogger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>fullrmc logger with different levels of logging. 
-A single instance of the logger is initialized when the module is imported for the first time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Levels:</th><td class="field-body"><ol class="first arabic simple">
-<li>information: Must be used to log some useful information</li>
-<li>warning: Must be used to log some useful warnings</li>
-<li>debugging: Must be used to log for debugging purposes only</li>
-<li>critical: Must be used to log some critical behaviour</li>
-<li>error: Must be used to log errors</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Usage:</th><td class="field-body"><ol class="first last arabic simple">
-<li>information: LocalLogger().logger.info(&#8220;some message&#8221;)</li>
-<li>warning: LocalLogger().logger.warn(&#8220;some message&#8221;)</li>
-<li>debugging: LocalLogger().logger.debug(&#8220;some message&#8221;)</li>
-<li>critical: LocalLogger().logger.critical(&#8220;some message&#8221;)</li>
-<li>error: LocalLogger().logger.error(&#8220;some message&#8221;)</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 </div>

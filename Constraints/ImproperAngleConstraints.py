@@ -13,8 +13,7 @@ import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.improper_angles import full_improper_angles
@@ -92,7 +91,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. result (boolean): True to reject step, False to accept
         """
         if self.activeAtomsDataBeforeMove is None or self.activeAtomsDataAfterMove is None:
-            raise Exception(log.LocalLogger("fullrmc").logger.error("must compute data before and after group move"))
+            raise Exception(LOGGER.error("must compute data before and after group move"))
         reject = False
         for index in self.activeAtomsDataBeforeMove.keys():
             before = self.activeAtomsDataBeforeMove[index]["reducedAngles"]
@@ -119,37 +118,37 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         map = []
         if self.engine is not None:
             if anglesMap is not None:
-                assert isinstance(anglesMap, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap must be None or a list")
+                assert isinstance(anglesMap, (list, set, tuple)), LOGGER.error("anglesMap must be None or a list")
                 for angle in anglesMap:
-                    assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists")
+                    assert isinstance(angle, (list, set, tuple)), LOGGER.error("anglesMap items must be lists")
                     angle = list(angle)
-                    assert len(angle)==6, log.LocalLogger("fullrmc").logger.error("anglesMap items must be lists of 6 items each")
+                    assert len(angle)==6, LOGGER.error("anglesMap items must be lists of 6 items each")
                     improperIdx, oIdx, xIdx, yIdx, lower, upper = angle
-                    assert is_integer(improperIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of first item must be an integer")
+                    assert is_integer(improperIdx), LOGGER.error("anglesMap items lists of first item must be an integer")
                     improperIdx = INT_TYPE(improperIdx)
-                    assert is_integer(oIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of second item must be an integer")
+                    assert is_integer(oIdx), LOGGER.error("anglesMap items lists of second item must be an integer")
                     oIdx = INT_TYPE(oIdx)
-                    assert is_integer(xIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of third item must be an integer")
+                    assert is_integer(xIdx), LOGGER.error("anglesMap items lists of third item must be an integer")
                     xIdx = INT_TYPE(xIdx)
-                    assert is_integer(yIdx), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of fourth item must be an integer")
+                    assert is_integer(yIdx), LOGGER.error("anglesMap items lists of fourth item must be an integer")
                     yIdx = INT_TYPE(yIdx)
-                    assert improperIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists first item must be positive")
-                    assert oIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists second item must be positive")
-                    assert xIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists third item must be positive")
-                    assert yIdx>=0, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fourth item must be positive")
-                    assert improperIdx!=oIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and second items can't be the same")
-                    assert improperIdx!=xIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and third items can't be the same")
-                    assert improperIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and fourth items can't be the same")
-                    assert oIdx!=xIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second and third items can't be the same")
-                    assert oIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second and fourth items can't be the same")
-                    assert xIdx!=yIdx, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third and fourth items can't be the same")
-                    assert is_number(lower), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of fifth item must be a number")
+                    assert improperIdx>=0, LOGGER.error("anglesMap items lists first item must be positive")
+                    assert oIdx>=0, LOGGER.error("anglesMap items lists second item must be positive")
+                    assert xIdx>=0, LOGGER.error("anglesMap items lists third item must be positive")
+                    assert yIdx>=0, LOGGER.error("anglesMap items lists fourth item must be positive")
+                    assert improperIdx!=oIdx, LOGGER.error("bondsMap items lists first and second items can't be the same")
+                    assert improperIdx!=xIdx, LOGGER.error("bondsMap items lists first and third items can't be the same")
+                    assert improperIdx!=yIdx, LOGGER.error("bondsMap items lists first and fourth items can't be the same")
+                    assert oIdx!=xIdx, LOGGER.error("bondsMap items lists second and third items can't be the same")
+                    assert oIdx!=yIdx, LOGGER.error("bondsMap items lists second and fourth items can't be the same")
+                    assert xIdx!=yIdx, LOGGER.error("bondsMap items lists third and fourth items can't be the same")
+                    assert is_number(lower), LOGGER.error("anglesMap items lists of fifth item must be a number")
                     lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), log.LocalLogger("fullrmc").logger.error("anglesMap items lists of sixth item must be a number")
+                    assert is_number(upper), LOGGER.error("anglesMap items lists of sixth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=FLOAT_TYPE(-PI/2), log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be bigger than %10f"%FLOAT_TYPE(-PI/2))
-                    assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller than the sixth item")
-                    assert upper<=FLOAT_TYPE(PI/2), log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%FLOAT_TYPE(PI/2))
+                    assert lower>=FLOAT_TYPE(-PI/2), LOGGER.error("anglesMap items lists fifth item must be bigger than %10f"%FLOAT_TYPE(-PI/2))
+                    assert upper>lower, LOGGER.error("anglesMap items lists fifth item must be smaller than the sixth item")
+                    assert upper<=FLOAT_TYPE(PI/2), LOGGER.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%FLOAT_TYPE(PI/2))
                     map.append((improperIdx, oIdx, xIdx, yIdx, lower, upper))  
         # set anglesMap definition
         self.__anglesMap = map      
@@ -160,10 +159,10 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             # parse bondsMap
             for angle in self.__anglesMap:
                 improperIdx, oIdx, xIdx, yIdx, lower, upper = angle
-                assert improperIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
-                assert oIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
-                assert xIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
-                assert yIdx<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("angle atom index must be smaller than maximum number of atoms")
+                assert improperIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+                assert oIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+                assert xIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+                assert yIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
                 # create atoms look up angles dictionary
                 if not self.__atomsLUAD.has_key(improperIdx):
                     self.__atomsLUAD[improperIdx] = []
@@ -240,11 +239,11 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             if mol not in existingMoleculesNames:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
-            assert isinstance(angles, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition molecule angles must be a list")
+            assert isinstance(angles, (list, set, tuple)), LOGGER.error("mapDefinition molecule angles must be a list")
             angles = list(angles)
             molAnglesMap = []
             for angle in angles:
-                assert isinstance(angle, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition angles must be a list")
+                assert isinstance(angle, (list, set, tuple)), LOGGER.error("mapDefinition angles must be a list")
                 angle = list(angle)
                 assert len(angle)==6
                 improperAt, oAt, xAt, yAt, lower, upper = angle
@@ -252,9 +251,9 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 lower = FLOAT_TYPE(lower)
                 assert is_number(upper)
                 upper = FLOAT_TYPE(upper)
-                assert lower>=-90, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
-                assert upper>lower, log.LocalLogger("fullrmc").logger.error("anglesMap items lists fifth item must be smaller than the sixth item")
-                assert upper<=90, log.LocalLogger("fullrmc").logger.error("anglesMap items lists sixth item must be smaller or equal to 90")
+                assert lower>=-90, LOGGER.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
+                assert upper>lower, LOGGER.error("anglesMap items lists fifth item must be smaller than the sixth item")
+                assert upper<=90, LOGGER.error("anglesMap items lists sixth item must be smaller or equal to 90")
                 lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # check for redundancy

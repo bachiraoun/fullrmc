@@ -13,6 +13,7 @@ import time
 import sys
 import warnings
 import atexit
+import tempfile
 from collections import OrderedDict
 
 # external libraries imports
@@ -25,8 +26,7 @@ from pdbParser.pdbParser import pdbParser
 from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
 
 # fullrmc library imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float, LOGGER
 from fullrmc.Core.transform_coordinates import transform_coordinates
 from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
@@ -91,11 +91,15 @@ class Engine(object):
         # set constraints
         if constraints is not None:
             self.add_constraints(constraints)
-
+        
+        # set LOGGER file path to saveEngine path
+        #logFile = os.path.join( os.path.dirname(os.path.realpath(_savePath)), LOGGER.logFileBasename)
+        #LOGGER.set_log_file_basename(logFile)
+        
     def __initialize_engine__(self):
         """ Initialize all engine arguments and flags. """
         # engine last moved group index
-        self.__lastMovedGroupIndex = None
+        self.__lastSelectedGroupIndex = None
         # engine generated steps number
         self.__generated = 0
         # engine tried steps number
@@ -110,23 +114,23 @@ class Engine(object):
         self.__groups = []
         
     @property
-    def lastMovedGroupIndex(self):
+    def lastSelectedGroupIndex(self):
         """ Get the last moved group instance index in groups list. """
-        return self.__lastMovedGroupIndex
+        return self.__lastSelectedGroupIndex
     
     @property
-    def lastMovedGroup(self):
+    def lastSelectedGroup(self):
         """ Get the last moved group instance. """
-        if self.__lastMovedGroupIndex is None:
+        if self.__lastSelectedGroupIndex is None:
             return None
-        return self.__groups[self.__lastMovedGroupIndex]
+        return self.__groups[self.__lastSelectedGroupIndex]
     
     @property
-    def lastMovedAtomsIndexes(self):
+    def lastSelectedAtomsIndexes(self):
         """ Get the last moved atoms indexes. """
-        if self.__lastMovedGroupIndex is None:
+        if self.__lastSelectedGroupIndex is None:
             return None
-        return self.lastMovedGroup.indexes
+        return self.lastSelectedGroup.indexes
         
     @property
     def state(self):
@@ -285,27 +289,27 @@ class Engine(object):
         :Parameters:
             #. path (string): the file path to save the engine
         """
-        log.LocalLogger("fullrmc").logger.info("Saving Engine... DON'T INTERRUPT")
+        LOGGER.log("save engine","Saving Engine... DON'T INTERRUPT")
         dirPath  = os.path.os.path.dirname(path)
         fileName = os.path.basename(path)
         fileName = fileName.split(".")[0]
-        assert len(fileName), log.LocalLogger("fullrmc").logger.error("Path filename must be a non zero string")
+        assert len(fileName), LOGGER.error("Path filename must be a non zero string")
         fileName += ".rmc"
         path = os.path.join(dirPath,fileName)
         # open file
         try:
             fd = open(path, 'wb')
         except Exception as e:
-            raise Exception( log.LocalLogger("fullrmc").logger.error("Unable to open file '%s' to save engine. (%s)"%(path,e)) )
+            raise Exception( LOGGER.error("Unable to open file '%s' to save engine. (%s)"%(path,e)) )
         # save engine
         try:
             pickle.dump( self, fd, protocol=pickle.HIGHEST_PROTOCOL )
         except Exception as e:
             fd.close()
-            raise Exception( log.LocalLogger("fullrmc").logger.error("Unable to save engine instance. (%s)"%e) )
+            raise Exception( LOGGER.error("Unable to save engine instance. (%s)"%e) )
         finally:
             fd.close()
-        log.LocalLogger("fullrmc").logger.info("Engine saved '%s'"%path)
+        LOGGER.log("save engine","Engine saved '%s'"%path)
     
     def load(self, path):
         """
@@ -321,16 +325,16 @@ class Engine(object):
         try:
             fd = open(path, 'rb')
         except Exception as e:
-            raise Exception(log.LocalLogger("fullrmc").logger.error("Can't open '%s' file for reading. (%s)"%(path,e) ))
+            raise Exception(LOGGER.error("Can't open '%s' file for reading. (%s)"%(path,e) ))
         # unpickle file
         try:
             engine = pickle.load( fd )
         except Exception as e:
             fd.close()
-            raise Exception( log.LocalLogger("fullrmc").logger.error("Unable to open fullrmc engine file '%s'. (%s)"%(path,e)) )
+            raise Exception( LOGGER.error("Unable to open fullrmc engine file '%s'. (%s)"%(path,e)) )
         finally:
             fd.close()
-        assert isinstance(engine, Engine), log.LocalLogger("fullrmc").logger.error("%s is not a fullrmc Engine file"%path)
+        assert isinstance(engine, Engine), LOGGER.error("%s is not a fullrmc Engine file"%path)
         # return engineInstance
         return engine
               
@@ -351,10 +355,10 @@ class Engine(object):
             #. tolerance (number): The runtime tolerance parameters. 
                It's the percentage of allowed unsatisfactory 'tried' moves. 
         """
-        assert is_number(tolerance), log.LocalLogger("fullrmc").logger.error("tolerance must be a number")
+        assert is_number(tolerance), LOGGER.error("tolerance must be a number")
         tolerance = FLOAT_TYPE(tolerance)
-        assert tolerance>=0, log.LocalLogger("fullrmc").logger.error("tolerance must be positive")
-        assert tolerance<=100, log.LocalLogger("fullrmc").logger.error("tolerance must be smaller than 100")
+        assert tolerance>=0, LOGGER.error("tolerance must be positive")
+        assert tolerance<=100, LOGGER.error("tolerance must be smaller than 100")
         self.__tolerance = FLOAT_TYPE(tolerance/100.)
         
     def set_group_selector(self, selector):
@@ -369,7 +373,7 @@ class Engine(object):
         if selector is None:
             selector = RandomSelector(self)
         else:
-            assert isinstance(selector, GroupSelector), log.LocalLogger("fullrmc").logger.error("selector must a GroupSelector instance")
+            assert isinstance(selector, GroupSelector), LOGGER.error("selector must a GroupSelector instance")
         # change old selector engine instance to None
         if self.__groupSelector is not None:
             self.__groupSelector.set_engine(None)
@@ -396,20 +400,20 @@ class Engine(object):
             #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
         """
         if isinstance(g, Group):
-            assert np.max(g.indexes)<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+            assert np.max(g.indexes)<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
             gr = g
         else:
-            assert isinstance(g, np.ndarray), log.LocalLogger("fullrmc").logger.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
+            assert isinstance(g, np.ndarray), LOGGER.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
             # check group dimension
-            assert len(g.shape) == 1, log.LocalLogger("fullrmc").logger.error("each group must be a numpy.ndarray of dimension 1")
-            assert len(g), log.LocalLogger("fullrmc").logger.error("group found to have no indexes")
+            assert len(g.shape) == 1, LOGGER.error("each group must be a numpy.ndarray of dimension 1")
+            assert len(g), LOGGER.error("group found to have no indexes")
             # check type
-            assert g.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("each group in groups must be of type numpy.int32")
+            assert g.dtype.type is INT_TYPE, LOGGER.error("each group in groups must be of type numpy.int32")
             # sort and check limits
             sortedGroup = sorted(set(g))
-            assert len(sortedGroup) == len(g), log.LocalLogger("fullrmc").logger.error("redundant indexes found in group")
-            assert sortedGroup[0]>=0, log.LocalLogger("fullrmc").logger.error("group index must equal or bigger than 0")
-            assert sortedGroup[-1]<len(self.__pdb), log.LocalLogger("fullrmc").logger.error("group index must be smaller than number of atoms in pdb")
+            assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
+            assert sortedGroup[0]>=0, LOGGER.error("group index must equal or bigger than 0")
+            assert sortedGroup[-1]<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
             gr = Group(indexes=g)
         # append group
         self.__groups.append( gr )
@@ -430,7 +434,7 @@ class Engine(object):
         if groups is None:
             self.__groups = [Group(indexes=[idx]) for idx in self.__pdb.indexes]
         else:
-            assert isinstance(groups, (list,tuple,set)), log.LocalLogger("fullrmc").logger.error("groups must be a list of numpy.ndarray")
+            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
             self.__groups = []
             for g in groups:
                 self.add_group(g, broadcast=False)
@@ -478,7 +482,7 @@ class Engine(object):
                 self.__reciprocalBasisVectors = np.array(bc.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
                 self.__volume = FLOAT_TYPE(bc.get_box_volume())
             except: 
-                raise Exception( log.LocalLogger("fullrmc").logger.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy array or a positive number") )
+                raise Exception( LOGGER.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy array or a positive number") )
         elif not isinstance(boundaryConditions, PeriodicBoundaries):
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = None
@@ -494,13 +498,62 @@ class Engine(object):
             self.__boxCoordinates = np.array( self.__boundaryConditions.real_to_box_array(self.__realCoordinates), dtype=FLOAT_TYPE)
         else:
             self.__boxCoordinates = None
-            raise Exception( log.LocalLogger("fullrmc").logger.error("Not periodic boundary conditions is not implemented yet") )
+            raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
         
-    def visualize(self):
-        """ Visualize the last configuration using pdbParser visualize method. """
-        self.__pdb.visualize(coordinates=self.__realCoordinates)
+    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines"):
+        """ Visualize the last configuration using pdbParser visualize method.
+        
+        :Parameters:
+            #. boxWidth (number): Visualize the simulation box by giving the lines width.
+               If 0 then the simulation box is not visualized.
+            #. boxWidth (str): Specify the simulation box color.
+            #. representation(str): Choose representation method.
+        """
+        # check boxWidth argument
+        assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
+        boxWidth = int(boxWidth)
+        assert boxWidth>=0, LOGGER.error("boxWidth must be a positive") 
+        # check boxColor argument
+        colors = ['blue', 'red', 'gray', 'orange', 'yellow', 'tan', 'silver', 'green',
+                  'white', 'pink', 'cyan', 'purple', 'lime', 'mauve', 'ochre', 'iceblue', 
+                  'black', 'yellow2', 'yellow3', 'green2', 'green3', 'cyan2', 'cyan3', 'blue2',
+                  'blue3', 'violet', 'violet2', 'magenta', 'magenta2', 'red2', 'red3', 
+                  'orange2','orange3']
+        assert boxColor in colors, LOGGER.error("boxColor is not a recognized color name among %s"%str(colors))
+        # check representation argument
+        reps = ["Lines","Bonds","DynamicBonds","HBonds","Points","VDW","CPK",
+                "Licorice","Beads","Dotted","Solvent"]
+        assert representation in reps, LOGGER.error("representation is not a recognized among allowed ones %s"%str(reps))
+        # create .tcl file
+        (vmdfd, tclFile) = tempfile.mkstemp()
+        # write tclFile
+        tclFile += ".tcl"
+        fd = open(tclFile, "w")
+        # visualize box
+        if boxWidth>0 and isinstance(self.__boundaryConditions, PeriodicBoundaries):
+            try:
+                a = self.__boundaryConditions.get_a()
+                b = self.__boundaryConditions.get_b()
+                c = self.__boundaryConditions.get_c()
+                alpha = self.__boundaryConditions.get_alpha()*180./np.pi
+                beta = self.__boundaryConditions.get_beta()*180./np.pi
+                gamma = self.__boundaryConditions.get_gamma()*180./np.pi
+                fd.write("set cell [pbc set {%.3f %.3f %.3f %.3f %.3f %.3f} -all]\n"%(a,b,c,alpha,beta,gamma))
+                fd.write("pbc box -center origin -color %s -width %.2f\n"%(boxColor,boxWidth))
+            except:
+                LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
+        # representation
+        fd.write("mol delrep 0 top\n")
+        fd.write("mol representation %s\n"%representation)
+        fd.write("mol delrep 0 top\n")
+        fd.write('mol addrep top\n')
+        #fd.write("sel default style VDW\n")
+        fd.close()
+        self.__pdb.visualize(coordinates=self.__realCoordinates, startupScript=tclFile)
+        # remove .tcl file
+        os.remove(tclFile)
         
     def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
         """
@@ -530,7 +583,7 @@ class Engine(object):
             try:
                 pdb = pdbParser(pdb)
             except:
-                raise Exception( log.LocalLogger("fullrmc").logger.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
+                raise Exception( LOGGER.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
         # set pdb
         self.__pdb = pdb        
         # get coordinates
@@ -584,23 +637,23 @@ class Engine(object):
                     currentSeg = seg
                 moleculesIndexes.append(molIndex)
         else:
-            assert isinstance(moleculesIndexes, (list,set,tuple, np.ndarray)), log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be a list of indexes")
-            assert len(moleculesIndexes)==len(self.__pdb), log.LocalLogger("fullrmc").logger.error("moleculesIndexes must have the same length as pdb")
+            assert isinstance(moleculesIndexes, (list,set,tuple, np.ndarray)), LOGGER.error("moleculesIndexes must be a list of indexes")
+            assert len(moleculesIndexes)==len(self.__pdb), LOGGER.error("moleculesIndexes must have the same length as pdb")
             if isinstance(moleculesIndexes, np.ndarray):
-                assert len(moleculesIndexes.shape)==1, log.LocalLogger("fullrmc").logger.error("moleculesIndexes numpy.ndarray must have a dimension of 1")
-                assert moleculesIndexes.dtype.type is INT_TYPE, log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be of type numpy.int32")
+                assert len(moleculesIndexes.shape)==1, LOGGER.error("moleculesIndexes numpy.ndarray must have a dimension of 1")
+                assert moleculesIndexes.dtype.type is INT_TYPE, LOGGER.error("moleculesIndexes must be of type numpy.int32")
             else:
                 for idx in moleculesIndexes:
                     try:
                         idx = float(idx)
                     except:
-                        raise Exception(log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be a list of numbers"))
-                    assert is_integer(idx), log.LocalLogger("fullrmc").logger.error("moleculesIndexes must be a list of integers")
+                        raise Exception(LOGGER.error("moleculesIndexes must be a list of numbers"))
+                    assert is_integer(idx), LOGGER.error("moleculesIndexes must be a list of integers")
         # check molecules names
         if moleculesNames is not None:
-            assert isinstance(moleculesNames, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("moleculesNames must be a list")
+            assert isinstance(moleculesNames, (list, set, tuple)), LOGGER.error("moleculesNames must be a list")
             moleculesNames = list(moleculesNames)
-            assert len(moleculesNames)==len(self.__pdb), log.LocalLogger("fullrmc").logger.error("moleculesNames must have the same length as pdb")
+            assert len(moleculesNames)==len(self.__pdb), LOGGER.error("moleculesNames must have the same length as pdb")
         else:
             moleculesNames = self.__pdb.residues
         if len(moleculesNames):
@@ -610,7 +663,7 @@ class Engine(object):
                 newMolIndex = moleculesIndexes[idx]
                 newMolName  = moleculesNames[idx]
                 if newMolIndex == molIndex:
-                    assert newMolName == molName, log.LocalLogger("fullrmc").logger.error("Same molecule atoms can't have different molecule name")
+                    assert newMolName == molName, LOGGER.error("Same molecule atoms can't have different molecule name")
                 else:
                     molName  = newMolName
                     molIndex = newMolIndex
@@ -632,8 +685,8 @@ class Engine(object):
         if elements is None:
             elements = self.__pdb.elements
         else:
-            assert isinstance(elements, (list,set,tuple)), log.LocalLogger("fullrmc").logger.error("elements must be a list of indexes")
-            assert len(elements)==len(self.__pdb), log.LocalLogger("fullrmc").logger.error("elements have the same length as pdb")
+            assert isinstance(elements, (list,set,tuple)), LOGGER.error("elements must be a list of indexes")
+            assert len(elements)==len(self.__pdb), LOGGER.error("elements have the same length as pdb")
         # set all atoms elements
         self.__allElements = elements
         # get elements
@@ -661,8 +714,8 @@ class Engine(object):
         if names is None:
             names = self.__pdb.names
         else:
-            assert isinstance(names, (list,set,tuple)), log.LocalLogger("fullrmc").logger.error("names must be a list of indexes")
-            assert len(names)==len(self.__pdb), log.LocalLogger("fullrmc").logger.error("names have the same length as pdb")
+            assert isinstance(names, (list,set,tuple)), LOGGER.error("names must be a list of indexes")
+            assert len(names)==len(self.__pdb), LOGGER.error("names have the same length as pdb")
         # set all atoms names
         self.__allNames = names
         # get atom names
@@ -691,10 +744,10 @@ class Engine(object):
         else:
             constraints = [constraints]
         for c in constraints:
-            assert isinstance(c, Constraint), log.LocalLogger("fullrmc").logger.error("constraints must be a Constraint instance or a list of Constraint instances")
+            assert isinstance(c, Constraint), LOGGER.error("constraints must be a Constraint instance or a list of Constraint instances")
             # check whether same instance added twice
             if c in self.__constraints:
-                log.LocalLogger("fullrmc").logger.warn("constraint '%s' already exist in list of constraints"%c)
+                LOGGER.warn("constraint '%s' already exist in list of constraints"%c)
                 continue
             # add engine to constraint
             c.set_engine(self)
@@ -756,24 +809,10 @@ class Engine(object):
         chis = []
         for c in constraints:
             chi = getattr(c, attr)
-            assert chi is not None, log.LocalLogger("fullrmc").logger.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
+            assert chi is not None, LOGGER.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
             chis.append(c.contribution*chi)
         return np.sum(chis)
-    
-    def __runtime_get_arguments__(self, numberOfSteps, saveFrequency, savePath):
-        # check numberOfSteps
-        assert is_integer(numberOfSteps), log.LocalLogger("fullrmc").logger.error("numberOfSteps must be an integer")
-        assert numberOfSteps<=sys.maxint, log.LocalLogger("fullrmc").logger.error("number of steps must be smaller than maximum integer number allowed by the system '%i'"%sys.maxint)
-        assert numberOfSteps>=0, log.LocalLogger("fullrmc").logger.error("number of steps must be positive")
-        # check saveFrequency
-        assert is_integer(saveFrequency), log.LocalLogger("fullrmc").logger.error("saveFrequency must be an integer")
-        assert saveFrequency>0, log.LocalLogger("fullrmc").logger.error("saveFrequency must be bigger than 0")
-        # check saveFrequency
-        assert isinstance(savePath, basestring), log.LocalLogger("fullrmc").logger.error("savePath must be a string")
-        savePath = str(savePath)
-        # return
-        return int(numberOfSteps), int(saveFrequency), savePath
-    
+        
     def get_used_constraints(self):
         """
         Parses all engine constraints and returns different lists of the active ones.
@@ -812,7 +851,7 @@ class Engine(object):
         # initialize out-of-dates constraints
         for c in usedConstraints:
             if c.state != self.__state:
-                log.LocalLogger("fullrmc").logger.info("Initializing constraint data '%s'"%c.__class__.__name__)
+                LOGGER.info("Initializing constraint data '%s'"%c.__class__.__name__)
                 c.compute_data()
                 c.set_state(self.__state)
                 if c.originalData is None:
@@ -820,38 +859,87 @@ class Engine(object):
         # return constraints
         return usedConstraints, constraints, enhanceOnlyConstraints
         
+    def __runtime_get_number_of_steps(self, numberOfSteps):
+        # check numberOfSteps
+        assert is_integer(numberOfSteps), LOGGER.error("numberOfSteps must be an integer")
+        assert numberOfSteps<=sys.maxint, LOGGER.error("number of steps must be smaller than maximum integer number allowed by the system '%i'"%sys.maxint)
+        assert numberOfSteps>=0, LOGGER.error("number of steps must be positive")
+        # return
+        return int(numberOfSteps)
+        
+    def __runtime_get_save_engine(self, saveFrequency, savePath): 
+        # check saveFrequency
+        assert is_integer(saveFrequency), LOGGER.error("saveFrequency must be an integer")
+        if saveFrequency is not None:
+            assert is_integer(saveFrequency), LOGGER.error("saveFrequency must be an integer")
+            assert saveFrequency>=0, LOGGER.error("saveFrequency must be positive")
+            saveFrequency = int(saveFrequency)
+        if saveFrequency == 0:
+            saveFrequency = None
+        # check savePath
+        assert isinstance(savePath, basestring), LOGGER.error("savePath must be a string")
+        savePath = str(savePath)
+        # return
+        return saveFrequency, savePath
     
-    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart"):
+    def __runtime_get_save_xyz(self, xyzFrequency, xyzPath):    
+        # check saveFrequency
+        if xyzFrequency is not None:
+            assert is_integer(xyzFrequency), LOGGER.error("xyzFrequency must be an integer")
+            assert xyzFrequency>=0, LOGGER.error("xyzFrequency must be positive")
+            xyzFrequency = int(xyzFrequency)
+        if xyzFrequency == 0:
+            xyzFrequency = None
+        # check xyzPath
+        assert isinstance(xyzPath, basestring), LOGGER.error("xyzPath must be a string")
+        xyzPath = str(xyzPath)
+        # return
+        return xyzFrequency, xyzPath
+        
+    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart", 
+                  xyzFrequency=None, xyzPath="trajectory.xyz"):
         """
         Run the Reverse Monte Carlo engine by performing random moves on engine groups.
         
         :Parameters:
             #. numberOfSteps (integer): The number of steps to run.
             #. saveFrequency (integer): Save engine every saveFrequency steps.
+               Save will be omitted if chiSquare has not decreased. 
             #. savePath (string): Save engine file path.
+            #. xyzFrequency (None, integer): Save coordinates to .xyz file every xyzFrequency steps 
+               regardless chiSquare has decreased or not.
+               If None, no .xyz file will be generated.
+            #. xyzPath (string): Save coordinates to .xyz file.
         """
         # get arguments
-        _numberOfSteps, _saveFrequency, _savePath = self.__runtime_get_arguments__(numberOfSteps, saveFrequency, savePath)
+        _numberOfSteps            = self.__runtime_get_number_of_steps(numberOfSteps)
+        _saveFrequency, _savePath = self.__runtime_get_save_engine(saveFrequency, savePath)
+        _xyzFrequency, _xyzPath   = self.__runtime_get_save_xyz(xyzFrequency, xyzPath)
+        # create xyz file
+        if _xyzFrequency is not None:
+            _xyzfd = open(_xyzPath, 'a')
         # get and initialize used constraints
         _usedConstraints, _constraints, _enhanceOnlyConstraints = self.initialize_used_constraints()
         if not len(_usedConstraints):
-            log.LocalLogger("fullrmc").logger.warn("No constraints are used. Configuration will be randomize")
+            LOGGER.warn("No constraints are used. Configuration will be randomize")
         # compute chiSquare
         self.__chiSquare = self.compute_chi_square(_constraints, current=True)
         # initialize useful arguments
         _engineStartTime    = time.time()
         _lastSavedChiSquare = self.__chiSquare
         _beforeMoveCoords   = None
+        # initialize group selector
+        self.__groupSelector._runtime_initialize()
         
         #   #####################################################################################   #
         #   #################################### RUN ENGINE #####################################   #
-        log.LocalLogger("fullrmc").logger.info("Engine started chiSquare is: %.6f"%self.__chiSquare)
+        LOGGER.info("Engine started %i steps, chiSquare is: %.6f"%(_numberOfSteps, self.__chiSquare) )
         for step in xrange(_numberOfSteps):
             # increment generated
             self.__generated += 1
             # get group
-            self.__lastMovedGroupIndex = self.__groupSelector.select_index()
-            group = self.__groups[self.__lastMovedGroupIndex]
+            self.__lastSelectedGroupIndex = self.__groupSelector.select_index()
+            group = self.__groups[self.__lastSelectedGroupIndex]
             # get atoms indexes
             groupAtomsIndexes = group.indexes
             # get move generator
@@ -875,11 +963,16 @@ class Engine(object):
                     break
             ##################################### reject move #####################################
             if rejectMove:
+                _moveTried = False
+                # enhanceOnlyConstraints reject move
                 for c in _enhanceOnlyConstraints:
                     c.reject_move(indexes=groupAtomsIndexes)
+                # log generated move rejected before getting tried
+                LOGGER.log("move not tried","Generated move %i is not tried"%self.__tried)
             ###################################### try move #######################################
             else:
                 self.__tried += 1
+                _moveTried = True
                 for c in _constraints:
                     # compute before move
                     c.compute_before_move(indexes = groupAtomsIndexes)
@@ -897,11 +990,20 @@ class Engine(object):
                     self.__chiSquare = newChiSquare
             ################################## reject tried move ##################################
             if rejectMove:
-                for c in _constraints:
-                    c.reject_move(indexes=groupAtomsIndexes)
+                # set selector move rejected
+                self.__groupSelector.move_rejected(self.__lastSelectedGroupIndex)
+                if _moveTried:
+                    # constraints reject move
+                    for c in _constraints:
+                        c.reject_move(indexes=groupAtomsIndexes)
+                    # log tried move rejected
+                    LOGGER.log("move rejected","Tried move %i is rejected"%self.__generated)
             ##################################### accept move #####################################
             else:
                 self.__accepted  += 1
+                # set selector move accepted
+                self.__groupSelector.move_accepted(self.__lastSelectedGroupIndex)
+                # constraints reject move
                 for c in _usedConstraints:
                     c.accept_move(indexes=groupAtomsIndexes)
                 # set new coordinates
@@ -910,25 +1012,34 @@ class Engine(object):
                 # log new successful move
                 triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
                 acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
-                log.LocalLogger("fullrmc").logger.info("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
+                LOGGER.log("move accepted","Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
             ##################################### save engine #####################################
-            if not(step+1)%_saveFrequency:
-                if _lastSavedChiSquare==self.__chiSquare:
-                    log.LocalLogger("fullrmc").logger.info("Save engine omitted because no improvement made since last save.")
-                else:
-                    # update state
-                    self.__state  = time.time()
-                    for c in _usedConstraints:
-                       c.increment_tried()
-                       c.set_state(self.__state)
-                    # save engine
-                    _lastSavedChiSquare = self.__chiSquare
-                    self.save(_savePath)
-        
+            if saveFrequency is not None:
+                if not(step+1)%_saveFrequency:
+                    if _lastSavedChiSquare==self.__chiSquare:
+                        LOGGER.info("Save engine omitted because no improvement made since last save.")
+                    else:
+                        # update state
+                        self.__state  = time.time()
+                        for c in _usedConstraints:
+                           #c.increment_tried()
+                           c.set_state(self.__state)
+                        # save engine
+                        _lastSavedChiSquare = self.__chiSquare
+                        self.save(_savePath)
+            ############################### dump coords to xyz file ###############################
+            if _xyzFrequency is not None:
+                if not(step+1)%_xyzFrequency:
+                    _xyzfd.write("%s\n"%self.__pdb.numberOfAtoms)
+                    _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
+                    frame = [self.__allNames[idx]+ " " + "%10.5f"%self.__realCoordinates[idx][0] + " %10.5f"%self.__realCoordinates[idx][1] + " %10.5f"%self.__realCoordinates[idx][2] + "\n" for idx in self.__pdb.xindexes]
+                    _xyzfd.write("".join(frame)) 
+                    
         #   #####################################################################################   #
         #   ################################# FINISH ENGINE RUN #################################   #        
-        log.LocalLogger("fullrmc").logger.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
-
+        LOGGER.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
+        # close .xyz file
+        if _xyzFrequency is not None:
+            _xyzfd.close()
         
-
         

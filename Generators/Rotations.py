@@ -6,7 +6,7 @@ Rotations contains all rotation like MoveGenerator classes.
     
     
 +-----------------------------------------------------+-----------------------------------------------------+
-|.. figure:: randomRotation.png                       |.. figure:: randomtRotationAboutAxis.png             |
+|.. figure:: randomRotation.png                       |.. figure:: randomRotationAboutAxis.png              |
 |   :width: 375px                                     |   :width: 375px                                     |
 |   :height: 300px                                    |   :height: 300px                                    |
 |   :align: left                                      |   :align: left                                      |
@@ -32,6 +32,13 @@ Rotations contains all rotation like MoveGenerator classes.
 |   oriented one. (:class:`OrientationGenerator`)     |                                                     |
 |                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
+
+.. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/-clLvYiaC8w?rel=0" 
+        frameborder="0" allowfullscreen>
+        </iframe>
 """
 
 # standard libraries imports
@@ -40,8 +47,7 @@ Rotations contains all rotation like MoveGenerator classes.
 import numpy as np
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
@@ -71,10 +77,10 @@ class RotationGenerator(MoveGenerator):
         :Parameters:
             #. amplitude (number): the maximum allowed rotation angle in degrees.
         """
-        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("rotation amplitude must be a number")
+        assert is_number(amplitude), LOGGER.error("rotation amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("rotation amplitude must be bigger than 0 deg.")
-        assert amplitude<360, log.LocalLogger("fullrmc").logger.error("rotation amplitude must be smaller than 360 deg.")
+        assert amplitude>0, LOGGER.error("rotation amplitude must be bigger than 0 deg.")
+        assert amplitude<360, LOGGER.error("rotation amplitude must be smaller than 360 deg.")
         # convert to radian and store amplitude
         self.__amplitude = FLOAT_TYPE(PI*amplitude/180.)
         
@@ -150,11 +156,11 @@ class RotationAboutAxisGenerator(RotationGenerator):
         :Parameters:
             #. axis (list,set,tuple,numpy.ndarray): The rotation axis vector.
         """
-        assert isinstance(axis, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("axis must be a list")
+        assert isinstance(axis, (list,set,tuple,np.ndarray)), LOGGER.error("axis must be a list")
         axis = list(axis)
-        assert len(axis)==3, log.LocalLogger("fullrmc").logger.error("axis list must have 3 items")
+        assert len(axis)==3, LOGGER.error("axis list must have 3 items")
         for pos in axis:
-            assert is_number(pos), log.LocalLogger("fullrmc").logger.error("axis items must be numbers")
+            assert is_number(pos), LOGGER.error("axis items must be numbers")
         axis = [FLOAT_TYPE(pos) for pos in axis]
         axis =  np.array(axis, dtype=FLOAT_TYPE)
         self.__axis = axis/FLOAT_TYPE( np.linalg.norm(axis) )
@@ -171,7 +177,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
-        rotationAngle  = 1-2*generate_random_float()*self.amplitude
+        rotationAngle  = (1-2*generate_random_float())*self.amplitude
         # get rotation matrix
         rotationMatrix = get_rotation_matrix(self.__axis, rotationAngle)
         # get atoms group center and rotation axis
@@ -212,10 +218,10 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
+        assert is_integer(axis), LOGGER.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
-        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
+        assert axis>=0, LOGGER.error("rotation symmetry axis must be positive.")
+        assert axis<=2, LOGGER.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
     
@@ -231,7 +237,7 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
         # get rotation angle
-        rotationAngle = 1-2*generate_random_float()*self.amplitude
+        rotationAngle = (1-2*generate_random_float())*self.amplitude
         # get atoms group center and rotation axis
         center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
         rotationAxis = [X,Y,Z][self.__axis]
@@ -275,10 +281,10 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
+        assert is_integer(axis), LOGGER.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
-        assert axis<=2,log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
+        assert axis>=0, LOGGER.error("rotation symmetry axis must be positive.")
+        assert axis<=2,LOGGER.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
         
@@ -411,10 +417,10 @@ class OrientationGenerator(MoveGenerator):
         :Parameters:
             #. maximumOffsetAngle (number): The maximum offset angle in degrees between groupAxis and orientationAxis in degrees.
         """
-        assert is_number(maximumOffsetAngle), log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be a number")
+        assert is_number(maximumOffsetAngle), LOGGER.error("maximumOffsetAngle must be a number")
         maximumOffsetAngle = float(maximumOffsetAngle)
-        assert maximumOffsetAngle>0, log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be bigger than 0 deg.")
-        assert maximumOffsetAngle<180, log.LocalLogger("fullrmc").logger.error("maximumOffsetAngle must be smaller than 180 deg.")
+        assert maximumOffsetAngle>0, LOGGER.error("maximumOffsetAngle must be bigger than 0 deg.")
+        assert maximumOffsetAngle<180, LOGGER.error("maximumOffsetAngle must be smaller than 180 deg.")
         # convert to radian and store amplitude
         self.__maximumOffsetAngle = FLOAT_TYPE(PI*maximumOffsetAngle/180.)
         
@@ -440,7 +446,7 @@ class OrientationGenerator(MoveGenerator):
                If False, orientationAxis will not be flipped forcing parallel orientation.
                If None, no flipping is forced, flipping can be set randomly to True or False during run time execution. 
         """
-        assert flip in (None, True, False), log.LocalLogger("fullrmc").logger.error("flip can only be None, True or False")
+        assert flip in (None, True, False), LOGGER.error("flip can only be None, True or False")
         self.__flip = flip
         
     def set_group_axis(self, groupAxis):
@@ -454,30 +460,30 @@ class OrientationGenerator(MoveGenerator):
               symmetry axis of the group atoms. the value must be even 0, 1 or 2 for respectively 
               the first, second and tertiary symmetry axis.
         """
-        assert isinstance(groupAxis, dict), log.LocalLogger("fullrmc").logger.error("groupAxis must be a dictionary")
-        assert len(groupAxis) == 1, log.LocalLogger("fullrmc").logger.error("groupAxis must have a single key")       
+        assert isinstance(groupAxis, dict), LOGGER.error("groupAxis must be a dictionary")
+        assert len(groupAxis) == 1, LOGGER.error("groupAxis must have a single key")       
         key = groupAxis.keys()[0]
         val = groupAxis[key]
         if key == "fixed":
             self.__mustComputeGroupAxis = False
-            assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("groupAxis value must be a list")
+            assert isinstance(val, (list,set,tuple,np.ndarray)), LOGGER.error("groupAxis value must be a list")
             if isinstance(val, np.ndarray):
-                assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("groupAxis value must have a single dimension")
+                assert len(val.shape) == 1, LOGGER.error("groupAxis value must have a single dimension")
             val = list(val)
-            assert len(val)==3, log.LocalLogger("fullrmc").logger.error("groupAxis fixed value must be a vector")
+            assert len(val)==3, LOGGER.error("groupAxis fixed value must be a vector")
             for v in val:
-                assert is_number(v), log.LocalLogger("fullrmc").logger.error("groupAxis value item must be numbers") 
+                assert is_number(v), LOGGER.error("groupAxis value item must be numbers") 
             val  = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE)  
             norm = FLOAT_TYPE(np.sqrt(np.sum(val**2)))    
             val /= norm              
         elif key == "symmetry":
             self.__mustComputeGroupAxis = True
-            assert is_integer(val), log.LocalLogger("fullrmc").logger.error("groupAxis symmetry value must be an integer") 
+            assert is_integer(val), LOGGER.error("groupAxis symmetry value must be an integer") 
             val = INT_TYPE(val)
-            assert val>=0 and val<3, log.LocalLogger("fullrmc").logger.error("groupAxis symmetry value must be positive smaller than 3") 
+            assert val>=0 and val<3, LOGGER.error("groupAxis symmetry value must be positive smaller than 3") 
         else:
             self.__mustComputeGroupAxis = None
-            raise Exception(log.LocalLogger("fullrmc").logger.error("groupAxis key must be either 'fixed' or 'symmetry'"))        
+            raise Exception(LOGGER.error("groupAxis key must be either 'fixed' or 'symmetry'"))        
         # set groupAxis
         self.__groupAxis = {key:val}
 
@@ -492,42 +498,42 @@ class OrientationGenerator(MoveGenerator):
               of atoms indexes to compute symmetry axis and the second item must be even 0, 1 or 2 for respectively 
               the first, second and tertiary symmetry axis. 
         """
-        assert isinstance(orientationAxis, dict), log.LocalLogger("fullrmc").logger.error("orientationAxis must be a dictionary")
-        assert len(orientationAxis) == 1, log.LocalLogger("fullrmc").logger.error("orientationAxis must have a single key")       
+        assert isinstance(orientationAxis, dict), LOGGER.error("orientationAxis must be a dictionary")
+        assert len(orientationAxis) == 1, LOGGER.error("orientationAxis must have a single key")       
         key = orientationAxis.keys()[0]
         val = orientationAxis[key]
         if key == "fixed":
             self.__mustComputeOrientationAxis = False
-            assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("orientationAxis value must be a list")
+            assert isinstance(val, (list,set,tuple,np.ndarray)), LOGGER.error("orientationAxis value must be a list")
             if isinstance(val, np.ndarray):
-                assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("orientationAxis value must have a single dimension")
+                assert len(val.shape) == 1, LOGGER.error("orientationAxis value must have a single dimension")
             val = list(val)
-            assert len(val)==3, log.LocalLogger("fullrmc").logger.error("orientationAxis fixed value must be a vector")
+            assert len(val)==3, LOGGER.error("orientationAxis fixed value must be a vector")
             for v in val:
-                assert is_number(v), log.LocalLogger("fullrmc").logger.error("orientationAxis value item must be numbers") 
+                assert is_number(v), LOGGER.error("orientationAxis value item must be numbers") 
             val  = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE) 
             norm = FLOAT_TYPE(np.sqrt(np.sum(val**2)))   
             val /= norm            
         elif key == "symmetry":
             self.__mustComputeOrientationAxis = True
-            assert isintance(val, (list, tuple)), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value must be a list") 
-            assert len(val) == 2, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value must be a list of two items")
+            assert isintance(val, (list, tuple)), LOGGER.error("orientationAxis symmetry value must be a list") 
+            assert len(val) == 2, LOGGER.error("orientationAxis symmetry value must be a list of two items")
             val0 = []
             for v in val[0]:
-                assert is_integer(v), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list items must be integers") 
+                assert is_integer(v), LOGGER.error("orientationAxis symmetry value list items must be integers") 
                 v0 = INT_TYPE(v)
-                assert v0>=0, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list items must be positive") 
+                assert v0>=0, LOGGER.error("orientationAxis symmetry value list items must be positive") 
                 val0.append(v0)
-            assert len(set(val0))==len(val[0]), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value list redundant items indexes found") 
+            assert len(set(val0))==len(val[0]), LOGGER.error("orientationAxis symmetry value list redundant items indexes found") 
             val0 = np.array(val0, dtype=INT_TYPE)
             val1 = val[1]
-            assert is_integer(val1), log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value second item must be an integer") 
+            assert is_integer(val1), LOGGER.error("orientationAxis symmetry value second item must be an integer") 
             val1 = INT_TYPE(val1)
-            assert val1>=0 and val1<3, log.LocalLogger("fullrmc").logger.error("orientationAxis symmetry value second item must be positive smaller than 3") 
+            assert val1>=0 and val1<3, LOGGER.error("orientationAxis symmetry value second item must be positive smaller than 3") 
             val = (val0,val1)
         else:
             self.__mustComputeOrientationAxis = None
-            raise Exception(log.LocalLogger("fullrmc").logger.error("orientationAxis key must be either 'fixed' or 'symmetry'"))        
+            raise Exception(LOGGER.error("orientationAxis key must be either 'fixed' or 'symmetry'"))        
         # set orientationAxis
         self.__orientationAxis = {key:val}
 

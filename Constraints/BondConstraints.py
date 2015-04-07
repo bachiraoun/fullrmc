@@ -13,8 +13,7 @@ import numpy as np
 from timeit import default_timer as timer
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.bonds import full_bonds
@@ -83,7 +82,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. result (boolean): True to reject step, False to accept
         """
         if self.activeAtomsDataBeforeMove is None or self.activeAtomsDataAfterMove is None:
-            raise Exception(log.LocalLogger("fullrmc").logger.error("must compute data before and after group move"))
+            raise Exception(LOGGER.error("must compute data before and after group move"))
         reject = False
         for index in self.activeAtomsDataBeforeMove.keys():
             before = self.activeAtomsDataBeforeMove[index]["reducedDistances"]
@@ -108,25 +107,25 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         map = []
         if self.engine is not None:
             if bondsMap is not None:
-                assert isinstance(bondsMap, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("bondsMap must be None or a list")
+                assert isinstance(bondsMap, (list, set, tuple)), LOGGER.error("bondsMap must be None or a list")
                 for bond in bondsMap:
-                    assert isinstance(bond, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("bondsMap items must be lists")
+                    assert isinstance(bond, (list, set, tuple)), LOGGER.error("bondsMap items must be lists")
                     bond = list(bond)
-                    assert len(bond)==4, log.LocalLogger("fullrmc").logger.error("bondsMap items must be lists of 4 items each")
+                    assert len(bond)==4, LOGGER.error("bondsMap items must be lists of 4 items each")
                     idx1, idx2, lower, upper = bond
-                    assert is_integer(idx1), log.LocalLogger("fullrmc").logger.error("bondsMap items lists first item must be an integer")
+                    assert is_integer(idx1), LOGGER.error("bondsMap items lists first item must be an integer")
                     idx1 = INT_TYPE(idx1)
-                    assert is_integer(idx2), log.LocalLogger("fullrmc").logger.error("bondsMap items lists second item must be an integer")
+                    assert is_integer(idx2), LOGGER.error("bondsMap items lists second item must be an integer")
                     idx2 = INT_TYPE(idx2)
-                    assert idx1>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first item must be positive")
-                    assert idx2>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists second item must be positive")
-                    assert idx1!=idx2, log.LocalLogger("fullrmc").logger.error("bondsMap items lists first and second items can't be the same")
-                    assert is_number(lower), log.LocalLogger("fullrmc").logger.error("bondsMap items lists of third item must be a number")
+                    assert idx1>=0, LOGGER.error("bondsMap items lists first item must be positive")
+                    assert idx2>=0, LOGGER.error("bondsMap items lists second item must be positive")
+                    assert idx1!=idx2, LOGGER.error("bondsMap items lists first and second items can't be the same")
+                    assert is_number(lower), LOGGER.error("bondsMap items lists of third item must be a number")
                     lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), log.LocalLogger("fullrmc").logger.error("bondsMap items lists of fourth item must be a number")
+                    assert is_number(upper), LOGGER.error("bondsMap items lists of fourth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=0, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third item must be positive")
-                    assert upper>lower, log.LocalLogger("fullrmc").logger.error("bondsMap items lists third item must be smaller than the fourth item")
+                    assert lower>=0, LOGGER.error("bondsMap items lists third item must be positive")
+                    assert upper>lower, LOGGER.error("bondsMap items lists third item must be smaller than the fourth item")
                     map.append((idx1, idx2, lower, upper))  
         # set bondsMap definition
         self.__bondsMap = map      
@@ -136,8 +135,8 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             # parse bondsMap
             for bond in self.__bondsMap:
                 idx1, idx2, lower, upper = bond
-                assert idx1<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("bond atom index must be smaller than maximum number of atoms")
-                assert idx2<len(self.engine.pdb), log.LocalLogger("fullrmc").logger.error("bond atom index must be smaller than maximum number of atoms")
+                assert idx1<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
+                assert idx2<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
                 # create bonds
                 if not self.__bonds.has_key(idx1):
                     self.__bonds[idx1] = {"indexes":[],"lower":[],"upper":[]}
@@ -192,8 +191,8 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                                                                     
         """
         if self.engine is None:
-            raise Exception(log.LocalLogger("fullrmc").logger.error("engine is not defined. Can't create bonds"))
-        assert isinstance(bondsDefinition, dict), log.LocalLogger("fullrmc").logger.error("bondsDefinition must be a dictionary")
+            raise Exception(LOGGER.error("engine is not defined. Can't create bonds"))
+        assert isinstance(bondsDefinition, dict), LOGGER.error("bondsDefinition must be a dictionary")
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))
         bondsDef = {}
@@ -201,20 +200,20 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             if mol not in existingMoleculesNames:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
                 continue
-            assert isinstance(bonds, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition molecule bonds must be a list")
+            assert isinstance(bonds, (list, set, tuple)), LOGGER.error("mapDefinition molecule bonds must be a list")
             bonds = list(bonds)
             molBondsMap = []
             for bond in bonds:
-                assert isinstance(bond, (list, set, tuple)), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds must be a list")
+                assert isinstance(bond, (list, set, tuple)), LOGGER.error("mapDefinition bonds must be a list")
                 bond = list(bond)
-                assert len(bond)==4, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list must be of length 4")
+                assert len(bond)==4, LOGGER.error("mapDefinition bonds list must be of length 4")
                 at1, at2, lower, upper = bond
-                assert is_number(lower), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list third item must be a number")
+                assert is_number(lower), LOGGER.error("mapDefinition bonds list third item must be a number")
                 lower = FLOAT_TYPE(lower)
-                assert is_number(upper), log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list fourth item must be a number")
+                assert is_number(upper), LOGGER.error("mapDefinition bonds list fourth item must be a number")
                 upper = FLOAT_TYPE(upper)
-                assert lower>=0, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list third item must be bigger than 0")
-                assert upper>lower, log.LocalLogger("fullrmc").logger.error("mapDefinition bonds list fourth item must be bigger than the third item")
+                assert lower>=0, LOGGER.error("mapDefinition bonds list third item must be bigger than 0")
+                assert upper>lower, LOGGER.error("mapDefinition bonds list fourth item must be bigger than the third item")
                 # check for redundancy
                 append = True
                 for b in molBondsMap:

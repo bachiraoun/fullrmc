@@ -14,8 +14,7 @@ from pdbParser.Utilities.Database import is_element_property, get_element_proper
 from pdbParser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
 from fullrmc.Core.pair_distribution_histogram import single_pair_distribution_histograms, multiple_pair_distribution_histograms, full_pair_distribution_histograms
@@ -62,8 +61,13 @@ class PairDistributionConstraint(ExperimentalConstraint):
            distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
            by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
            used to best imitate the numerical artefacts in the experimental data.
+        #. limits (None, tuple, list): The distance limits to compute the histograms.
+           If None, the limits will be automatically set the the min and max distance of the experimental data.
+           If not None, a tuple of exactly two items where the first is the minimum distance or None 
+           and the second is the maximum distance or None.
     """
-    def __init__(self, engine, experimentalData, weighting="atomicNumber", scaleFactor=1.0, windowFunction=None):
+    def __init__(self, engine, experimentalData, weighting="atomicNumber", scaleFactor=1.0, windowFunction=None, limits=None):
+        self.__limits = limits
         # initialize constraint
         super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData)
         # set elements weighting
@@ -132,6 +136,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
     def scaleFactor(self):
         """ Get the scaleFactor. """
         return self.__scaleFactor
+    
+    @property
+    def limits(self):
+        """ The histogram computation limits."""
+        return self.__limits
         
     def listen(self, message, argument=None):
         """   
@@ -161,8 +170,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Parameters:
             #. weighting (string): The elements weighting.
         """
-        assert is_element_property(weighting),log.LocalLogger("fullrmc").logger.error( "weighting is not a valid pdbParser atoms database entry")
-        assert weighting != "atomicFormFactor", log.LocalLogger("fullrmc").logger.error("atomicFormFactor weighting is not allowed")
+        assert is_element_property(weighting),LOGGER.error( "weighting is not a valid pdbParser atoms database entry")
+        assert weighting != "atomicFormFactor", LOGGER.error("atomicFormFactor weighting is not allowed")
         self.__weighting = weighting
      
     def set_window_function(self, windowFunction):
@@ -177,9 +186,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 used to best imitate the numerical artefacts in the experimental data.
         """
         if windowFunction is not None:
-            assert isinstance(windowFunction, np.ndarray), log.LocalLogger("fullrmc").logger.error("windowFunction must be a numpy.ndarray")
-            assert windowFunction.dtype.type is FLOAT_TYPE, log.LocalLogger("fullrmc").logger.error("windowFunction type must be %s"%FLOAT_TYPE)
-            assert len(windowFunction.shape) == 1, log.LocalLogger("fullrmc").logger.error("experimentalData must be of dimension 2")
+            assert isinstance(windowFunction, np.ndarray), LOGGER.error("windowFunction must be a numpy.ndarray")
+            assert windowFunction.dtype.type is FLOAT_TYPE, LOGGER.error("windowFunction type must be %s"%FLOAT_TYPE)
+            assert len(windowFunction.shape) == 1, LOGGER.error("experimentalData must be of dimension 2")
             # normalize window function
             windowFunction /= np.sum(windowFunction)
         # set windowFunction
@@ -192,7 +201,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Parameters:
              #. scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.
         """
-        assert is_number(scaleFactor), log.LocalLogger("fullrmc").logger.error("scaleFactor must be a number")
+        assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
         self.__scaleFactor = FLOAT_TYPE(scaleFactor)
     
     def set_experimental_data(self, experimentalData):
@@ -204,20 +213,83 @@ class PairDistributionConstraint(ExperimentalConstraint):
         """
         # get experimental data
         super(PairDistributionConstraint, self).set_experimental_data(experimentalData=experimentalData)
-        self.__bin                   = FLOAT_TYPE(self.experimentalData[1,0] - self.experimentalData[0,0])
-        self.__minimumDistance       = FLOAT_TYPE(self.experimentalData[0,0] - self.__bin/2. )
-        self.__maximumDistance       = FLOAT_TYPE(self.experimentalData[-1,0]+ self.__bin/2. )
-        self.__histogramSize         = INT_TYPE((self.__maximumDistance-self.__minimumDistance+self.__bin)/self.__bin)-INT_TYPE(1)
-        self.__edges                 = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)
-        self.__experimentalDistances = self.experimentalData[:,0]
+        self.__bin = FLOAT_TYPE(self.experimentalData[1,0] - self.experimentalData[0,0])
+        # set limits
+        self.set_limits(self.__limits)
+        #self.__minimumDistance       = FLOAT_TYPE(self.experimentalData[0,0] - self.__bin/2. )
+        #self.__maximumDistance       = FLOAT_TYPE(self.experimentalData[-1,0]+ self.__bin/2. )
+        #self.__histogramSize         = INT_TYPE((self.__maximumDistance-self.__minimumDistance+self.__bin)/self.__bin)-INT_TYPE(1)
+        #self.__edges                 = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)       
+        #self.__shellsCenter          = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
+        #self.__shellsVolumes         = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        #self.__experimentalDistances = self.experimentalData[:,0]
+        #self.__experimentalPDF       = self.experimentalData[:,1]   
+        ## check for experimental distances input error  
+        #for diff in self.__shellsCenter-self.__experimentalDistances:
+        #    assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")
+    
+    def set_limits(self, limits):
+        """
+        Set the histogram computation limits.
+        
+        :Parameters:
+            #. limits (None, tuple, list): The distance limits to compute the histograms and compute with the experimental data.
+               If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
+               If not None, a tuple of minimum distance or None and maximum distance or None should be given.    
+        """
+        if limits is None:
+            self.__limits = (None, None)
+        else:
+            assert isinstance(limits, (list, tuple)), LOGGER.error("limits must be None or a list")
+            limits = list(limits)
+            assert len(limits) == 2, LOGGER.error("limits list must have exactly two elements")
+            if limits[0] is not None:
+                assert is_number(limits[0]), LOGGER.error("if not None, the first limits element must be a number")
+                limits[0] = FLOAT_TYPE(limits[0])
+                assert is_number(limits[0]), LOGGER.error("if not None, the first limits element must be a positive number")
+            if limits[1] is not None:
+                assert is_number(limits[1]), LOGGER.error("if not None, the second limits element must be a number")
+                limits[1] = FLOAT_TYPE(limits[1])
+                assert is_number(limits[1]), LOGGER.error("if not None, the second limits element must be a positive number")
+            if  limits[0] is not None and limits[1] is not None:
+                assert limits[0]<limits[1], LOGGER.error("if not None, the first limits element must be smaller than the second limits element")
+            self.__limits = (limits[0], limits[1])
+        # get minimumDistance and maximumDistance indexes
+        if self.__limits[0] is None:
+            minDistIdx = 0
+        else:
+            minDistIdx = (np.abs(self.experimentalData[:,0]-self.__limits[0])).argmin()
+        if self.__limits[1] is None:
+            maxDistIdx = -1
+        else:
+            maxDistIdx =(np.abs(self.experimentalData[:,0]-self.__limits[1])).argmin()
+        # set minimumDistance and maximumDistance 
+        self.__minimumDistance = FLOAT_TYPE(self.experimentalData[minDistIdx,0] - self.__bin/2. )
+        self.__maximumDistance = FLOAT_TYPE(self.experimentalData[maxDistIdx,0] + self.__bin/2. )
+        # normalize limits indexes
+        if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
+            minDistIdx = self.experimentalData.shape[0]
+        if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
+            maxDistIdx = self.experimentalData.shape[0]
+        # get histogram size    
+        self.__histogramSize = INT_TYPE(maxDistIdx-minDistIdx)
+        # get histogram edges
+        self.__edges                 = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)       
         self.__shellsCenter          = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
-        self.__shellsVolumes         = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin
-        self.__experimentalPDF       = self.experimentalData[:,1]    
-           
-        # check for experimental distances input error  
+        self.__shellsVolumes         = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        # set experimental
+        if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
+            minDistIdx = self.experimentalData.shape[0] + 1
+        if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
+            maxDistIdx = self.experimentalData.shape[0] + 1
+        self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx,0]
+        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx,1] 
+        # check distances and shells
         for diff in self.__shellsCenter-self.__experimentalDistances:
-            assert abs(diff)<=PRECISION, "experimental data distances are not coherent"
-            
+            assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")
+        # reset constraint
+        self.reset_constraint()
+        
     def check_experimental_data(self, experimentalData):
         if not isinstance(experimentalData, np.ndarray):
             return False, "experimentalData must be a numpy.ndarray"
@@ -323,8 +395,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Returns:
             #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
         """
-        if self.data is None:
-            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
+        if self.originalData is None:
+            log.LocalLogger("fullrmc").logger.warn("originalData must be computed first using 'compute_data' method.")
             return {}
         return self._get_constraint_value(self.originalData)
         

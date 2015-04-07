@@ -2,6 +2,9 @@
 This module provides all the global types, variables and some general methods that fullrmc needs.
 """
 # standard libraries imports
+import sys
+import os
+from simplelogger import SimpleLogger
 
 # external libraries imports
 import numpy as np
@@ -30,5 +33,39 @@ from random import random  as generate_random_float   # generates a random float
 from random import randint as generate_random_integer # generates a random integer number between given lower and upper limits
 
         
+# Create LOGGER
+class Logger(SimpleLogger.Logger):
+    def __new__(cls, *args, **kwds):
+        #Singleton interface for logger
+        thisSingleton = cls.__dict__.get("__thisSingleton__")
+        if thisSingleton is not None:
+            return thisSingleton
+        cls.__thisSingleton__ = thisSingleton = SimpleLogger.Logger.__new__(cls)
+        return thisSingleton
         
+    def __init__(self, *args, **kwargs):
+        super(Logger, self).__init__(*args, **kwargs)
+        # set logfile basename
+        logFile = os.path.join(os.path.expanduser("~"), "fullrmc")
+        self.set_log_file_basename(logFile)
+        # set new log types
+        self.add_type("move accepted",  name="INFO", stdoutFlag=True,  fileFlag=True)
+        self.add_type("move rejected",  name="INFO", stdoutFlag=False, fileFlag=False)
+        self.add_type("move not tried", name="INFO", stdoutFlag=False, fileFlag=False)
+        self.add_type("save engine",    name="INFO", stdoutFlag=True,  fileFlag=True, level=sys.maxint)
+        # set parameters
+        self.__set_logger_params_from_file()
         
+    def __set_logger_params_from_file(self):
+        pass
+        
+LOGGER = Logger(name="fullrmc")  
+
+
+
+
+
+
+
+
+

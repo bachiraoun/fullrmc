@@ -44,6 +44,14 @@ Translations contains all translation like MoveGenerator classes.
 |                                                     |                                                     |
 |                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
+
+    .. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/YRTrsDrVSvI?rel=0" 
+        frameborder="0" allowfullscreen>
+        </iframe>
+        
 """
 
 # standard libraries imports
@@ -52,8 +60,7 @@ Translations contains all translation like MoveGenerator classes.
 import numpy as np
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
@@ -83,9 +90,9 @@ class TranslationGenerator(MoveGenerator):
         :Parameters:
             #. amplitude (number): the maximum allowed translation vector amplitude.
         """
-        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("Translation amplitude must be a number")
+        assert is_number(amplitude), LOGGER.error("Translation amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("Translation amplitude must be bigger than 0")
+        assert amplitude>0, LOGGER.error("Translation amplitude must be bigger than 0")
         self.__amplitude = FLOAT_TYPE(amplitude)
         
     def check_group(self, group):
@@ -144,11 +151,11 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
         :Parameters:
             #. axis (list,set,tuple,numpy.ndarray): The translation axis vector.
         """
-        assert isinstance(axis, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("axis must be a list")
+        assert isinstance(axis, (list,set,tuple,np.ndarray)), LOGGER.error("axis must be a list")
         axis = list(axis)
-        assert len(axis)==3, log.LocalLogger("fullrmc").logger.error("axis list must have 3 items")
+        assert len(axis)==3, LOGGER.error("axis list must have 3 items")
         for pos in axis:
-            assert is_number(pos), log.LocalLogger("fullrmc").logger.error( "axis items must be numbers")
+            assert is_number(pos), LOGGER.error( "axis items must be numbers")
         axis = [FLOAT_TYPE(pos) for pos in axis]
         axis =  np.array(axis, dtype=FLOAT_TYPE)
         self.__axis = axis/FLOAT_TYPE( np.linalg.norm(axis) )
@@ -211,9 +218,9 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
         :Parameters:
             #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
         """
-        assert is_number(angle), log.LocalLogger("fullrmc").logger.error("angle must be numbers")
-        assert angle>0, log.LocalLogger("fullrmc").logger.error("angle must be positive")
-        assert angle<=360, log.LocalLogger("fullrmc").logger.error("angle must be smaller than 360")
+        assert is_number(angle), LOGGER.error("angle must be numbers")
+        assert angle>0, LOGGER.error("angle must be positive")
+        assert angle<=360, LOGGER.error("angle must be smaller than 360")
         self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
         
     def set_direction(self, direction):
@@ -226,7 +233,7 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
                If True all generated vectors are in the same direction of axis.
                If False all generated vectors are in the opposite direction of axis.
         """
-        assert direction in (None, True, False), log.LocalLogger("fullrmc").logger.error("direction can only be None, True or False")
+        assert direction in (None, True, False), LOGGER.error("direction can only be None, True or False")
         self.__direction = direction
     
     def transform_coordinates(self, coordinates, argument=None):
@@ -296,10 +303,10 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer")
+        assert is_integer(axis), LOGGER.error("rotation symmetry axis must be an integer")
         axis = INT_TYPE(axis)
-        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
-        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2")
+        assert axis>=0, LOGGER.error("rotation symmetry axis must be positive.")
+        assert axis<=2, LOGGER.error("rotation symmetry axis must be smaller or equal to 2")
         # convert to radian and store amplitude
         self.__axis = axis
     
@@ -361,9 +368,9 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
         :Parameters:
             #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
         """
-        assert is_number(angle), log.LocalLogger("fullrmc").logger.error("angle must be numbers")
-        assert angle>0, log.LocalLogger("fullrmc").logger.error("angle must be positive")
-        assert angle<=360, log.LocalLogger("fullrmc").logger.error("angle must be smaller than 360")
+        assert is_number(angle), LOGGER.error("angle must be numbers")
+        assert angle>0, LOGGER.error("angle must be positive")
+        assert angle<=360, LOGGER.error("angle must be smaller than 360")
         self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
         
     def set_direction(self, direction):
@@ -376,7 +383,7 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
                If True all generated vectors are in the same direction of axis.
                If False all generated vectors are in the opposite direction of axis.
         """
-        assert direction in (None, True, False), log.LocalLogger("fullrmc").logger.error("direction can only be None, True or False")
+        assert direction in (None, True, False), LOGGER.error("direction can only be None, True or False")
         self.__direction = direction
     
     def transform_coordinates(self, coordinates, argument=None):
@@ -451,10 +458,10 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         :Parameters:
             #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis
         """
-        assert is_integer(axis), log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be an integer.")
+        assert is_integer(axis), LOGGER.error("rotation symmetry axis must be an integer.")
         axis = INT_TYPE(axis)
-        assert axis>=0, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be positive.")
-        assert axis<=2, log.LocalLogger("fullrmc").logger.error("rotation symmetry axis must be smaller or equal to 2.")
+        assert axis>=0, LOGGER.error("rotation symmetry axis must be positive.")
+        assert axis<=2, LOGGER.error("rotation symmetry axis must be smaller or equal to 2.")
         # convert to radian and store amplitude
         self.__axis = axis
         
@@ -561,7 +568,7 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
                If True all generated vectors are in the same direction of axis.
                If False all generated vectors are in the opposite direction of axis.
         """
-        assert direction in (None, True, False), log.LocalLogger("fullrmc").logger.error("direction can only be None, True or False")
+        assert direction in (None, True, False), LOGGER.error("direction can only be None, True or False")
         self.__direction = direction
         
     def set_angle(self, angle):
@@ -573,10 +580,13 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
                If None is given, all generated translation vectors will be along the direction to center.        
         """
         if angle is not None:
-            assert is_number(angle), log.LocalLogger("fullrmc").logger.error("angle must be numbers")
-            assert angle>0, log.LocalLogger("fullrmc").logger.error("angle must be positive")
-            assert angle<=360, log.LocalLogger("fullrmc").logger.error("angle must be smaller than 360")
-            angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
+            assert is_number(angle), LOGGER.error("angle must be numbers")
+            assert angle>=0, LOGGER.error("angle must be positive")
+            assert angle<=360, LOGGER.error("angle must be smaller than 360")
+            if FLOAT_TYPE(angle) == FLOAT_TYPE(0.0):
+                angle = None
+            else:
+                angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
         self.__angle = angle
          
     def set_center(self, center):
@@ -588,30 +598,30 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
               If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
               If key is indexes, value must be a list or a numpy array of indexes.
         """
-        assert isinstance(center, dict), log.LocalLogger("fullrmc").logger.error("center must be a dictionary")
-        assert len(center) == 1, log.LocalLogger("fullrmc").logger.error("center must have a single key")       
+        assert isinstance(center, dict), LOGGER.error("center must be a dictionary")
+        assert len(center) == 1, LOGGER.error("center must have a single key")       
         key = center.keys()[0]
         val = center[key]
-        assert isinstance(val, (list,set,tuple,np.ndarray)), log.LocalLogger("fullrmc").logger.error("center value must be a list")
+        assert isinstance(val, (list,set,tuple,np.ndarray)), LOGGER.error("center value must be a list")
         if isinstance(val, np.ndarray):
-            assert len(val.shape) == 1, log.LocalLogger("fullrmc").logger.error("center value must have a single dimension")
-        assert len(val)>0, log.LocalLogger("fullrmc").logger.error("center value must be a non-zero list.")
+            assert len(val.shape) == 1, LOGGER.error("center value must have a single dimension")
+        assert len(val)>0, LOGGER.error("center value must be a non-zero list.")
         for v in val:
-            assert is_number(v), log.LocalLogger("fullrmc").logger.error("center value item must be numbers") 
+            assert is_number(v), LOGGER.error("center value item must be numbers") 
         if key == "fixed":
             self.__mustCompute = False
-            assert len(val) == 3, log.LocalLogger("fullrmc").logger.error("fixed center must have exactly 3 elements corresponding to X,Y and Z coordinates of the center point.")
+            assert len(val) == 3, LOGGER.error("fixed center must have exactly 3 elements corresponding to X,Y and Z coordinates of the center point.")
             val = np.array([FLOAT_TYPE(v) for v in val], dtype=FLOAT_TYPE)
         elif key == "indexes":
             self.__mustCompute = True
             for v in val:
-                assert is_integer(v), log.LocalLogger("fullrmc").logger.error("indexes center items be integers")
+                assert is_integer(v), LOGGER.error("indexes center items be integers")
             val =  np.array([INT_TYPE(v) for v in val], dtype=INT_TYPE)
             for v in val:
-                assert v>=0, log.LocalLogger("fullrmc").logger.error("indexes center items be positive integers")            
+                assert v>=0, LOGGER.error("indexes center items be positive integers")            
         else:
             self.__mustCompute = None
-            raise Exception(log.LocalLogger("fullrmc").logger.error("center key must be either 'fixed' or 'indexes'"))        
+            raise Exception(LOGGER.error("center key must be either 'fixed' or 'indexes'"))        
         # set center
         self.__center = {key:val}
         

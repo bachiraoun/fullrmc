@@ -28,8 +28,7 @@ Agitations contains all MoveGenerator classes that agitate and shake structures 
 import numpy as np
 
 # fullrmc imports
-from fullrmc import log
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
@@ -105,9 +104,9 @@ class DistanceAgitationGenerator(MoveGenerator):
         :Parameters:
             #. amplitude (number): the maximum allowed translation vector amplitude.
         """
-        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("Translation amplitude must be a number")
+        assert is_number(amplitude), LOGGER.error("Translation amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("Translation amplitude must be bigger than 0")
+        assert amplitude>0, LOGGER.error("Translation amplitude must be bigger than 0")
         self.__amplitude = FLOAT_TYPE(amplitude)
     
     def set_symmetric(self, symmetric):
@@ -117,7 +116,7 @@ class DistanceAgitationGenerator(MoveGenerator):
         :Parameters:
             #. symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.         
         """
-        assert isinstance(symmetric, bool), log.LocalLogger("fullrmc").logger.error("symmetric must be boolean")
+        assert isinstance(symmetric, bool), LOGGER.error("symmetric must be boolean")
         self.__symmetric = symmetric
     
     def set_shrink(self, shrink):
@@ -130,7 +129,7 @@ class DistanceAgitationGenerator(MoveGenerator):
                If False, moves will always bring atoms away from each other.
                If None, no orientation is forced, therefore distance can increase or decrease randomly at every step.           
         """
-        assert shrink in (None, True, False), log.LocalLogger("fullrmc").logger.error("shrink can only be None, True or False")
+        assert shrink in (None, True, False), LOGGER.error("shrink can only be None, True or False")
         self.__shrink = shrink
     
     def set_agitate(self, agitate):
@@ -143,10 +142,10 @@ class DistanceAgitationGenerator(MoveGenerator):
                the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
                logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
         """
-        assert isinstance(agitate, (list,tuple)), log.LocalLogger("fullrmc").logger.error("agitate must be a list or a tuple")
-        assert len(agitate)==2, log.LocalLogger("fullrmc").logger.error("agitate must have 2 items")
-        assert [isinstance(a,bool) for a in agitate]==[True,True], log.LocalLogger("fullrmc").logger.error("agitate items must be boolean")
-        assert agitate[0] or agitate[1], log.LocalLogger("fullrmc").logger.error("agitate both items can't be False")
+        assert isinstance(agitate, (list,tuple)), LOGGER.error("agitate must be a list or a tuple")
+        assert len(agitate)==2, LOGGER.error("agitate must have 2 items")
+        assert [isinstance(a,bool) for a in agitate]==[True,True], LOGGER.error("agitate items must be boolean")
+        assert agitate[0] or agitate[1], LOGGER.error("agitate both items can't be False")
         self.__agitate = (agitate[0], agitate[1])     
 
     def transform_coordinates(self, coordinates, argument=None):
@@ -261,10 +260,10 @@ class AngleAgitationGenerator(MoveGenerator):
         :Parameters:
             #. amplitude (number):  The maximum agitation angle amplitude in degrees of left and right atoms separately.
         """
-        assert is_number(amplitude), log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be a number")
+        assert is_number(amplitude), LOGGER.error("Agitation angle amplitude must be a number")
         amplitude = float(amplitude)
-        assert amplitude>0, log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be bigger than 0")
-        assert amplitude<=90, log.LocalLogger("fullrmc").logger.error("Agitation angle amplitude must be smaller than 90")
+        assert amplitude>0, LOGGER.error("Agitation angle amplitude must be bigger than 0")
+        assert amplitude<=90, LOGGER.error("Agitation angle amplitude must be smaller than 90")
         self.__amplitude = FLOAT_TYPE(amplitude*PI/180.)
     
     def set_symmetric(self, symmetric):
@@ -274,7 +273,7 @@ class AngleAgitationGenerator(MoveGenerator):
         :Parameters:
             #. symmetric (bool): Whether to apply the same amplitude of translation on both atoms or not.         
         """
-        assert isinstance(symmetric, bool), log.LocalLogger("fullrmc").logger.error("symmetric must be boolean")
+        assert isinstance(symmetric, bool), LOGGER.error("symmetric must be boolean")
         self.__symmetric = symmetric
     
     def set_shrink(self, shrink):
@@ -287,7 +286,7 @@ class AngleAgitationGenerator(MoveGenerator):
                If False, moves will always bring atoms away from each other.
                If None, no orientation is forced, therefore distance can increase or decrease randomly at every step.           
         """
-        assert shrink in (None, True, False), log.LocalLogger("fullrmc").logger.error("shrink can only be None, True or False")
+        assert shrink in (None, True, False), LOGGER.error("shrink can only be None, True or False")
         self.__shrink = shrink
     
     def set_agitate(self, agitate):
@@ -300,10 +299,10 @@ class AngleAgitationGenerator(MoveGenerator):
                the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
                logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
         """
-        assert isinstance(agitate, (list,tuple)), log.LocalLogger("fullrmc").logger.error("agitate must be a list or a tuple")
-        assert len(agitate)==2, log.LocalLogger("fullrmc").logger.error("agitate must have 2 items")
-        assert [isinstance(a,bool) for a in agitate]==[True,True], log.LocalLogger("fullrmc").logger.error("agitate items must be boolean")
-        assert agitate[0] or agitate[1], log.LocalLogger("fullrmc").logger.error("agitate both items can't be False")
+        assert isinstance(agitate, (list,tuple)), LOGGER.error("agitate must be a list or a tuple")
+        assert len(agitate)==2, LOGGER.error("agitate must have 2 items")
+        assert [isinstance(a,bool) for a in agitate]==[True,True], LOGGER.error("agitate items must be boolean")
+        assert agitate[0] or agitate[1], LOGGER.error("agitate both items can't be False")
         self.__agitate = (agitate[0], agitate[1])     
 
     def transform_coordinates(self, coordinates, argument=None):

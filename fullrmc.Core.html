@@ -1198,6 +1198,42 @@ This option will always return False unless selector is a RecursiveGroupSelector
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Core.GroupSelector.GroupSelector.move_accepted">
+<tt class="descname">move_accepted</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.move_accepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called by the engine when a move generated on a group is accepted.
+This method is empty must be overloaded when needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.GroupSelector.GroupSelector.move_rejected">
+<tt class="descname">move_rejected</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.move_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called by the engine when a move generated on a group is rejected.
+This method is empty must be overloaded when needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.recur">
 <tt class="descname">recur</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.recur" title="Permalink to this definition">¶</a></dt>

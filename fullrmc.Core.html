@@ -1617,7 +1617,7 @@ In General it&#8217;s not needed.</li>
 
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">MoveGeneratorCollector</tt><big>(</big><em>group=None</em>, <em>collection=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">MoveGeneratorCollector</tt><big>(</big><em>group=None</em>, <em>collection=None</em>, <em>randomize=True</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
 <p>MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1628,6 +1628,9 @@ In General it&#8217;s not needed.</li>
 <li>group (None, Group): The constraint RMC engine.</li>
 <li>collection (list): The list of MoveGenerator instances.</li>
 <li>randomize (boolean): Whether to pull MoveGenerator instance randomly from collection list or in order.</li>
+<li>weights (None, list): Generators selections Weights list. 
+It must be None for equivalent weighting or list of (generatorIndex, weight) tuples. 
+If randomize is False, weights list is ignored upon generator selection from collection.</li>
 </ol>
 </td>
 </tr>
@@ -1658,6 +1661,12 @@ This method must NOT be overloaded unless needed.</p>
 <dd><p>Get the list of MoveGenerator instances.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.generatorsWeight">
+<tt class="descname">generatorsWeight</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.generatorsWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generators selection weights list.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.move">
 <tt class="descname">move</tt><big>(</big><em>coordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.move" title="Permalink to this definition">¶</a></dt>
@@ -1686,6 +1695,11 @@ This method must NOT be overloaded unless needed.</p>
 <dd><p>Get randomize flag.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.selectionScheme">
+<tt class="descname">selectionScheme</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.selectionScheme" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_collection">
 <tt class="descname">set_collection</tt><big>(</big><em>collection</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_collection" title="Permalink to this definition">¶</a></dt>
@@ -1704,6 +1718,23 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_group">
+<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the MoveGenerator group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_randomize">
 <tt class="descname">set_randomize</tt><big>(</big><em>randomize</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_randomize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets whether to randomize MoveGenerator instance selection from collection list.</p>
@@ -1713,6 +1744,31 @@ This method must NOT be overloaded unless needed.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>randomize (boolean): Whether to pull MoveGenerator instance randomly from collection list or in order.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_selection_scheme">
+<tt class="descname">set_selection_scheme</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_selection_scheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets selection scheme.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_weights">
+<tt class="descname">set_weights</tt><big>(</big><em>weights</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.set_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set groups selection weighting scheme.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>weights (None, list): Generators selections Weights list. 
+It must be None for equivalent weighting or list of (generatorIndex, weight) tuples. 
+If randomize is False, weights list is ignored upon generator selection from collection.</li>
 </ol>
 </td>
 </tr>
@@ -1797,6 +1853,23 @@ This method must NOT be overloaded unless needed.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>combination (list): The list of MoveGenerator instances.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_group">
+<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the MoveGenerator group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): group instance.</li>
 </ol>
 </td>
 </tr>
@@ -1965,6 +2038,12 @@ This method can be overloaded in all MoveGenerator sub-classes.</p>
 <dd><p>Get the current step number.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.MoveGenerator.generate_random_float">
+<tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
 </dd></dl>
 
 </div>

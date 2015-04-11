@@ -19,7 +19,7 @@ among other functionalities:
 * Elements transmutation and atoms switching.
 
 ## News
-* Selection machine learning is added and being tested. First tests are very promising show great improvements.
+* Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation
 fullrmc is still going through testing and further implementations. 

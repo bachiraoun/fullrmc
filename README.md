@@ -14,11 +14,11 @@ among other functionalities:
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 
 ## Next on the list
-* Creating additional agitation move generators such as torsionAngle, etc.
-* Creating additional translation move generators such as translation along axis defined between two groups or random positions, etc.
+* Generators machine learning algorithms.
 * Elements transmutation and atoms switching.
 
 ## News
+* Agitation move generators added.
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation

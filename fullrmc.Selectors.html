@@ -355,6 +355,40 @@ others according to damping parameter.</p>
 <area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="159,5,277,31"/>
 </map>
 </p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td colspan="2">Machine learning on group selection is shown herein. Groups are set to single atom where only random
+translation moves generators with different amplitudes are used allowing moves to be accepted in different
+ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector" title="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">DynamicalWeightsRandomSelector</span></tt></a> allowing machine learning upon group
+selection. No experimental constraints are used but only inter-molecular distances, intra-molecular bonds,
+angles and improper angles constraints are used to keep the integrity of the system and molecules.
+As one can see, group selection machine learning is very effective allowing consequent improvement on the
+accepted moves. Still, fast convergence of the system and the ratio of accepted moves is highly correlated
+with the move generator assigned to the groups.</td>
+</tr>
+<tr class="row-even"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p3.png"><img alt="_images/machineLearningSelectionAmp0p3.png" src="_images/machineLearningSelectionAmp0p3.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">25% of assigned moves generators amplitude is set
+to 10A allowing very few moves on those groups
+to be accepted and the rest of moves generators
+amplitudes is set to 0.3A.</p>
+</div>
+</td>
+<td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p25.png"><img alt="_images/machineLearningSelectionAmp0p25.png" src="_images/machineLearningSelectionAmp0p25.png" style="width: 375px; height: 300px;" /></a>
+<p class="caption">25% of assigned moves generators amplitude is set
+to 10A allowing very few moves on those groups
+to be accepted and the rest of moves generators
+amplitudes is set to 0.25A.</p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector">
 <em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">DynamicalWeightsRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em>, <em>factor=1</em>, <em>reduce=True</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector" title="Permalink to this definition">¶</a></dt>

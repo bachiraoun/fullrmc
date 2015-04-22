@@ -124,9 +124,15 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 </tbody>
 </table>
 <dl class="attribute">
+<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index">
+<tt class="descname">index</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current selection index.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order">
 <tt class="descname">order</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a list copy of the order of selection.</p>
+<dd><p>List copy of the order of selection.</p>
 </dd></dl>
 
 <dl class="method">
@@ -483,7 +489,8 @@ This method is empty must be overloaded when needed.</p>
 <dl class="attribute">
 <dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.selectionScheme">
 <tt class="descname">selectionScheme</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Groups selection scheme used upon group selection.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_factor">
@@ -518,12 +525,6 @@ Must be a positive number.</li>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_selection_scheme">
-<tt class="descname">set_selection_scheme</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_selection_scheme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets selection scheme.</p>
 </dd></dl>
 
 </dd></dl>
@@ -575,7 +576,8 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 <dl class="attribute">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight">
 <tt class="descname">groupsWeight</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Groups weight of selection at current state.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.select_index">
@@ -597,7 +599,8 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 <dl class="attribute">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme">
 <tt class="descname">selectionScheme</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Groups selection scheme used upon group selection.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_group_weight">
@@ -617,12 +620,6 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_selection_scheme">
-<tt class="descname">set_selection_scheme</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_selection_scheme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets selection scheme.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights">
 <tt class="descname">set_weights</tt><big>(</big><em>weights</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set groups selection weighting scheme.</p>
@@ -637,6 +634,12 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights">
+<tt class="descname">weights</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Groups weight of selection as initialized.</p>
 </dd></dl>
 
 </dd></dl>

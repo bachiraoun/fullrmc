@@ -339,7 +339,8 @@ the first, second and tertiary symmetry axis.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number): The maximum allowed rotation angle in degrees.</li>
+<li>amplitude (number): The maximum allowed rotation angle in degrees.
+It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <li>axis (list,set,tuple,numpy.ndarray): The rotational axis vector.</li>
 </ol>
 </td>
@@ -405,7 +406,8 @@ the first, second and tertiary symmetry axis.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>amplitude (number): The maximum rotation angle in degrees.</li>
+<li>amplitude (number): The maximum rotation angle in degrees.
+It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
 </ol>
 </td>
@@ -594,7 +596,8 @@ the first, second and tertiary symmetry axis.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number): the maximum rotation angle allowed in degrees.</li>
+<li>amplitude (number): the maximum rotation angle allowed in degrees.
+It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </ol>
 </td>
 </tr>
@@ -632,7 +635,8 @@ the first, second and tertiary symmetry axis.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>amplitude (number): the maximum allowed rotation angle in degrees.</li>
+<li>amplitude (number): the maximum allowed rotation angle in degrees.
+It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </ol>
 </td>
 </tr>
@@ -763,7 +767,8 @@ frameborder="0" allowfullscreen>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.</li>
+<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.
+It must be bigger than 0.</li>
 <li>axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.</li>
 </ol>
 </td>
@@ -829,7 +834,8 @@ frameborder="0" allowfullscreen>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number): the maximum translation angle in Angstroms.</li>
+<li>amplitude (number): the maximum translation angle in Angstroms.
+It must be bigger than 0.</li>
 <li>axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.</li>
 </ol>
 </td>
@@ -1035,7 +1041,8 @@ frameborder="0" allowfullscreen>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number):  The maximum translation amplitude in Angstroms.</li>
+<li>amplitude (number):  The maximum translation amplitude in Angstroms.
+It must be bigger than 0.</li>
 </ol>
 </td>
 </tr>
@@ -1118,7 +1125,8 @@ within a tolerance angle between translation vectors and the pre-defined axis.</
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.</li>
+<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.
+It must be bigger than 0.</li>
 <li>axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.</li>
 <li>angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.</li>
 <li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.

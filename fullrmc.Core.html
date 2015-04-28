@@ -105,6 +105,187 @@
 <span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Core.Collection" title="Permalink to this headline">¶</a></h2>
 <p>It contains a collection of methods and classes that are useful for the package.</p>
 <dl class="class">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">BiasedRandomFloatGenerator</tt><big>(</big><em>lowerLimit</em>, <em>upperLimit</em>, <em>weights=None</em>, <em>biasRange=None</em>, <em>biasFWHM=None</em>, <em>biasHeight=1</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="fullrmc.Core.Collection.RandomFloatGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.RandomFloatGenerator</span></tt></a></p>
+<p>Generate biased random float number between a lower and an upper limit.
+To bias the generator at a certain number, a bias gaussian is added to the 
+weights scheme at the position of this particular number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>lowerLimit (number): The lower limit allowed.</li>
+<li>upperLimit (number): The upper limit allowed.</li>
+<li>weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
+The length of weights array defines the resolution of the biased numbers generation.
+If None is given, ones array of length 10000 is automatically generated.</li>
+<li>biasRange(None, number): The bias gaussian range. 
+It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
+If None, it will be automatically set to (upperLimit-lowerLimit)/5</li>
+<li>biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
+It must be smaller than half of biasRange.
+If None, it will be automatically set to biasRange/10</li>
+<li>biasHeight(number): The bias gaussian maximum intensity.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias">
+<tt class="descname">bias</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias step-function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasBins">
+<tt class="descname">biasBins</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasBins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias gaussian number of bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasFWHM">
+<tt class="descname">biasFWHM</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasFWHM" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias gaussian Full Width at Half Maximum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasFWHMBins">
+<tt class="descname">biasFWHMBins</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasFWHMBins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias gaussian Full Width at Half Maximum number of bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasGuassian">
+<tt class="descname">biasGuassian</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasGuassian" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias gaussian function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasRange">
+<tt class="descname">biasRange</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.biasRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias gaussian extent range.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position">
+<tt class="descname">bias_scheme_at_position</tt><big>(</big><em>position</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian function at the given number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>position(number): The number to bias.</li>
+<li>check(boolean): Whether to check arguments.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index">
+<tt class="descname">bias_scheme_by_index</tt><big>(</big><em>index</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian function at the given index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index(integer): The index of the position to bias</li>
+<li>check(boolean): Whether to check arguments.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.binWidth">
+<tt class="descname">binWidth</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.binWidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bin width defining the resolution of the biased random number generation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bins">
+<tt class="descname">bins</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of bins that is equal to the length of weights vector.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.generate">
+<tt class="descname">generate</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random float number between the biased range lowerLimit and upperLimit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.originalWeights">
+<tt class="descname">originalWeights</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.originalWeights" title="Permalink to this definition">¶</a></dt>
+<dd><p>The original weights as initialized.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.scheme">
+<tt class="descname">scheme</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.scheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bias scheme.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_bias">
+<tt class="descname">set_bias</tt><big>(</big><em>biasRange</em>, <em>biasFWHM</em>, <em>biasHeight</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_bias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set generator&#8217;s bias gaussian function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>biasRange(None, number): The bias gaussian range. 
+It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
+If None, it will be automatically set to (upperLimit-lowerLimit)/5</li>
+<li>biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
+It must be smaller than half of biasRange.
+If None, it will be automatically set to biasRange/10</li>
+<li>biasHeight(number): The bias gaussian maximum intensity.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights">
+<tt class="descname">set_weights</tt><big>(</big><em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set generator&#8217;s weights.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
+The length of weights array defines the resolution of the biased numbers generation.
+If None is given, ones array of length 10000 is automatically generated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.weights">
+<tt class="descname">weights</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>The current value weights vector.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="fullrmc.Core.Collection.Broadcaster">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">Broadcaster</tt><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
@@ -163,10 +344,193 @@
 
 </dd></dl>
 
+<dl class="class">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">RandomFloatGenerator</tt><big>(</big><em>lowerLimit</em>, <em>upperLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Generate random float number between a lower and an upper limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>lowerLimit (number): The lower limit allowed.</li>
+<li>upperLimit (number): The upper limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.generate">
+<tt class="descname">generate</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random float number between lowerLimit and upperLimit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.lowerLimit">
+<tt class="descname">lowerLimit</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.lowerLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lower limit of the number generation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.rang">
+<tt class="descname">rang</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.rang" title="Permalink to this definition">¶</a></dt>
+<dd><p>The range defined as upperLimit-lowerLimit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.set_lower_limit">
+<tt class="descname">set_lower_limit</tt><big>(</big><em>lowerLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.set_lower_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set lower limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>lowerLimit (number): The lower limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.set_upper_limit">
+<tt class="descname">set_upper_limit</tt><big>(</big><em>upperLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.set_upper_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set upper limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>upperLimit (number): The upper limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomFloatGenerator.upperLimit">
+<tt class="descname">upperLimit</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator.upperLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The upper limit of the number generation.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">RandomIntegerGenerator</tt><big>(</big><em>lowerLimit</em>, <em>upperLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Generate random integer number between a lower and an upper limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>lowerLimit (number): The lower limit allowed.</li>
+<li>upperLimit (number): The upper limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.generate">
+<tt class="descname">generate</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random integer number between lowerLimit and upperLimit.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.lowerLimit">
+<tt class="descname">lowerLimit</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.lowerLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The lower limit of the number generation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.rang">
+<tt class="descname">rang</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.rang" title="Permalink to this definition">¶</a></dt>
+<dd><p>The range defined as upperLimit-lowerLimit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.set_lower_limit">
+<tt class="descname">set_lower_limit</tt><big>(</big><em>lowerLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.set_lower_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set lower limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>lowerLimit (number): The lower limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.set_upper_limit">
+<tt class="descname">set_upper_limit</tt><big>(</big><em>upperLimit</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.set_upper_limit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set upper limit.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>upperLimit (number): The upper limit allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.RandomIntegerGenerator.upperLimit">
+<tt class="descname">upperLimit</tt><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator.upperLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>The upper limit of the number generation.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="fullrmc.Core.Collection.SingletonDecorator">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">SingletonDecorator</tt><big>(</big><em>cls</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.SingletonDecorator" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class singleton decorator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.gaussian">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">gaussian</tt><big>(</big><em>x</em>, <em>center=0</em>, <em>FWHM=1</em>, <em>normalize=True</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the normal distribution or gaussian distribution of a given vector.
+The probability density of the gaussian distribution is:
+<img class="math" src="_images/math/8febe69f96bac3609503d812f3d8b359f53eb71e.png" alt="f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}"/></p>
+<p>Where:</p>
+<ul class="simple">
+<li><img class="math" src="_images/math/126e84ba38f7dece5f0ad64e929b9588b20f6440.png" alt="\mu"/> is the center of the gaussian, it is the mean or expectation of the distribution it is called the distribution&#8217;s median or mode.</li>
+<li><img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is its standard deviation.</li>
+<li><img class="math" src="_images/math/87f580a119f6b0c01d8937907f31580e584c2b8b.png" alt="FWHM=2\sqrt{2 ln 2} \sigma"/> is the Full Width at Half Maximum of the gaussian.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>x (numpy.ndarray): The vector to compute the gaussian</li>
+<li>center (number): The center of the gaussian.</li>
+<li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
+<li>normalize(boolean): Whether to normalize the generated gaussian by <img class="math" src="_images/math/1ee6a2a92bee1e2478cf5949b6ceb908877c9898.png" alt="\frac{1}{\sigma\sqrt{2\pi}}"/> so the integral is equal to 1.</li>
+<li>check (boolean): whether to check arguments before generating vectors.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -199,6 +563,12 @@ Phi [0,2Pi] is the angle between the generated point and x axis.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.generate_random_float">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">generate_random_float</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.generate_random_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
 </dd></dl>
 
 <dl class="function">
@@ -476,6 +846,27 @@ The array itself will be rotated and not a copy of it.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>indexes (numpy.ndarray): the xyz (N,3) array to rotate.</li>
 <li>rotationMatrix (numpy.ndarray): the (3X3) rotation matrix.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.step_function">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">step_function</tt><big>(</big><em>x</em>, <em>center=0</em>, <em>FWHM=0.1</em>, <em>height=1</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.step_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute a step function as the cumulative summation of a gaussian distribution of a given vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>x (numpy.ndarray): The vector to compute the gaussian</li>
+<li>center (number): The center of the step function which is the the center of the gaussian.</li>
+<li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
+<li>height (number): The height of the step function.</li>
+<li>check (boolean): whether to check arguments before generating vectors.</li>
 </ol>
 </td>
 </tr>

@@ -353,12 +353,12 @@ others according to damping parameter.</p>
 <span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Permalink to this headline">¶</a></h2>
 <p>RandomSelectors contains GroupSelector classes of random order of selections.</p>
 <p class="graphviz">
-<img src="_images/inheritance-00a9034c96c5a53a894a2124dbe7cd141bb9b85b.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance"/>
+<img src="_images/inheritance-ef937a2d17060aec390d174e2efc4fa7fd545f1f.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance"/>
 <map id="inheritance35cb12d385" name="inheritance35cb12d385">
-<area shape="rect" id="node1" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector" title="DynamicalWeightsRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="547,5,773,31"/>
-<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="325,5,499,31"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,111,31"/>
-<area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="159,5,277,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,111,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="159,5,277,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="325,5,499,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="547,5,700,31"/>
 </map>
 </p>
 <table border="1" class="docutils">
@@ -369,7 +369,7 @@ others according to damping parameter.</p>
 <tbody valign="top">
 <tr class="row-odd"><td colspan="2">Machine learning on group selection is shown herein. Groups are set to single atom where only random
 translation moves generators with different amplitudes are used allowing moves to be accepted in different
-ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector" title="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">DynamicalWeightsRandomSelector</span></tt></a> allowing machine learning upon group
+ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></tt></a> allowing machine learning upon group
 selection. No experimental constraints are used but only inter-molecular distances, intra-molecular bonds,
 angles and improper angles constraints are used to keep the integrity of the system and molecules.
 As one can see, group selection machine learning is very effective allowing consequent improvement on the
@@ -396,140 +396,6 @@ amplitudes is set to 0.25A.</p>
 </tbody>
 </table>
 <dl class="class">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">DynamicalWeightsRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em>, <em>factor=1</em>, <em>reduce=True</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></tt></a></p>
-<p>DynamicalWeightsRandomSelector generates indexes randomly following groups weighting scheme.
-Weighted scheme dynamically updates at engine runtime, making use of an intelligent machine 
-learning algorithm.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
-<li>recur (None, integer): Set number of times to recur.
-If None, recur is equivalent to 0.
-Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
-<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
-<li>factor (Number): The weight increase of every group when a step get accepted.
-Must be a positive number.</li>
-<li>reduce (bool): Whether to reduce by factor a group&#8217;s weight when a move is rejected.
-Reduction by factor will be performed only if group weight remains positive.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.factor">
-<tt class="descname">factor</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>The weight factor.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.move_accepted">
-<tt class="descname">move_accepted</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.move_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is called by the engine when a move generated on a group is accepted.
-This method is empty must be overloaded when needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.move_rejected">
-<tt class="descname">move_rejected</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.move_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is called by the engine when a move generated on a group is rejected.
-This method is empty must be overloaded when needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.reduce">
-<tt class="descname">reduce</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.reduce" title="Permalink to this definition">¶</a></dt>
-<dd><p>The reduce flag.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.select_index">
-<tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.selectionScheme">
-<tt class="descname">selectionScheme</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups selection scheme used upon group selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_factor">
-<tt class="descname">set_factor</tt><big>(</big><em>factor</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the weight factor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>factor (Number): The weight increase of every group when a step get accepted.
-Must be a positive number.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_reduce">
-<tt class="descname">set_reduce</tt><big>(</big><em>reduce</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.DynamicalWeightsRandomSelector.set_reduce" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set reduce flag.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>reduce (bool): Whether to reduce by factor a group&#8217;s weight when a move is rejected.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
 <em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em>, <em>recur=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
@@ -549,6 +415,144 @@ Must be a positive number.</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector">
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">SmartRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em>, <em>biasFactor=1</em>, <em>unbiasFactor=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></tt></a></p>
+<p>SmartRandomSelector is a random group selector fed with machine learning algorithm.
+The indexes generation is biased and it evolves throughout the simulation towards 
+selecting groups with more successful moves history.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>recur (None, integer): Set number of times to recur.
+If None, recur is equivalent to 0.
+Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
+<li>weights (None, list): Weights list fed as initial biasing scheme. 
+It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
+<li>biasFactor (Number): The biasing factor of every group when a step get accepted.
+Must be a positive number.</li>
+<li>unbiasFactor(None, Number): Whether to un-bias a group&#8217;s weight when a move is rejected.
+If None, un-biasing is turned off.
+Un-biasing will be performed only if group weight remains positive.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor">
+<tt class="descname">biasFactor</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The biasing factor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted">
+<tt class="descname">move_accepted</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called by the engine when a move generated on a group is accepted.
+This method is empty must be overloaded when needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected">
+<tt class="descname">move_rejected</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is called by the engine when a move generated on a group is rejected.
+This method is empty must be overloaded when needed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index">
+<tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (integer): the selected group index in engine groups list</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.selectionScheme">
+<tt class="descname">selectionScheme</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Groups selection scheme used upon group selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor">
+<tt class="descname">set_bias_factor</tt><big>(</big><em>biasFactor</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the biasing factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>biasFactor (Number): The biasing factor of every group when a step get accepted.
+Must be a positive number.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor">
+<tt class="descname">set_unbias_factor</tt><big>(</big><em>unbiasFactor</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the unbiasing factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>unbiasFactor(None, Number): Whether to unbias a group&#8217;s weight when a move is rejected.
+If None, unbiasing is turned off.
+Unbiasing will be performed only if group weight remains positive.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor">
+<tt class="descname">unbiasFactor</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbiasing factor.</p>
 </dd></dl>
 
 </dd></dl>

@@ -758,7 +758,7 @@ src="https://www.youtube.com/embed/Ik0RSQT4DzQ?rel=0"
 frameborder="0" allowfullscreen>                     
 </iframe>                                            <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em>, <em>direction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
 <p>Generates random translation moves upon groups of atoms along a pre-defined axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -767,9 +767,14 @@ frameborder="0" allowfullscreen>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.
-It must be bigger than 0.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 <li>axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.</li>
+<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+If None generated axis can be in the same direction of axis or in the opposite.
+If True all generated vectors are in the same direction of axis.
+If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>
@@ -779,6 +784,12 @@ It must be bigger than 0.</li>
 <dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get translation axis.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.direction">
+<tt class="descname">direction</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get generated translation vectors direction.</p>
 </dd></dl>
 
 <dl class="method">
@@ -791,6 +802,26 @@ It must be bigger than 0.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>axis (list,set,tuple,numpy.ndarray): The translation axis vector.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.set_direction">
+<tt class="descname">set_direction</tt><big>(</big><em>direction</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.set_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the generated translation vectors direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+If None generated axis can be in the same direction of axis or in the opposite.
+If True all generated vectors are in the same direction of axis.
+If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>
@@ -825,7 +856,7 @@ It must be bigger than 0.</li>
 
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em>, <em>direction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
 <p>Generates random translation moves upon groups of atoms along one of their symmetry axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -834,9 +865,14 @@ It must be bigger than 0.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number): the maximum translation angle in Angstroms.
-It must be bigger than 0.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 <li>axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.</li>
+<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+If None generated axis can be in the same direction of axis or in the opposite.
+If True all generated vectors are in the same direction of axis.
+If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>
@@ -865,6 +901,12 @@ It must be bigger than 0.</li>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.direction">
+<tt class="descname">direction</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get generated translation vectors direction.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_axis">
 <tt class="descname">set_axis</tt><big>(</big><em>axis</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_axis" title="Permalink to this definition">¶</a></dt>
@@ -875,6 +917,26 @@ It must be bigger than 0.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_direction">
+<tt class="descname">set_direction</tt><big>(</big><em>direction</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.set_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the generated translation vectors direction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+If None generated axis can be in the same direction of axis or in the opposite.
+If True all generated vectors are in the same direction of axis.
+If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>
@@ -1041,8 +1103,9 @@ It must be bigger than 0.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
-<li>amplitude (number):  The maximum translation amplitude in Angstroms.
-It must be bigger than 0.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 </ol>
 </td>
 </tr>
@@ -1051,7 +1114,7 @@ It must be bigger than 0.</li>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator.amplitude">
 <tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the maximum translation amplitude.</p>
+<dd><p>The translation amplitude limits.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1080,7 +1143,9 @@ It must be bigger than 0.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>amplitude (number): the maximum allowed translation vector amplitude.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 </ol>
 </td>
 </tr>
@@ -1125,8 +1190,9 @@ within a tolerance angle between translation vectors and the pre-defined axis.</
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.
-It must be bigger than 0.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 <li>axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.</li>
 <li>angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.</li>
 <li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
@@ -1144,12 +1210,6 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dd><p>Get tolerance maximum angle in rad.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.direction">
-<tt class="descname">direction</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get generated translation vectors direction.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.set_angle">
 <tt class="descname">set_angle</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.set_angle" title="Permalink to this definition">¶</a></dt>
@@ -1160,26 +1220,6 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.set_direction">
-<tt class="descname">set_direction</tt><big>(</big><em>direction</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.set_direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the generated translation vectors direction.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
-If None generated axis can be in the same direction of axis or in the opposite.
-If True all generated vectors are in the same direction of axis.
-If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>
@@ -1226,7 +1266,9 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <li>center (dict): The center value dictionary. Must have a single key and this can only be &#8216;fixed&#8217; or &#8216;indexes&#8217;.
 If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
 If key is indexes, value must be a list or a numpy array of indexes.</li>
-<li>amplitude (number): The maximum translation amplitude in Angstroms.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 <li>angle (None, number): The maximum tolerance angle in degrees between a generated translation vector and the computed direction. 
 If None is given, all generated translation vectors will be along the direction to center.</li>
 <li>direction (None, True, False): Whether to generate translation vectors pointing towards the center or not.
@@ -1350,7 +1392,9 @@ axis within a tolerance angle between translation vectors and the axis.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, fullrmc.Engine): The constraint RMC engine.</li>
-<li>amplitude (number): The maximum allowed translation amplitude in Angstroms.</li>
+<li>amplitude (number, tuple): The translation amplitude in Angstroms.
+If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+If tuple is given, it is the limits of translation boundaries as [min,max] where min&gt;=0 and max&gt;min.</li>
 <li>axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.</li>
 <li>angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.</li>
 <li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
@@ -1368,12 +1412,6 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dd><p>Get tolerance maximum angle in rad.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.direction">
-<tt class="descname">direction</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get generated translation vectors direction.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.set_angle">
 <tt class="descname">set_angle</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.set_angle" title="Permalink to this definition">¶</a></dt>
@@ -1384,26 +1422,6 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.set_direction">
-<tt class="descname">set_direction</tt><big>(</big><em>direction</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.set_direction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the generated translation vectors direction.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
-If None generated axis can be in the same direction of axis or in the opposite.
-If True all generated vectors are in the same direction of axis.
-If False all generated vectors are in the opposite direction of axis.</li>
 </ol>
 </td>
 </tr>

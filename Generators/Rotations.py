@@ -47,8 +47,8 @@ Rotations contains all rotation like MoveGenerator classes.
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, generate_random_float, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
+from fullrmc.Core.Collection import is_number, is_integer, get_path, generate_random_float, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -59,6 +59,7 @@ class RotationGenerator(MoveGenerator):
     :Parameters:
         #. group (None, Group): The group instance.
         #. amplitude (number): the maximum rotation angle allowed in degrees.
+           It must be strictly bigger than 0 and strictly smaller than 360.
     """
     def __init__(self, group=None, amplitude=2):
         super(RotationGenerator, self).__init__(group=group)
@@ -76,6 +77,7 @@ class RotationGenerator(MoveGenerator):
         
         :Parameters:
             #. amplitude (number): the maximum allowed rotation angle in degrees.
+               It must be strictly bigger than 0 and strictly smaller than 360.
         """
         assert is_number(amplitude), LOGGER.error("rotation amplitude must be a number")
         amplitude = float(amplitude)
@@ -110,12 +112,11 @@ class RotationGenerator(MoveGenerator):
         # get rotation axis
         n = 0
         while n<PRECISION:
-            #rotationAxis = np.random.random(3)-np.random.random(3)
             rotationAxis = 1-2*np.random.random(3)
             n = np.linalg.norm(rotationAxis)
         rotationAxis /= n
         # get rotation angle
-        rotationAngle  = generate_random_float()*self.__amplitude
+        rotationAngle = (1-2*generate_random_float())*self.amplitude
         # get rotation matrix
         rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
         # get atoms group center
@@ -136,6 +137,7 @@ class RotationAboutAxisGenerator(RotationGenerator):
     :Parameters:
         #. group (None, Group): The group instance.
         #. amplitude (number): The maximum allowed rotation angle in degrees.
+           It must be strictly bigger than 0 and strictly smaller than 360.
         #. axis (list,set,tuple,numpy.ndarray): The rotational axis vector.
     """
     
@@ -198,6 +200,7 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint fullrmc engine.
         #. amplitude (number): The maximum rotation angle in degrees.
+           It must be strictly bigger than 0 and strictly smaller than 360.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
     """
     

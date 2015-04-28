@@ -28,11 +28,7 @@ INT_PLUS_INFINITY    = INT_TYPE(np.iinfo(np.int32).max)     # +inf number for in
 INT_MINUS_INFINITY   = INT_TYPE(np.iinfo(np.int32).min)     # -inf number for integer type 
 PI                   = FLOAT_TYPE(np.pi)                    # pi the ratio of a circle's circumference to its diameter, set as constant for typing 
 
-# Functions and methods
-from random import random  as generate_random_float   # generates a random float number between 0 and 1
-from random import randint as generate_random_integer # generates a random integer number between given lower and upper limits
 
-        
 # Create LOGGER
 class Logger(SimpleLogger.Logger):
     def __new__(cls, *args, **kwds):

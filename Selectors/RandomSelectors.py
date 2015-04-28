@@ -3,6 +3,29 @@ RandomSelectors contains GroupSelector classes of random order of selections.
 
 .. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
     :parts: 1
+
++------------------------------------------------------+------------------------------------------------------+
+| Machine learning on group selection is shown herein. Groups are set to single atom where only random        |
+| translation moves generators with different amplitudes are used allowing moves to be accepted in different  |
+| ratios. In those two examples :class:`SmartRandomSelector` allowing machine learning upon group             |
+| selection. No experimental constraints are used but only inter-molecular distances, intra-molecular bonds,  |
+| angles and improper angles constraints are used to keep the integrity of the system and molecules.          |
+| As one can see, group selection machine learning is very effective allowing consequent improvement on the   |
+| accepted moves. Still, fast convergence of the system and the ratio of accepted moves is highly correlated  |
+| with the move generator assigned to the groups.                                                             |
++------------------------------------------------------+------------------------------------------------------+ 
+|.. figure:: machineLearningSelectionAmp0p3.png        |.. figure:: machineLearningSelectionAmp0p25.png       |
+|   :width: 375px                                      |   :width: 375px                                      |
+|   :height: 300px                                     |   :height: 300px                                     |
+|   :align: left                                       |   :align: left                                       |
+|                                                      |                                                      |
+|   25% of assigned moves generators amplitude is set  |   25% of assigned moves generators amplitude is set  |
+|   to 10A allowing very few moves on those groups     |   to 10A allowing very few moves on those groups     |
+|   to be accepted and the rest of moves generators    |   to be accepted and the rest of moves generators    |
+|   amplitudes is set to 0.3A.                         |   amplitudes is set to 0.25A.                        |
+|                                                      |                                                      |
++------------------------------------------------------+------------------------------------------------------+    
+   
 """
 
 # standard libraries imports
@@ -11,8 +34,8 @@ RandomSelectors contains GroupSelector classes of random order of selections.
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float, generate_random_integer, LOGGER
-from fullrmc.Core.Collection import is_integer, is_number
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from fullrmc.Core.Collection import is_integer, is_number, generate_random_float, generate_random_integer
 from fullrmc.Core.GroupSelector import GroupSelector
 
 
@@ -64,12 +87,27 @@ class WeightedRandomSelector(RandomSelector):
         # all True return idx and weight
         return idx, wgt  
     
+    def _set_selection_scheme(self):
+        """ Sets selection scheme. """
+        cumsumWeights = np.cumsum(self.__weights, dtype=FLOAT_TYPE)
+        self.__selectionScheme = cumsumWeights/cumsumWeights[-1]
+        
+    @property    
+    def weights(self):
+        """Groups weight of selection as initialized."""
+        return self.__weights
+        
     @property    
     def groupsWeight(self):
-        return self.__groupsWeight
+        """Groups weight of selection at current state."""
+        groupsWeight = np.copy(self.selectionScheme)
+        if len(self.selectionScheme) > 1:
+            groupsWeight[1:] -= self.selectionScheme[:-1]
+        return groupsWeight
         
     @property    
     def selectionScheme(self):
+        """Groups selection scheme used upon group selection."""
         return self.__selectionScheme
         
     def set_weights(self, weights): 
@@ -87,9 +125,9 @@ class WeightedRandomSelector(RandomSelector):
                 # update groups weight
                 groupsWeight[idx] = wgt
         # set groups weight
-        self.__groupsWeight = groupsWeight
+        self.__weights = groupsWeight
         # create selection histogram
-        self.set_selection_scheme()
+        self._set_selection_scheme()
         
     def set_group_weight(self, groupWeight):
         """
@@ -100,14 +138,9 @@ class WeightedRandomSelector(RandomSelector):
         """
         idx, wgt = self.__check_single_weight(groupWeight)
         # update groups weight
-        self.__groupsWeight[idx] = wgt
+        self.__weights[idx] = wgt
         # create selection histogram
-        self.set_selection_scheme()
-    
-    def set_selection_scheme(self):
-        """ Sets selection scheme. """
-        cumsumWeights = np.cumsum(self.__groupsWeight, dtype=FLOAT_TYPE)
-        self.__selectionScheme = cumsumWeights/cumsumWeights[-1]
+        self._set_selection_scheme()
         
     def select_index(self):
         """
@@ -120,72 +153,80 @@ class WeightedRandomSelector(RandomSelector):
 
     
     
-class DynamicalWeightsRandomSelector(WeightedRandomSelector):   
+class SmartRandomSelector(WeightedRandomSelector):   
     """
-    DynamicalWeightsRandomSelector generates indexes randomly following groups weighting scheme.
-    Weighted scheme dynamically updates at engine runtime, making use of an intelligent machine 
-    learning algorithm.
+    SmartRandomSelector is a random group selector fed with machine learning algorithm.
+    The indexes generation is biased and it evolves throughout the simulation towards 
+    selecting groups with more successful moves history.
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. recur (None, integer): Set number of times to recur.
            If None, recur is equivalent to 0.
            Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.
-        #. weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
-        #. factor (Number): The weight increase of every group when a step get accepted.
+        #. weights (None, list): Weights list fed as initial biasing scheme. 
+           It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
+        #. biasFactor (Number): The biasing factor of every group when a step get accepted.
            Must be a positive number.
-        #. reduce (bool): Whether to reduce by factor a group's weight when a move is rejected.
-           Reduction by factor will be performed only if group weight remains positive.
+        #. unbiasFactor(None, Number): Whether to un-bias a group's weight when a move is rejected.
+           If None, un-biasing is turned off.
+           Un-biasing will be performed only if group weight remains positive.
     """
     
-    def __init__(self, engine, recur=None, weights=None, factor=1, reduce=True):
+    def __init__(self, engine, recur=None, weights=None, biasFactor=1, unbiasFactor=None):
         # initialize GroupSelector
-        super(DynamicalWeightsRandomSelector, self).__init__(engine=engine, recur=recur, weights=weights)
-        # set weights factor
-        self.set_factor(factor)
-        # set reduce flag
-        self.set_reduce(reduce)
+        super(SmartRandomSelector, self).__init__(engine=engine, recur=recur, weights=weights)
+        # set bias factor
+        self.set_bias_factor(biasFactor)
+        # set un-bias factor
+        self.set_unbias_factor(unbiasFactor)
+    
+    def _set_selection_scheme(self):
+        """ Sets selection scheme. """
+        self.__selectionScheme = np.cumsum(self.weights, dtype=FLOAT_TYPE)
         
     @property
-    def factor(self):
-        """The weight factor."""
-        return self.__factor
+    def biasFactor(self):
+        """The biasing factor."""
+        return self.__biasFactor
         
     @property
-    def reduce(self):
-        """The reduce flag."""
-        return self.__reduce
+    def unbiasFactor(self):
+        """The unbiasing factor."""
+        return self.__unbiasFactor
            
     @property    
     def selectionScheme(self):
+        """Groups selection scheme used upon group selection."""
         return self.__selectionScheme
         
-    def set_factor(self, factor):
+    def set_bias_factor(self, biasFactor):
         """
-        Set the weight factor.
+        Set the biasing factor.
     
         :Parameters:
-            #. factor (Number): The weight increase of every group when a step get accepted.
+            #. biasFactor (Number): The biasing factor of every group when a step get accepted.
                Must be a positive number.
         """
-        assert is_number(factor), LOGGER.error("factor must be a number")
-        factor = FLOAT_TYPE(factor)
-        assert factor>=0, LOGGER.error("factor must be positive")
-        self.__factor = factor
+        assert is_number(biasFactor), LOGGER.error("biasFactor must be a number")
+        biasFactor = FLOAT_TYPE(biasFactor)
+        assert biasFactor>=0, LOGGER.error("biasFactor must be positive")
+        self.__biasFactor = biasFactor
             
-    def set_reduce(self, reduce):
+    def set_unbias_factor(self, unbiasFactor):
         """
-        Set reduce flag.
+        Set the unbiasing factor.
     
         :Parameters:
-            #. reduce (bool): Whether to reduce by factor a group's weight when a move is rejected.
+            #. unbiasFactor(None, Number): Whether to unbias a group's weight when a move is rejected.
+               If None, unbiasing is turned off.
+               Unbiasing will be performed only if group weight remains positive.
         """
-        assert isinstance(reduce, bool), LOGGER.error("reduce must be a boolean")
-        self.__reduce = reduce
-             
-    def set_selection_scheme(self):
-        """ Sets selection scheme. """
-        self.__selectionScheme  = np.cumsum(self.groupsWeight, dtype=FLOAT_TYPE)
+        if unbiasFactor is not None:
+            assert is_number(unbiasFactor), LOGGER.error("unbiasFactor must be a number")
+            unbiasFactor = FLOAT_TYPE(unbiasFactor)
+            assert unbiasFactor>=0, LOGGER.error("unbiasFactor must be positive")
+        self.__unbiasFactor = unbiasFactor
          
     def move_accepted(self, index):
         """
@@ -195,7 +236,7 @@ class DynamicalWeightsRandomSelector(WeightedRandomSelector):
         :Parameters:
             #. index (integer): the selected group index in engine groups list
         """
-        self.__selectionScheme[index:] += self.__factor
+        self.__selectionScheme[index:] += self.__biasFactor
     
     def move_rejected(self, index):
         """
@@ -205,15 +246,14 @@ class DynamicalWeightsRandomSelector(WeightedRandomSelector):
         :Parameters:
             #. index (integer): the selected group index in engine groups list
         """
-        if not reduce:
+        if self.__unbiasFactor is None:
             return
         if index == 0:
-            if  self.__selectionScheme[index] - self.__factor > 0:
-                self.__selectionScheme[index:] -= self.__factor  
-        elif self.__selectionScheme[index] - self.__factor > self.__selectionScheme[index-1]:
-            self.__selectionScheme[index:] -= self.__factor  
+            if  self.__selectionScheme[index] - self.__unbiasFactor > 0:
+                self.__selectionScheme[index:] -= self.__unbiasFactor  
+        elif self.__selectionScheme[index] - self.__unbiasFactor > self.__selectionScheme[index-1]:
+            self.__selectionScheme[index:] -= self.__unbiasFactor  
                   
-    
     def select_index(self):
         """
         Select index.

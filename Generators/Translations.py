@@ -45,13 +45,20 @@ Translations contains all translation like MoveGenerator classes.
 |                                                     |                                                     |
 +-----------------------------------------------------+-----------------------------------------------------+
 
-    .. raw:: html
-
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/YRTrsDrVSvI?rel=0" 
-        frameborder="0" allowfullscreen>
-        </iframe>
-        
+.. raw:: html                                             
+                                                          
+     <iframe width="560" height="315"                     
+     src="https://www.youtube.com/embed/YRTrsDrVSvI?rel=0"
+     frameborder="0" allowfullscreen>                     
+     </iframe>
+     
+     <p></p>    
+                                                          
+     <iframe width="560" height="315"                     
+     src="https://www.youtube.com/embed/Ik0RSQT4DzQ?rel=0"
+     frameborder="0" allowfullscreen>                     
+     </iframe>                                            
+                                                         
 """
 
 # standard libraries imports
@@ -60,8 +67,8 @@ Translations contains all translation like MoveGenerator classes.
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle, generate_random_float
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -71,7 +78,9 @@ class TranslationGenerator(MoveGenerator):
      
     :Parameters:
         #. group (None, Group): The group instance.
-        #. amplitude (number):  The maximum translation amplitude in Angstroms.
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
     """
     def __init__(self, group=None, amplitude=0.2):
         super(TranslationGenerator, self).__init__(group=group)
@@ -80,7 +89,7 @@ class TranslationGenerator(MoveGenerator):
         
     @property
     def amplitude(self):
-        """Gets the maximum translation amplitude."""
+        """The translation amplitude limits."""
         return self.__amplitude
         
     def set_amplitude(self, amplitude):
@@ -88,12 +97,25 @@ class TranslationGenerator(MoveGenerator):
         Sets maximum translation vector allowed amplitude.
         
         :Parameters:
-            #. amplitude (number): the maximum allowed translation vector amplitude.
+            #. amplitude (number, tuple): The translation amplitude in Angstroms.
+               If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+               If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
         """
-        assert is_number(amplitude), LOGGER.error("Translation amplitude must be a number")
-        amplitude = float(amplitude)
-        assert amplitude>0, LOGGER.error("Translation amplitude must be bigger than 0")
-        self.__amplitude = FLOAT_TYPE(amplitude)
+        if isinstance(amplitude, (list, tuple, set)):
+            assert len(amplitude) == 2, LOGGER.error("Translation amplitude tuple must have exactly two items")
+            assert is_number(amplitude[0]), LOGGER.error("Translation amplitude first item must be a number")
+            assert is_number(amplitude[1]), LOGGER.error("Translation amplitude second item must be a number")
+            min = FLOAT_TYPE(amplitude[0])
+            max = FLOAT_TYPE(amplitude[1])
+            assert min>=0, LOGGER.error("Translation amplitude first item must be bigger than 0")
+            assert max>min, LOGGER.error("Translation amplitude first item must be bigger than the second item")
+            amplitude = (min,max)
+        else:
+            assert is_number(amplitude), LOGGER.error("Translation amplitude must be a number")
+            amplitude = float(amplitude)
+            assert amplitude>0, LOGGER.error("Translation amplitude must be bigger than 0")
+            amplitude = (FLOAT_TYPE(0),FLOAT_TYPE(amplitude))
+        self.__amplitude = amplitude
         
     def check_group(self, group):
         """
@@ -115,12 +137,21 @@ class TranslationGenerator(MoveGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # generate random vector
+        # generate random vector and ensure it is not zero
         vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+        norm   = np.linalg.norm(vector) 
+        if norm == 0:
+            while norm == 0:
+                vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+                norm   = np.linalg.norm(vector)  
         # normalize vector
-        vector /= FLOAT_TYPE( np.linalg.norm(vector) )
+        vector /= FLOAT_TYPE( norm )
+        # compute baseVector
+        baseVector = FLOAT_TYPE(vector*self.__amplitude[0])
         # amplify vector
-        vector *= FLOAT_TYPE(generate_random_float()*self.__amplitude)
+        maxAmp  = FLOAT_TYPE(self.__amplitude[1]-self.__amplitude[0])
+        vector *= FLOAT_TYPE(generate_random_float()*maxAmp)
+        vector += baseVector
         # translate and return
         return coordinates+vector
         
@@ -131,18 +162,31 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
 
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum allowed translation amplitude in Angstroms.
-        #. axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.  
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
+        #. axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector. 
+        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+           If None generated axis can be in the same direction of axis or in the opposite.
+           If True all generated vectors are in the same direction of axis.
+           If False all generated vectors are in the opposite direction of axis.        
     """
-    def __init__(self, group=None, amplitude=0.2, axis=(1,0,0)):
+    def __init__(self, group=None, amplitude=0.2, axis=(1,0,0), direction=None):
         super(TranslationAlongAxisGenerator, self).__init__(group=group, amplitude=amplitude)
         # set axis
         self.set_axis(axis)
+        # set direction
+        self.set_direction(direction)
     
     @property
     def axis(self):
         """ Get translation axis."""
         return self.__axis
+    
+    @property
+    def direction(self):
+        """ Get generated translation vectors direction."""
+        return self.__direction
         
     def set_axis(self, axis):
         """
@@ -160,69 +204,6 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
         axis =  np.array(axis, dtype=FLOAT_TYPE)
         self.__axis = axis/FLOAT_TYPE( np.linalg.norm(axis) )
     
-    def transform_coordinates(self, coordinates, argument=None):
-        """
-        translates coordinates.
-        
-        :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
-            
-        :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the translation.
-            #. argument (object): Any python object. Not used in this generator.
-        """
-        # get translation amplitude
-        amplitude = (generate_random_float()-generate_random_float())*self.amplitude
-        # amplify vector
-        vector = self.__axis*FLOAT_TYPE(amplitude)
-        # translate and return
-        return coordinates+vector
-
-
-class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):    
-    """ 
-    Generates random translation moves upon groups of atoms towards a pre-defined axis
-    within a tolerance angle between translation vectors and the pre-defined axis.
-    
-    :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum allowed translation amplitude in Angstroms.
-        #. axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.
-        #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
-        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
-           If None generated axis can be in the same direction of axis or in the opposite.
-           If True all generated vectors are in the same direction of axis.
-           If False all generated vectors are in the opposite direction of axis.
-    """
-    def __init__(self, group=None, amplitude=0.2, axis=(1,0,0), angle=30, direction=True):
-        super(TranslationTowardsAxisGenerator, self).__init__(group=group, amplitude=amplitude, axis=axis)
-        # set angle
-        self.set_angle(angle)
-        # set angle
-        self.set_direction(direction)
-    
-    @property
-    def angle(self):
-        """ Get tolerance maximum angle in rad."""
-        return self.__angle
-    
-    @property
-    def direction(self):
-        """ Get generated translation vectors direction."""
-        return self.__direction
-        
-    def set_angle(self, angle):
-        """
-        Sets the tolerance maximum angle.
-        
-        :Parameters:
-            #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
-        """
-        assert is_number(angle), LOGGER.error("angle must be numbers")
-        assert angle>0, LOGGER.error("angle must be positive")
-        assert angle<=360, LOGGER.error("angle must be smaller than 360")
-        self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
-        
     def set_direction(self, direction):
         """
         Sets the generated translation vectors direction.
@@ -235,7 +216,7 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
         """
         assert direction in (None, True, False), LOGGER.error("direction can only be None, True or False")
         self.__direction = direction
-    
+        
     def transform_coordinates(self, coordinates, argument=None):
         """
         translates coordinates.
@@ -247,19 +228,88 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # generate vector
-        vector = generate_vectors_in_solid_angle(direction=self.axis,
-                                                 maxAngle=self.__angle,
-                                                 numberOfVectors=1)[0]  
         # get translation amplitude
+        maxAmp = self.amplitude[1]-self.amplitude[0]
         if self.__direction is None:
-            amplitude = (generate_random_float()-generate_random_float())*self.amplitude
+            amplitude = (1-2*generate_random_float())*maxAmp
         elif self.__direction:
-            amplitude = generate_random_float()*self.amplitude
+            amplitude = generate_random_float()*maxAmp
         else:
-            amplitude = -generate_random_float()*self.amplitude
-        # amplify vector
-        vector = vector*FLOAT_TYPE(amplitude)
+            amplitude = -generate_random_float()*maxAmp
+        # compute baseVector
+        baseVector = FLOAT_TYPE( np.sign(amplitude)*self.__axis*self.amplitude[0] )
+        # compute translation vector
+        vector = baseVector + self.__axis*FLOAT_TYPE(amplitude)
+        # translate and return
+        return coordinates+vector
+
+
+class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):    
+    """ 
+    Generates random translation moves upon groups of atoms towards a pre-defined axis
+    within a tolerance angle between translation vectors and the pre-defined axis.
+    
+    :Parameters:
+        #. group (None, fullrmc.Engine): The constraint RMC engine.
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
+        #. axis (list,set,tuple,numpy.ndarray): The pre-defined translation axis vector.
+        #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
+        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+           If None generated axis can be in the same direction of axis or in the opposite.
+           If True all generated vectors are in the same direction of axis.
+           If False all generated vectors are in the opposite direction of axis.
+    """
+    def __init__(self, group=None, amplitude=0.2, axis=(1,0,0), angle=30, direction=True):
+        super(TranslationTowardsAxisGenerator, self).__init__(group=group, amplitude=amplitude, axis=axis, direction=direction)
+        # set angle
+        self.set_angle(angle)
+    
+    @property
+    def angle(self):
+        """ Get tolerance maximum angle in rad."""
+        return self.__angle
+        
+    def set_angle(self, angle):
+        """
+        Sets the tolerance maximum angle.
+        
+        :Parameters:
+            #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
+        """
+        assert is_number(angle), LOGGER.error("angle must be numbers")
+        assert angle>0, LOGGER.error("angle must be positive")
+        assert angle<=360, LOGGER.error("angle must be smaller than 360")
+        self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
+
+    def transform_coordinates(self, coordinates, argument=None):
+        """
+        translates coordinates.
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
+        """
+        # generate translation axis
+        translationAxis = generate_vectors_in_solid_angle(direction=self.axis,
+                                                          maxAngle=self.__angle,
+                                                          numberOfVectors=1)[0]  
+        # get translation amplitude
+        maxAmp = self.amplitude[1]-self.amplitude[0]
+        if self.direction is None:
+            amplitude = (1-2*generate_random_float())*maxAmp
+        elif self.direction:
+            amplitude = generate_random_float()*maxAmp
+        else:
+            amplitude = -generate_random_float()*maxAmp
+        # compute baseVector
+        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+        # compute translation vector
+        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
         # translate and return
         return coordinates+vector
 
@@ -270,19 +320,32 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
     
     :Parameters:
         #. group (None, Group): The group instance.
-        #. amplitude (number): the maximum translation angle in Angstroms.
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
         #. axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.
+        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+           If None generated axis can be in the same direction of axis or in the opposite.
+           If True all generated vectors are in the same direction of axis.
+           If False all generated vectors are in the opposite direction of axis.
     """
     
-    def __init__(self, group=None, amplitude=0.2, axis=0):
+    def __init__(self, group=None, amplitude=0.2, axis=0, direction=None):
         super(TranslationAlongSymmetryAxisGenerator, self).__init__(group=group, amplitude=amplitude)
         # set amplitude
         self.set_axis(axis)
+        # set direction
+        self.set_direction(direction)
     
     @property
     def axis(self):
         """ Get translation axis index."""
         return self.__axis
+    
+    @property
+    def direction(self):
+        """ Get generated translation vectors direction."""
+        return self.__direction
         
     def check_group(self, group):
         """
@@ -310,69 +373,6 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         # convert to radian and store amplitude
         self.__axis = axis
     
-    def transform_coordinates(self, coordinates, argument=None):
-        """
-        translate coordinates.
-        
-        :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
-            
-        :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the translation.
-            #. argument (object): Any python object. Not used in this generator.
-        """
-        # get translation amplitude
-        amplitude = (1-2*generate_random_float())*self.amplitude
-        # get vector of translation
-        _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        vector = [X,Y,Z][self.__axis]
-        # amplify vector
-        vector *= FLOAT_TYPE(amplitude)
-        # translate and return
-        return coordinates+vector
-    
-
-class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenerator):    
-    """ 
-    Generates random translation moves upon groups of atoms towards one of its symmetry
-    axis within a tolerance angle between translation vectors and the axis.
-    
-    :Parameters:
-        #. group (None, fullrmc.Engine): The constraint RMC engine.
-        #. amplitude (number): The maximum allowed translation amplitude in Angstroms.
-        #. axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.
-        #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
-        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
-           If None generated axis can be in the same direction of axis or in the opposite.
-           If True all generated vectors are in the same direction of axis.
-           If False all generated vectors are in the opposite direction of axis.
-    """
-    
-    def __init__(self, group=None, amplitude=0.2, axis=0, angle=30, direction=True):
-        super(TranslationTowardsSymmetryAxisGenerator, self).__init__(group=group, amplitude=amplitude, axis=axis)
-
-    @property
-    def angle(self):
-        """ Get tolerance maximum angle in rad."""
-        return self.__angle
-    
-    @property
-    def direction(self):
-        """ Get generated translation vectors direction."""
-        return self.__direction
-        
-    def set_angle(self, angle):
-        """
-        Sets the tolerance maximum angle.
-        
-        :Parameters:
-            #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
-        """
-        assert is_number(angle), LOGGER.error("angle must be numbers")
-        assert angle>0, LOGGER.error("angle must be positive")
-        assert angle<=360, LOGGER.error("angle must be smaller than 360")
-        self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
-        
     def set_direction(self, direction):
         """
         Sets the generated translation vectors direction.
@@ -397,25 +397,98 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
+        # get translation amplitude
+        maxAmp = self.amplitude[1]-self.amplitude[0]
+        if self.direction is None:
+            amplitude = (1-2*generate_random_float())*maxAmp
+        elif self.direction:
+            amplitude = generate_random_float()*maxAmp
+        else:
+            amplitude = -generate_random_float()*maxAmp
+        # get axis of translation
+        _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+        translationAxis = [X,Y,Z][self.__axis]
+        # compute baseVector
+        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+        # compute translation vector
+        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
+        # translate and return
+        return coordinates+vector
+    
+
+class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenerator):    
+    """ 
+    Generates random translation moves upon groups of atoms towards one of its symmetry
+    axis within a tolerance angle between translation vectors and the axis.
+    
+    :Parameters:
+        #. group (None, fullrmc.Engine): The constraint RMC engine.
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
+        #. axis (integer): Must be 0,1 or 2 for respectively the mains, secondary or tertiary symmetry axis.
+        #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
+        #. direction (None, True, False): Whether to generate translation vector in the same direction of axis or not.
+           If None generated axis can be in the same direction of axis or in the opposite.
+           If True all generated vectors are in the same direction of axis.
+           If False all generated vectors are in the opposite direction of axis.
+    """
+    
+    def __init__(self, group=None, amplitude=0.2, axis=0, angle=30, direction=True):
+        super(TranslationTowardsSymmetryAxisGenerator, self).__init__(group=group, amplitude=amplitude, axis=axis, direction=direction)
+        # set angle
+        self.set_angle(angle)
+        
+    @property
+    def angle(self):
+        """ Get tolerance maximum angle in rad."""
+        return self.__angle
+ 
+    def set_angle(self, angle):
+        """
+        Sets the tolerance maximum angle.
+        
+        :Parameters:
+            #. angle (number): The maximum tolerance angle in degrees between a generated translation vector and the pre-defined axis.        
+        """
+        assert is_number(angle), LOGGER.error("angle must be numbers")
+        assert angle>0, LOGGER.error("angle must be positive")
+        assert angle<=360, LOGGER.error("angle must be smaller than 360")
+        self.__angle = FLOAT_TYPE(angle)*PI/FLOAT_TYPE(180.)
+
+    def transform_coordinates(self, coordinates, argument=None):
+        """
+        translate coordinates.
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
+        """
         # get axis
         _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
         axis = [X,Y,Z][self.axis]
-        # generate vector
-        vector = generate_vectors_in_solid_angle(direction=axis,
-                                                 maxAngle=self.__angle,
-                                                 numberOfVectors=1)[0]  
+        # generate translation axis
+        translationAxis = generate_vectors_in_solid_angle(direction=axis,
+                                                          maxAngle=self.__angle,
+                                                          numberOfVectors=1)[0]  
         # get translation amplitude
-        if self.__direction is None:
-            amplitude = (generate_random_float()-generate_random_float())*self.amplitude
-        elif self.__direction:
-            amplitude = generate_random_float()*self.amplitude
+        maxAmp = self.amplitude[1]-self.amplitude[0]
+        if self.direction is None:
+            amplitude = (1-2*generate_random_float())*maxAmp
+        elif self.direction:
+            amplitude = generate_random_float()*maxAmp
         else:
-            amplitude = -generate_random_float()*self.amplitude
-        # amplify vector
-        vector = vector*FLOAT_TYPE(amplitude)
+            amplitude = -generate_random_float()*maxAmp
+        # compute baseVector
+        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+        # compute translation vector
+        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
         # translate and return
         return coordinates+vector
-                
+        
         
 class TranslationAlongSymmetryAxisPath(PathGenerator):    
     """ 
@@ -427,7 +500,6 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         #. path (List): list of distances.
         #. randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.
     """
-    
     def __init__(self, group=None,  axis=0, path=None, randomize=False):
         # initialize PathGenerator
         PathGenerator.__init__(self, group=group, path=path, randomize=randomize)
@@ -525,7 +597,9 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         #. center (dict): The center value dictionary. Must have a single key and this can only be 'fixed' or 'indexes'.
            If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
            If key is indexes, value must be a list or a numpy array of indexes.
-        #. amplitude (number): The maximum translation amplitude in Angstroms.
+        #. amplitude (number, tuple): The translation amplitude in Angstroms.
+           If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
+           If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
         #. angle (None, number): The maximum tolerance angle in degrees between a generated translation vector and the computed direction. 
            If None is given, all generated translation vectors will be along the direction to center.        
         #. direction (None, True, False): Whether to generate translation vectors pointing towards the center or not.
@@ -534,11 +608,11 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
            If False all generated vectors point away from the center.        
     """
     def __init__(self, group=None, center={"fixed":(0,0,0)}, amplitude=0.1, angle=30, direction=True):
-        # initialize PathGenerator
+        # initialize TranslationGenerator
         TranslationGenerator.__init__(self, group=group, amplitude=amplitude)
         # set direction
         self.set_direction(direction)
-        # set point
+        # set center
         self.set_center(center)
         # set angle
         self.set_angle(angle)
@@ -625,17 +699,18 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         # set center
         self.__center = {key:val}
         
-    def __get_amplitude__(self):
+    def __get_amplitude(self):
         # get translation amplitude
+        maxAmp = self.amplitude[1]-self.amplitude[0]
         if self.__direction is None:
-            amplitude = (generate_random_float()-generate_random_float())*self.amplitude
+            amplitude = (1-2*generate_random_float())*maxAmp
         elif self.__direction:
-            amplitude = generate_random_float()*self.amplitude
+            amplitude = generate_random_float()*maxAmp
         else:
-            amplitude = -generate_random_float()*self.amplitude
+            amplitude = -generate_random_float()*maxAmp
         return amplitude
     
-    def __get_translation_vector__(self, direction):
+    def __get_translation_axis(self, direction):
         # normalize direction
         norm = np.sqrt(np.add.reduce(direction**2))
         direction[0] /= norm
@@ -651,9 +726,9 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         # return
         return vector
         
-    def __get_center__(self):
+    def __get_center(self):
         if self.__mustCompute:
-            center  = self.group._get_engine().realCoordinates[self.__center["indexes"]]
+            center = self.group._get_engine().realCoordinates[self.__center["indexes"]]
             center = np.mean(center, axis=0).astype(FLOAT_TYPE)
         else:
             center  = self.__center["fixed"]
@@ -671,16 +746,22 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
             #. argument (object): Any python object. Not used in this generator.
         """
         # get center
-        center = self.__get_center__()
+        center = self.__get_center()
         # compute coordinates center
         coordsCenter = np.mean(coordinates, axis=0)
         direction    = center-coordsCenter
         # translation vector
-        vector = self.__get_translation_vector__(direction)
-        # amplify vector
-        vector *= self.__get_amplitude__()
+        translationAxis = self.__get_translation_axis(direction)
+        # get amplitude
+        amplitude = self.__get_amplitude()
+        # compute baseVector
+        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+        # compute translation vector
+        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
         # translate and return
         return coordinates+vector
+        
+        
  
 
 

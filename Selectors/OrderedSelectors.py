@@ -36,14 +36,35 @@ class DefinedOrderSelector(GroupSelector):
         self.set_order(order)
         # initialize selector
         self.__initialize_selector__()
-        
+           
     def __initialize_selector__(self):
-        self.__index = 0
+        if self.__order is None:
+            self.__index = None
+        else:
+            self.__index = 0
+        
+    def _runtime_initialize(self):
+        """   
+        Automatically sets the selector order at the engine runtime.
+        """
+        assert self.engine is not None, LOGGER.error("engine must be set prior to calling _runtime_initialize")
+        if self.__order is None:
+            self.__order = np.array(range(len(self.engine.groups)), dtype=INT_TYPE)
+            self.__initialize_selector__()
         
     @property
     def order(self):
-        """ Get a list copy of the order of selection."""
-        return list(self.__order)
+        """ List copy of the order of selection."""
+        if self.__order is None:
+            order = None
+        else:
+            order = list(self.__order)
+        return order
+    
+    @property
+    def index(self):
+        """The current selection index."""
+        return self.__index
         
     def set_order(self, order):
         """
@@ -52,24 +73,24 @@ class DefinedOrderSelector(GroupSelector):
         :Parameters:
             #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
         """
-        newOrder = []
         if order is None:
-            if self.engine is not None:
-                newOrder = range(len(self.engine.groups))
+            newOrder = None
         else:
             assert isinstance(order, (list, set, tuple, np.ndarray)), LOGGER.error("order must a instance among list, set, tuple or numpy.ndarray")
             if isinstance(order, np.ndarray):
-                assert len(order.shape)==1,LOGGER.error("order numpy.ndarray must have one dimension")
+                assert len(order.shape)==1, LOGGER.error("order numpy.ndarray must have one dimension")
             order = list(order)
             assert len(order)>0, LOGGER.error("order can't be empty")
+            newOrder = []
             for idx in order:
                 assert is_integer(idx), LOGGER.error("order indexes must be integers")
                 idx = int(idx)
                 assert idx>=0, LOGGER.error("order indexes must be positive")
                 assert idx<len(self.engine.groups), LOGGER.error("order indexes must be smaller than engine's number of groups")
                 newOrder.append(idx)
+            newOrder = np.array(newOrder, dtype=INT_TYPE)
         # set order
-        self.__order = np.array(newOrder, dtype=INT_TYPE)
+        self.__order = newOrder
         # re-initialize selector
         self.__initialize_selector__()
         
@@ -132,8 +153,8 @@ class DirectionalOrderSelector(DefinedOrderSelector):
     
     .. raw:: html
 
-        <iframe width="560" height="315"
-        src="https://www.youtube.com/embed/Lu3Rk4AUvDU?rel=0" 
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0" 
         frameborder="0" allowfullscreen>
         </iframe>
        

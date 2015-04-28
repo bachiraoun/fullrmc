@@ -26,9 +26,9 @@ from pdbParser.pdbParser import pdbParser
 from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
 
 # fullrmc library imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, generate_random_float, LOGGER
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.transform_coordinates import transform_coordinates
-from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time
+from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
 from fullrmc.Core.Group import Group
 from fullrmc.Core.GroupSelector import GroupSelector
@@ -112,6 +112,39 @@ class Engine(object):
         self.__chiSquare = None
         # grouping atoms into list of indexes arrays. All atoms of same group evolve together upon engine run time
         self.__groups = []
+    
+    def _set_generated(self, generated):
+        """ Set generated flag. """
+        assert is_integer(generated), LOGGER.error("generated must be an integer")
+        generated = int(generated)
+        assert generated>=0, LOGGER.error("generated must be positive")
+        assert generated>=self.__tried, LOGGER.error("generated must be bigger than tried")
+        self.__generated = generated
+    
+    def _set_tried(self, tried):
+        """ Set tried flag. """
+        assert is_integer(tried), LOGGER.error("tried must be an integer")
+        tried = int(tried)
+        assert tried>=0, LOGGER.error("tried must be positive")
+        assert tried<=self.__generated, LOGGER.error("tried must be smaller than generated")
+        self.__tried = tried
+    
+    def _set_accepted(self, accepted):
+        """ Set accepted flag. """
+        assert is_integer(accepted), LOGGER.error("accepted must be an integer")
+        accepted = int(accepted)
+        assert accepted>=0, LOGGER.error("accepted must be positive")
+        assert accepted<=self.__tried, LOGGER.error("accepted must be smaller than tried")
+        self.__accepted = accepted
+        
+    def _set_tolerance(self, tolerated):
+        """ Set tolerance flag. """
+        assert is_integer(tolerated), LOGGER.error("tolerated must be an integer")
+        tolerated = int(tolerated)
+        assert tolerated>=0, LOGGER.error("tolerated must be positive")
+        assert tolerated<=self.__generated, LOGGER.error("tolerated must be smaller than generated")
+        assert tolerated<=self.__tried, LOGGER.error("tolerated must be smaller than tried")
+        self.__tolerated = tolerated
         
     @property
     def lastSelectedGroupIndex(self):
@@ -346,7 +379,7 @@ class Engine(object):
             #. path (string): the pdb file path.
         """
         self.pdb.export_pdb(path, coordinates=self.__realCoordinates, boundaryConditions=self.__boundaryConditions )
-
+        
     def set_tolerance(self, tolerance):
         """   
         Sets the runtime engine tolerance value.
@@ -431,11 +464,29 @@ class Engine(object):
             #. groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
                If None, single atom groups of all atoms will be all automatically created.
         """
+        self.__groups = []
         if groups is None:
             self.__groups = [Group(indexes=[idx]) for idx in self.__pdb.indexes]
+        elif isinstance(groups, Group):
+            self.add_group(groups, broadcast=False)
         else:
             assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
-            self.__groups = []
+            for g in groups:
+                self.add_group(g, broadcast=False)
+        # broadcast to constraints
+        self.__broadcaster.broadcast("update groups")
+    
+    def add_groups(self, groups):
+        """
+        Add groups to engine.
+        
+        :Parameters:
+            #. groups (Group, list): Group instance or list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
+        """
+        if isinstance(groups, Group):
+            self.add_group(groups, broadcast=False)
+        else:
+            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
             for g in groups:
                 self.add_group(g, broadcast=False)
         # broadcast to constraints
@@ -948,6 +999,9 @@ class Engine(object):
             if _beforeMoveCoords is None or not self.__groupSelector.isRefining:
                 _beforeMoveCoords = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
             # compute moved coordinates
+            #print self.__groupSelector.lastSelectedIndex
+            #print groupAtomsIndexes
+            #print np.sum(_beforeMoveCoords), np.sum(self.__realCoordinates[groupAtomsIndexes]),np.sum(_beforeMoveCoords-self.__realCoordinates[groupAtomsIndexes]), self.__groupSelector.isRefining
             movedRealCoordinates = groupMoveGenerator.move(_beforeMoveCoords)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
             ########################### compute enhanceOnlyConstraints ############################
@@ -961,7 +1015,7 @@ class Engine(object):
                 rejectMove = c.should_step_get_rejected(c.afterMoveChiSquare)
                 if rejectMove:
                     break
-            ##################################### reject move #####################################
+            ############################## reject move before trying ##############################
             if rejectMove:
                 _moveTried = False
                 # enhanceOnlyConstraints reject move
@@ -1031,6 +1085,8 @@ class Engine(object):
             if _xyzFrequency is not None:
                 if not(step+1)%_xyzFrequency:
                     _xyzfd.write("%s\n"%self.__pdb.numberOfAtoms)
+                    triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
+                    acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
                     _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
                     frame = [self.__allNames[idx]+ " " + "%10.5f"%self.__realCoordinates[idx][0] + " %10.5f"%self.__realCoordinates[idx][1] + " %10.5f"%self.__realCoordinates[idx][2] + "\n" for idx in self.__pdb.xindexes]
                     _xyzfd.write("".join(frame)) 

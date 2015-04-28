@@ -23,9 +23,10 @@ Agitations contains all MoveGenerator classes that agitate and shake structures 
  .. raw:: html
 
         <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/1CijCpoB2ZU?rel=0" 
+        src="https://www.youtube.com/embed/qTJux9kZCOo?rel=0" 
         frameborder="0" allowfullscreen>
         </iframe>
+        
 """
 
 # standard libraries imports
@@ -34,8 +35,8 @@ Agitations contains all MoveGenerator classes that agitate and shake structures 
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, generate_random_float, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix, generate_random_float
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -187,7 +188,7 @@ class DistanceAgitationGenerator(MoveGenerator):
             dir0 = FLOAT_TYPE( 1)
             dir1 = FLOAT_TYPE(-1) 
         # create translation vectors
-        translationVectors = np.empty((2,3), dtype=FLOAT_TYPE)
+        translationVectors      = np.empty((2,3), dtype=FLOAT_TYPE)
         translationVectors[0,:] = self.__agitate[0]*dir0*amp0*vector
         translationVectors[1,:] = self.__agitate[1]*dir1*amp1*vector
         # translate and return

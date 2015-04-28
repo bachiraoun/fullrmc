@@ -1,4 +1,12 @@
 """ 
+
+.. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco" 
+        frameborder="0" allowfullscreen>
+        </iframe>
+
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
 model is adjusted until its atoms position have the greatest consistency with a set of experimental data.\n

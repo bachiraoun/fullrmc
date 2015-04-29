@@ -106,11 +106,12 @@
 <p>It contains a collection of methods and classes that are useful for the package.</p>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">BiasedRandomFloatGenerator</tt><big>(</big><em>lowerLimit</em>, <em>upperLimit</em>, <em>weights=None</em>, <em>biasRange=None</em>, <em>biasFWHM=None</em>, <em>biasHeight=1</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">BiasedRandomFloatGenerator</tt><big>(</big><em>lowerLimit</em>, <em>upperLimit</em>, <em>weights=None</em>, <em>biasRange=None</em>, <em>biasFWHM=None</em>, <em>biasHeight=1</em>, <em>unbiasRange=None</em>, <em>unbiasFWHM=None</em>, <em>unbiasHeight=None</em>, <em>unbiasThreshold=1</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="fullrmc.Core.Collection.RandomFloatGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.RandomFloatGenerator</span></tt></a></p>
 <p>Generate biased random float number between a lower and an upper limit.
 To bias the generator at a certain number, a bias gaussian is added to the 
 weights scheme at the position of this particular number.</p>
+<img alt="_images/biasedFloatGenerator.png" class="align-center" src="_images/biasedFloatGenerator.png" />
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -128,6 +129,16 @@ If None, it will be automatically set to (upperLimit-lowerLimit)/5</li>
 It must be smaller than half of biasRange.
 If None, it will be automatically set to biasRange/10</li>
 <li>biasHeight(number): The bias gaussian maximum intensity.</li>
+<li>unbiasRange(None, number): The bias gaussian range. 
+It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
+If None, it will be automatically set to biasRange.</li>
+<li>unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
+It must be smaller than half of biasRange.
+If None, it will be automatically set to biasFWHM.</li>
+<li>unbiasHeight(number): The unbias gaussian maximum intensity.
+If None, it will be automatically set to biasHeight.</li>
+<li>unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
+It must be a positive number.</li>
 </ol>
 </td>
 </tr>
@@ -171,7 +182,7 @@ If None, it will be automatically set to biasRange/10</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position">
-<tt class="descname">bias_scheme_at_position</tt><big>(</big><em>position</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bias_scheme_at_position</tt><big>(</big><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian function at the given number.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -179,6 +190,8 @@ If None, it will be automatically set to biasRange/10</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>position(number): The number to bias.</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
+If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -189,7 +202,7 @@ If None, it will be automatically set to biasRange/10</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index">
-<tt class="descname">bias_scheme_by_index</tt><big>(</big><em>index</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">bias_scheme_by_index</tt><big>(</big><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian function at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -197,6 +210,8 @@ If None, it will be automatically set to biasRange/10</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index(integer): The index of the position to bias</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
+If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -259,6 +274,32 @@ If None, it will be automatically set to biasRange/10</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_unbias">
+<tt class="descname">set_unbias</tt><big>(</big><em>unbiasRange</em>, <em>unbiasFWHM</em>, <em>unbiasHeight</em>, <em>unbiasThreshold</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_unbias" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set generator&#8217;s unbias gaussian function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>unbiasRange(None, number): The bias gaussian range. 
+It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
+If None, it will be automatically set to biasRange.</li>
+<li>unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
+It must be smaller than half of biasRange.
+If None, it will be automatically set to biasFWHM.</li>
+<li>unbiasHeight(number): The unbias gaussian maximum intensity.
+If None, it will be automatically set to biasHeight.</li>
+<li>unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
+It must be a positive number.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights">
 <tt class="descname">set_weights</tt><big>(</big><em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set generator&#8217;s weights.</p>
@@ -270,6 +311,82 @@ If None, it will be automatically set to biasRange/10</li>
 <li>weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
 The length of weights array defines the resolution of the biased numbers generation.
 If None is given, ones array of length 10000 is automatically generated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias">
+<tt class="descname">unbias</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias step-function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasBins">
+<tt class="descname">unbiasBins</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasBins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias gaussian number of bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasFWHM">
+<tt class="descname">unbiasFWHM</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasFWHM" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias gaussian Full Width at Half Maximum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasFWHMBins">
+<tt class="descname">unbiasFWHMBins</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasFWHMBins" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias gaussian Full Width at Half Maximum number of bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasGuassian">
+<tt class="descname">unbiasGuassian</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasGuassian" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias gaussian function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasRange">
+<tt class="descname">unbiasRange</tt><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbiasRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>The unbias gaussian extent range.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_at_position">
+<tt class="descname">unbias_scheme_at_position</tt><big>(</big><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unbias the generator&#8217;s scheme using the defined bias gaussian function at the given number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>position(number): The number to unbias.</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
+If None, unbias gaussian is used as defined.</li>
+<li>check(boolean): Whether to check arguments.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_by_index">
+<tt class="descname">unbias_scheme_by_index</tt><big>(</big><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unbias the generator&#8217;s scheme using the defined bias gaussian function at the given index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index(integer): The index of the position to unbias</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
+If None, unbias gaussian is used as defined.</li>
+<li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
 </tr>

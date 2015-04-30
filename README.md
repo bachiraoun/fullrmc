@@ -12,6 +12,7 @@ among other functionalities:
 3. Atoms can be grouped into groups so the system can evolve atomically, clusterly, molecularly or any combination of those.
 4. Every group can be assigned a different move generator (translation, rotation, a combination of moves generators, etc).
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
+6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms. 
 
 ## Next on the list
 * Generators machine learning algorithms.

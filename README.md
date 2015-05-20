@@ -15,6 +15,7 @@ among other functionalities:
 6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms. 
 
 ## Next on the list
+* Adding 'explore' flag to selectors.
 * Generators machine learning algorithms.
 * Elements transmutation and atoms switching.
 

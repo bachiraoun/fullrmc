@@ -15,12 +15,11 @@ among other functionalities:
 6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms. 
 
 ## Next on the list
-* Adding 'explore' flag to selectors.
 * Generators machine learning algorithms.
 * Elements transmutation and atoms switching.
 
 ## News
-* Agitation move generators added.
+* explore flag added to selectors.
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation

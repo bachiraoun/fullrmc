@@ -1,6 +1,0 @@
-<map id="inheritance043573f191" name="inheritance043573f191">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,55,205,80"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="264,5,515,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="253,55,525,80"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="291,104,488,129"/>
-</map>

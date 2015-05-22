@@ -99,7 +99,7 @@
 </p>
 <dl class="class">
 <dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DefinedOrderSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>order=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DefinedOrderSelector</tt><big>(</big><em>engine</em>, <em>order=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
 <p>DefinedOrderSelector is a group selector with a defined order of selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -110,9 +110,6 @@
 <li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
 <li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
 If None, order is set automatically to all groups indexes list.</li>
-<li>recur (None, integer): Set number of times to recur.
-If None, recur is equivalent to 0.
-Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
 </ol>
 </td>
 </tr>
@@ -168,7 +165,7 @@ Recurrence property is only used when the selector instance is wrapped with a Re
 
 <dl class="class">
 <dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DirectionalOrderSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'TG': {'angle': 90</em>, <em>'damping': 0.1</em>, <em>'amplitude': 0.1}</em>, <em>'RG': {'amplitude': 10}}</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.OrderedSelectors.</tt><tt class="descname">DirectionalOrderSelector</tt><big>(</big><em>engine</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'TG': {'angle': 90</em>, <em>'damping': 0.1</em>, <em>'amplitude': 0.1}</em>, <em>'RG': {'amplitude': 10}}</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></tt></a></p>
 <p>DirectionalOrderSelector is a group selector with a defined order of selection.
 The order of selection is computed automatically at engine runtime by computing
@@ -180,10 +177,6 @@ if expand argument is True or from the closest to the further if expand is False
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">engine (None, fullrmc.Engine): The selector RMC engine.</p>
-</li>
-<li><p class="first">recur (None, integer): Set number of times to recur.
-If None, recur is equivalent to 0.
-Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</p>
 </li>
 <li><p class="first">center (None, list, set, tuple, numpy.ndarray): The center of expansion.
 If None, the center is automatically set to the origin (0,0,0).</p>
@@ -263,8 +256,11 @@ frameborder="0" allowfullscreen>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>expand (bool): Whether to set the order from the the further to the closest 
-or from the closest to the further if it is set to False.</li>
+<li>adjustMoveGenerators (bool): If set to True, all groups move generator instances will
+be changed automatically at engine runtime to a MoveGeneratorCollector of 
+TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
+Generators parameters can be given by generatorsParams. It is advisable to 
+set this flag to True in order to take advantage of an automatic and intelligent directional moves.</li>
 </ol>
 </td>
 </tr>
@@ -392,7 +388,7 @@ amplitudes is set to 0.25A.</p>
 </table>
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em>, <em>recur=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
 <p>RandomSelector generates indexes randomly for engine group selection.</p>
 <dl class="method">
@@ -416,7 +412,7 @@ amplitudes is set to 0.25A.</p>
 
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">SmartRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em>, <em>biasFactor=1</em>, <em>unbiasFactor=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">SmartRandomSelector</tt><big>(</big><em>engine</em>, <em>weights=None</em>, <em>biasFactor=1</em>, <em>unbiasFactor=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></tt></a></p>
 <p>SmartRandomSelector is a random group selector fed with machine learning algorithm.
 The indexes generation is biased and it evolves throughout the simulation towards 
@@ -427,9 +423,6 @@ selecting groups with more successful moves history.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
-<li>recur (None, integer): Set number of times to recur.
-If None, recur is equivalent to 0.
-Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
 <li>weights (None, list): Weights list fed as initial biasing scheme. 
 It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 <li>biasFactor (Number): The biasing factor of every group when a step get accepted.
@@ -554,7 +547,7 @@ Unbiasing will be performed only if group weight remains positive.</li>
 
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector">
-<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">WeightedRandomSelector</tt><big>(</big><em>engine</em>, <em>recur=None</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">WeightedRandomSelector</tt><big>(</big><em>engine</em>, <em>weights=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.RandomSelector</span></tt></a></p>
 <p>WeightedRandomSelector generates indexes randomly following groups weighting scheme.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -563,9 +556,6 @@ Unbiasing will be performed only if group weight remains positive.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
-<li>recur (None, integer): Set number of times to recur.
-If None, recur is equivalent to 0.
-Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.</li>
 <li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 </ol>
 </td>

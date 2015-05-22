@@ -584,13 +584,18 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">initialize_used_constraints</tt><big>(</big><big>)</big></dt>
+<tt class="descname">initialize_used_constraints</tt><big>(</big><em>force=False</em><big>)</big></dt>
 <dd><p>Calls get_used_constraints method, re-initializes constraints when needed and return them all.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>force (bool): Whether to force initializing constraints regardless of their state.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>usedConstraints (list): All types of active constraints that will be used in engine runtime.</li>
 <li>constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare</li>
 <li>EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won&#8217;t contribute to the engine total chiSquare</li>
@@ -801,6 +806,12 @@ If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_chi_square</tt><big>(</big><big>)</big></dt>
+<dd><p>Computes and sets the total chiSquare of active constraints.</p>
 </dd></dl>
 
 <dl class="method">

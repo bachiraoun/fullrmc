@@ -1,4 +1,0 @@
-<map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
-<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,5,344,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,5,115,31"/>
-</map>

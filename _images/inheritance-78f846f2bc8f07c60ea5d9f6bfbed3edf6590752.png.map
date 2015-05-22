@@ -1,6 +1,0 @@
-<map id="inheritance35172eb396" name="inheritance35172eb396">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,149,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="197,5,420,31"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="213,55,404,80"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="468,31,785,56"/>
-</map>

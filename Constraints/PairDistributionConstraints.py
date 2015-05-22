@@ -217,6 +217,12 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set limits
         self.set_limits(self.__limits)
     
+    def compute_and_set_chi_square(self):
+        """ Computes and sets the constraint's chiSquare."""
+        # set chiSquare
+        totalPDF = self.get_constraint_value()["pdf_total"]
+        self.set_chi_square(self.compute_chi_square(data = totalPDF))
+        
     def set_limits(self, limits):
         """
         Set the histogram computation limits.
@@ -255,24 +261,19 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set minimumDistance and maximumDistance 
         self.__minimumDistance = FLOAT_TYPE(self.experimentalData[minDistIdx,0] - self.__bin/2. )
         self.__maximumDistance = FLOAT_TYPE(self.experimentalData[maxDistIdx,0] + self.__bin/2. )
-        # normalize limits indexes
+        # get histogram size    
+        self.__histogramSize = INT_TYPE((self.__maximumDistance-self.__minimumDistance)/self.__bin)
+        # get histogram edges
+        self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+1)], dtype=FLOAT_TYPE)       
+        self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
+        self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        # set limits indexes for range
         if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
             minDistIdx = self.experimentalData.shape[0]
         if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
             maxDistIdx = self.experimentalData.shape[0]
-        # get histogram size    
-        self.__histogramSize = INT_TYPE(maxDistIdx-minDistIdx)
-        # get histogram edges
-        self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)       
-        self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
-        self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
-        # set experimental
-        if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
-            minDistIdx = self.experimentalData.shape[0] + 1
-        if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
-            maxDistIdx = self.experimentalData.shape[0] + 1
-        self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx,0]
-        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx,1] 
+        self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx+1,0]
+        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx+1,1] 
         # check distances and shells
         for diff in self.__shellsCenter-self.__experimentalDistances:
             assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")

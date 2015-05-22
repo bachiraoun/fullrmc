@@ -59,15 +59,12 @@ class WeightedRandomSelector(RandomSelector):
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
-        #. recur (None, integer): Set number of times to recur.
-           If None, recur is equivalent to 0.
-           Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.
         #. weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
     """
     
-    def __init__(self, engine, recur=None, weights=None):
+    def __init__(self, engine, weights=None):
         # initialize GroupSelector
-        super(WeightedRandomSelector, self).__init__(engine=engine, recur=recur)
+        super(WeightedRandomSelector, self).__init__(engine=engine)
         # set weights
         self.set_weights(weights)
         
@@ -161,9 +158,6 @@ class SmartRandomSelector(WeightedRandomSelector):
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
-        #. recur (None, integer): Set number of times to recur.
-           If None, recur is equivalent to 0.
-           Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.
         #. weights (None, list): Weights list fed as initial biasing scheme. 
            It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
         #. biasFactor (Number): The biasing factor of every group when a step get accepted.
@@ -173,9 +167,9 @@ class SmartRandomSelector(WeightedRandomSelector):
            Un-biasing will be performed only if group weight remains positive.
     """
     
-    def __init__(self, engine, recur=None, weights=None, biasFactor=1, unbiasFactor=None):
+    def __init__(self, engine, weights=None, biasFactor=1, unbiasFactor=None):
         # initialize GroupSelector
-        super(SmartRandomSelector, self).__init__(engine=engine, recur=recur, weights=weights)
+        super(SmartRandomSelector, self).__init__(engine=engine, weights=weights)
         # set bias factor
         self.set_bias_factor(biasFactor)
         # set un-bias factor

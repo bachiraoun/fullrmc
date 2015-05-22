@@ -42,13 +42,14 @@ class Logger(SimpleLogger.Logger):
     def __init__(self, *args, **kwargs):
         super(Logger, self).__init__(*args, **kwargs)
         # set logfile basename
-        logFile = os.path.join(os.path.expanduser("~"), "fullrmc")
+        logFile = os.path.join(os.getcwd(), "fullrmc")
         self.set_log_file_basename(logFile)
         # set new log types
-        self.add_type("move accepted",  name="INFO", stdoutFlag=True,  fileFlag=True)
-        self.add_type("move rejected",  name="INFO", stdoutFlag=False, fileFlag=False)
-        self.add_type("move not tried", name="INFO", stdoutFlag=False, fileFlag=False)
-        self.add_type("save engine",    name="INFO", stdoutFlag=True,  fileFlag=True, level=sys.maxint)
+        self.add_log_type("argument fixed", name="FIXED", stdoutFlag=True,  fileFlag=True)
+        self.add_log_type("move accepted",  name="INFO",  stdoutFlag=True,  fileFlag=True)
+        self.add_log_type("move rejected",  name="INFO",  stdoutFlag=False, fileFlag=False)
+        self.add_log_type("move not tried", name="INFO",  stdoutFlag=False, fileFlag=False)
+        self.add_log_type("save engine",    name="INFO",  stdoutFlag=True,  fileFlag=True, level=sys.maxint)
         # set parameters
         self.__set_logger_params_from_file()
         

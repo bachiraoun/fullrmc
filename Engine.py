@@ -863,6 +863,15 @@ class Engine(object):
             assert chi is not None, LOGGER.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
             chis.append(c.contribution*chi)
         return np.sum(chis)
+    
+    def set_chi_square(self):
+        """
+        Computes and sets the total chiSquare of active constraints.
+        """
+        # get and initialize used constraints
+        _usedConstraints, _constraints, _enhanceOnlyConstraints = self.initialize_used_constraints()
+        # compute chiSquare
+        self.__chiSquare = self.compute_chi_square(_constraints, current=True)
         
     def get_used_constraints(self):
         """
@@ -888,20 +897,24 @@ class Engine(object):
         # return constraints
         return usedConstraints, constraints, enhanceOnlyConstraints
         
-    def initialize_used_constraints(self):
+    def initialize_used_constraints(self, force=False):
         """
         Calls get_used_constraints method, re-initializes constraints when needed and return them all.
         
+        :parameters:
+            #. force (bool): Whether to force initializing constraints regardless of their state.
+
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
             #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
+        assert isinstance(force, bool), LOGGER.error("force must be boolean")
         # get used constraints
         usedConstraints, constraints, enhanceOnlyConstraints = self.get_used_constraints()
         # initialize out-of-dates constraints
         for c in usedConstraints:
-            if c.state != self.__state:
+            if c.state != self.__state or force:
                 LOGGER.info("Initializing constraint data '%s'"%c.__class__.__name__)
                 c.compute_data()
                 c.set_state(self.__state)
@@ -978,7 +991,8 @@ class Engine(object):
         # initialize useful arguments
         _engineStartTime    = time.time()
         _lastSavedChiSquare = self.__chiSquare
-        _beforeMoveCoords   = None
+        _coordsBeforeMove   = None
+        _moveTried          = False
         # initialize group selector
         self.__groupSelector._runtime_initialize()
         
@@ -995,14 +1009,18 @@ class Engine(object):
             groupAtomsIndexes = group.indexes
             # get move generator
             groupMoveGenerator = group.moveGenerator
-            # get before move coordinates
-            if _beforeMoveCoords is None or not self.__groupSelector.isRefining:
-                _beforeMoveCoords = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            # get group atoms coordinates before applying move 
+            if _coordsBeforeMove is None or not self.__groupSelector.isRecurring:
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            elif self.__groupSelector.explore:
+                if _moveTried:
+                    _coordsBeforeMove = movedRealCoordinates
+            elif not self.__groupSelector.refine:
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            else:
+                raise Exception(LOGGER.critical("Unknown recurrence mode, unable to get coordinates before applying move."))
             # compute moved coordinates
-            #print self.__groupSelector.lastSelectedIndex
-            #print groupAtomsIndexes
-            #print np.sum(_beforeMoveCoords), np.sum(self.__realCoordinates[groupAtomsIndexes]),np.sum(_beforeMoveCoords-self.__realCoordinates[groupAtomsIndexes]), self.__groupSelector.isRefining
-            movedRealCoordinates = groupMoveGenerator.move(_beforeMoveCoords)
+            movedRealCoordinates = groupMoveGenerator.move(_coordsBeforeMove)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
             ########################### compute enhanceOnlyConstraints ############################
             rejectMove = False
@@ -1011,13 +1029,13 @@ class Engine(object):
                 c.compute_before_move(indexes = groupAtomsIndexes)
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
-                # calculate rejectMove
+                # get rejectMove
                 rejectMove = c.should_step_get_rejected(c.afterMoveChiSquare)
                 if rejectMove:
                     break
+            _moveTried = not rejectMove
             ############################## reject move before trying ##############################
             if rejectMove:
-                _moveTried = False
                 # enhanceOnlyConstraints reject move
                 for c in _enhanceOnlyConstraints:
                     c.reject_move(indexes=groupAtomsIndexes)
@@ -1026,7 +1044,6 @@ class Engine(object):
             ###################################### try move #######################################
             else:
                 self.__tried += 1
-                _moveTried = True
                 for c in _constraints:
                     # compute before move
                     c.compute_before_move(indexes = groupAtomsIndexes)
@@ -1034,6 +1051,7 @@ class Engine(object):
                     c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
             ################################ compute new chiSquare ################################
                 newChiSquare = self.compute_chi_square(_constraints, current=False)
+                #print newChiSquare, self.__chiSquare
                 if len(_constraints) and (newChiSquare >= self.__chiSquare):
                     if generate_random_float() > self.__tolerance:
                         rejectMove = True
@@ -1068,7 +1086,7 @@ class Engine(object):
                 acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
                 LOGGER.log("move accepted","Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
             ##################################### save engine #####################################
-            if saveFrequency is not None:
+            if _saveFrequency is not None:
                 if not(step+1)%_saveFrequency:
                     if _lastSavedChiSquare==self.__chiSquare:
                         LOGGER.info("Save engine omitted because no improvement made since last save.")

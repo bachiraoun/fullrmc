@@ -313,7 +313,7 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.export_pdb">
 <tt class="descname">export_pdb</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.export_pdb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export a pdb file for the last configuration state</p>
+<dd><p>Export a pdb file of the last refined and save configuration state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -331,6 +331,23 @@ False it uses constraint&#8217;s afterMoveChiSquare argument.</li>
 <dt id="fullrmc.Engine.Engine.generated">
 <tt class="descname">generated</tt><a class="headerlink" href="#fullrmc.Engine.Engine.generated" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get number of generated moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.get_pdb">
+<tt class="descname">get_pdb</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.get_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a pdb instance of the last refined and save configuration state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>pdb (pdbParser): the pdb instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

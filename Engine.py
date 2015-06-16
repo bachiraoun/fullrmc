@@ -373,13 +373,25 @@ class Engine(object):
               
     def export_pdb(self, path):
         """
-        Export a pdb file for the last configuration state
+        Export a pdb file of the last refined and save configuration state.
         
         :Parameters:
             #. path (string): the pdb file path.
         """
         self.pdb.export_pdb(path, coordinates=self.__realCoordinates, boundaryConditions=self.__boundaryConditions )
+    
+    def get_pdb(self):
+        """
+        get a pdb instance of the last refined and save configuration state.
         
+        :Returns:
+            #. pdb (pdbParser): the pdb instance.
+        """
+        pdb = self.pdb.get_copy()
+        pdb.set_coordinates(self.__realCoordinates)
+        pdb.set_boundary_conditions(self.__boundaryConditions)
+        return pdb
+                
     def set_tolerance(self, tolerance):
         """   
         Sets the runtime engine tolerance value.
@@ -843,25 +855,32 @@ class Engine(object):
     
     def compute_chi_square(self, constraints, current=True):
         """
-        Computes the total chiSquare of the given constraints.
+        Computes the total chiSquare of the given the squared deviations of the constraints.
         
+        .. math::
+            \\chi^{2} = \\sum \\limits_{i}^{N} (\\frac{SD_{i}}{variance_{i}})^{2}
+          
+        Where:\n    
+        :math:`variance_{i}` is the variance value of the constraint i. \n
+        :math:`SD_{i}` the squared deviations of the constraint i defined as :math:`(target_{i}-computed_{i})^{2} = (Y_{i}-F(X_{i}))^{2}` \n
+             
         :Parameters:
             #. constraints (list): All constraints used to calculate total chiSquare.
-            #. current (bool): If True it uses constraints chiSquare argument, 
-               False it uses constraint's afterMoveChiSquare argument.
+            #. current (bool): If True it uses constraints squaredDeviations argument, 
+               False it uses constraint's afterMoveSquaredDeviations argument.
         
         :Returns:
             #. totalChiSquare (list): The computed total chiSquare.
         """
         if current:
-            attr = "chiSquare"
+            attr = "deviationsSquare"
         else:
-            attr = "afterMoveChiSquare"
+            attr = "afterMoveDeviationsSquare"
         chis = []
         for c in constraints:
-            chi = getattr(c, attr)
-            assert chi is not None, LOGGER.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
-            chis.append(c.contribution*chi)
+            SD = getattr(c, attr)
+            assert SD is not None, LOGGER.error("constraint %s %s is not computed yet. Try to initialize constraint"%(c,attr))
+            chis.append(SD/c.varianceSquare)
         return np.sum(chis)
     
     def set_chi_square(self):
@@ -1017,8 +1036,8 @@ class Engine(object):
                     _coordsBeforeMove = movedRealCoordinates
             elif not self.__groupSelector.refine:
                 _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
-            else:
-                raise Exception(LOGGER.critical("Unknown recurrence mode, unable to get coordinates before applying move."))
+            #else:
+            #    raise Exception(LOGGER.critical("Unknown recurrence mode, unable to get coordinates before applying move."))
             # compute moved coordinates
             movedRealCoordinates = groupMoveGenerator.move(_coordsBeforeMove)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
@@ -1030,7 +1049,8 @@ class Engine(object):
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
                 # get rejectMove
-                rejectMove = c.should_step_get_rejected(c.afterMoveChiSquare)
+                rejectMove = c.should_step_get_rejected(c.afterMoveDeviationsSquare)
+                #print c.__class__.__name__, c.chiSquare, c.afterMoveDeviationsSquare, rejectMove
                 if rejectMove:
                     break
             _moveTried = not rejectMove
@@ -1051,8 +1071,8 @@ class Engine(object):
                     c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
             ################################ compute new chiSquare ################################
                 newChiSquare = self.compute_chi_square(_constraints, current=False)
-                #print newChiSquare, self.__chiSquare
-                if len(_constraints) and (newChiSquare >= self.__chiSquare):
+                #if len(_constraints) and (newChiSquare >= self.__chiSquare):
+                if newChiSquare > self.__chiSquare:
                     if generate_random_float() > self.__tolerance:
                         rejectMove = True
                     else:

@@ -35,7 +35,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
                #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
         #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
     """
     
     def __init__(self, engine, anglesMap=None, rejectProbability=None):
@@ -60,12 +60,12 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         return self.__atomsLUAD
         
     @property
-    def chiSquare(self):
-        """ Get constraint's current chi square."""
+    def squaredDeviations(self):
+        """ Get constraint's current squared deviation."""
         if self.data is None:
             return None
         else: 
-            return self.compute_chi_square(data = self.data)
+            return self.compute_deviations_square(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -76,16 +76,16 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
-            self.__initialize_constraint__()        
+            self.reset_constraint()        
         
-    def should_step_get_rejected(self, chiSquare):
+    def should_step_get_rejected(self, squaredDeviations):
         """
         Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. chiSquare (number): not used in this case
+            #. squaredDeviations (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -202,7 +202,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 lut = self.__atomsLUAD.get(idx, [] )
                 self.__atomsLUAD[INT_TYPE(idx)] = sorted(set(lut))
         # reset constraint
-        self.__initialize_constraint__()
+        self.reset_constraint()
     
     def create_angles_by_definition(self, anglesDefinition):
         """ 
@@ -297,20 +297,20 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # create angles
         self.set_angles(anglesMap=anglesMap)
     
-    def compute_chi_square(self, data):
+    def compute_deviations_square(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Compute the squared deviation of data not satisfying constraint conditions. 
         
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute chiSquare.
+            #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        chiSquare = 0
+        squaredDeviations = 0
         for idx, angle in data.items():
-            chiSquare +=  np.sum(angle["reducedAngles"]**2)
-        FLOAT_TYPE( chiSquare )
+            squaredDeviations +=  np.sum(angle["reducedAngles"]**2)
+        FLOAT_TYPE( squaredDeviations )
 
     def get_constraint_value(self):
         """
@@ -339,8 +339,8 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        #self.set_chi_square( self.compute_chi_square(data = self.__data) )
+        # set squaredDeviations
+        #self.set_squared_deviations( self.compute_deviations_square(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 

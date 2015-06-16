@@ -35,7 +35,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                e.g. [('h','h',1.5), ('h','c',2.015), ...] 
            
         #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
     """
     def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=None):
         # initialize constraint
@@ -97,7 +97,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                 self.__elementsPairs = None
                 self.set_pairs_distance(self.__pairsDistanceDefinition)
         elif message in("update boundary conditions",):
-            self.__initialize_constraint__()        
+            self.reset_constraint()        
                 
     def set_default_distance(self, defaultDistance):
         """ 
@@ -181,34 +181,18 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             self.__lowerLimitArray = None     
             self.__upperLimitArray = None                 
             
-    def compute_chi_square(self, data):
+    def compute_deviations_square(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Compute the squared deviation of data not satisfying constraint conditions. 
         
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute chiSquare.
+            #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        # compute difference
-        chiSquare = 0.0
-        number = 0
-        for k, val in data.items():
-            if val < PRECISION:
-                continue
-            number += 1
-            el1, el2 = k.split("intermd_")[1].split("-")
-            dist = self.__pairsDistance[el1][el2]
-            diff = dist-val
-            assert diff>0 , LOGGER.error("difference must be positive. %.6f is found for val:%.6f and minimumDistance: %.6f. Try recomputing constraint data using 'compute_data' method"%(diff, val, dist))
-            assert diff<=dist, LOGGER.error("difference must be smaller than minimum distance. %.6f is found for val:%.6f and minimumDistance: %.6f .Try recomputing constraint data using 'compute_data' method"%(diff, val, dist))
-            # normalize to make it between 0 and 1
-            chiSquare += (diff/dist)**2
-        # normalize
-        #if number:
-        #    chiSquare /= number
-        return FLOAT_TYPE(chiSquare)
+        squaredDeviations = np.sum(data.values())
+        return FLOAT_TYPE(squaredDeviations)
         
     def get_constraint_value(self):
         """
@@ -228,12 +212,12 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             idi = self.engine.elements.index(pair[0])
             idj = self.engine.elements.index(pair[1])
             # get mean value
-            number = self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0]
-            distanceSum = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
+            number        = self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0]
+            distanceSum   = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
+            thresholdDist = self.__pairsDistance[pair[0]][pair[1]]
             if number != 0:
-                output["intermd_%s-%s" % pair] += FLOAT_TYPE(distanceSum/number) 
+                output["intermd_%s-%s" % pair] += FLOAT_TYPE((distanceSum-number*thresholdDist)**2) 
         return output    
-        
         
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
@@ -251,8 +235,8 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        self.set_chi_square( self.compute_chi_square(data = self.get_constraint_value()) )
+        # set squaredDeviations
+        self.set_squared_deviations( self.compute_deviations_square(data = self.get_constraint_value()) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -324,13 +308,13 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
+        # compute squaredDeviations after move
         number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
         distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_chi_square( self.compute_chi_square(data = self.get_constraint_value()) )
+        self.set_after_move_deviations_square( self.compute_deviations_square(data = self.get_constraint_value()) )
         # change back data attribute
         self.set_data( data )
     
@@ -348,9 +332,9 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_chi_square( self.afterMoveChiSquare )
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_squared_deviations( self.afterMoveDeviationsSquare )
+        self.set_after_move_deviations_square( None )
     
     def reject_move(self, indexes):
         """ 
@@ -362,8 +346,8 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_after_move_deviations_square( None )
 
 
 class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint):
@@ -383,21 +367,21 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                e.g. [('c','h',0.9, 1.2), ...] 
            
         #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
-        #. mode (string): Defines the way chiSquare is calculated. In such constraints the definition of chiSquare
+           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
+        #. mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
            can be confusing because many parameters play different roles in this type of calculation. The number of
            unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
            Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:
             
-            #. distance (Default): chiSquare is simply calculated as the square summation of the reduced out of limits distances.
+            #. distance (Default): squaredDeviations is simply calculated as the square summation of the reduced out of limits distances.
                This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.
-            #. number: chiSquare is calculated such as the number of non-satisfied constraints must decrease 
+            #. number: squaredDeviations is calculated such as the number of non-satisfied constraints must decrease 
                from one step to another while the square summation of the reduced out of limits distances might increase.             
     """
     def __init__(self, engine, defaultMinDistance=0.67, typeDefinition="name", pairsLimitsDefinition=None, rejectProbability=None, mode="distance"):
         # create modes
-        self.__chiSquareModes = {"distance":"__distance_chi_square__",
-                                 "number"  :"__number_chi_square__"}
+        self.__squaredDeviationsModes = {"distance":"__distance_squared_deviations__",
+                                 "number"  :"__number_squared_deviations__"}
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
@@ -413,13 +397,13 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         return self.__typeDefinition
         
     @property
-    def existingChiSquareModes(self):
-        """ Get list of defined chiSquare modes of calculation"""
-        return self.__chiSquareModes.keys()
+    def existingSquaredDeviationsModes(self):
+        """ Get list of defined squaredDeviations modes of calculation"""
+        return self.__squaredDeviationsModes.keys()
         
     @property
     def mode(self):
-        """ Get the mode of chiSquare calculation. """
+        """ Get the mode of squaredDeviations calculation. """
         return self.__mode
         
     @property
@@ -492,19 +476,19 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             self.set_type_definition(typeDefinition=self.__typeDefinition)
 
         elif message in("update boundary conditions",):
-            self.__initialize_constraint__()        
+            self.reset_constraint()        
                 
     def set_mode(self, mode):
         """ 
-        Sets the chiSquare mode of calculation. 
+        Sets the squaredDeviations mode of calculation. 
         
         :Parameters:
             #. mode (object): The mode of calculation
         """
-        assert mode in self.__chiSquareModes.keys(), LOGGER.error("allowed modes are %s"%self.__chiSquareModes.keys())
+        assert mode in self.__squaredDeviationsModes.keys(), LOGGER.error("allowed modes are %s"%self.__squaredDeviationsModes.keys())
         self.__mode = mode
         # reinitialize constraint
-        self.__initialize_constraint__()
+        self.reset_constraint()
         
     def set_default_minimum_distance(self, defaultMinDistance):
         """ 
@@ -648,18 +632,18 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             self.__lowerLimitArray = None  
             self.__upperLimitArray = None            
             
-    def __distance_chi_square__(self, data):
+    def __distance_squared_deviations__(self, data):
         """
         calculates the squared total distanceSum
         """
         return FLOAT_TYPE( np.sum(data["distanceSum"]**2) )
     
-    def __number_chi_square__(self, data):
+    def __number_squared_deviations__(self, data):
         """
-        chiSquare = SUM_j(SUM_i( meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2 ))
+        squaredDeviations = SUM_j(SUM_i( meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2 ))
         where meanDistance = SUM_ji( reducedDistance )**2 / Ni_total
         """
-        chiSquare = 0
+        squaredDeviations = 0
         for idx1 in range(len(self.__types)):
             Nj_total = FLOAT_TYPE(self.__numberOfAtomsPerType[self.__types[idx1]])
             if Nj_total == 0: continue
@@ -669,20 +653,20 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                 Ni_unsatisfied = FLOAT_TYPE(data["number"][idx1][idx2][0])
                 if Ni_unsatisfied == 0: continue
                 meanDistance   = FLOAT_TYPE(data["distanceSum"][idx1][idx2][0]**2)/Ni_unsatisfied
-                chiSquare     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
-        return FLOAT_TYPE(chiSquare)
+                squaredDeviations     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
+        return FLOAT_TYPE(squaredDeviations)
     
-    def compute_chi_square(self, data):
+    def compute_deviations_square(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Compute the squared deviation of data not satisfying constraint conditions. 
         
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute chiSquare.
+            #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        return getattr(self, self.__chiSquareModes[self.__mode])(data)
+        return getattr(self, self.__squaredDeviationsModes[self.__mode])(data)
 
     def get_constraint_value(self):
         """
@@ -727,8 +711,8 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        self.set_chi_square( self.compute_chi_square(data = self.data) )
+        # set squaredDeviations
+        self.set_squared_deviations( self.compute_deviations_square(data = self.data) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -811,13 +795,13 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
+        # compute squaredDeviations after move
         number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
         distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_chi_square( self.compute_chi_square(data = {"number":number, "distanceSum":distanceSum}) )
+        self.set_after_move_deviations_square( self.compute_deviations_square(data = {"number":number, "distanceSum":distanceSum}) )
         # change back data attribute
         self.set_data( data )
     
@@ -835,9 +819,9 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_chi_square( self.afterMoveChiSquare )
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_squared_deviations( self.afterMoveDeviationsSquare )
+        self.set_after_move_deviations_square( None )
     
     def reject_move(self, indexes):
         """ 
@@ -849,8 +833,8 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_after_move_deviations_square( None )
 
 
     

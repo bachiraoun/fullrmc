@@ -3,7 +3,7 @@
 .. raw:: html
 
         <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco" 
+        src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco&amp?vq=hd1080" 
         frameborder="0" allowfullscreen>
         </iframe>
 
@@ -204,7 +204,8 @@ the Engine is run for additional several hours to refine atoms positions separat
 __version__ = 1.0
 
  
- 
+def get_version():
+    return __version__ 
  
  
  

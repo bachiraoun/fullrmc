@@ -122,9 +122,9 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
+        # set squaredDeviations
         totalPCF = self.get_constraint_value()["pcf_total"]
-        self.set_chi_square(self.compute_chi_square(data = totalPCF))
+        self.set_squared_deviations(self.compute_deviations_square(data = totalPCF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -191,14 +191,14 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
+        # compute squaredDeviations after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         data = self.data
         # change temporarily data
         self.set_data( {"intra":dataIntra, "inter":dataInter} )
         totalPCF = self.get_constraint_value()["pcf_total"]
-        self.set_after_move_chi_square( self.compute_chi_square(data = totalPCF) )
+        self.set_after_move_deviations_square( self.compute_deviations_square(data = totalPCF) )
         # change back data
         self.set_data( data )
         

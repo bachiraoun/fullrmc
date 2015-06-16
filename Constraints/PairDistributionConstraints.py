@@ -161,7 +161,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 self.__elementsPairs   = None
                 self.__weightingScheme = None
         elif message in("update boundary conditions",):
-            self.__initialize_constraint__()
+            self.reset_constraint()
             
     def set_weighting(self, weighting):
         """
@@ -203,6 +203,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         """
         assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
         self.__scaleFactor = FLOAT_TYPE(scaleFactor)
+        # reset constraint
+        self.reset_constraint()
     
     def set_experimental_data(self, experimentalData):
         """
@@ -217,11 +219,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set limits
         self.set_limits(self.__limits)
     
-    def compute_and_set_chi_square(self):
-        """ Computes and sets the constraint's chiSquare."""
-        # set chiSquare
+    def compute_and_set_deviations_square(self):
+        """ Computes and sets the constraint's squaredDeviations."""
+        # set squaredDeviations
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_chi_square(self.compute_chi_square(data = totalPDF))
+        self.set_squared_deviations(self.compute_deviations_square(data = totalPDF))
         
     def set_limits(self, limits):
         """
@@ -302,20 +304,23 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # data format is correct
         return True, ""
 
-    def compute_chi_square(self, data):
+    def compute_deviations_square(self, data):
         """ 
-        Compute the chi square between data and the experimental one. 
+        Compute the squared deviation between data and the experimental one. 
+        
+        .. math::
+            SD = (target-computed)^{2} = (Experimental-computed)^{2}=\\sum \\limits_{i}^{points} (Y_{i}-F(X_{i}))
         
         :Parameters:
-            #. data (numpy.array): The data to compare with the experimental one and compute the chi square.
+            #. data (numpy.array): The data to compare with the experimental one and compute the squared deviation.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
         # compute difference
         diff = self.__experimentalPDF-data
-        # return chi square
-        return np.add.reduce((diff)**2)*self.contribution
+        # return squared deviation
+        return np.add.reduce((diff)**2)
         
     def _get_constraint_value(self, data):
         ###################### THIS SHOULD BE OPTIMIZED ######################
@@ -405,9 +410,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
+        # set squaredDeviations
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_chi_square(self.compute_chi_square(data = totalPDF))
+        self.set_squared_deviations(self.compute_deviations_square(data = totalPDF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -474,14 +479,14 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
+        # compute squaredDeviations after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         data = self.data
         # change temporarily data
         self.set_data( {"intra":dataIntra, "inter":dataInter} )
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_after_move_chi_square( self.compute_chi_square(data = totalPDF) )
+        self.set_after_move_deviations_square( self.compute_deviations_square(data = totalPDF) )
         # change back data
         self.set_data( data )
     
@@ -499,9 +504,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_chi_square( self.afterMoveChiSquare )
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_squared_deviations( self.afterMoveDeviationsSquare )
+        self.set_after_move_deviations_square( None )
     
     def reject_move(self, indexes):
         """ 
@@ -513,8 +518,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_after_move_deviations_square( None )
 
 
 

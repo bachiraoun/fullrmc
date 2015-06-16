@@ -4,10 +4,10 @@ This module provides all the global types, variables and some general methods th
 # standard libraries imports
 import sys
 import os
-from simplelogger import SimpleLogger
 
 # external libraries imports
 import numpy as np
+from simplelogger import SimpleLogger
 
 # data types definitions
 INT_TYPE   = np.int32   # must be the integer type for the whole package

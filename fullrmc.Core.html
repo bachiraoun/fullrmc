@@ -1195,10 +1195,10 @@ The array itself will be rotated and not a copy of it.</p>
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
 <p class="graphviz">
-<img src="_images/inheritance-16a5757e2841befaf7e0ab58e99813c86d538a71.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-1d5fd2b4b133f9deaa865127c27ab265a0a1f3be.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,87,80"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,55,293,80"/>
 <area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,104,278,129"/>
 </map>
@@ -1243,15 +1243,9 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.afterMoveChiSquare">
-<tt class="descname">afterMoveChiSquare</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveChiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current calculated ChiSquare after last move.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.chiSquare">
-<tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.chiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current chi square.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.afterMoveSquaredDeviations">
+<tt class="descname">afterMoveSquaredDeviations</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveSquaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current calculated SquaredDeviations after last move.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1260,9 +1254,9 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_chi_square">
-<tt class="descname">compute_and_set_chi_square</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and sets the constraint&#8217;s chiSquare by calling compute_chi_square and passing the constraint&#8217;s data.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_squared_deviations">
+<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s squaredDeviations by calling compute_squared_deviations and passing the constraint&#8217;s data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1271,20 +1265,14 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_data">
 <tt class="descname">compute_data</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.contribution">
-<tt class="descname">contribution</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.contribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s contribution factor used in the engine run time to calculate the total chi square.</p>
-</dd></dl>
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.data">
@@ -1351,8 +1339,22 @@ Therefore it has become possible to fully customize and set any possibly imagina
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reset_constraint">
-<tt class="descname">reset_constraint</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resets all flags to: state (None), tried (0) and accepted (0) and all data to None</p>
+<tt class="descname">reset_constraint</tt><big>(</big><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>reinitialize (boolean): If set to True, it will override the rest of the flags 
+and will completely reinitialize the constraint.</li>
+<li>flags (boolean): Reset the state, tried and accepted flags of the constraint.</li>
+<li>data (boolean): Reset the constraints computed data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1407,49 +1409,15 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_after_move_chi_square">
-<tt class="descname">set_after_move_chi_square</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s chiSquare value after move happens.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.set_after_move_squared_deviations">
+<tt class="descname">set_after_move_squared_deviations</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s squaredDeviations value after move happens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_chi_square">
-<tt class="descname">set_chi_square</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s chiSquare value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_constribution">
-<tt class="descname">set_constribution</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_constribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s contribution factor to the total chi square.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): Any number between 0 and 1.</li>
+<li>value (number): squaredDeviations value.</li>
 </ol>
 </td>
 </tr>
@@ -1466,7 +1434,7 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): chiSquare value.</li>
+<li>value (number): squaredDeviations value.</li>
 </ol>
 </td>
 </tr>
@@ -1485,6 +1453,23 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.set_squared_deviations">
+<tt class="descname">set_squared_deviations</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s squaredDeviations value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): squaredDeviations value</li>
 </ol>
 </td>
 </tr>
@@ -1544,6 +1529,29 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.set_variance">
+<tt class="descname">set_variance</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s variance that is used in the computation of the total engine chi square.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): Any positive non zero number.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.squaredDeviations">
+<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current chi square.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.state">
 <tt class="descname">state</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.state" title="Permalink to this definition">¶</a></dt>
@@ -1562,15 +1570,21 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 <dd><p>Get whether this constraint is used in the engine run time or set inactive.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.variance">
+<tt class="descname">variance</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s variance used in the engine run time to calculate the total chi square.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.EnhanceOnlyConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">EnhanceOnlyConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
-<p>An enhance only constraint is a constraint that doesn&#8217;t count into the total chiSquare of the Engine.
-But it&#8217;s internal chiSquare must monotonously decrease or remain the same from one engine step to another.
-If chiSquare of an EnhanceOnlyConstraint increases the step will be rejected even before engine&#8217;s new chiSquare get computed.</p>
+<p>An enhance only constraint is a constraint that doesn&#8217;t count into the total squaredDeviations of the Engine.
+But it&#8217;s internal squaredDeviations must monotonously decrease or remain the same from one engine step to another.
+If squaredDeviations of an EnhanceOnlyConstraint increases the step will be rejected even before engine&#8217;s new squaredDeviations get computed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1578,7 +1592,7 @@ If chiSquare of an EnhanceOnlyConstraint increases the step will be rejected eve
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
 <li>rejectProbability (None, numpy.ndarray): rejection probability numpy.array of dimension (100,). 
-If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where chiSquare increases.</li>
+If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where squaredDeviations increases.</li>
 </ol>
 </td>
 </tr>
@@ -1600,7 +1614,7 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>rejectProbability (None, numpy.ndarray): The rejection probability numpy.array of dimension (100,).
-If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where chiSquare increases.</li>
+If None, rejectProbability will be automatically generated to 1 which means total rejection for all steps where squaredDeviations increases.</li>
 </ol>
 </td>
 </tr>
@@ -1610,14 +1624,14 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_accepted">
-<tt class="descname">should_step_get_accepted</tt><big>(</big><em>chiSquare</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a chiSquare, return whether to keep or reject new chiSquare according to the constraint rejectProbability function.</p>
+<tt class="descname">should_step_get_accepted</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_accepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>chiSquare (number): The chiSquare to compare with the Constraint chiSquare</li>
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
 </ol>
 </td>
 </tr>
@@ -1632,14 +1646,14 @@ If None, rejectProbability will be automatically generated to 1 which means tota
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>chiSquare</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a chiSquare, return whether to keep or reject new chiSquare according to the constraint rejectProbability function.</p>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.EnhanceOnlyConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>chiSquare (number): The chiSquare to compare with the Constraint chiSquare</li>
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
 </ol>
 </td>
 </tr>

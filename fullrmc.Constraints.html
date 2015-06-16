@@ -87,10 +87,10 @@
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-1f0932033ba403e5c315d755fbb3cc31cda9824e.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-35aacafd1d603d39fd8c41ab1cdc4535e63abb78.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="341,31,492,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
@@ -373,10 +373,10 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-82cbd10eac3a9bce24305ab38476e826fff57793.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-fa39f8b200c7790451582a4fd6a088cae7359109.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="341,31,452,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
@@ -406,7 +406,7 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </dl>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
 </li>
 </ol>
 </td>
@@ -440,12 +440,6 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bondsMap">
 <tt class="descname">bondsMap</tt><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bondsMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get bonds map</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.chiSquare">
-<tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.chiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current chi square.</p>
 </dd></dl>
 
 <dl class="method">
@@ -484,31 +478,31 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute chiSquare.</li>
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="method">
@@ -624,16 +618,16 @@ Every item must be a list of four items.<ol class="arabic">
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>chiSquare</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>chiSquare (number): not used in this case</li>
+<li>squaredDeviations (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -646,6 +640,12 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.squaredDeviations">
+<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current squared deviation.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -653,10 +653,10 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-b3cfe827d56a1675896b936ee9535fedc51f3818.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-c0e1b062fe1705dc1e91b942d3705d910ea080c7.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
 <area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="341,5,555,31"/>
 <area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="341,55,555,80"/>
@@ -685,7 +685,7 @@ If None is given all pairs will be automatically generated and assigned the give
 </div>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
 </li>
 </ol>
 </td>
@@ -745,31 +745,31 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute chiSquare.</li>
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -930,17 +930,17 @@ If None is given all pairs will be automatically generated and assigned the give
 </div>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
 </li>
-<li><p class="first">mode (string): Defines the way chiSquare is calculated. In such constraints the definition of chiSquare
+<li><p class="first">mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
 can be confusing because many parameters play different roles in this type of calculation. The number of
 unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
 Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>distance (Default): chiSquare is simply calculated as the square summation of the reduced out of limits distances.
+<li>distance (Default): squaredDeviations is simply calculated as the square summation of the reduced out of limits distances.
 This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.</li>
-<li>number: chiSquare is calculated such as the number of non-satisfied constraints must decrease 
+<li>number: squaredDeviations is calculated such as the number of non-satisfied constraints must decrease 
 from one step to another while the square summation of the reduced out of limits distances might increase.</li>
 </ol>
 </div></blockquote>
@@ -1009,31 +1009,31 @@ from one step to another while the square summation of the reduced out of limits
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute chiSquare.</li>
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1043,9 +1043,9 @@ from one step to another while the square summation of the reduced out of limits
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingChiSquareModes">
-<tt class="descname">existingChiSquareModes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingChiSquareModes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get list of defined chiSquare modes of calculation</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingSquaredDeviationsModes">
+<tt class="descname">existingSquaredDeviationsModes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingSquaredDeviationsModes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of defined squaredDeviations modes of calculation</p>
 </dd></dl>
 
 <dl class="method">
@@ -1092,7 +1092,7 @@ from one step to another while the square summation of the reduced out of limits
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode">
 <tt class="descname">mode</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the mode of chiSquare calculation.</p>
+<dd><p>Get the mode of squaredDeviations calculation.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1156,7 +1156,7 @@ from one step to another while the square summation of the reduced out of limits
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode">
 <tt class="descname">set_mode</tt><big>(</big><em>mode</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the chiSquare mode of calculation.</p>
+<dd><p>Sets the squaredDeviations mode of calculation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1237,10 +1237,10 @@ If None is given all pairs will be automatically generated and assigned the give
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-574dd86a93f97e3b01695b5fb5c48dc70db11db3.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-50067ba18826d5fb3d935ba5aabb8668187f2f7a.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
 <area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="341,31,505,56"/>
 </map>
@@ -1273,7 +1273,7 @@ The improper angle is the defined between a first improper atom and the plane fo
 </dl>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
 </li>
 </ol>
 </td>
@@ -1315,12 +1315,6 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.chiSquare">
-<tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.chiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current chi square.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_after_move">
 <tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
@@ -1357,31 +1351,31 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute chiSquare.</li>
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1498,16 +1492,16 @@ Every item must be a list of five items.<ol class="arabic">
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>chiSquare</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>chiSquare (number): not used in this case</li>
+<li>squaredDeviations (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -1518,6 +1512,12 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.squaredDeviations">
+<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current squared deviation.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1725,9 +1725,9 @@ and the second is the maximum distance or None.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_chi_square">
-<tt class="descname">compute_and_set_chi_square</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and sets the constraint&#8217;s chiSquare.</p>
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_squared_deviations">
+<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s squaredDeviations.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1748,31 +1748,33 @@ and the second is the maximum distance or None.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the chi square between data and the experimental one.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation between data and the experimental one.</p>
+<div class="math">
+<p><img src="_images/math/c7f6d3c465ae6a71df05221493be5be14168dc01.png" alt="SD = (target-computed)^{2} = (Experimental-computed)^{2}=\sum \limits_{i}^{points} (Y_{i}-F(X_{i}))"/></p>
+</div><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The data to compare with the experimental one and compute the chi square.</li>
+<li>data (numpy.array): The data to compare with the experimental one and compute the squared deviation.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="attribute">

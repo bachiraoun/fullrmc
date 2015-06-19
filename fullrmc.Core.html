@@ -1530,9 +1530,9 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_variance">
-<tt class="descname">set_variance</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s variance that is used in the computation of the total engine chi square.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.set_variance_squared">
+<tt class="descname">set_variance_squared</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance_squared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s variance squared that is used in the computation of the total engine chi square.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1549,7 +1549,7 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.squaredDeviations">
 <tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current chi square.</p>
+<dd><p>Get constraint&#8217;s current squared deviations.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1571,9 +1571,9 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.variance">
-<tt class="descname">variance</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.variance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s variance used in the engine run time to calculate the total chi square.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.varianceSquared">
+<tt class="descname">varianceSquared</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.varianceSquared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s varianceSquared used in the engine run time to calculate the total chi square.</p>
 </dd></dl>
 
 </dd></dl>
@@ -2112,9 +2112,9 @@ The molecule explores the allowed space by wandering via its move generator and 
 moves enhancing the structure are stored.         
 </p>                                                
 <iframe width="560" height="315" 
-src="https://www.youtube.com/embed/wafgTfHNpvs?rel=0" 
+src="https://www.youtube.com/embed/xnG0wnEfbJ8?rel=0" 
 frameborder="0" allowfullscreen>
-</iframe>                                          <dl class="attribute">
+</iframe>        <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.currentRecur">
 <tt class="descname">currentRecur</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.currentRecur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current recur value which is selected group dependant when override flag is True.</p>

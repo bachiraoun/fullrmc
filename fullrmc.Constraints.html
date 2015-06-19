@@ -120,7 +120,7 @@ Every item must be a list of five items.</p>
 </div></blockquote>
 </li>
 <li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.</p>
+If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increases.</p>
 </li>
 </ol>
 </td>
@@ -162,12 +162,6 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.chiSquare">
-<tt class="descname">chiSquare</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.chiSquare" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current chi square.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move">
 <tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
@@ -204,31 +198,31 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_chi_square">
-<tt class="descname">compute_chi_square</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the chi square of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute chiSquare.</li>
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.</li>
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="method">
@@ -344,16 +338,16 @@ Every item must be a list of five items.<ol class="arabic">
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>chiSquare</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>chiSquare (number): not used in this case</li>
+<li>squaredDeviations (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -364,6 +358,12 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.squaredDeviations">
+<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current deviations square.</p>
 </dd></dl>
 
 </dd></dl>

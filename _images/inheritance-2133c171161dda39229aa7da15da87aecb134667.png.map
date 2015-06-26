@@ -1,4 +1,4 @@
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
-<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,111,31"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="159,5,320,31"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,113,29"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="161,5,327,29"/>
 </map>

@@ -1,5 +1,5 @@
 <map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
-<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="172,5,335,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,31,115,56"/>
-<area shape="rect" id="node3" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,55,344,80"/>
+<area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="176,5,344,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,29,119,53"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="167,53,352,77"/>
 </map>

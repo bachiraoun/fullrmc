@@ -1,6 +1,6 @@
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="341,31,452,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,293,31"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="346,29,459,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total chiSquare of the Engine." alt="" coords="135,5,298,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
 </map>

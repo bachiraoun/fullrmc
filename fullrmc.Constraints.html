@@ -89,15 +89,15 @@
 <p class="graphviz">
 <img src="_images/inheritance-35aacafd1d603d39fd8c41ab1cdc4535e63abb78.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="341,31,492,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="346,29,500,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">BondsAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">BondsAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the angle between 3 defined atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -119,8 +119,9 @@ Every item must be a list of five items.</p>
 </ol>
 </div></blockquote>
 </li>
-<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increases.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 </ol>
 </td>
@@ -207,6 +208,23 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<div class="math">
+<p><img src="_images/math/4057136712c14c62a2013cf0993477fe7d73ce7e.png" alt="SD = \sum \limits_{i}^{C} 
+(\theta_{i}-\theta_{i}^{min})^{2} 
+\bigg( 1-\int_{0}^{\theta_{i}} \delta(\theta-\theta_{i}^{min}) d \theta \bigg) 
++
+(\theta_{i}-\theta_{i}^{max})^{2} 
+\bigg( \int_{\theta_{i}}^{\pi} \delta(\theta-\theta_{i}^{max}) d \theta \bigg)"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/2bcc65482aa8e15cd4c9e9f2542451fb4e971a91.png" alt="C"/> is the total number of defined angles constraints.</p>
+<p><img class="math" src="_images/math/bde279daf7524455009b39a7741f8792f7a01b1d.png" alt="\theta_{i}^{min}"/> is the angle constraint lower limit set for constraint i.</p>
+<p><img class="math" src="_images/math/0607887c23a5a929fc38e8c5da757f91cfc16017.png" alt="\theta_{i}^{max}"/> is the angle constraint upper limit set for constraint i.</p>
+<p><img class="math" src="_images/math/208de4ca8bf1471b4286caaa7a4f0b132c947fb3.png" alt="\theta_{i}"/> is the calculated angle computed for constraint i.</p>
+<p><img class="math" src="_images/math/b35a9439ad8c8657b1b1d792ad5c2d77a52c0aef.png" alt="\delta"/> is the Dirac delta function.</p>
+<p><img class="math" src="_images/math/7da2a7c093a2893f0e542624abf65ffd059f748d.png" alt="(1-\int_{0}^{\theta_{i}} \delta(\theta-\theta_{i}^{min}) d \theta )"/> 
+is equal to 1 if <img class="math" src="_images/math/e867ed90bd748df16b49405e484ad5d4888911de.png" alt="\theta_{i} &lt; \theta_{i}^{min}"/> and 0 when <img class="math" src="_images/math/7cacc8d8f794173f4846bc452051ff0d203f1abf.png" alt="\theta_{i} \geqslant \theta_{i}^{min}"/>.</p>
+<p><img class="math" src="_images/math/aa60765f4ee1034ef9feac5e11b5fc31829fc2e4.png" alt="( \int_{\theta_{i}}^{\pi} \delta(\theta-\theta_{i}^{max}) d \theta )"/> 
+is equal to 0 if <img class="math" src="_images/math/552c2b890df7bf07f859a426e0e8b5d748c5120b.png" alt="\theta_{i} &lt; \theta_{i}^{max}"/> and 1 when <img class="math" src="_images/math/2b94058e1b66bd33e1514271aeaa2ccd1371ef6c.png" alt="\theta_{i} \geqslant \theta_{i}^{max}"/>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -375,15 +393,15 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <p class="graphviz">
 <img src="_images/inheritance-fa39f8b200c7790451582a4fd6a088cae7359109.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="341,31,452,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="346,29,459,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.BondConstraints.</tt><tt class="descname">BondConstraint</tt><big>(</big><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.BondConstraints.</tt><tt class="descname">BondConstraint</tt><big>(</big><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the bond between 2 defined atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -405,8 +423,9 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 </ol>
 </td>
@@ -487,6 +506,23 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<div class="math">
+<p><img src="_images/math/dde7a6890ebb29bdfb54dc6c20ec3bb6c2e26de0.png" alt="SD = \sum \limits_{i}^{C} 
+(\beta_{i}-\beta_{i}^{min})^{2} 
+\bigg( 1-\int_{0}^{\beta_{i}} \delta(\beta-\beta_{i}^{min}) d \beta \bigg) 
++
+(\beta_{i}-\beta_{i}^{max})^{2} 
+\bigg( \int_{\beta_{i}}^{\pi} \delta(\beta-\beta_{i}^{max}) d \beta \bigg)"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/2bcc65482aa8e15cd4c9e9f2542451fb4e971a91.png" alt="C"/> is the total number of defined bonds constraints.</p>
+<p><img class="math" src="_images/math/43997e4da990e3ca3088dfea78dd0167a0153ca1.png" alt="\beta_{i}^{min}"/> is the bond length constraint lower limit set for constraint i.</p>
+<p><img class="math" src="_images/math/4b6cd4fc93429c87ee4b4568b9fc4986eb2b9777.png" alt="\beta_{i}^{max}"/> is the bond length constraint upper limit set for constraint i.</p>
+<p><img class="math" src="_images/math/eef3e44d86ea5d84ed2324caddaf3f29312ad715.png" alt="\beta_{i}"/> is the calculated bond length computed for constraint i.</p>
+<p><img class="math" src="_images/math/b35a9439ad8c8657b1b1d792ad5c2d77a52c0aef.png" alt="\delta"/> is the Dirac delta function.</p>
+<p><img class="math" src="_images/math/e9154937beb52a69aeedad58f444b115e1ba0c94.png" alt="(1-\int_{0}^{\beta_{i}} \delta(\beta-\beta_{i}^{min}) d \beta )"/> 
+is equal to 1 if <img class="math" src="_images/math/03858e535b21b4a496879b5d22d74730ad6a253e.png" alt="\beta_{i} &lt; \beta_{i}^{min}"/> and 0 when <img class="math" src="_images/math/f90775088d7d69fcacc36377e04685a04913a5f0.png" alt="\beta_{i} \geqslant \beta_{i}^{min}"/>.</p>
+<p><img class="math" src="_images/math/19d29f45a41490e6105889e23b40a14c57177ba8.png" alt="( \int_{\beta_{i}}^{\pi} \delta(\beta-\beta_{i}^{max}) d \beta )"/> 
+is equal to 0 if <img class="math" src="_images/math/ed9e5552a3704a0c4f2a4e86882e86d4e638f6a8.png" alt="\beta_{i} &lt; \beta_{i}^{max}"/> and 1 when <img class="math" src="_images/math/e5bb713999d2c9571b12960f1ac53184c1bd9ef7.png" alt="\beta_{i} \geqslant \beta_{i}^{max}"/>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -655,16 +691,16 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <p class="graphviz">
 <img src="_images/inheritance-c0e1b062fe1705dc1e91b942d3705d910ea080c7.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="341,5,555,31"/>
-<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="341,55,555,80"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="346,5,564,29"/>
+<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="346,53,564,77"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>pairsDistance=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>pairsDistance=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -684,8 +720,9 @@ If None is given all pairs will be automatically generated and assigned the give
 </pre></div>
 </div>
 </li>
-<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 </ol>
 </td>
@@ -753,7 +790,18 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
+<div class="math">
+<p><img src="_images/math/53f99ca2dddde76ef84d3d338dc01f9c6d7957a2.png" alt="SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} 
+(d_{ij}-D_{ij})^{2} 
+\bigg( 1-\int_{0}^{d_{ij}} \delta(x-D_{ij}) dx \bigg)"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> is the total number of atoms in the system.</p>
+<p><img class="math" src="_images/math/389f5f02d38aef536e20d1df510ea84a95631691.png" alt="D_{ij}"/> is the distance constraint set for atoms pair (i,j).</p>
+<p><img class="math" src="_images/math/a645d3806f9b2ede11f714ac9fd34fd142bb30d8.png" alt="d_{ij}"/> is the distance between atom i and atom j.</p>
+<p><img class="math" src="_images/math/b35a9439ad8c8657b1b1d792ad5c2d77a52c0aef.png" alt="\delta"/> is the Dirac delta function.</p>
+<p><img class="math" src="_images/math/cac22189f10c38587890f9f6000f004eb60ac60f.png" alt="( 1-\int_{0}^{d_{ij}} \delta(x-D_{ij}) dx )"/> 
+is equal to 1 if <img class="math" src="_images/math/7500e773ed5fd6425711bab2182fd5e06d8cbd3f.png" alt="d_{ij} &lt; D_{ij}"/> and 0 when <img class="math" src="_images/math/94fd1a289d40db956de96447735557157db0d883.png" alt="d_{ij} \geqslant D_{ij}"/>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -907,7 +955,7 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">IntraMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultMinDistance=0.67</em>, <em>typeDefinition='name'</em>, <em>pairsLimitsDefinition=None</em>, <em>rejectProbability=None</em>, <em>mode='distance'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">IntraMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultMinDistance=0.67</em>, <em>typeDefinition='name'</em>, <em>pairsLimitsDefinition=None</em>, <em>rejectProbability=1</em>, <em>mode='distance'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the intra-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -929,8 +977,9 @@ If None is given all pairs will be automatically generated and assigned the give
 </pre></div>
 </div>
 </li>
-<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 <li><p class="first">mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
 can be confusing because many parameters play different roles in this type of calculation. The number of
@@ -1018,6 +1067,14 @@ from one step to another while the square summation of the reduced out of limits
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<div class="math">
+<p><img src="_images/math/67f124ff7064fb2533599b95b347d06d7985a236.png" alt="SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} (d_{ij}-D_{ij})^{2} \bigg( 1-\int_{0}^{d_{ij}} \delta(x-D_{ij}) dx \bigg)"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> is the total number of atoms in the system.</p>
+<p><img class="math" src="_images/math/389f5f02d38aef536e20d1df510ea84a95631691.png" alt="D_{ij}"/> is the distance constraint set for atoms pair (i,j).</p>
+<p><img class="math" src="_images/math/a645d3806f9b2ede11f714ac9fd34fd142bb30d8.png" alt="d_{ij}"/> is the distance between atom i and atom j.</p>
+<p><img class="math" src="_images/math/b35a9439ad8c8657b1b1d792ad5c2d77a52c0aef.png" alt="\delta"/> is the Dirac delta function.</p>
+<p><img class="math" src="_images/math/1ac41033de14e1ba4409250718945eb519adba4b.png" alt="\int_{0}^{d_{ij}}\delta(x-D_{ij})dx"/> is equal to 0 if <img class="math" src="_images/math/d33b4284f389757446ff5644ec39b68d60b7ac21.png" alt="d_{ij}&lt;D_{ij}"/> and 1 when <img class="math" src="_images/math/94fd1a289d40db956de96447735557157db0d883.png" alt="d_{ij} \geqslant D_{ij}"/>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1239,15 +1296,15 @@ If None is given all pairs will be automatically generated and assigned the give
 <p class="graphviz">
 <img src="_images/inheritance-50067ba18826d5fb3d935ba5aabb8668187f2f7a.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,293,31"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,55,278,80"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="341,31,505,56"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="346,29,515,53"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</tt><tt class="descname">ImproperAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</tt><tt class="descname">ImproperAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
 The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.</p>
@@ -1272,8 +1329,9 @@ The improper angle is the defined between a first improper atom and the plane fo
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 </ol>
 </td>
@@ -1360,6 +1418,23 @@ If None, rejectProbability will be automatically generated to 1 for all step whe
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<div class="math">
+<p><img src="_images/math/4057136712c14c62a2013cf0993477fe7d73ce7e.png" alt="SD = \sum \limits_{i}^{C} 
+(\theta_{i}-\theta_{i}^{min})^{2} 
+\bigg( 1-\int_{0}^{\theta_{i}} \delta(\theta-\theta_{i}^{min}) d \theta \bigg) 
++
+(\theta_{i}-\theta_{i}^{max})^{2} 
+\bigg( \int_{\theta_{i}}^{\pi} \delta(\theta-\theta_{i}^{max}) d \theta \bigg)"/></p>
+</div><p>Where:</p>
+<p><img class="math" src="_images/math/2bcc65482aa8e15cd4c9e9f2542451fb4e971a91.png" alt="C"/> is the total number of defined improper angles constraints.</p>
+<p><img class="math" src="_images/math/bde279daf7524455009b39a7741f8792f7a01b1d.png" alt="\theta_{i}^{min}"/> is the angle constraint lower limit set for constraint i.</p>
+<p><img class="math" src="_images/math/0607887c23a5a929fc38e8c5da757f91cfc16017.png" alt="\theta_{i}^{max}"/> is the angle constraint upper limit set for constraint i.</p>
+<p><img class="math" src="_images/math/208de4ca8bf1471b4286caaa7a4f0b132c947fb3.png" alt="\theta_{i}"/> is the calculated angle computed for constraint i.</p>
+<p><img class="math" src="_images/math/b35a9439ad8c8657b1b1d792ad5c2d77a52c0aef.png" alt="\delta"/> is the Dirac delta function.</p>
+<p><img class="math" src="_images/math/7da2a7c093a2893f0e542624abf65ffd059f748d.png" alt="(1-\int_{0}^{\theta_{i}} \delta(\theta-\theta_{i}^{min}) d \theta )"/> 
+is equal to 1 if <img class="math" src="_images/math/e867ed90bd748df16b49405e484ad5d4888911de.png" alt="\theta_{i} &lt; \theta_{i}^{min}"/> and 0 when <img class="math" src="_images/math/7cacc8d8f794173f4846bc452051ff0d203f1abf.png" alt="\theta_{i} \geqslant \theta_{i}^{min}"/>.</p>
+<p><img class="math" src="_images/math/aa60765f4ee1034ef9feac5e11b5fc31829fc2e4.png" alt="( \int_{\theta_{i}}^{\pi} \delta(\theta-\theta_{i}^{max}) d \theta )"/> 
+is equal to 0 if <img class="math" src="_images/math/552c2b890df7bf07f859a426e0e8b5d748c5120b.png" alt="\theta_{i} &lt; \theta_{i}^{max}"/> and 1 when <img class="math" src="_images/math/2b94058e1b66bd33e1514271aeaa2ccd1371ef6c.png" alt="\theta_{i} \geqslant \theta_{i}^{max}"/>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1529,10 +1604,10 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <p class="graphviz">
 <img src="_images/inheritance-4644b332d55d6367c377632069e18ef2d53f3c45.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
 <map id="inheritance225f361433" name="inheritance225f361433">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="557,5,724,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="564,5,735,29"/>
 </map>
 </p>
 <dl class="class">
@@ -1620,9 +1695,9 @@ and the second is the maximum distance or None.</li>
 <p class="graphviz">
 <img src="_images/inheritance-2ff2222f157f3504c336589cc2405200ebf0aa8a.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
 <map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
 </map>
 </p>
 <dl class="class">

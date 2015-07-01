@@ -32,10 +32,11 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
             #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
             #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where deviationsSquare increases.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
     """
-    def __init__(self, engine, anglesMap=None, rejectProbability=None):
+    def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
@@ -57,12 +58,12 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         return self.__atomsLUAD
         
     @property
-    def deviationsSquare(self):
+    def squaredDeviations(self):
         """ Get constraint's current deviations square."""
         if self.data is None:
             return None
         else: 
-            return self.compute_deviations_square(data = self.data)
+            return self.compute_squared_deviations(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -75,14 +76,14 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         if message in("engine changed","update boundary conditions",):
             self.reset_constraint()        
         
-    def should_step_get_rejected(self, deviationsSquare):
+    def should_step_get_rejected(self, squaredDeviations):
         """
         Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not deviationsSquare.
+        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. deviationsSquare (number): not used in this case
+            #. squaredDeviations (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -290,16 +291,35 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         """ 
         Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{C} 
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
+            +
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
+                               
+        Where:\n
+        :math:`C` is the total number of defined angles constraints. \n
+        :math:`\\theta_{i}^{min}` is the angle constraint lower limit set for constraint i. \n
+        :math:`\\theta_{i}^{max}` is the angle constraint upper limit set for constraint i. \n
+        :math:`\\theta_{i}` is the angle computed for constraint i. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
+
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
             #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        deviationsSquare = 0
+        squaredDeviations = 0
         for idx, angle in data.items():
-            deviationsSquare +=  np.sum(angle["reducedAngles"]**2)
-        FLOAT_TYPE( deviationsSquare )
+            squaredDeviations +=  np.sum(angle["reducedAngles"]**2)
+        FLOAT_TYPE( squaredDeviations )
 
     def get_constraint_value(self):
         """
@@ -328,8 +348,8 @@ class BondsAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set deviationsSquare
-        #self.set_squared_deviations( self.compute_deviations_square(data = self.__data) )
+        # set squaredDeviations
+        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 

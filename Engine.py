@@ -571,8 +571,15 @@ class Engine(object):
         :Parameters:
             #. boxWidth (number): Visualize the simulation box by giving the lines width.
                If 0 then the simulation box is not visualized.
-            #. boxWidth (str): Specify the simulation box color.
-            #. representation(str): Choose representation method.
+            #. boxWidth (str): Choose the simulation box color among the following:\n
+               blue, red, gray, orange, yellow, tan, silver, green,
+               white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+               black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
+               blue3, violet, violet2, magenta, magenta2, red2, red3, 
+               orange2, orange3.
+            #. representation(str): Choose representation method among the following:\n
+               Lines, Bonds, DynamicBonds, HBonds, Points, 
+               VDW, CPK, Licorice, Beads, Dotted, Solvent.
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
@@ -862,7 +869,7 @@ class Engine(object):
           
         Where:\n    
         :math:`variance_{i}` is the variance value of the constraint i. \n
-        :math:`SD_{i}` the squared deviations of the constraint i defined as :math:`(target_{i}-computed_{i})^{2} = (Y_{i}-F(X_{i}))^{2}` \n
+        :math:`SD_{i}` the squared deviations of the constraint i defined as :math:`\\sum \\limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}` \n
              
         :Parameters:
             #. constraints (list): All constraints used to calculate total chiSquare.
@@ -873,14 +880,14 @@ class Engine(object):
             #. totalChiSquare (list): The computed total chiSquare.
         """
         if current:
-            attr = "deviationsSquare"
+            attr = "squaredDeviations"
         else:
-            attr = "afterMoveDeviationsSquare"
+            attr = "afterMoveSquaredDeviations"
         chis = []
         for c in constraints:
             SD = getattr(c, attr)
             assert SD is not None, LOGGER.error("constraint %s %s is not computed yet. Try to initialize constraint"%(c,attr))
-            chis.append(SD/c.varianceSquare)
+            chis.append(SD/c.varianceSquared)
         return np.sum(chis)
     
     def set_chi_square(self):
@@ -1049,8 +1056,8 @@ class Engine(object):
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
                 # get rejectMove
-                rejectMove = c.should_step_get_rejected(c.afterMoveDeviationsSquare)
-                #print c.__class__.__name__, c.chiSquare, c.afterMoveDeviationsSquare, rejectMove
+                rejectMove = c.should_step_get_rejected(c.afterMoveSquaredDeviations)
+                #print c.__class__.__name__, c.chiSquare, c.afterMoveSquaredDeviations, rejectMove
                 if rejectMove:
                     break
             _moveTried = not rejectMove

@@ -34,10 +34,11 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
            
                e.g. [('h','h',1.5), ('h','c',2.015), ...] 
            
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
     """
-    def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=None):
+    def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=1):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
@@ -181,10 +182,23 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             self.__lowerLimitArray = None     
             self.__upperLimitArray = None                 
             
-    def compute_deviations_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
-        Compute the squared deviation of data not satisfying constraint conditions. 
+        Compute the squared deviations (SD) of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} 
+            (d_{ij}-D_{ij})^{2} 
+            \\int_{0}^{D_{ij}} \\delta(x-d_{ij}) dx 
+                  
+        Where:\n
+        :math:`N` is the total number of atoms in the system. \n
+        :math:`D_{ij}` is the distance constraint set for atoms pair (i,j). \n
+        :math:`d_{ij}` is the distance between atom i and atom j. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{D_{ij}} \\delta(x-d_{ij}) dx` 
+        is equal to 1 if :math:`0 \\leqslant d_{ij} \\leqslant D_{ij}` and 0 elsewhere.\n 
+    
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
@@ -236,7 +250,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
-        self.set_squared_deviations( self.compute_deviations_square(data = self.get_constraint_value()) )
+        self.set_squared_deviations( self.compute_squared_deviations(data = self.get_constraint_value()) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -314,7 +328,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_deviations_square( self.compute_deviations_square(data = self.get_constraint_value()) )
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = self.get_constraint_value()) )
         # change back data attribute
         self.set_data( data )
     
@@ -333,8 +347,8 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveDeviationsSquare )
-        self.set_after_move_deviations_square( None )
+        self.set_squared_deviations( self.afterMoveSquaredDeviations )
+        self.set_after_move_squared_deviations( None )
     
     def reject_move(self, indexes):
         """ 
@@ -347,7 +361,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_after_move_deviations_square( None )
+        self.set_after_move_squared_deviations( None )
 
 
 class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint):
@@ -366,8 +380,9 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
            
                e.g. [('c','h',0.9, 1.2), ...] 
            
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
         #. mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
            can be confusing because many parameters play different roles in this type of calculation. The number of
            unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
@@ -378,10 +393,10 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
             #. number: squaredDeviations is calculated such as the number of non-satisfied constraints must decrease 
                from one step to another while the square summation of the reduced out of limits distances might increase.             
     """
-    def __init__(self, engine, defaultMinDistance=0.67, typeDefinition="name", pairsLimitsDefinition=None, rejectProbability=None, mode="distance"):
+    def __init__(self, engine, defaultMinDistance=0.67, typeDefinition="name", pairsLimitsDefinition=None, rejectProbability=1, mode="distance"):
         # create modes
         self.__squaredDeviationsModes = {"distance":"__distance_squared_deviations__",
-                                 "number"  :"__number_squared_deviations__"}
+                                         "number"  :"__number_squared_deviations__"}
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
@@ -656,10 +671,21 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
                 squaredDeviations     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
         return FLOAT_TYPE(squaredDeviations)
     
-    def compute_deviations_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
         Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} (d_{ij}-D_{ij})^{2} \\bigg( 1-\\int_{0}^{d_{ij}} \\delta(x-D_{ij}) dx \\bigg) 
+                                   
+        Where:\n
+        :math:`N` is the total number of atoms in the system. \n
+        :math:`D_{ij}` is the distance constraint set for atoms pair (i,j). \n
+        :math:`d_{ij}` is the distance between atom i and atom j. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{d_{ij}}\\delta(x-D_{ij})dx` is equal to 0 if :math:`d_{ij}<D_{ij}` and 1 when :math:`d_{ij} \\geqslant D_{ij}`.
+ 
+ 
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
@@ -712,7 +738,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
-        self.set_squared_deviations( self.compute_deviations_square(data = self.data) )
+        self.set_squared_deviations( self.compute_squared_deviations(data = self.data) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -801,7 +827,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_deviations_square( self.compute_deviations_square(data = {"number":number, "distanceSum":distanceSum}) )
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = {"number":number, "distanceSum":distanceSum}) )
         # change back data attribute
         self.set_data( data )
     
@@ -820,8 +846,8 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveDeviationsSquare )
-        self.set_after_move_deviations_square( None )
+        self.set_squared_deviations( self.afterMoveSquaredDeviations )
+        self.set_after_move_squared_deviations( None )
     
     def reject_move(self, indexes):
         """ 
@@ -834,7 +860,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_after_move_deviations_square( None )
+        self.set_after_move_squared_deviations( None )
 
 
     

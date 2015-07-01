@@ -34,11 +34,12 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
                #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
                #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
     """
     
-    def __init__(self, engine, anglesMap=None, rejectProbability=None):
+    def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
@@ -65,7 +66,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         if self.data is None:
             return None
         else: 
-            return self.compute_deviations_square(data = self.data)
+            return self.compute_squared_deviations(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -297,10 +298,29 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # create angles
         self.set_angles(anglesMap=anglesMap)
     
-    def compute_deviations_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
         Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{C} 
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
+            +
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
+                               
+        Where:\n
+        :math:`C` is the total number of defined improper angles constraints. \n
+        :math:`\\theta_{i}^{min}` is the improper angle constraint lower limit set for constraint i. \n
+        :math:`\\theta_{i}^{max}` is the improper angle constraint upper limit set for constraint i. \n
+        :math:`\\theta_{i}` is the improper angle computed for constraint i. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
+
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
@@ -340,7 +360,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
-        #self.set_squared_deviations( self.compute_deviations_square(data = self.__data) )
+        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 

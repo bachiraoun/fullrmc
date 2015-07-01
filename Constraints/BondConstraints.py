@@ -30,11 +30,12 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Second item the second atom index forming the bond, 
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where squaredDeviations increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
     """
     
-    def __init__(self, engine, bondsMap=None, rejectProbability=None):
+    def __init__(self, engine, bondsMap=None, rejectProbability=1):
         # initialize constraint
         EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
@@ -56,7 +57,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         if self.data is None:
             return None
         else: 
-            return self.compute_deviations_square(data = self.data)
+            return self.compute_squared_deviations(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -252,10 +253,29 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # create bonds
         self.set_bonds(bondsMap=bondsMap)
     
-    def compute_deviations_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
         Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{C} 
+            ( \\beta_{i} - \\beta_{i}^{min} ) ^{2} 
+            \\int_{0}^{\\beta_{i}^{min}} \\delta(\\beta-\\beta_{i}) d \\beta
+            +
+            ( \\beta_{i} - \\beta_{i}^{max} ) ^{2} 
+            \\int_{\\beta_{i}^{max}}^{\\infty} \\delta(\\beta-\\beta_{i}) d \\beta
+                               
+        Where:\n
+        :math:`C` is the total number of defined bonds constraints. \n
+        :math:`\\beta_{i}^{min}` is the bond constraint lower limit set for constraint i. \n
+        :math:`\\beta_{i}^{max}` is the bond constraint upper limit set for constraint i. \n
+        :math:`\\beta_{i}` is the bond length computed for constraint i. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{\\beta_{i}^{min}} \\delta(\\beta-\\beta_{i}) d \\beta` 
+        is equal to 1 if :math:`0 \\leqslant \\beta_{i} \\leqslant \\beta_{i}^{min}` and 0 elsewhere.\n
+        :math:`\\int_{\\beta_{i}^{max}}^{\\pi} \\delta(\\beta-\\beta_{i}) d \\beta` 
+        is equal to 1 if :math:`\\beta_{i}^{max} \\leqslant \\beta_{i} \\leqslant \\infty` and 0 elsewhere.\n
+
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
@@ -287,7 +307,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
-        #self.set_squared_deviations( self.compute_deviations_square(data = self.__data) )
+        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 
@@ -336,7 +356,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
         # compute squaredDeviations after move
-        #self.set_after_move_deviations_square( self.compute_deviations_square(data = dataDict ) )
+        #self.set_after_move_squared_deviations( self.compute_squared_deviations(data = dataDict ) )
   
     def accept_move(self, indexes):
         """ 

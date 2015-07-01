@@ -124,7 +124,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
         totalPCF = self.get_constraint_value()["pcf_total"]
-        self.set_squared_deviations(self.compute_deviations_square(data = totalPCF))
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPCF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -198,7 +198,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         # change temporarily data
         self.set_data( {"intra":dataIntra, "inter":dataInter} )
         totalPCF = self.get_constraint_value()["pcf_total"]
-        self.set_after_move_deviations_square( self.compute_deviations_square(data = totalPCF) )
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPCF) )
         # change back data
         self.set_data( data )
         

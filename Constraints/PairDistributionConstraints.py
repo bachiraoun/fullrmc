@@ -219,11 +219,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set limits
         self.set_limits(self.__limits)
     
-    def compute_and_set_deviations_square(self):
+    def compute_and_set_squared_deviations(self):
         """ Computes and sets the constraint's squaredDeviations."""
         # set squaredDeviations
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_squared_deviations(self.compute_deviations_square(data = totalPDF))
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPDF))
         
     def set_limits(self, limits):
         """
@@ -304,13 +304,18 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # data format is correct
         return True, ""
 
-    def compute_deviations_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
         Compute the squared deviation between data and the experimental one. 
         
         .. math::
-            SD = (target-computed)^{2} = (Experimental-computed)^{2}=\\sum \\limits_{i}^{points} (Y_{i}-F(X_{i}))
-        
+            SD = \\sum \\limits_{i}^{N} (Y(X_{i})-F(X_{i}))^{2}
+         
+        Where:\n
+        :math:`N` is the total number of experimental data points. \n
+        :math:`Y(X_{i})` is the experimentation data point :math:`X_{i}`. \n
+        :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
+
         :Parameters:
             #. data (numpy.array): The data to compare with the experimental one and compute the squared deviation.
             
@@ -412,7 +417,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_squared_deviations(self.compute_deviations_square(data = totalPDF))
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPDF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -486,7 +491,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # change temporarily data
         self.set_data( {"intra":dataIntra, "inter":dataInter} )
         totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_after_move_deviations_square( self.compute_deviations_square(data = totalPDF) )
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPDF) )
         # change back data
         self.set_data( data )
     
@@ -505,8 +510,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveDeviationsSquare )
-        self.set_after_move_deviations_square( None )
+        self.set_squared_deviations( self.afterMoveSquaredDeviations )
+        self.set_after_move_squared_deviations( None )
     
     def reject_move(self, indexes):
         """ 
@@ -519,7 +524,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
-        self.set_after_move_deviations_square( None )
+        self.set_after_move_squared_deviations( None )
 
 
 

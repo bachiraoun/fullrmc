@@ -1,11 +1,21 @@
 """ 
-
-.. raw:: html
-
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco&amp?vq=hd1080" 
-        frameborder="0" allowfullscreen>
-        </iframe>
++---------------------------------------------------------+------------------------------+
+|.. raw:: html                                            | Molecular system full RMC    |  
+|                                                         | simulation. Groups are set to|
+|        <iframe width="580" height="315"                 | molecules and smart moves are|
+|        src="https://www.youtube.com/embed/untepXVc3BQ"  | applied. Translations along  |
+|        frameborder="0" allowfullscreen>                 | symmetry axes, rotations     |
+|        </iframe>                                        | about symmetry axes, etc.    |
+|                                                         |                              |
++---------------------------------------------------------+------------------------------+
+|.. raw:: html                                            | Molecular system mere atomic |  
+|                                                         | RMC simulation. Covalent bond|
+|        <iframe width="580" height="315"                 | electron density polarization|
+|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"  | is modelled by allowing      |
+|        frameborder="0" allowfullscreen>                 | fullrmc to explore across    |
+|        </iframe>                                        | energy low correlation       |
+|                                                         | barriers.                    |
++---------------------------------------------------------+------------------------------+
 
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 

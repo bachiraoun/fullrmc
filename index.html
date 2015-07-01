@@ -80,10 +80,38 @@
             
   <div class="section" id="module-fullrmc">
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
-<iframe width="560" height="315" 
-src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco&amp?vq=hd1080" 
+<table border="1" class="docutils">
+<colgroup>
+<col width="66%" />
+<col width="34%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last"><iframe width="580" height="315"
+src="https://www.youtube.com/embed/untepXVc3BQ"
 frameborder="0" allowfullscreen>
-</iframe><p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
+</iframe></div></td>
+<td>Molecular system full RMC
+simulation. Groups are set to
+molecules and smart moves are
+applied. Translations along
+symmetry axes, rotations
+about symmetry axes, etc.</td>
+</tr>
+<tr class="row-even"><td><div class="first last"><iframe width="580" height="315"
+src="https://www.youtube.com/embed/xnG0wnEfbJ8"
+frameborder="0" allowfullscreen>
+</iframe></div></td>
+<td>Molecular system mere atomic
+RMC simulation. Covalent bond
+electron density polarization
+is modelled by allowing
+fullrmc to explore across
+energy low correlation
+barriers.</td>
+</tr>
+</tbody>
+</table>
+<p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (<a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a>) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
 model is adjusted until its atoms position have the greatest consistency with a set of experimental data.</p>
 <p>fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. 
@@ -1013,11 +1041,21 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>boxWidth (number): Visualize the simulation box by giving the lines width.
-If 0 then the simulation box is not visualized.</li>
-<li>boxWidth (str): Specify the simulation box color.</li>
-<li>representation(str): Choose representation method.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
+If 0 then the simulation box is not visualized.</p>
+</li>
+<li><p class="first">boxWidth (str): Choose the simulation box color among the following:</p>
+<p>blue, red, gray, orange, yellow, tan, silver, green,
+white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
+blue3, violet, violet2, magenta, magenta2, red2, red3, 
+orange2, orange3.</p>
+</li>
+<li><p class="first">representation(str): Choose representation method among the following:</p>
+<p>Lines, Bonds, DynamicBonds, HBonds, Points, 
+VDW, CPK, Licorice, Beads, Dotted, Solvent.</p>
+</li>
 </ol>
 </td>
 </tr>

@@ -87,18 +87,18 @@
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-35aacafd1d603d39fd8c41ab1cdc4535e63abb78.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-2f135e7564e493aef9c2e733f73f00a652fa3912.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="346,29,500,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="311,31,461,56"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">BondsAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the angle between 3 defined atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -357,7 +357,7 @@ Every item must be a list of five items.<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected">
 <tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
+<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
 It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -391,18 +391,18 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-fa39f8b200c7790451582a4fd6a088cae7359109.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-5355870e0a3746e3c0e38b625c01e53a444f3c75.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="346,29,459,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="311,31,421,56"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.BondConstraints.</tt><tt class="descname">BondConstraint</tt><big>(</big><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the bond between 2 defined atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -655,7 +655,7 @@ Every item must be a list of four items.<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected">
 <tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
+<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
 It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -689,19 +689,19 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-c0e1b062fe1705dc1e91b942d3705d910ea080c7.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-c1278a8d430e387bfe20be084826cfea09bec855.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="346,5,564,29"/>
-<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="346,53,564,77"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="311,5,524,31"/>
+<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="311,55,524,80"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>pairsDistance=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -956,7 +956,7 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">IntraMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultMinDistance=0.67</em>, <em>typeDefinition='name'</em>, <em>pairsLimitsDefinition=None</em>, <em>rejectProbability=1</em>, <em>mode='distance'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the intra-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1294,18 +1294,18 @@ If None is given all pairs will be automatically generated and assigned the give
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-50067ba18826d5fb3d935ba5aabb8668187f2f7a.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-b4f47bf87fb4293214ead7940df32dfbbc4e2a60.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="An enhance only constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,5,298,29"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="151,53,282,77"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="346,29,515,53"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="311,31,475,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</tt><tt class="descname">ImproperAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.EnhanceOnlyConstraint" title="fullrmc.Core.Constraint.EnhanceOnlyConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.EnhanceOnlyConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
 The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1568,7 +1568,7 @@ Every item must be a list of five items.<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected">
 <tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;EnhanceOnlyConstraint&#8217; should_step_get_rejected method.
+<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
 It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1604,10 +1604,10 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <p class="graphviz">
 <img src="_images/inheritance-4644b332d55d6367c377632069e18ef2d53f3c45.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
 <map id="inheritance225f361433" name="inheritance225f361433">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="564,5,735,29"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="557,5,724,31"/>
 </map>
 </p>
 <dl class="class">
@@ -1695,9 +1695,9 @@ and the second is the maximum distance or None.</li>
 <p class="graphviz">
 <img src="_images/inheritance-2ff2222f157f3504c336589cc2405200ebf0aa8a.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
 <map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
 </map>
 </p>
 <dl class="class">
@@ -1719,7 +1719,7 @@ R(r) = 4 \pi r^2 \rho(r) =\frac{1}{N} \sum \limits_{i}^{N} \sum \limits_{j \neq 
 </div><p>Where:</p>
 <p><img class="math" src="_images/math/7b1816c51f7d31275cd3ad400208fb7b3ce136a0.png" alt="Q"/> is the momentum transfer.</p>
 <p><img class="math" src="_images/math/2ede365ad144ab396916ec60458da03860803078.png" alt="r"/> is the distance between two atoms.</p>
-<p><img class="math" src="_images/math/3bf6612ed0f348b1de4d1d454612d74a0c9502f3.png" alt="\rho(r)"/> is the sperical average defined as <img class="math" src="_images/math/ca26f811e767fa1f6cdf22140539ff8cb9d55e5c.png" alt="\int n(r^{'}).n(r-r^{'}) dr"/>.</p>
+<p><img class="math" src="_images/math/3bf6612ed0f348b1de4d1d454612d74a0c9502f3.png" alt="\rho(r)"/> is the spherical average defined as <img class="math" src="_images/math/ca26f811e767fa1f6cdf22140539ff8cb9d55e5c.png" alt="\int n(r^{'}).n(r-r^{'}) dr"/>.</p>
 <p><img class="math" src="_images/math/ed15f691d3f3c8cadde0d1b3df8b533bf40a4f83.png" alt="\rho_{0}"/> is the  average number density of the samples.</p>
 <p><img class="math" src="_images/math/2afb3a5dd6b68b2d487f92dac2667b7b13fb7122.png" alt="R(r)"/> is the radial distribution function (rdf).</p>
 <p><img class="math" src="_images/math/75e27f04188974063be3230dca208cd495b77ce1.png" alt="N"/> is the total number of atoms.</p>

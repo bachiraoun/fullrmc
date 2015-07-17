@@ -1,5 +1,0 @@
-<map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function of the system." alt="" coords="343,5,516,29"/>
-</map>

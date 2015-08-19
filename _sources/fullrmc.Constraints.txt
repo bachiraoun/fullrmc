@@ -48,3 +48,11 @@ PairDistributionConstraints
     :members:
     :undoc-members:
     :show-inheritance:
+
+CoordinationNumberConstraints
+-----------------------------
+
+.. automodule:: fullrmc.Constraints.CoordinationNumberConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:

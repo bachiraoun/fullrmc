@@ -23,6 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="#" />
     <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" /> 
   </head>
@@ -88,51 +89,53 @@
 <p class="graphviz">
 <img src="_images/inheritance-8e942cd238c02ba10b1e955656c006897015baa9.png" alt="Inheritance diagram of fullrmc.Engine.Engine" usemap="#inheritanceee53c315b6" class="inheritance"/>
 <map id="inheritanceee53c315b6" name="inheritanceee53c315b6">
-<area shape="rect" id="node1" href="fullrmc.html#fullrmc.Engine.Engine" title="The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. " alt="" coords="5,5,156,29"/>
+<area shape="rect" id="node1" href="fullrmc.html#fullrmc.Engine.Engine" title="The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. " alt="" coords="5,5,153,31"/>
 </map>
 </p>
 <p class="graphviz">
-<img src="_images/inheritance-04611af92976fac21494dfc8b035b9c073f99b29.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritance53638427b4" class="inheritance"/>
-<map id="inheritance53638427b4" name="inheritance53638427b4">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,180,29"/>
+<img src="_images/inheritance-e6f0f32b5bb7b773416ad01bd220d093ddc457ee.png" alt="Inheritance diagram of fullrmc.Core.Group.Group" usemap="#inheritance3e1520e3a6" class="inheritance"/>
+<map id="inheritance3e1520e3a6" name="inheritance3e1520e3a6">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,175,31"/>
 </map>
 </p>
 <p class="graphviz">
-<img src="_images/inheritance-f2bc5aad2741caa534ea01cba73997aadb0e6402.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Agitations, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance5591e20ac3" class="inheritance"/>
-<map id="inheritance5591e20ac3" name="inheritance5591e20ac3">
-<area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="176,365,344,389"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,485,119,509"/>
-<area shape="rect" id="node11" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="167,413,352,437"/>
-<area shape="rect" id="node16" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" title="Generates rotational moves upon groups of atoms to align and orient along an axis." alt="" coords="187,461,333,485"/>
-<area shape="rect" id="node19" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="205,509,314,533"/>
-<area shape="rect" id="node22" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="Generates random rotational moves upon groups of atoms." alt="" coords="194,557,325,581"/>
-<area shape="rect" id="node28" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="Generates random translations moves upon groups of atoms." alt="" coords="186,677,333,701"/>
-<area shape="rect" id="node3" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="477,293,590,317"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="204,245,316,269"/>
-<area shape="rect" id="node6" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="456,101,610,125"/>
-<area shape="rect" id="node13" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="449,149,618,173"/>
-<area shape="rect" id="node14" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="424,197,643,221"/>
-<area shape="rect" id="node15" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="424,245,643,269"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="194,197,325,221"/>
-<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="21,245,103,269"/>
-<area shape="rect" id="node12" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="180,317,340,341"/>
-<area shape="rect" id="node8" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="185,5,335,29"/>
-<area shape="rect" id="node10" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="450,5,617,29"/>
-<area shape="rect" id="node9" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="9,29,116,53"/>
-<area shape="rect" id="node20" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="200,53,320,77"/>
-<area shape="rect" id="node18" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="447,341,620,365"/>
-<area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="770,341,941,365"/>
-<area shape="rect" id="node24" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Generates rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="424,461,643,485"/>
-<area shape="rect" id="node30" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="417,509,650,533"/>
-<area shape="rect" id="node26" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="445,53,622,77"/>
-<area shape="rect" id="node21" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Generates random rotational moves upon groups of atoms about a pre&#45;defined axis." alt="" coords="438,557,629,581"/>
-<area shape="rect" id="node23" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Generates random rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="408,605,659,629"/>
-<area shape="rect" id="node25" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="777,53,933,77"/>
-<area shape="rect" id="node27" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="430,653,637,677"/>
-<area shape="rect" id="node31" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="Generates random translation moves upon groups of atoms towards a pre&#45;defined axis" alt="" coords="745,653,966,677"/>
-<area shape="rect" id="node29" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="400,701,667,725"/>
-<area shape="rect" id="node32" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="415,749,652,773"/>
-<area shape="rect" id="node33" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms towards one of its symmetry" alt="" coords="715,701,996,725"/>
+<img src="_images/inheritance-1706ea6f0bf7b17145f90e9d8a20fe99b6cf3689.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Agitations, fullrmc.Constraints.CoordinationNumberConstraints, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritancefbe476e7cf" class="inheritance"/>
+<map id="inheritancefbe476e7cf" name="inheritancefbe476e7cf">
+<area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="172,403,335,428"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,527,115,552"/>
+<area shape="rect" id="node13" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="163,452,344,477"/>
+<area shape="rect" id="node18" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" title="Generates rotational moves upon groups of atoms to align and orient along an axis." alt="" coords="182,501,325,527"/>
+<area shape="rect" id="node21" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="200,551,307,576"/>
+<area shape="rect" id="node24" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="Generates random rotational moves upon groups of atoms." alt="" coords="190,600,317,625"/>
+<area shape="rect" id="node30" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="Generates random translations moves upon groups of atoms." alt="" coords="182,723,325,748"/>
+<area shape="rect" id="node3" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination number between atoms. " alt="" coords="720,253,959,279"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="451,104,595,129"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="189,301,317,327"/>
+<area shape="rect" id="node6" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="467,153,578,179"/>
+<area shape="rect" id="node8" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="447,203,598,228"/>
+<area shape="rect" id="node15" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="441,252,605,277"/>
+<area shape="rect" id="node16" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="416,301,629,327"/>
+<area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="416,351,629,376"/>
+<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="198,252,309,277"/>
+<area shape="rect" id="node9" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="19,301,101,327"/>
+<area shape="rect" id="node14" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="175,352,332,377"/>
+<area shape="rect" id="node10" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="181,5,326,31"/>
+<area shape="rect" id="node12" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="441,5,604,31"/>
+<area shape="rect" id="node11" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="7,31,113,56"/>
+<area shape="rect" id="node22" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="194,55,313,80"/>
+<area shape="rect" id="node20" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total pair distribution function (pdf) of the system noted as G(r). " alt="" coords="438,452,607,477"/>
+<area shape="rect" id="node19" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="756,452,923,477"/>
+<area shape="rect" id="node26" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Generates rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="414,501,631,527"/>
+<area shape="rect" id="node32" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="407,551,638,576"/>
+<area shape="rect" id="node28" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="436,55,609,80"/>
+<area shape="rect" id="node23" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Generates random rotational moves upon groups of atoms about a pre&#45;defined axis." alt="" coords="429,600,616,625"/>
+<area shape="rect" id="node25" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Generates random rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="399,649,646,675"/>
+<area shape="rect" id="node27" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="763,55,916,80"/>
+<area shape="rect" id="node29" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="422,699,623,724"/>
+<area shape="rect" id="node33" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="Generates random translation moves upon groups of atoms towards a pre&#45;defined axis" alt="" coords="731,699,947,724"/>
+<area shape="rect" id="node31" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="392,748,653,773"/>
+<area shape="rect" id="node34" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="409,797,637,823"/>
+<area shape="rect" id="node35" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms towards one of its symmetry" alt="" coords="701,748,977,773"/>
 </map>
 </p>
 </div>
@@ -401,6 +404,7 @@ Engine runtime.</p>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.improper_angles">improper_angles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
 </ul>
 </li>
@@ -422,6 +426,7 @@ Engine runtime.</p>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.CoordinationNumberConstraints">CoordinationNumberConstraints</a></li>
 </ul>
 </li>
 </ul>
@@ -508,7 +513,7 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.</li>
+<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.</li>
 <li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;. Keep True unless you know what you are doing.</li>
 </ol>
 </td>
@@ -581,10 +586,10 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <tt class="descname">compute_chi_square</tt><big>(</big><em>constraints</em>, <em>current=True</em><big>)</big></dt>
 <dd><p>Computes the total chiSquare of the given the squared deviations of the constraints.</p>
 <div class="math">
-<p><img src="_images/math/2a4c720fe54e9ef67daae8c2c01e07c508ff7807.png" alt="\chi^{2} = \sum \limits_{i}^{N} (\frac{SD_{i}}{variance_{i}})^{2}"/></p>
-</div><p>Where:</p>
-<p><img class="math" src="_images/math/878975294f4a8f0c1e504b25f2996e9ba5ffb05b.png" alt="variance_{i}"/> is the variance value of the constraint i.</p>
-<p><img class="math" src="_images/math/031c96c4f57ed29b4c05ca03018cf67b1aaec8b6.png" alt="SD_{i}"/> the squared deviations of the constraint i defined as <img class="math" src="_images/math/eca8c5654368f342d29bfdc04ce0e81cd375edb4.png" alt="\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}"/></p>
+\[\chi^{2} = \sum \limits_{i}^{N} (\frac{SD_{i}}{variance_{i}})^{2}\]</div>
+<p>Where:</p>
+<p><span class="math">\(variance_{i}\)</span> is the variance value of the constraint i.</p>
+<p><span class="math">\(SD_{i}\)</span> the squared deviations of the constraint i defined as <span class="math">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -970,14 +975,23 @@ If None, RandomSelector is set automatically.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
-If None, single atom groups of all atoms will be all automatically created.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">groups (None, list): list of groups, where every group must be a Group instance or 
+a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.</p>
+<p>If None, single atom groups of all atoms will be all automatically created 
+which is the same as using set_groups_as_atoms method.</p>
+</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_groups_as_atoms</tt><big>(</big><big>)</big></dt>
+<dd><p>Automatically set engine groups as single atom groups of all atoms.</p>
 </dd></dl>
 
 <dl class="method">

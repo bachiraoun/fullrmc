@@ -23,6 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="index.html" />
     <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
     <link rel="prev" title="fullrmc package" href="index.html" /> 
@@ -62,6 +63,7 @@
 <li><a class="reference internal" href="#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.improper_angles">improper_angles</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
 </ul>
 </li>
@@ -823,12 +825,12 @@ If None, unbias gaussian is used as defined.</li>
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">gaussian</tt><big>(</big><em>x</em>, <em>center=0</em>, <em>FWHM=1</em>, <em>normalize=True</em>, <em>check=True</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the normal distribution or gaussian distribution of a given vector.
 The probability density of the gaussian distribution is:
-<img class="math" src="_images/math/8febe69f96bac3609503d812f3d8b359f53eb71e.png" alt="f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}"/></p>
+<span class="math">\(f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}\)</span></p>
 <p>Where:</p>
 <ul class="simple">
-<li><img class="math" src="_images/math/126e84ba38f7dece5f0ad64e929b9588b20f6440.png" alt="\mu"/> is the center of the gaussian, it is the mean or expectation of the distribution it is called the distribution&#8217;s median or mode.</li>
-<li><img class="math" src="_images/math/2298cf1485084afe72757a9c8483af49a138d81f.png" alt="\sigma"/> is its standard deviation.</li>
-<li><img class="math" src="_images/math/87f580a119f6b0c01d8937907f31580e584c2b8b.png" alt="FWHM=2\sqrt{2 ln 2} \sigma"/> is the Full Width at Half Maximum of the gaussian.</li>
+<li><span class="math">\(\mu\)</span> is the center of the gaussian, it is the mean or expectation of the distribution it is called the distribution&#8217;s median or mode.</li>
+<li><span class="math">\(\sigma\)</span> is its standard deviation.</li>
+<li><span class="math">\(FWHM=2\sqrt{2 ln 2} \sigma\)</span> is the Full Width at Half Maximum of the gaussian.</li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -838,7 +840,7 @@ The probability density of the gaussian distribution is:
 <li>x (numpy.ndarray): The vector to compute the gaussian</li>
 <li>center (number): The center of the gaussian.</li>
 <li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
-<li>normalize(boolean): Whether to normalize the generated gaussian by <img class="math" src="_images/math/1ee6a2a92bee1e2478cf5949b6ceb908877c9898.png" alt="\frac{1}{\sigma\sqrt{2\pi}}"/> so the integral is equal to 1.</li>
+<li>normalize(boolean): Whether to normalize the generated gaussian by <span class="math">\(\frac{1}{\sigma\sqrt{2\pi}}\)</span> so the integral is equal to 1.</li>
 <li>check (boolean): whether to check arguments before generating vectors.</li>
 </ol>
 </td>
@@ -1195,12 +1197,13 @@ The array itself will be rotated and not a copy of it.</p>
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
 <p class="graphviz">
-<img src="_images/inheritance-202301974643f3ec85fdc1e4f1d004e4e41c3615.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-a883325709a17cc4c15a3d81d7f0fb414785abb0.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
-<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,53,87,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="159,53,272,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,101,281,125"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,87,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="158,55,269,80"/>
+<area shape="rect" id="node5" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="149,104,277,129"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="340,55,484,80"/>
 </map>
 </p>
 <dl class="class">
@@ -1639,6 +1642,91 @@ This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">QuasiRigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em>, <em>thresholdRatio</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a></p>
+<p>A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
+ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum squared 
+deviations. The ratio is computed as between current squared deviations and maximum squared deviations.</p>
+<blockquote>
+<div><div class="math">
+\[ratio = 1-\frac{current squared deviations}{maximum squared deviations} \]</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases
+only before threshold ratio is reached. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
+It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
+behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
+constraint becomes always free and useless.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.currentRatio">
+<tt class="descname">currentRatio</tt><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.currentRatio" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.set_threshold_ratio">
+<tt class="descname">set_threshold_ratio</tt><big>(</big><em>thresholdRatio</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.set_threshold_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the rejection probability function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
+It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
+behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
+constraint becomes always free and useless.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected">
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to reject step, False to accept</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.thresholdRatio">
+<tt class="descname">thresholdRatio</tt><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.thresholdRatio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get threshold ratio.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="fullrmc.Core.Constraint.RigidConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">RigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
@@ -1651,7 +1739,7 @@ If squaredDeviations of an RigidConstraint increases the step will be rejected e
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases. 
 It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
 and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
 </ol>
@@ -1659,16 +1747,16 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="attribute">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.rejectProbability">
-<tt class="descname">rejectProbability</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.rejectProbability" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets rejecting probability function.</p>
+<tt class="descname">rejectProbability</tt><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.rejectProbability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get rejection probability.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.set_reject_probability">
 <tt class="descname">set_reject_probability</tt><big>(</big><em>rejectProbability</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.set_reject_probability" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the rejection probability function.</p>
+<dd><p>Set the rejection probability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1687,7 +1775,7 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.should_step_get_accepted">
 <tt class="descname">should_step_get_accepted</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1709,7 +1797,7 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.should_step_get_rejected">
 <tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1767,7 +1855,7 @@ on groups rather than on single atoms.</p>
 <p class="graphviz">
 <img src="_images/inheritance-575c43abf63e79e5112257a032eaf771078e6993.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
-<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,77,29"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,77,31"/>
 </map>
 </p>
 <dl class="class">
@@ -1871,8 +1959,8 @@ when and how frequently a group can be chosen to perform a move upon.</p>
 <p class="graphviz">
 <img src="_images/inheritance-2133c171161dda39229aa7da15da87aecb134667.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance"/>
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
-<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,113,29"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="161,5,327,29"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,111,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="159,5,320,31"/>
 </map>
 </p>
 <dl class="class">
@@ -2347,12 +2435,12 @@ A MoveGenerator sub-class is used at the Engine runtime to generate moves upon s
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
 <p class="graphviz">
-<img src="_images/inheritance-059b136c7a1a422c1ff03703229829aa2f2e75a2.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-14f8ada44b236c5b5446f78132621f0b2eff6a88.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,53,119,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="178,5,345,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="167,53,356,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="207,101,316,125"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,55,115,80"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="170,5,330,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="MoveGeneratorCombinator combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="163,55,337,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="197,104,303,129"/>
 </map>
 </p>
 <dl class="class">
@@ -2645,10 +2733,10 @@ If randomize is False, weights list is ignored upon generator selection from col
 </dd></dl>
 
 <dl class="class">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination">
-<em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">MoveGeneratorCombination</tt><big>(</big><em>group=None</em>, <em>combination=None</em>, <em>shuffle=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">MoveGeneratorCombinator</tt><big>(</big><em>group=None</em>, <em>combination=None</em>, <em>shuffle=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
-<p>MoveGeneratorCombination combines all moves of a list of MoveGenerators and applies it at once.</p>
+<p>MoveGeneratorCombinator combines all moves of a list of MoveGenerators and applies it at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2663,8 +2751,8 @@ If randomize is False, weights list is ignored upon generator selection from col
 </tbody>
 </table>
 <dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.check_group">
-<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.check_group" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the generator&#8217;s group.
 This methods always returns True because normally all combination MoveGenerator instances groups are checked.
 This method must NOT be overloaded unless needed.</p>
@@ -2682,14 +2770,14 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.combination">
-<tt class="descname">combination</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.combination" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.combination">
+<tt class="descname">combination</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.combination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the combination list of MoveGenerator instances.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.move">
-<tt class="descname">move</tt><big>(</big><em>coordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.move" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.move">
+<tt class="descname">move</tt><big>(</big><em>coordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Moves coordinates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2710,8 +2798,8 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_combination">
-<tt class="descname">set_combination</tt><big>(</big><em>combination</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_combination" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_combination">
+<tt class="descname">set_combination</tt><big>(</big><em>combination</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_combination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the generators combination list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2727,8 +2815,8 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_group">
-<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_group" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_group">
+<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the MoveGenerator group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2744,8 +2832,8 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_shuffle">
-<tt class="descname">set_shuffle</tt><big>(</big><em>shuffle</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.set_shuffle" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_shuffle">
+<tt class="descname">set_shuffle</tt><big>(</big><em>shuffle</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.set_shuffle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets whether to shuffle moves generator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2761,8 +2849,8 @@ This method must NOT be overloaded unless needed.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombination.shuffle">
-<tt class="descname">shuffle</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombination.shuffle" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.shuffle">
+<tt class="descname">shuffle</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.shuffle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get shuffle flag.</p>
 </dd></dl>
 
@@ -3321,8 +3409,8 @@ single_pair_distribution_histograms method for every desired atom index.</p>
 <li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
-<li>minDistance (float32): The minimum distance to be conunted in the histogram.</li>
-<li>maxDistance (float32): The maximum distance to be conunted in the histogram.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
 <li>histSize(int32): The histograms size.</li>
 <li>bin (bool): The histogram bin size.</li>
 </ol>
@@ -3336,6 +3424,148 @@ single_pair_distribution_histograms method for every desired atom index.</p>
 </tr>
 </tbody>
 </table>
+</dd>
+</dl>
+</div>
+<div class="section" id="module-fullrmc.Core.atomic_coordination_number">
+<span id="atomic-coordination-number"></span><h2>atomic_coordination_number<a class="headerlink" href="#module-fullrmc.Core.atomic_coordination_number" title="Permalink to this headline">¶</a></h2>
+<p>This is a C++ compiled Cython generated module to calculate atomic coordination number constraints. 
+It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_shell_coordination_number</strong>: It computes the neighbours indexes around a certain atom </dt>
+<dd><dl class="first last docutils">
+<dt>within a lower and upper shell limits.   </dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>indexes (int32 array): The indexes of atoms to find neighbours from.</li>
+<li>lowerLimit (float32 array): The coordination number shell lower limit or minimum distance.</li>
+<li>upperLimit (float32 array): The coordination number shell upper limit or maximum distance.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>neighbours (python List): List of neighbours indexes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>single_atomic_coordination_number</strong>: It computes the coordination number around a certain atom</dt>
+<dd><dl class="first last docutils">
+<dt>in all defined shells.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>multiple_atomic_coordination_number</strong>: It computes the coordination number of multiple atoms.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (int32): The list of atoms to compute their coordination number.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_atomic_coordination_number</strong>: It computes the coordination number of all system&#8217;s atoms.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>atom_coordination_number_data</strong>: It cocd mputes all coordination number informations and atoms</dt>
+<dd><dl class="first last docutils">
+<dt>involved in a given atom coordination number calculation.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atoms (python List): The List of atoms involved in a way or another with the coordination number of atomIndex.</li>
+<li>shells (python List): The List of shells indexes corresponding to the list of atoms.</li>
+<li>neighbours (python List): The List of atoms found neighbouring atoms in corresponding shells.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </dd>
 </dl>
 </div>

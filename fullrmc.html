@@ -23,6 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="fullrmc, the Reverse Monte Carlo (RMC) package" href="index.html" /> 
   </head>
   <body>
@@ -85,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Constraints.html#module-fullrmc.Constraints.CoordinationNumberConstraints">CoordinationNumberConstraints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fullrmc.Core.html">fullrmc.Core package</a><ul>
@@ -99,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.improper_angles">improper_angles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
 </ul>
 </li>
@@ -200,7 +203,7 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.</li>
+<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.</li>
 <li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;. Keep True unless you know what you are doing.</li>
 </ol>
 </td>
@@ -273,10 +276,10 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <tt class="descname">compute_chi_square</tt><big>(</big><em>constraints</em>, <em>current=True</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.compute_chi_square" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the total chiSquare of the given the squared deviations of the constraints.</p>
 <div class="math">
-<p><img src="_images/math/2a4c720fe54e9ef67daae8c2c01e07c508ff7807.png" alt="\chi^{2} = \sum \limits_{i}^{N} (\frac{SD_{i}}{variance_{i}})^{2}"/></p>
-</div><p>Where:</p>
-<p><img class="math" src="_images/math/878975294f4a8f0c1e504b25f2996e9ba5ffb05b.png" alt="variance_{i}"/> is the variance value of the constraint i.</p>
-<p><img class="math" src="_images/math/031c96c4f57ed29b4c05ca03018cf67b1aaec8b6.png" alt="SD_{i}"/> the squared deviations of the constraint i defined as <img class="math" src="_images/math/eca8c5654368f342d29bfdc04ce0e81cd375edb4.png" alt="\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}"/></p>
+\[\chi^{2} = \sum \limits_{i}^{N} (\frac{SD_{i}}{variance_{i}})^{2}\]</div>
+<p>Where:</p>
+<p><span class="math">\(variance_{i}\)</span> is the variance value of the constraint i.</p>
+<p><span class="math">\(SD_{i}\)</span> the squared deviations of the constraint i defined as <span class="math">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -662,14 +665,23 @@ If None, RandomSelector is set automatically.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
-If None, single atom groups of all atoms will be all automatically created.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">groups (None, list): list of groups, where every group must be a Group instance or 
+a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.</p>
+<p>If None, single atom groups of all atoms will be all automatically created 
+which is the same as using set_groups_as_atoms method.</p>
+</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Engine.Engine.set_groups_as_atoms">
+<tt class="descname">set_groups_as_atoms</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.set_groups_as_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically set engine groups as single atom groups of all atoms.</p>
 </dd></dl>
 
 <dl class="method">

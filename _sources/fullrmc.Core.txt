@@ -90,6 +90,14 @@ pair_distribution_histogram
     :undoc-members:
     :show-inheritance:
 
+atomic_coordination_number
+--------------------------
+
+.. automodule:: fullrmc.Core.atomic_coordination_number
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 transform_coordinates
 ---------------------
 

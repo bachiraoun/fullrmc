@@ -19,7 +19,7 @@ among other functionalities:
 * Elements transmutation and atoms switching.
 
 ## News
-* explore flag added to selectors.
+* Coordination number constraint added.
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation

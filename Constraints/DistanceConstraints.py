@@ -15,11 +15,11 @@ from timeit import default_timer as timer
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.distances import multiple_distances, full_distances
 
 
-class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the inter-molecular distances between atoms.
     
@@ -40,7 +40,7 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
     """
     def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=1):
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
         self.set_default_distance(defaultDistance)
         # set pairsDistance
@@ -364,14 +364,14 @@ class InterMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.set_after_move_squared_deviations( None )
 
 
-class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the intra-molecular distances between atoms.
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. defaultMinDistance (number): The minimum distance allowed set by default for all atoms type.
-        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits
+        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
         #. pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
            A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
            First defined elements pair distance will cancel all redundant. 
@@ -398,7 +398,7 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         self.__squaredDeviationsModes = {"distance":"__distance_squared_deviations__",
                                          "number"  :"__number_squared_deviations__"}
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
         self.set_default_minimum_distance(defaultMinDistance)
         # set pairs type definition and pairsLimitsDefinition
@@ -684,7 +684,6 @@ class IntraMolecularDistanceConstraint(EnhanceOnlyConstraint, SingularConstraint
         :math:`d_{ij}` is the distance between atom i and atom j. \n
         :math:`\\delta` is the Dirac delta function. \n
         :math:`\\int_{0}^{d_{ij}}\\delta(x-D_{ij})dx` is equal to 0 if :math:`d_{ij}<D_{ij}` and 1 when :math:`d_{ij} \\geqslant D_{ij}`.
- 
  
         :Parameters:
             #. data (numpy.array): The constraint value data to compute squaredDeviations.

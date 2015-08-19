@@ -1,4 +1,27 @@
 """ 
+Inheritance diagram
+===================  
+.. inheritance-diagram:: fullrmc.Engine.Engine
+
+.. inheritance-diagram:: fullrmc.Core.Group.Group
+    
+.. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
+                         fullrmc.Selectors.OrderedSelectors
+                         fullrmc.Generators.Translations 
+                         fullrmc.Generators.Rotations 
+                         fullrmc.Generators.Agitations
+                         fullrmc.Constraints.CoordinationNumberConstraints
+                         fullrmc.Constraints.DistanceConstraints
+                         fullrmc.Constraints.BondConstraints
+                         fullrmc.Constraints.AngleConstraints
+                         fullrmc.Constraints.ImproperAngleConstraints
+                         fullrmc.Constraints.PairDistributionConstraints
+                         fullrmc.Constraints.PairCorrelationConstraints
+    :parts: 1
+    
+
+Welcoming videos
+================    
 +---------------------------------------------------------+------------------------------+
 |.. raw:: html                                            | Molecular system full RMC    |  
 |                                                         | simulation. Groups are set to|
@@ -17,6 +40,8 @@
 |                                                         | barriers.                    |
 +---------------------------------------------------------+------------------------------+
 
+Brief Description
+=================
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
 model is adjusted until its atoms position have the greatest consistency with a set of experimental data.\n

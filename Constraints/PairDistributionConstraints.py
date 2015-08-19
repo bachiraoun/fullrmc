@@ -38,7 +38,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
     Where:\n
     :math:`Q` is the momentum transfer. \n
     :math:`r` is the distance between two atoms. \n
-    :math:`\\rho(r)` is the sperical average defined as :math:`\\int n(r^{'}).n(r-r^{'}) dr`. \n
+    :math:`\\rho(r)` is the spherical average defined as :math:`\\int n(r^{'}).n(r-r^{'}) dr`. \n
     :math:`\\rho_{0}` is the  average number density of the samples. \n
     :math:`R(r)` is the radial distribution function (rdf). \n
     :math:`N` is the total number of atoms. \n

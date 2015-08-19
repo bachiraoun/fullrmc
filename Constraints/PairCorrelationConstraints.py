@@ -198,6 +198,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         # change temporarily data
         self.set_data( {"intra":dataIntra, "inter":dataInter} )
         totalPCF = self.get_constraint_value()["pcf_total"]
+        # set after move squared deviations
         self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPCF) )
         # change back data
         self.set_data( data )

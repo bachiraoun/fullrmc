@@ -15,10 +15,10 @@ from timeit import default_timer as timer
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.improper_angles import full_improper_angles
 
-class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
     The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.
@@ -41,7 +41,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
     
     def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_angles(anglesMap)
         
@@ -81,7 +81,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     def should_step_get_rejected(self, squaredDeviations):
         """
-        Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
+        Overloads 'RigidConstraint' should_step_get_rejected method.
         It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         

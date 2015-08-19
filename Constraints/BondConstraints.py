@@ -15,10 +15,10 @@ from timeit import default_timer as timer
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.bonds import full_bonds
 
-class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class BondConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the bond between 2 defined atoms.
     
@@ -37,7 +37,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
     
     def __init__(self, engine, bondsMap=None, rejectProbability=1):
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_bonds(bondsMap)
         
@@ -72,7 +72,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         
     def should_step_get_rejected(self, squaredDeviations):
         """
-        Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
+        Overloads 'RigidConstraint' should_step_get_rejected method.
         It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         

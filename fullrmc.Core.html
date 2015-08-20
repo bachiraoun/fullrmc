@@ -2435,12 +2435,13 @@ A MoveGenerator sub-class is used at the Engine runtime to generate moves upon s
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
 <p class="graphviz">
-<img src="_images/inheritance-14f8ada44b236c5b5446f78132621f0b2eff6a88.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-1e3157cc92881829fd1da8fa5c5292a9120d48f3.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,55,115,80"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,80,115,105"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="170,5,330,31"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="MoveGeneratorCombinator combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="163,55,337,80"/>
 <area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="197,104,303,129"/>
+<area shape="rect" id="node5" href="#fullrmc.Core.MoveGenerator.SwapGenerator" title="It is a particular move generator that instead of generating a " alt="" coords="195,153,305,179"/>
 </map>
 </p>
 <dl class="class">
@@ -2990,6 +2991,180 @@ This method can be overloaded in all MoveGenerator sub-classes.</p>
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.step">
 <tt class="descname">step</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current step number.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator">
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.MoveGenerator.</tt><tt class="descname">SwapGenerator</tt><big>(</big><em>group=None</em>, <em>swapLength=1</em>, <em>swapList=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
+<p>It is a particular move generator that instead of generating a 
+move upon a group of atoms, it will exchange the group atom positions
+with other atoms from swapList. 
+Because the swapList can be big, swapGenerator can be assigned to
+multiple groups at the same time under the condition of all groups
+having the same length.</p>
+<p>During engine runtime, whenever a swap generator is encountered,
+all sophisticated selection recurrence modes such as (refining, exploring) 
+will be reduced to simple recurrence.</p>
+<p>This class can&#8217;t be instantiated but its sub-classes might be.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">group (None, Group): The group instance.</p>
+</li>
+<li><p class="first">swapLength (Integer): The swap length that defines the length of the group 
+and the length of the every swap sub-list in swapList.</p>
+</li>
+<li><p class="first">swapList (None, List): The list of atoms.</p>
+<p>If None is given, no swapping or exchanging will be performed.</p>
+<p>If List is given, it must contain lists of atoms where every 
+sub-list must have the same number of atoms as the group.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.append_to_swap_list">
+<tt class="descname">append_to_swap_list</tt><big>(</big><em>subList</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.append_to_swap_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>append a sub list to swap list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>subList (List): The sub-list of atom indexes to append to swapList.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.get_ready_for_move">
+<tt class="descname">get_ready_for_move</tt><big>(</big><em>groupAtomsIndexes</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.get_ready_for_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the swap generator ready to perform a move. Unlike a normal move generator,
+swap generators will affect not only the selected atoms but other atoms as well.
+Therefore at engine runtime, selected atoms will be extended to all affected 
+atoms by the swap.</p>
+<p>This method is called automatically upon engine runtime
+to ensure that all affect atoms with the swap are updated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>groupAtomsIndexes (numpy.ndarray): The atoms indexes to swap.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): All the atoms involved in the swap move 
+including the given groupAtomsIndexes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.set_group">
+<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.set_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the MoveGenerator group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.set_swap_length">
+<tt class="descname">set_swap_length</tt><big>(</big><em>swapLength</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.set_swap_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set swap length. it will reset swaplist automatically.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>swapLength (Integer): The swap length that defines the length of the group 
+and the length of the every swap sub-list in swapList.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.set_swap_list">
+<tt class="descname">set_swap_list</tt><big>(</big><em>swapList</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.set_swap_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the swap-list to exchange atom positions from.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">swapList (None, List): The list of atoms.</p>
+<p>If None is given, no swapping or exchanging will be performed.</p>
+<p>If List is given, it must contain lists of atom indxes where every 
+sub-list length must be equal to swapLength.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.swapLength">
+<tt class="descname">swapLength</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.swapLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get swap length.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.swapList">
+<tt class="descname">swapList</tt><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.swapList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get swap list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.transform_coordinates">
+<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transform coordinates by swapping. This method is called in every move.
+This method MUST NOT be overloaded in ANY SwapGenerator sub-class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the swapping.</li>
+<li>argument (object): Any other argument needed to perform the move.
+In General it&#8217;s not needed.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the move.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

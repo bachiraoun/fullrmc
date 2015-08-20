@@ -109,6 +109,7 @@
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Rotations">Rotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Translations">Translations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Agitations">Agitations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Generators.html#module-fullrmc.Generators.Swaps">Swap</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fullrmc.Selectors.html">fullrmc.Selectors package</a><ul>
@@ -477,6 +478,12 @@ False it uses constraint&#8217;s afterMoveSquaredDeviations argument.</li>
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Engine.Engine.numberOfAtoms">
+<tt class="descname">numberOfAtoms</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of atoms in pdb.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Engine.Engine.numberOfAtomsPerElement">
 <tt class="descname">numberOfAtomsPerElement</tt><a class="headerlink" href="#fullrmc.Engine.Engine.numberOfAtomsPerElement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the number of atoms per element dictionary.</p>
@@ -801,7 +808,7 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 
 <dl class="method">
 <dt id="fullrmc.Engine.Engine.visualize">
-<tt class="descname">visualize</tt><big>(</big><em>boxWidth=2</em>, <em>boxColor='yellow'</em>, <em>representation='Lines'</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.visualize" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">visualize</tt><big>(</big><em>boxWidth=2</em>, <em>boxColor='yellow'</em>, <em>representation='Lines'</em>, <em>params=''</em><big>)</big><a class="headerlink" href="#fullrmc.Engine.Engine.visualize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Visualize the last configuration using pdbParser visualize method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -821,6 +828,11 @@ orange2, orange3.</p>
 <li><p class="first">representation(str): Choose representation method among the following:</p>
 <p>Lines, Bonds, DynamicBonds, HBonds, Points, 
 VDW, CPK, Licorice, Beads, Dotted, Solvent.</p>
+</li>
+<li><p class="first">params(str): Set the representation parameters:</p>
+<p>Points representation accept only size parameter e.g. 5</p>
+<p>CPK representation accept respectively 4 parameters as the following &#8216;Sphere Scale&#8217;,
+&#8216;Sphere Resolution&#8217;, &#8216;Bond Radius&#8217;, &#8216;Bond Resolution&#8217; e.g. 0.5 20 0.1 20</p>
 </li>
 </ol>
 </td>

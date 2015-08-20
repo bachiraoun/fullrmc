@@ -18,9 +18,16 @@ Translations
     :show-inheritance:
 
 Agitations
-------------
+-----------
 
 .. automodule:: fullrmc.Generators.Agitations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+Swap
+----
+.. automodule:: fullrmc.Generators.Swaps
     :members:
     :undoc-members:
     :show-inheritance:

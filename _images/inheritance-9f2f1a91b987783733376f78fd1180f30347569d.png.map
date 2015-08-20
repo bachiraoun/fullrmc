@@ -1,0 +1,5 @@
+<map id="inheritancef8ecb731d1" name="inheritancef8ecb731d1">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,5,115,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="It is a particular move generator that instead of generating a " alt="" coords="163,5,273,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="Generates swapping between atoms positions." alt="" coords="321,5,487,31"/>
+</map>

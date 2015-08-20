@@ -14,7 +14,6 @@ import sys
 import warnings
 import atexit
 import tempfile
-from collections import OrderedDict
 
 # external libraries imports
 import numpy as np
@@ -29,8 +28,9 @@ from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicB
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.transform_coordinates import transform_coordinates
 from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.Group import Group
+from fullrmc.Core.MoveGenerator import  SwapGenerator
 from fullrmc.Core.GroupSelector import GroupSelector
 from fullrmc.Selectors.RandomSelectors import RandomSelector
 
@@ -286,6 +286,11 @@ class Engine(object):
         return len(self.__names)
     
     @property
+    def numberOfAtoms(self):
+        """ Get the number of atoms in pdb."""
+        return len(self.__pdb)
+        
+    @property
     def numberOfAtomsPerName(self):
         """ Get the number of atoms per name dictionary. """
         return self.__numberOfAtomsPerName
@@ -441,7 +446,7 @@ class Engine(object):
         Add group to engine groups list.
         
         :Parameters:
-            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
+            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.
             #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
         """
         if isinstance(g, Group):
@@ -473,8 +478,10 @@ class Engine(object):
         Sets the engine groups of indexes.
         
         :Parameters:
-            #. groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
-               If None, single atom groups of all atoms will be all automatically created.
+            #. groups (None, list): list of groups, where every group must be a Group instance or 
+               a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.\n
+               If None, single atom groups of all atoms will be all automatically created 
+               which is the same as using set_groups_as_atoms method.
         """
         self.__groups = []
         if groups is None:
@@ -503,6 +510,10 @@ class Engine(object):
                 self.add_group(g, broadcast=False)
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
+        
+    def set_groups_as_atoms(self):
+        """ Automatically set engine groups as single atom groups of all atoms. """
+        self.set_groups(None)
         
     def set_groups_as_molecules(self):
         """ Automatically set engine groups indexes according to molecules indexes. """
@@ -565,7 +576,7 @@ class Engine(object):
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
         
-    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines"):
+    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines", params=""):
         """ Visualize the last configuration using pdbParser visualize method.
         
         :Parameters:
@@ -580,6 +591,10 @@ class Engine(object):
             #. representation(str): Choose representation method among the following:\n
                Lines, Bonds, DynamicBonds, HBonds, Points, 
                VDW, CPK, Licorice, Beads, Dotted, Solvent.
+            #. params(str): Set the representation parameters:\n
+               Points representation accept only size parameter e.g. 5\n
+               CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
+               'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. 0.5 20 0.1 20
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
@@ -616,7 +631,7 @@ class Engine(object):
                 LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
         # representation
         fd.write("mol delrep 0 top\n")
-        fd.write("mol representation %s\n"%representation)
+        fd.write("mol representation %s %s\n"%(representation, params) )
         fd.write("mol delrep 0 top\n")
         fd.write('mol addrep top\n')
         #fd.write("sel default style VDW\n")
@@ -895,7 +910,7 @@ class Engine(object):
         Computes and sets the total chiSquare of active constraints.
         """
         # get and initialize used constraints
-        _usedConstraints, _constraints, _enhanceOnlyConstraints = self.initialize_used_constraints()
+        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
         # compute chiSquare
         self.__chiSquare = self.compute_chi_square(_constraints, current=True)
         
@@ -906,22 +921,22 @@ class Engine(object):
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
         usedConstraints = []
         for c in self.__constraints:
             if c.used:
                 usedConstraints.append(c)
         # get EnhanceOnlyConstraints list
-        enhanceOnlyConstraints = []
+        rigidConstraints = []
         constraints = []
         for c in usedConstraints:
-            if isinstance(c, EnhanceOnlyConstraint):
-                enhanceOnlyConstraints.append(c)
+            if isinstance(c, RigidConstraint):
+                rigidConstraints.append(c)
             else:
                 constraints.append(c)
         # return constraints
-        return usedConstraints, constraints, enhanceOnlyConstraints
+        return usedConstraints, constraints, rigidConstraints
         
     def initialize_used_constraints(self, force=False):
         """
@@ -933,11 +948,11 @@ class Engine(object):
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
         assert isinstance(force, bool), LOGGER.error("force must be boolean")
         # get used constraints
-        usedConstraints, constraints, enhanceOnlyConstraints = self.get_used_constraints()
+        usedConstraints, constraints, rigidConstraints = self.get_used_constraints()
         # initialize out-of-dates constraints
         for c in usedConstraints:
             if c.state != self.__state or force:
@@ -947,7 +962,7 @@ class Engine(object):
                 if c.originalData is None:
                     c._set_original_data(c.data)
         # return constraints
-        return usedConstraints, constraints, enhanceOnlyConstraints
+        return usedConstraints, constraints, rigidConstraints
         
     def __runtime_get_number_of_steps(self, numberOfSteps):
         # check numberOfSteps
@@ -1009,7 +1024,7 @@ class Engine(object):
         if _xyzFrequency is not None:
             _xyzfd = open(_xyzPath, 'a')
         # get and initialize used constraints
-        _usedConstraints, _constraints, _enhanceOnlyConstraints = self.initialize_used_constraints()
+        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
         if not len(_usedConstraints):
             LOGGER.warn("No constraints are used. Configuration will be randomize")
         # compute chiSquare
@@ -1036,7 +1051,10 @@ class Engine(object):
             # get move generator
             groupMoveGenerator = group.moveGenerator
             # get group atoms coordinates before applying move 
-            if _coordsBeforeMove is None or not self.__groupSelector.isRecurring:
+            if isinstance(groupMoveGenerator, SwapGenerator):
+                groupAtomsIndexes = groupMoveGenerator.get_ready_for_move(groupAtomsIndexes)
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            elif _coordsBeforeMove is None or not self.__groupSelector.isRecurring:
                 _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
             elif self.__groupSelector.explore:
                 if _moveTried:
@@ -1048,23 +1066,23 @@ class Engine(object):
             # compute moved coordinates
             movedRealCoordinates = groupMoveGenerator.move(_coordsBeforeMove)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
-            ########################### compute enhanceOnlyConstraints ############################
+            ########################### compute rigidConstraints ############################
             rejectMove = False
-            for c in _enhanceOnlyConstraints:
+            for c in _rigidConstraints:
                 # compute before move
                 c.compute_before_move(indexes = groupAtomsIndexes)
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
                 # get rejectMove
                 rejectMove = c.should_step_get_rejected(c.afterMoveSquaredDeviations)
-                #print c.__class__.__name__, c.chiSquare, c.afterMoveSquaredDeviations, rejectMove
+                #print c.__class__.__name__, c.squaredDeviations, c.afterMoveSquaredDeviations, rejectMove
                 if rejectMove:
                     break
             _moveTried = not rejectMove
             ############################## reject move before trying ##############################
             if rejectMove:
-                # enhanceOnlyConstraints reject move
-                for c in _enhanceOnlyConstraints:
+                # rigidConstraints reject move
+                for c in _rigidConstraints:
                     c.reject_move(indexes=groupAtomsIndexes)
                 # log generated move rejected before getting tried
                 LOGGER.log("move not tried","Generated move %i is not tried"%self.__tried)

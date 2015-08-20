@@ -9,6 +9,7 @@ Inheritance diagram
                          fullrmc.Selectors.OrderedSelectors
                          fullrmc.Generators.Translations 
                          fullrmc.Generators.Rotations 
+                         fullrmc.Generators.Swaps
                          fullrmc.Generators.Agitations
                          fullrmc.Constraints.CoordinationNumberConstraints
                          fullrmc.Constraints.DistanceConstraints

@@ -16,10 +16,11 @@ among other functionalities:
 
 ## Next on the list
 * Generators machine learning algorithms.
-* Elements transmutation and atoms switching.
+* Elements transmutation.
 
 ## News
 * Coordination number constraint added.
+* Groups swap and atoms position exchange added to generators.
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation

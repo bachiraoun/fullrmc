@@ -130,6 +130,34 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## Methane (CH4) molecule sketch</span>
+<span class="c">## </span>
+<span class="c">##              H4</span>
+<span class="c">##              |</span>
+<span class="c">##              |</span>
+<span class="c">##           _- C -_</span>
+<span class="c">##        H1-  /    -_</span>
+<span class="c">##            /       H3</span>
+<span class="c">##           H2</span>
+
+<span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.AngleConstraints</span> <span class="kn">import</span> <span class="n">BondsAngleConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">BAC</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">BAC</span><span class="p">)</span>
+
+<span class="c"># define intra-molecular angles </span>
+<span class="n">BAC</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;CH4&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;H1&#39;</span><span class="p">,</span><span class="s">&#39;H2&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                            <span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;H2&#39;</span><span class="p">,</span><span class="s">&#39;H3&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                            <span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;H3&#39;</span><span class="p">,</span><span class="s">&#39;H4&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                            <span class="p">(</span><span class="s">&#39;C&#39;</span><span class="p">,</span><span class="s">&#39;H4&#39;</span><span class="p">,</span><span class="s">&#39;H1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">)</span> <span class="p">]}</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
@@ -434,6 +462,29 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## Water (H2O) molecule sketch</span>
+<span class="c">## </span>
+<span class="c">##              O</span>
+<span class="c">##            /   \      </span>
+<span class="c">##         /   H2O   \  </span>
+<span class="c">##       H1           H2 </span>
+
+<span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.BondConstraints</span> <span class="kn">import</span> <span class="n">BondConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">BC</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">BC</span><span class="p">)</span>
+
+<span class="c"># define intra-molecular bonds </span>
+<span class="n">BC</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;H2O&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;H1&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">),</span>
+                                                          <span class="p">(</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;H2&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">)</span> <span class="p">]}</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
@@ -1340,6 +1391,35 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">## Tetrahydrofuran (THF) molecule sketch</span>
+<span class="c">## </span>
+<span class="c">##              O</span>
+<span class="c">##   H41      /   \      H11</span>
+<span class="c">##      \  /         \  /</span>
+<span class="c">## H42-- C4    THF    C1 --H12</span>
+<span class="c">##        \  MOLECULE /</span>
+<span class="c">##         \         /</span>
+<span class="c">##   H31-- C3-------C2 --H21</span>
+<span class="c">##        /         \</span>
+<span class="c">##     H32            H22 </span>
+<span class="c">##</span>
+
+<span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.ImproperAngleConstraints</span> <span class="kn">import</span> <span class="n">ImproperAngleConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">IAC</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">IAC</span><span class="p">)</span>
+
+<span class="c"># define intra-molecular improper angles </span>
+<span class="n">IAC</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                                                            <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
@@ -1642,6 +1722,18 @@ and the second is the maximum distance or None.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairCorrelationConstraints</span> <span class="kn">import</span> <span class="n">PairCorrelationConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">PCC</span> <span class="o">=</span> <span class="n">PairCorrelationConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PCC</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data">
 <tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
@@ -1751,6 +1843,18 @@ and the second is the maximum distance or None.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">PDC</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PDC</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_move">
 <tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_move" title="Permalink to this definition">¶</a></dt>

@@ -99,7 +99,7 @@
 </map>
 </p>
 <p class="graphviz">
-<img src="_images/inheritance-47bced2488d0cb0d0c17f63da5b35037bf29817f.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Constraints.CoordinationNumberConstraints, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance8feaae1757" class="inheritance"/>
+<img src="_images/inheritance-7be4b0ae1dc4bb33b8f75e0dcaad97b4ce48397f.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Constraints.CoordinationNumberConstraints, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance8feaae1757" class="inheritance"/>
 <map id="inheritance8feaae1757" name="inheritance8feaae1757">
 <area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="172,427,335,452"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,575,115,600"/>
@@ -132,7 +132,7 @@
 <area shape="rect" id="node23" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Generates random rotational moves upon groups of atoms about a pre&#45;defined axis." alt="" coords="429,600,616,625"/>
 <area shape="rect" id="node25" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Generates random rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="399,649,646,675"/>
 <area shape="rect" id="node27" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="763,55,916,80"/>
-<area shape="rect" id="node30" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="Generates swapping between atoms positions." alt="" coords="440,699,605,724"/>
+<area shape="rect" id="node30" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="Generates swapping between atoms of the selected group and other atoms" alt="" coords="440,699,605,724"/>
 <area shape="rect" id="node31" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="422,748,623,773"/>
 <area shape="rect" id="node35" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="Generates random translation moves upon groups of atoms towards a pre&#45;defined axis" alt="" coords="731,748,947,773"/>
 <area shape="rect" id="node33" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="392,797,653,823"/>
@@ -145,8 +145,8 @@
 <h2>Welcoming videos<a class="headerlink" href="#welcoming-videos" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="66%" />
-<col width="34%" />
+<col width="57%" />
+<col width="43%" />
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td><div class="first last"><iframe width="580" height="315"
@@ -161,6 +161,17 @@ symmetry axes, rotations
 about symmetry axes, etc.</td>
 </tr>
 <tr class="row-even"><td><div class="first last"><iframe width="580" height="315"
+src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0"
+frameborder="0" allowfullscreen>
+</iframe></div></td>
+<td>Atomic binary Nickel-Titanium shape memory
+alloy system phase transformation RMC
+simulation. Random atomic translations are
+enough to reproduce short range ordering. But
+swapping atoms is necessary to fit long range
+atomic correlations.</td>
+</tr>
+<tr class="row-odd"><td><div class="first last"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/xnG0wnEfbJ8"
 frameborder="0" allowfullscreen>
 </iframe></div></td>
@@ -484,6 +495,24 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># save engine</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;system.rmc&quot;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+<span class="c"># Re-define moves generators if needed ...</span>
+
+<span class="c"># run engine for 10000 steps and save only at the end</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="s">&quot;system.rmc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt>
 <tt class="descname">accepted</tt></dt>

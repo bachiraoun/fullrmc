@@ -1877,6 +1877,22 @@ If None is given TranslationGenerator is considered by default.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+
+<span class="c"># re-define groups as atoms.</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">Group</span><span class="p">([</span><span class="n">idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups</span><span class="p">(</span> <span class="n">groups</span> <span class="p">)</span>
+
+<span class="c"># Re-define groups generators as needed ... By default TranslationGenerator is used.</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Core.Group.Group.indexes">
 <tt class="descname">indexes</tt><a class="headerlink" href="#fullrmc.Core.Group.Group.indexes" title="Permalink to this definition">¶</a></dt>
@@ -2204,7 +2220,24 @@ moves enhancing the structure are stored.
 <iframe width="560" height="315" 
 src="https://www.youtube.com/embed/xnG0wnEfbJ8?rel=0" 
 frameborder="0" allowfullscreen>
-</iframe>        <dl class="attribute">
+</iframe>        <div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c">##### Wrap engine group selector with a recursive group selector. #####</span>
+<span class="c"># create recursive group selector. Recurrence is set to 20 with explore flag set to True.</span>
+<span class="n">RGS</span> <span class="o">=</span> <span class="n">RecursiveGroupSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">groupSelector</span><span class="p">,</span> <span class="n">recur</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">refine</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">explore</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span><span class="n">RGS</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector.currentRecur">
 <tt class="descname">currentRecur</tt><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector.currentRecur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the current recur value which is selected group dependant when override flag is True.</p>
@@ -2591,6 +2624,34 @@ If randomize is False, weights list is ignored upon generator selection from col
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCollector</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+
+<span class="c">##### Define each group move generator as a combination of a translation and a rotation. #####</span>
+<span class="c"># create recursive group selector. Recurrence is set to 20 with explore flag set to True.</span>
+<span class="c"># randomize is set to True which means that at every selection a generator is randomly</span>
+<span class="c"># selected from the collector.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="c"># create translation generator</span>
+    <span class="n">TMG</span> <span class="o">=</span> <span class="n">TranslationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="c"># create rotation generator only when group length is bigger than 1.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">RMG</span> <span class="o">=</span> <span class="n">RotationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">MG</span>  <span class="o">=</span> <span class="n">MoveGeneratorCollector</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TMG</span><span class="p">,</span><span class="n">RMG</span><span class="p">],</span><span class="n">randomize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">MG</span>  <span class="o">=</span> <span class="n">MoveGeneratorCollector</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TMG</span><span class="p">],</span><span class="n">randomize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">MG</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group" title="Permalink to this definition">¶</a></dt>
@@ -2751,6 +2812,36 @@ If randomize is False, weights list is ignored upon generator selection from col
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCombinator</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+
+<span class="c">##### Define each group move generator as a combination of a translation and a rotation. #####</span>
+<span class="c"># create recursive group selector. Recurrence is set to 20 with explore flag set to True.</span>
+<span class="c"># shuffle is set to True which means that at every selection the order of move generation</span>
+<span class="c"># is random. At one step a translation is performed prior to rotation and in another step</span>
+<span class="c"># the rotation is performed at first.</span>
+<span class="c"># selected from the collector.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="c"># create translation generator</span>
+    <span class="n">TMG</span> <span class="o">=</span> <span class="n">TranslationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="c"># create rotation generator only when group length is bigger than 1.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">RMG</span> <span class="o">=</span> <span class="n">RotationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">MG</span>  <span class="o">=</span> <span class="n">MoveGeneratorCombinator</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TMG</span><span class="p">,</span><span class="n">RMG</span><span class="p">],</span><span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">MG</span>  <span class="o">=</span> <span class="n">MoveGeneratorCombinator</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TMG</span><span class="p">],</span><span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">MG</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group" title="Permalink to this definition">¶</a></dt>

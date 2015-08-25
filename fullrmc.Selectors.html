@@ -116,6 +116,31 @@ If None, order is set automatically to all groups indexes list.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import external libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DefinedOrderSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups generators as needed ...</span>
+
+<span class="c">##### set the order of selection from closest to the origin to the further. #####</span>
+<span class="c"># compute groups centers</span>
+<span class="n">centers</span>   <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">realCoordinates</span><span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">indexes</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">]</span>
+<span class="c"># compute distances to origin</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">add</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">centers</span><span class="p">]</span>
+<span class="c"># compute increasing order</span>
+<span class="n">order</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+<span class="c"># set group selector</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)</span> <span class="p">)</span>         
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index">
 <tt class="descname">index</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index" title="Permalink to this definition">¶</a></dt>
@@ -224,7 +249,25 @@ others according to damping parameter.</p>
 <iframe width="560" height="315" 
 src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0" 
 frameborder="0" allowfullscreen>
-</iframe><dl class="attribute">
+</iframe><div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups generators as needed ...</span>
+
+<span class="c"># Set the order of selection from further to the closest to a (1,1,1).</span>
+<span class="c"># Automatically adjust the groups move generators allowing modulation of amplitudes.</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> 
+                                                    <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
+                                                    <span class="n">adjustMoveGenerators</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="p">)</span>         
+</pre></div>
+</div>
+<dl class="attribute">
 <dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators">
 <tt class="descname">adjustMoveGenerators</tt><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators" title="Permalink to this definition">¶</a></dt>
 <dd><p>adjustMoveGenerators flag.</p>
@@ -392,6 +435,35 @@ amplitudes is set to 0.25A.</p>
 <em class="property">class </em><tt class="descclassname">fullrmc.Selectors.RandomSelectors.</tt><tt class="descname">RandomSelector</tt><big>(</big><em>engine=None</em><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></tt></a></p>
 <p>RandomSelector generates indexes randomly for engine group selection.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The selector fullrmc engine instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import external libraries</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">RandomSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups generators as needed ...</span>
+
+<span class="c"># set group selector as random selection from all defined groups.</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector.select_index">
 <tt class="descname">select_index</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
@@ -436,6 +508,22 @@ Un-biasing will be performed only if group weight remains positive.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">SmartRandomSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups generators as needed ...</span>
+
+<span class="c"># set group selector as random smart selection that will adjust its</span>
+<span class="c"># weighting scheme to improve the chances of moves getting accepted.        </span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor">
 <tt class="descname">biasFactor</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor" title="Permalink to this definition">¶</a></dt>
@@ -563,6 +651,24 @@ Unbiasing will be performed only if group weight remains positive.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">WeightedRandomSelector</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups generators as needed ...</span>
+
+<span class="c"># set group selector as random selection but with double likelihood to</span>
+<span class="c"># selecting the first and the last group.</span>
+<span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
+<span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> 
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">)</span>  
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight">
 <tt class="descname">groupsWeight</tt><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight" title="Permalink to this definition">¶</a></dt>

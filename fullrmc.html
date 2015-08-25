@@ -172,6 +172,24 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># save engine</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;system.rmc&quot;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+<span class="c"># Re-define moves generators if needed ...</span>
+
+<span class="c"># run engine for 10000 steps and save only at the end</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="s">&quot;system.rmc&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Engine.Engine.accepted">
 <tt class="descname">accepted</tt><a class="headerlink" href="#fullrmc.Engine.Engine.accepted" title="Permalink to this definition">¶</a></dt>

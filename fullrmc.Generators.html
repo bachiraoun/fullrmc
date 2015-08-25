@@ -153,7 +153,8 @@ frameborder="0" allowfullscreen>
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">OrientationGenerator</tt><big>(</big><em>group=None</em>, <em>maximumOffsetAngle=10</em>, <em>groupAxis={'symmetry': 0}</em>, <em>orientationAxis={'fixed': (1</em>, <em>0</em>, <em>0)}</em>, <em>flip=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.OrientationGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
 <p>Generates rotational moves upon groups of atoms to align and orient along an axis.
-Orientation rotations are computed randomly allowing offset angle between grouAxis and orientationAxis</p>
+Orientation rotations are computed randomly allowing offset angle between grouAxis and orientationAxis 
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -180,6 +181,26 @@ If None, no flipping is forced, flipping can be set randomly to True or False du
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">OrientationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to orientations of each group third symmetry axis </span>
+<span class="c"># towards the (-1,0,2) the predefined axis within maximum 5 degrees.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">OrientationGenerator</span><span class="p">(</span><span class="n">maximumOffsetAngle</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                                   <span class="n">groupAxis</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;symmetry&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">},</span>
+                                                   <span class="n">orientationAxis</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;fixed&quot;</span><span class="p">:(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">)})</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.OrientationGenerator.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.OrientationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
@@ -344,10 +365,45 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random rotations about (1,1,1) a pre-defined axis.</span>
+<span class="c"># Maximum rotation amplitude is set to 5 degrees to all defined groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationAboutAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get rotation axis.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.check_group">
+<tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -396,7 +452,8 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationAboutSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em>, <em>axis=0</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></tt></a></p>
-<p>Generates random rotational moves upon groups of atoms about one of their symmetry axis.</p>
+<p>Generates random rotational moves upon groups of atoms about one of their symmetry axis.
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -411,6 +468,24 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutSymmetryAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random rotations about the second symmetry axis of each group.</span>
+<span class="c"># Maximum rotation amplitude is set to 5 degrees to all defined groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationAboutSymmetryAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
@@ -463,7 +538,8 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationAboutSymmetryAxisPath</tt><big>(</big><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></tt></a></p>
-<p>Generates rotational moves upon groups of atoms about one of their symmetry axis.</p>
+<p>Generates rotational moves upon groups of atoms about one of their symmetry axis.
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -478,6 +554,24 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutSymmetryAxisPath</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to pre-defined rotations about the second symmetry axis of each group.</span>
+<span class="n">angles</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationAboutSymmetryAxisPath</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">angles</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.axis" title="Permalink to this definition">¶</a></dt>
@@ -586,7 +680,8 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <dt id="fullrmc.Generators.Rotations.RotationGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Rotations.</tt><tt class="descname">RotationGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=2</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></tt></a></p>
-<p>Generates random rotational moves upon groups of atoms.</p>
+<p>Generates random rotational moves upon groups of atoms.
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -600,6 +695,24 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random rotations.</span>
+<span class="c"># Maximum rotation amplitude is set to 5 degrees to all defined groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Rotations.RotationGenerator.amplitude">
 <tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
@@ -777,6 +890,23 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations along pre-defined axis (1,1,1).</span>
+<span class="c"># Maximum translation amplitude is set to 0.3A to all defined groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationAlongAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
@@ -855,7 +985,8 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em>, <em>direction=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></tt></a></p>
-<p>Generates random translation moves upon groups of atoms along one of their symmetry axis.</p>
+<p>Generates random translation moves upon groups of atoms along one of their symmetry axis.
+Only groups containing more than 1 atoms allow computing symmetry axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -875,6 +1006,24 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongSymmetryAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations along the second symmetry axis of every group.</span>
+<span class="c"># Maximum translation amplitude is set to 0.3A to all defined groups.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationAlongSymmetryAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.axis" title="Permalink to this definition">¶</a></dt>
@@ -970,7 +1119,8 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath">
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationAlongSymmetryAxisPath</tt><big>(</big><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></tt></a></p>
-<p>Generates translation moves upon groups of atoms along one of their symmetry axis.</p>
+<p>Generates translation moves upon groups of atoms along one of their symmetry axis.
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -985,6 +1135,24 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongSymmetryAxisPath</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations of predefined amplitudes along the first symmetry axis of every group.</span>
+<span class="n">amps</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.075</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationAlongSymmetryAxisPath</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">amps</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.axis">
 <tt class="descname">axis</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.axis" title="Permalink to this definition">¶</a></dt>
@@ -1108,6 +1276,23 @@ If tuple is given, it is the limits of translation boundaries as [min,max] where
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random translations.</span>
+<span class="c"># Maximum translation amplitude is set to 0.3A to all defined groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator.amplitude">
 <tt class="descname">amplitude</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.amplitude" title="Permalink to this definition">¶</a></dt>
@@ -1201,6 +1386,23 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations towards a pre-defined axis (1,1,1) within 10 degrees.</span>
+<span class="c"># Maximum translation amplitude is set to 0.3A to all defined groups </span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationTowardsAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">angle</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.angle">
 <tt class="descname">angle</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator.angle" title="Permalink to this definition">¶</a></dt>
@@ -1277,6 +1479,23 @@ If False all generated vectors point away from the center.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsCenterGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations towards the origin defined as (0,0,0) within 20 degrees.</span>
+<span class="c"># Maximum translation amplitude is set to 0.2A to all defined groups.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationTowardsCenterGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;fixed&quot;</span><span class="p">:(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)},</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator.angle">
 <tt class="descname">angle</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator.angle" title="Permalink to this definition">¶</a></dt>
@@ -1382,7 +1601,8 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <em class="property">class </em><tt class="descclassname">fullrmc.Generators.Translations.</tt><tt class="descname">TranslationTowardsSymmetryAxisGenerator</tt><big>(</big><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em>, <em>angle=30</em>, <em>direction=True</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator</span></tt></a></p>
 <p>Generates random translation moves upon groups of atoms towards one of its symmetry
-axis within a tolerance angle between translation vectors and the axis.</p>
+axis within a tolerance angle between translation vectors and the axis.
+Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1403,6 +1623,24 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsSymmetryAxisGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to translations towards the first symmetry axis of every group within 15 degrees.</span>
+<span class="c"># Maximum translation amplitude is set to 0.3A to all defined groups.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">TranslationTowardsSymmetryAxisGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.angle">
 <tt class="descname">angle</tt><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator.angle" title="Permalink to this definition">¶</a></dt>
@@ -1515,7 +1753,8 @@ frameborder="0" allowfullscreen>
 where (central, left, right) are three atoms. Move will be performed on left and/or right atom while 
 central atom will always remain fixed. Distances between left/right and central atoms will remain
 unchanged. This is mainly used to shake bonded atoms angles by increasing and decreasing 
-the bond length.</p>
+the bond length.
+Only groups of length 3 are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1537,6 +1776,24 @@ This is useful to set an atom fixed while only the other succumb the agitation t
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Agitations</span> <span class="kn">import</span> <span class="n">AngleAgitationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random agitations of the angle formed between</span>
+<span class="c"># one central atom and other two. Maximum agitation amplitude is set to to 10.</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">AngleAgitationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.agitate">
 <tt class="descname">agitate</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.agitate" title="Permalink to this definition">¶</a></dt>
@@ -1684,7 +1941,8 @@ If None, no orientation is forced, therefore distance can increase or decrease r
 <p>Generates random agitation moves upon a distance separating two atoms by translating
 both atoms away from each other or closer to each other along the direction line between them.
 This is mainly used to shake two atoms bond distance by increasing and decreasing 
-the bond length.</p>
+the bond length.
+Only groups of length 2 are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1706,6 +1964,24 @@ logical to adjust the bond length by moving only the hydrogen atom along the bon
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Agitations</span> <span class="kn">import</span> <span class="n">DistanceAgitationGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c"># set moves generators to random agitations of distance seperating two atoms.</span>
+<span class="c"># Maximum agitation amplitude is set to to 0.5A</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">DistanceAgitationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.agitate">
 <tt class="descname">agitate</tt><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.agitate" title="Permalink to this definition">¶</a></dt>
@@ -1855,7 +2131,7 @@ If None, no orientation is forced, therefore distance can increase or decrease r
 </div>
 <div class="section" id="module-fullrmc.Generators.Swaps">
 <span id="swap"></span><h2>Swap<a class="headerlink" href="#module-fullrmc.Generators.Swaps" title="Permalink to this headline">¶</a></h2>
-<p>Translations contains all swap MoveGenerator classes.</p>
+<p>Swaps contains all swap or atoms position exchange MoveGenerator classes.</p>
 <p class="graphviz">
 <img src="_images/inheritance-cf89fa5257d5d849e1f225aac9d5af62e566c202.png" alt="Inheritance diagram of fullrmc.Generators.Swaps" usemap="#inheritancef8ecb731d1" class="inheritance"/>
 <map id="inheritancef8ecb731d1" name="inheritancef8ecb731d1">
@@ -1890,6 +2166,43 @@ sub-list must have the same number of atoms as the group.</p>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Swaps</span> <span class="kn">import</span> <span class="n">SwapPositionsGenerator</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># Add constraints ...</span>
+<span class="c"># Re-define groups if needed ...</span>
+<span class="c"># Re-define groups selector if needed ...</span>
+
+<span class="c">##### set swap moves between Lithium and Manganese atoms in Li2MnO3 system #####</span>
+<span class="c"># reset engine groups to atoms to insure atomic grouping of all the system&#39;s atoms</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
+<span class="c"># get all elements list </span>
+<span class="n">elements</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">allElements</span>
+<span class="c"># create list of lithium atoms indexes</span>
+<span class="n">liIndexes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">))</span> <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;li&#39;</span><span class="p">]</span>
+<span class="c"># create list of manganese atoms indexes</span>
+<span class="n">mnIndexes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">))</span> <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;mn&#39;</span><span class="p">]</span>
+<span class="c"># create swap generator to lithium atoms</span>
+<span class="n">swapWithLi</span> <span class="o">=</span> <span class="n">SwapPositionsGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">liIndexes</span><span class="p">)</span>
+<span class="c"># create swap generator to manganese atoms</span>
+<span class="n">swapWithMn</span> <span class="o">=</span> <span class="n">SwapPositionsGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">mnIndexes</span><span class="p">)</span>
+<span class="c"># set swap generator to groups</span>
+<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="c"># get group&#39;s atom index</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c"># set swap to manganese for lithium atoms</span>
+    <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;li&#39;</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">swapWithMn</span><span class="p">)</span>
+    <span class="c"># set swap to lithium for manganese atoms</span>
+    <span class="k">elif</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;mn&#39;</span><span class="p">:</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">swapWithLi</span><span class="p">)</span>
+    <span class="c"># the rest are oxygen atoms. Default RandomTranslation generator are kept.</span>
+</pre></div>
+</div>
 <dl class="method">
 <dt id="fullrmc.Generators.Swaps.SwapPositionsGenerator.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapPositionsGenerator.check_group" title="Permalink to this definition">¶</a></dt>

@@ -33,6 +33,31 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
            and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+    
+    .. code-block:: python
+    
+        ## Water (H2O) molecule sketch
+        ## 
+        ##              O
+        ##            /   \      
+        ##         /   H2O   \  
+        ##       H1           H2 
+ 
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.BondConstraints import BondConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        BC = BondConstraint(engine=None)
+        ENGINE.add_constraints(BC)
+        
+        # define intra-molecular bonds 
+        BC.create_angles_by_definition( bondsDefinition={"H2O": [ ('O','H1', 0.88, 1.02),
+                                                                  ('O','H2', 0.88, 1.02) ]} )
+    
     """
     
     def __init__(self, engine, bondsMap=None, rejectProbability=1):

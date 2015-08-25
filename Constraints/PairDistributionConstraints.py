@@ -65,6 +65,20 @@ class PairDistributionConstraint(ExperimentalConstraint):
            If None, the limits will be automatically set the the min and max distance of the experimental data.
            If not None, a tuple of exactly two items where the first is the minimum distance or None 
            and the second is the maximum distance or None.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        PDC = PairDistributionConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
+        ENGINE.add_constraints(PDC)
+    
     """
     def __init__(self, engine, experimentalData, weighting="atomicNumber", scaleFactor=1.0, windowFunction=None, limits=None):
         self.__limits = limits

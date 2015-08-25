@@ -81,6 +81,26 @@ class TranslationGenerator(MoveGenerator):
         #. amplitude (number, tuple): The translation amplitude in Angstroms.
            If number is given, it is the maximum translation amplitude in Angstroms and must be bigger than 0.
            If tuple is given, it is the limits of translation boundaries as [min,max] where min>=0 and max>min.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random translations.
+        # Maximum translation amplitude is set to 0.3A to all defined groups
+        for g in ENGINE.groups:
+            g.set_move_generator( TranslationGenerator(amplitude=0.3) )
+        
+            
     """
     def __init__(self, group=None, amplitude=0.2):
         super(TranslationGenerator, self).__init__(group=group)
@@ -170,6 +190,25 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
            If None generated axis can be in the same direction of axis or in the opposite.
            If True all generated vectors are in the same direction of axis.
            If False all generated vectors are in the opposite direction of axis.        
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationAlongAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations along pre-defined axis (1,1,1).
+        # Maximum translation amplitude is set to 0.3A to all defined groups
+        for g in ENGINE.groups:
+            g.set_move_generator( TranslationAlongAxisGenerator(amplitude=0.3, axis=(1,1,1)) )
+    
     """
     def __init__(self, group=None, amplitude=0.2, axis=(1,0,0), direction=None):
         super(TranslationAlongAxisGenerator, self).__init__(group=group, amplitude=amplitude)
@@ -260,6 +299,25 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
            If None generated axis can be in the same direction of axis or in the opposite.
            If True all generated vectors are in the same direction of axis.
            If False all generated vectors are in the opposite direction of axis.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationTowardsAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations towards a pre-defined axis (1,1,1) within 10 degrees.
+        # Maximum translation amplitude is set to 0.3A to all defined groups 
+        for g in ENGINE.groups:
+            g.set_move_generator( TranslationTowardsAxisGenerator(amplitude=0.3, axis=(1,1,1), angle=10) )
+           
     """
     def __init__(self, group=None, amplitude=0.2, axis=(1,0,0), angle=30, direction=True):
         super(TranslationTowardsAxisGenerator, self).__init__(group=group, amplitude=amplitude, axis=axis, direction=direction)
@@ -317,6 +375,7 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
 class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):    
     """ 
     Generates random translation moves upon groups of atoms along one of their symmetry axis.
+    Only groups containing more than 1 atoms allow computing symmetry axis.
     
     :Parameters:
         #. group (None, Group): The group instance.
@@ -328,6 +387,26 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
            If None generated axis can be in the same direction of axis or in the opposite.
            If True all generated vectors are in the same direction of axis.
            If False all generated vectors are in the opposite direction of axis.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationAlongSymmetryAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations along the second symmetry axis of every group.
+        # Maximum translation amplitude is set to 0.3A to all defined groups.
+        for g in ENGINE.groups:
+            if len(g)>1:
+                g.set_move_generator( TranslationAlongSymmetryAxisGenerator(amplitude=0.3, axis=(1,1,1), axis=1) )
+           
     """
     
     def __init__(self, group=None, amplitude=0.2, axis=0, direction=None):
@@ -420,6 +499,7 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
     """ 
     Generates random translation moves upon groups of atoms towards one of its symmetry
     axis within a tolerance angle between translation vectors and the axis.
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint RMC engine.
@@ -432,6 +512,26 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
            If None generated axis can be in the same direction of axis or in the opposite.
            If True all generated vectors are in the same direction of axis.
            If False all generated vectors are in the opposite direction of axis.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationTowardsSymmetryAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations towards the first symmetry axis of every group within 15 degrees.
+        # Maximum translation amplitude is set to 0.3A to all defined groups.
+        for g in ENGINE.groups:
+            if len(g)>1:
+                g.set_move_generator( TranslationTowardsSymmetryAxisGenerator(amplitude=0.3, axis=0, angle=15) )
+               
     """
     
     def __init__(self, group=None, amplitude=0.2, axis=0, angle=30, direction=True):
@@ -493,12 +593,33 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
 class TranslationAlongSymmetryAxisPath(PathGenerator):    
     """ 
     Generates translation moves upon groups of atoms along one of their symmetry axis.
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, Group): The group instance.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
         #. path (List): list of distances.
         #. randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationAlongSymmetryAxisPath
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations of predefined amplitudes along the first symmetry axis of every group.
+        amps = [-0.1, 0.075, -0.05, -0.25, 0.01, 0.02, 0.03, 0.1, 0.3]
+        for g in ENGINE.groups:
+            if len(g)>1:
+                g.set_move_generator( TranslationAlongSymmetryAxisPath(axis=0, path=amps) )
+               
     """
     def __init__(self, group=None,  axis=0, path=None, randomize=False):
         # initialize PathGenerator
@@ -606,6 +727,25 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
            If None generated axis can be randomly generated towards the center or away from the center.
            If True all generated vectors point towards the center.
            If False all generated vectors point away from the center.        
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Translations import TranslationTowardsCenterGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to translations towards the origin defined as (0,0,0) within 20 degrees.
+        # Maximum translation amplitude is set to 0.2A to all defined groups.
+        for g in ENGINE.groups:
+            g.set_move_generator( TranslationTowardsCenterGenerator(amplitude=0.2, center={"fixed":(0,0,0)}, axis=0, angle=25) )
+    
     """
     def __init__(self, group=None, center={"fixed":(0,0,0)}, amplitude=0.1, angle=30, direction=True):
         # initialize TranslationGenerator

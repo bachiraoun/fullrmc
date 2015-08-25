@@ -40,6 +40,20 @@ class PairCorrelationConstraint(PairDistributionConstraint):
            If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
            If not None, a tuple of exactly two items where the first is of minimum distance or None 
            and the second is the maximum distance or None.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.PairCorrelationConstraints import PairCorrelationConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        PCC = PairCorrelationConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
+        ENGINE.add_constraints(PCC)
+        
     """
     def check_experimental_data(self, experimentalData):
         if not isinstance(experimentalData, np.ndarray):

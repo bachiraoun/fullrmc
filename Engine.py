@@ -11,7 +11,6 @@ inter-molecular-distances, etc.
 import os
 import time
 import sys
-import warnings
 import atexit
 import tempfile
 
@@ -30,7 +29,7 @@ from fullrmc.Core.transform_coordinates import transform_coordinates
 from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.Group import Group
-from fullrmc.Core.MoveGenerator import  SwapGenerator
+from fullrmc.Core.MoveGenerator import SwapGenerator
 from fullrmc.Core.GroupSelector import GroupSelector
 from fullrmc.Selectors.RandomSelectors import RandomSelector
 
@@ -66,6 +65,27 @@ class Engine(object):
             #. constraints (None, list): The list of constraints instances.
             #. tolerance (number): The runtime tolerance parameters. 
                It's the percentage of allowed unsatisfactory 'tried' moves. 
+      
+    
+    .. code-block:: python
+        
+        # import engine
+        from fullrmc.Engine import Engine
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # save engine
+        ENGINE.save("system.rmc")
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        # Re-define moves generators if needed ...
+        
+        # run engine for 10000 steps and save only at the end
+        ENGINE.run(numberOfSteps=10000, saveFrequency=10000, savePath="system.rmc")
+    
     """
     
     def __init__(self, pdb, boundaryConditions=None,

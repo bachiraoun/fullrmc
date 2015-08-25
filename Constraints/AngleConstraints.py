@@ -35,6 +35,38 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
            and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+    
+    .. code-block:: python
+    
+        ## Methane (CH4) molecule sketch
+        ## 
+        ##              H4
+        ##              |
+        ##              |
+        ##           _- C -_
+        ##        H1-  /    -_
+        ##            /       H3
+        ##           H2
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        BAC = BondsAngleConstraint(engine=None)
+        ENGINE.add_constraints(BAC)
+        
+        # define intra-molecular angles 
+        BAC.create_angles_by_definition( anglesDefinition={"CH4": [ ('C','H1','H2', 100, 120),
+                                                                    ('C','H2','H3', 100, 120),
+                                                                    ('C','H3','H4', 100, 120),
+                                                                    ('C','H4','H1', 100, 120) ]} )
+                                                                          
+        
+        
     """
     def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint

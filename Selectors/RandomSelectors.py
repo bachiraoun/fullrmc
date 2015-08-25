@@ -42,6 +42,30 @@ from fullrmc.Core.GroupSelector import GroupSelector
 class RandomSelector(GroupSelector):
     """
     RandomSelector generates indexes randomly for engine group selection.
+    
+    :Parameters:
+        #. engine (None, fullrmc.Engine): The selector fullrmc engine instance.
+        
+        
+    .. code-block:: python
+        
+        # import external libraries
+        import numpy as np
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.RandomSelectors import RandomSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        # set group selector as random selection from all defined groups.
+        ENGINE.set_group_selector( RandomSelector(ENGINE) )  
+        
     """
     def select_index(self):
         """
@@ -60,8 +84,27 @@ class WeightedRandomSelector(RandomSelector):
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
-    """
     
+    .. code-block:: python
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.RandomSelectors import WeightedRandomSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        # set group selector as random selection but with double likelihood to
+        # selecting the first and the last group.
+        weights = [1 for _ in ENGINE.pdb.indexes]
+        weights[0] = weights[-1] = 2 
+        ENGINE.set_group_selector( WeightedRandomSelector(ENGINE, weights) )  
+        
+    """
     def __init__(self, engine, weights=None):
         # initialize GroupSelector
         super(WeightedRandomSelector, self).__init__(engine=engine)
@@ -165,6 +208,24 @@ class SmartRandomSelector(WeightedRandomSelector):
         #. unbiasFactor(None, Number): Whether to un-bias a group's weight when a move is rejected.
            If None, un-biasing is turned off.
            Un-biasing will be performed only if group weight remains positive.
+    
+    .. code-block:: python
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.RandomSelectors import SmartRandomSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        # set group selector as random smart selection that will adjust its
+        # weighting scheme to improve the chances of moves getting accepted.        
+        ENGINE.set_group_selector( SmartRandomSelector(ENGINE) )  
+        
     """
     
     def __init__(self, engine, weights=None, biasFactor=1, unbiasFactor=None):

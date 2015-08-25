@@ -24,8 +24,34 @@ class DefinedOrderSelector(GroupSelector):
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
            If None, order is set automatically to all groups indexes list.
-    """
     
+    .. code-block:: python
+        
+        # import external libraries
+        import numpy as np
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.OrderedSelectors import DefinedOrderSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        ##### set the order of selection from closest to the origin to the further. #####
+        # compute groups centers
+        centers   = [np.sum(ENGINE.realCoordinates[g.indexes], axis=0)/len(g) for g in ENGINE.groups]
+        # compute distances to origin
+        distances = [np.sqrt(np.add.reduce(c**2)) for c in centers]
+        # compute increasing order
+        order     = np.argsort(distances)
+        # set group selector
+        ENGINE.set_group_selector( DefinedOrderSelector(ENGINE, order = order) )         
+    
+    """
     def __init__(self, engine, order=None):
         # initialize GroupSelector
         super(DefinedOrderSelector, self).__init__(engine=engine)
@@ -152,8 +178,27 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         frameborder="0" allowfullscreen>
         </iframe>
        
-    """
     
+    .. code-block:: python
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        # Set the order of selection from further to the closest to a (1,1,1).
+        # Automatically adjust the groups move generators allowing modulation of amplitudes.
+        ENGINE.set_group_selector( DirectionalOrderSelector(ENGINE, 
+                                                            center = (1,1,1),
+                                                            adjustMoveGenerators=True) )         
+        
+    """
     def __init__(self, engine, center=None, expand=True,
                        adjustMoveGenerators=False,
                        generatorsParams={"TG":{"amplitude":0.1, "damping":0.1, "angle":90},

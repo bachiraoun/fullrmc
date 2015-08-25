@@ -37,6 +37,37 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
            and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+    
+    .. code-block:: python
+        
+        ## Tetrahydrofuran (THF) molecule sketch
+        ## 
+        ##              O
+        ##   H41      /   \      H11
+        ##      \  /         \  /
+        ## H42-- C4    THF    C1 --H12
+        ##        \  MOLECULE /
+        ##         \         /
+        ##   H31-- C3-------C2 --H21
+        ##        /         \\
+        ##     H32            H22 
+        ##
+ 
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        IAC = ImproperAngleConstraint(engine=None)
+        ENGINE.add_constraints(IAC)
+        
+        # define intra-molecular improper angles 
+        IAC.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
+                                                                    ('C3','O','C1','C4', -15, 15) ] })
+                                                                  
     """
     
     def __init__(self, engine, anglesMap=None, rejectProbability=1):

@@ -1583,7 +1583,7 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">ExperimentalConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">ExperimentalConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
 <p>An ExperimentalConstraint is any constraint related to experimental data.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1593,11 +1593,40 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+<li>scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.</li>
+<li>adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.<ol class="arabic">
+<li>The frequency in number of accepted moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
+</ol>
+</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
+<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
+untouched and the limits minimum and maximum won&#8217;t be checked.</p>
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorFrequency">
+<tt class="descname">adjustScaleFactorFrequency</tt><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorFrequency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaleFactor adjustment frequency.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorMaximum">
+<tt class="descname">adjustScaleFactorMaximum</tt><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorMaximum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaleFactor adjustment maximum number allowed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorMinimum">
+<tt class="descname">adjustScaleFactorMinimum</tt><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.adjustScaleFactorMinimum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaleFactor adjustment minimum number allowed.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data">
 <tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
@@ -1623,6 +1652,98 @@ This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.fit_scale_factor">
+<tt class="descname">fit_scale_factor</tt><big>(</big><em>experimentalData</em>, <em>modalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.fit_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The best scale factor value is computed by minimizing <span class="math">\(E=sM\)</span>.</p>
+<dl class="docutils">
+<dt>Where:</dt>
+<dd><ol class="first last arabic simple">
+<li><span class="math">\(E\)</span> is the experimental data.</li>
+<li><span class="math">\(s\)</span> is the scale factor.</li>
+<li><span class="math">\(M\)</span> is the model constraint data.</li>
+</ol>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data.</li>
+<li>modalData (numpy.ndarray): the constraint modal data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (string): The new value of the adjusted scalefactor</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: This method won&#8217;t update the internal scale factor value of the constraint.
+It always computes the best scale factor given some experimental and model data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor">
+<tt class="descname">get_adjusted_scale_factor</tt><big>(</big><em>experimentalData</em>, <em>modalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if scale factor should be updated according to the given scale factor frequency
+and engine&#8217;s accepted steps. If adjustment is due, a new scale factor is computed
+and returned using fit_scale_factor method. Otherwise, the same scale factor will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data.</li>
+<li>modalData (numpy.ndarray): the constraint modal data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (string): The scale factor value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: This method won&#8217;t update the internal scale factor value of the constraint. 
+If needed, it returns the constraints scale factor or  computes and returns the best 
+scale factor given some experimental and model data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.scaleFactor">
+<tt class="descname">scaleFactor</tt><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.scaleFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaleFactor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_adjust_scale_factor">
+<tt class="descname">set_adjust_scale_factor</tt><big>(</big><em>adjustScaleFactor</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_adjust_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets adjust scale factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.<ol class="arabic">
+<li>The frequency in number of accepted moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_experimental_data">
 <tt class="descname">set_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_experimental_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the constraint&#8217;s experimental data.</p>
@@ -1632,6 +1753,23 @@ This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_scale_factor">
+<tt class="descname">set_scale_factor</tt><big>(</big><em>scaleFactor</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the scale factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.</li>
 </ol>
 </td>
 </tr>
@@ -2216,11 +2354,11 @@ The following video is an example of exploring the space of a molecule using
 RecursiveGroupSelector and setting explore flag to True.
 The molecule explores the allowed space by wandering via its move generator and only
 moves enhancing the structure are stored.         
-</p>                                                
+</p>   
 <iframe width="560" height="315" 
-src="https://www.youtube.com/embed/xnG0wnEfbJ8?rel=0" 
+src="https://www.youtube.com/embed/wafgTfHNpvs?rel=0" 
 frameborder="0" allowfullscreen>
-</iframe>        <div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+</iframe>    <div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 

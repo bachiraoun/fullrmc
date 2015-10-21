@@ -753,7 +753,7 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>pairsDistance=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -765,7 +765,9 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </li>
 <li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all atoms type.</p>
 </li>
-<li><p class="first">pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
+</li>
+<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
 A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
 First defined elements pair distance will cancel all redundant. 
 If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
@@ -797,6 +799,12 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.allTypes">
+<tt class="descname">allTypes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.allTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all atoms types.</p>
 </dd></dl>
 
 <dl class="method">
@@ -879,12 +887,6 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 <dd><p>Gets the experimental data distances minimum.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.elementsPairs">
-<tt class="descname">elementsPairs</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.elementsPairs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get elements pairs</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.get_constraint_value">
 <tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
@@ -925,6 +927,18 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 <tt class="descname">lowerLimitArray</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.lowerLimitArray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get lowerLimitArray used in distances calculation.
 for InterMolecularDistanceConstraint it&#8217;s always a numpy.zeros array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfAtomsPerType">
+<tt class="descname">numberOfAtomsPerType</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfAtomsPerType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of atoms per type dict.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfTypes">
+<tt class="descname">numberOfTypes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the number of defined types in the configuration.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -975,14 +989,14 @@ for InterMolecularDistanceConstraint it&#8217;s always a numpy.zeros array</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_pairs_distance">
-<tt class="descname">set_pairs_distance</tt><big>(</big><em>pairsDistance</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_pairs_distance" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">set_pairs_distance</tt><big>(</big><em>pairsDistanceDefinition</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_pairs_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the pairs intermolecular minimum distance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
 A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
 First defined elements pair distance will cancel all redundant. 
 If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
@@ -995,6 +1009,49 @@ If None is given all pairs will be automatically generated and assigned the give
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_type_definition">
+<tt class="descname">set_type_definition</tt><big>(</big><em>typeDefinition</em>, <em>pairsDistanceDefinition=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_type_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Its an alias to set_pairs_distance used when typeDefinition needs to be re-defined.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</li>
+<li>pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
+If None is given the already defined pairsDistanceDefinition will be used and passed to set_pairs_distance method.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeDefinition">
+<tt class="descname">typeDefinition</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the type definition.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.types">
+<tt class="descname">types</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the defined types set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesIndexes">
+<tt class="descname">typesIndexes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get types indexes list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesPairs">
+<tt class="descname">typesPairs</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesPairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get types pairs</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1809,6 +1866,29 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
+<tt class="descname">plot</tt><big>(</big><em>intra=True</em>, <em>inter=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>intra (bool): Whether to add intra-molecular pair distribution function features to the plot.</li>
+<li>inter (bool): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2108,6 +2188,29 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.minimumDistance">
 <tt class="descname">minimumDistance</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.minimumDistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the experimental data distances minimum.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot">
+<tt class="descname">plot</tt><big>(</big><em>intra=True</em>, <em>inter=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>intra (bool): Whether to add intra-molecular pair distribution function features to the plot.</li>
+<li>inter (bool): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

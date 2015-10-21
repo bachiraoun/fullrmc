@@ -1336,6 +1336,11 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.plot">
+<tt class="descname">plot</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reject_move">
 <tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_move" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1675,7 +1680,7 @@ This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>scaleFactor (string): The new value of the adjusted scalefactor</li>
+<li>scaleFactor (number): The new scale factor fit value.</li>
 </ol>
 </td>
 </tr>
@@ -1689,8 +1694,8 @@ It always computes the best scale factor given some experimental and model data<
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor">
 <tt class="descname">get_adjusted_scale_factor</tt><big>(</big><em>experimentalData</em>, <em>modalData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if scale factor should be updated according to the given scale factor frequency
-and engine&#8217;s accepted steps. If adjustment is due, a new scale factor is computed
-and returned using fit_scale_factor method. Otherwise, the same scale factor will be returned.</p>
+and engine&#8217;s accepted steps. If adjustment is due, a new scale factor will be computed  
+using fit_scale_factor method, otherwise the the constraint&#8217;s scale factor will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1702,15 +1707,13 @@ and returned using fit_scale_factor method. Otherwise, the same scale factor wil
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>scaleFactor (string): The scale factor value</li>
+<li>scaleFactor (number): The constraint&#8217;s scale factor or the new scale factor fit value.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: This method won&#8217;t update the internal scale factor value of the constraint. 
-If needed, it returns the constraints scale factor or  computes and returns the best 
-scale factor given some experimental and model data.</p>
+<p><strong>NB</strong>: This method WILL NOT UPDATE the internal scale factor value of the constraint.</p>
 </dd></dl>
 
 <dl class="attribute">

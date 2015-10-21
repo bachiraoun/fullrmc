@@ -20,110 +20,19 @@ from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
 from fullrmc.Core.pair_distribution_histogram import single_pair_distribution_histograms, multiple_pair_distribution_histograms, full_pair_distribution_histograms
 
 
-class PairDistributionConstraint(ExperimentalConstraint):
+class WideAnglePatternConstraint(ExperimentalConstraint):
     """
-    It controls the total reduced pair distribution function (pdf) of the system noted as G(r). 
-    The pair distribution function is directly calculated from powder diffraction experimental
-    data. It is obtained from the experimentally determined total-scattering structure 
-    function S(Q), by a Sine Fourier transform according to. 
-    
-    .. math::
-        
-        G(r) = \\frac{2}{\\pi} \\int_{0}^{\\infty} Q [S(Q)-1]sin(Qr)dQ \n
-        S(Q) = 1+ \\frac{1}{Q} \\int_{0}^{\\infty} G(r) sin(Qr) dr
-        
-    Theoretically G(r) oscillates around zero. Also :math:`G(r) \\rightarrow 0` when :math:`r \\rightarrow \\infty`
-    and :math:`G(r) \\rightarrow 0` when :math:`r \\rightarrow 0` with a slope of :math:`-4\\pi\\rho_{0}` 
-    where :math:`\\rho_{0}` is the number density of the material. \n
-    Model wise, G(r) is computed after calculating the so called Pair Correlation Function 
-    noted as g(r). The relation between G(r) and g(r) is given by\n
-
-    .. math::
-        
-        G(r) = 4 \\pi r (\\rho_{r} - \\rho_{0})
-             = 4 \\pi \\rho_{0} r (g(r)-1) 
-             = \\frac{R(r)}{r} - 4 \\pi \\rho_{0}
-        
-    :math:`\\rho_{r}` is the number density fluctuation at distance :math:`r`. 
-    The computation of g(r) is straightforward from an atomistic model and it is given
-    by :math:`g(r)=\\rho_{r} / \\rho_{0}`.\n
-    
-    :math:`R(r)` is called the radial distribution function. :math:`R(r)` is a very 
-    important function because it describes directly the system's structure since
-    :math:`R(r)dr` gives the number of atoms in an annulus of thickness dr at distance 
-    r from another atom. Therefore, the coordination number, or the number 
-    of neighbors within the distances interval :math:`[a,b]`
-    is given by :math:`\\int_{a}^{b} R(r) dr`\n
-    
-    Finally, g(r) is calculated after binning all pair atomic distances into a weighted
-    histograms of values :math:`n(r)` from which local number densities are computed as in the following.
-    
-    .. math::
-        g(r) = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{\\rho_{i,j}(r)}{\\rho_{0}} 
-             = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} 
-           
-    Where:\n
-    :math:`Q` is the momentum transfer. \n
-    :math:`r` is the distance between two atoms. \n
-    :math:`\\rho_{i,j}(r)` is the pair density function of atoms i and j. \n
-    :math:`\\rho_{0}` is the  average number density of the system. \n
-    :math:`w_{i,j}` is the relative weighting of atom types i and j. \n
-    :math:`R(r)` is the radial distribution function (rdf). \n
-    :math:`N` is the total number of atoms. \n
-    :math:`V` is the volume of the system. \n
-    :math:`n_{i,j}(r)` is the number of atoms i neighbouring j at a distance r. \n
-    :math:`v(r)` is the annulus volume at distance r and of thickness dr. \n
-    :math:`N_{i,j}` is the total number of atoms i and j in the system. \n
-
-    
-    :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
-        #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
-        #. weighting (string): The elements weighting.
-        #. scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.
-        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
-           It must be a list of exactly three entries.\n
-           1. The frequency in number of generated moves of finding the best scale factor. 
-              If 0 frequency is given, it means that the scale factor is fixed.
-           2. The minimum allowed scale factor value.
-           3. The maximum allowed scale factor value.
-        #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
-           of the system prior to comparing it with the experimental data. In general, the experimental pair
-           distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
-           by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
-           used to best imitate the numerical artefacts in the experimental data.
-        #. limits (None, tuple, list): The distance limits to compute the histograms.
-           If None, the limits will be automatically set the the min and max distance of the experimental data.
-           If not None, a tuple of exactly two items where the first is the minimum distance or None 
-           and the second is the maximum distance or None.
-    
-    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
-    untouched and the limits minimum and maximum won't be checked.
-    
-    .. code-block:: python
-    
-        # import fullrmc modules
-        from fullrmc.Engine import Engine
-        from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
-        
-        # create engine 
-        ENGINE = Engine(pdb='system.pdb')
-        
-        # create and add constraint
-        PDC = PairDistributionConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
-        ENGINE.add_constraints(PDC)
-    
     """
-    def __init__(self, engine, experimentalData, weighting="atomicNumber", 
-                       scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
-                       windowFunction=None, limits=None):
+    def __init__(self, engine, experimentalData, weighting="atomicFormFactor", scaleFactor=1.0, windowFunction=None, limits=None):
         self.__limits = limits
         # initialize constraint
-        super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+        super(WideAnglePatternConstraint, self).__init__(engine=engine, experimentalData=experimentalData)
         # set elements weighting
         self.set_weighting(weighting)
         # set window function
         self.set_window_function(windowFunction)
+        # set window function
+        self.set_scale_factor(scaleFactor)
         
     @property
     def bin(self):
@@ -181,6 +90,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         return self.__windowFunction
     
     @property
+    def scaleFactor(self):
+        """ Get the scaleFactor. """
+        return self.__scaleFactor
+    
+    @property
     def limits(self):
         """ The histogram computation limits."""
         return self.__limits
@@ -231,13 +145,23 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if windowFunction is not None:
             assert isinstance(windowFunction, np.ndarray), LOGGER.error("windowFunction must be a numpy.ndarray")
             assert windowFunction.dtype.type is FLOAT_TYPE, LOGGER.error("windowFunction type must be %s"%FLOAT_TYPE)
-            assert len(windowFunction.shape) == 1, LOGGER.error("windowFunction must be of dimension 1")
-            assert len(windowFunction) <= self.experimentalData.shape[0], LOGGER.error("windowFunction length must be smaller than experimental data")
+            assert len(windowFunction.shape) == 1, LOGGER.error("experimentalData must be of dimension 2")
             # normalize window function
             windowFunction /= np.sum(windowFunction)
-        # check window size
         # set windowFunction
         self.__windowFunction = windowFunction
+    
+    def set_scale_factor(self, scaleFactor):
+        """
+        Sets the scale factor.
+        
+        :Parameters:
+             #. scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.
+        """
+        assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
+        self.__scaleFactor = FLOAT_TYPE(scaleFactor)
+        # reset constraint
+        self.reset_constraint()
     
     def set_experimental_data(self, experimentalData):
         """
@@ -359,50 +283,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
         diff = self.__experimentalPDF-data
         # return squared deviation
         return np.add.reduce((diff)**2)
-    
-    def __get_total_Gr(self, data):
-        """
-        This method is created just to speed up the computation of the total gr upon fitting.
-        """
-        #import time
-        #startTime = time.clock()
-        Gr = np.zeros(self.__histogramSize, dtype=np.float32)
-        for pair in self.__elementsPairs:
-            # get weighting scheme
-            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
-            if wij is None:
-                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
-            # get number of atoms per element
-            ni = self.engine.numberOfAtomsPerElement[pair[0]]
-            nj = self.engine.numberOfAtomsPerElement[pair[1]]
-            # get index of element
-            idi = self.engine.elements.index(pair[0])
-            idj = self.engine.elements.index(pair[1])
-            # get Nij
-            if idi == idj:
-                Nij = ni*(ni-1)/2.0 
-                Dij = Nij/self.engine.volume
-                dij = (data["intra"][idi,idj,:]+data["inter"][idi,idj,:])/self.__shellsVolumes   
-                Gr += wij*dij/Dij      
-            else:
-                Nij = ni*nj
-                Dij = Nij/self.engine.volume
-                dij = (data["intra"][idj,idi,:]+data["inter"][idj,idi,:])/self.__shellsVolumes
-                Gr += wij*dij/Dij
-        # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
-        Gr   = (4.*np.pi*self.__shellsCenter*rho0) * (Gr-1)
-        self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr)
-        Gr   = self._fittedScaleFactor * Gr
-        # convolve total with window function
-        if self.__windowFunction is not None:
-            Gr = np.convolve(Gr, self.__windowFunction, 'same')
-        #t = time.clock()-startTime
-        #print "%.7f(s) -->  %.7f(Ms)"%(t, 1000000*t)
-        return Gr
-    
+        
     def _get_constraint_value(self, data):
-        # http://erice2011.docking.org/upload/Other/Billinge_PDF/03-ReadingMaterial/BillingePDF2011.pdf    page 6
+        ###################### THIS SHOULD BE OPTIMIZED ######################
         #import time
         #startTime = time.clock()
         output = {}
@@ -410,43 +293,37 @@ class PairDistributionConstraint(ExperimentalConstraint):
             output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
             output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
             output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-        gr = np.zeros(self.__histogramSize, dtype=np.float32)
+        output["pdf_total"] = np.zeros(self.__histogramSize, dtype=np.float32)
         for pair in self.__elementsPairs:
             # get weighting scheme
-            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
-            if wij is None:
-                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
+            w = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
+            if w is None:
+                w = self.__weightingScheme[pair[1]+"-"+pair[0]]
             # get number of atoms per element
             ni = self.engine.numberOfAtomsPerElement[pair[0]]
             nj = self.engine.numberOfAtomsPerElement[pair[1]]
             # get index of element
             idi = self.engine.elements.index(pair[0])
             idj = self.engine.elements.index(pair[1])
-            # get Nij
+            # get nij
             if idi == idj:
-                Nij = ni*(ni-1)/2.0 
+                nij = ni*(ni-1)/2.0 
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] 
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:]                
             else:
-                Nij = ni*nj
+                nij = ni*nj
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
-            # compute g(r)
-            nij = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
-            dij = nij/self.__shellsVolumes
-            Dij = Nij/self.engine.volume
-            gr += wij*dij/Dij
             # calculate intensityFactor
-            intensityFactor = (self.engine.volume*wij)/(Nij*self.__shellsVolumes)
+            intensityFactor = (self.engine.volume*w)/(nij*self.__shellsVolumes)
             # divide by factor
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
             output["rdf_total_%s-%s" % pair]  = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
-            ## compute g(r) equivalent to earlier gr += wij*dij/Dij
-            #gr += output["rdf_total_%s-%s" % pair] 
-        # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
-        output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellsCenter*rho0) * (gr-1)
+            output["pdf_total_%s-%s" % pair]  = output["rdf_total_%s-%s" % pair]
+            # normalize to g(r)
+            output["pdf_total_%s-%s" % pair]  = (output["pdf_total_%s-%s" % pair]-w)*self.__shellsCenter
+            output["pdf_total"]              += self.__scaleFactor*output["pdf_total_%s-%s" % pair] 
         # convolve total with window function
         if self.__windowFunction is not None:
             output["pdf"] = np.convolve(output["pdf_total"], self.__windowFunction, 'same')
@@ -496,7 +373,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
-        totalPDF = self.__get_total_Gr(self.data)#self.get_constraint_value()["pdf_total"]
+        totalPDF = self.get_constraint_value()["pdf_total"]
         self.set_squared_deviations(self.compute_squared_deviations(data = totalPDF))
     
     def compute_before_move(self, indexes):
@@ -567,8 +444,13 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # compute squaredDeviations after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
-        totalPDF = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter})
+        data = self.data
+        # change temporarily data
+        self.set_data( {"intra":dataIntra, "inter":dataInter} )
+        totalPDF = self.get_constraint_value()["pdf_total"]
         self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPDF) )
+        # change back data
+        self.set_data( data )
     
     def accept_move(self, indexes):
         """ 
@@ -587,8 +469,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # update squaredDeviations
         self.set_squared_deviations( self.afterMoveSquaredDeviations )
         self.set_after_move_squared_deviations( None )
-        # set new scale factor
-        self._set_fitted_scale_factor_value(self._fittedScaleFactor)
     
     def reject_move(self, indexes):
         """ 
@@ -604,65 +484,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_after_move_squared_deviations( None )
 
 
-    def plot(self, intra=True, inter=True, legendCols=2, legendLoc='best'):
-        """ 
-        Plot pair distribution constraint.
-        
-        :Parameters:
-            #. intra (bool): Whether to add intra-molecular pair distribution function features to the plot.
-            #. inter (bool): Whether to add inter-molecular pair distribution function features to the plot.
-            #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
-               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
-               is accepted.
-        """
-        # get constraint value
-        output = self.get_constraint_value()
-        if not len(output):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        # import matplotlib
-        import matplotlib.pyplot as plt
-        # Create plotting styles
-        COLORS  = ["b",'g','r','c','y','m']
-        MARKERS = ["",'.','+','^','|']
-        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(['--'], list(reversed(COLORS)))]
-        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTRA_STYLES)]
-        INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
-        INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
-        # plot experimental
-        plt.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
-        plt.plot(self.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-        # plot without window function
-        if self.windowFunction is not None:
-            plt.plot(self.shellsCenter, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
-        # plot partials
-        intraStyleIndex = 0
-        interStyleIndex = 0
-        for key, val in output.items():
-            if key in ("pdf_total", "pdf"):
-                continue
-            elif "intra" in key and intra:
-                plt.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
-                intraStyleIndex+=1
-            elif "inter" in key and inter:
-                plt.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
-                interStyleIndex+=1
-        # plot legend
-        plt.legend(frameon=False, ncol=legendCols, loc=legendLoc)
-        # set title
-        if self.squaredDeviations is not None:
-            plt.title("$\chi^2=%.6f$ - $scale$ $factor=%.6f$"%(self.squaredDeviations, self.scaleFactor))
-        # set axis labels
-        plt.xlabel("$r(\AA)$", size=16)
-        plt.ylabel("$G(r)$", size=16)
-        # set background color
-        plt.gcf().patch.set_facecolor('white')
-        #show
-        plt.show()
 
-        
 #class StructureFactor(PairDistributionFunction):
 #     pass
 

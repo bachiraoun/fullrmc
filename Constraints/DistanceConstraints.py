@@ -26,7 +26,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. defaultDistance (number): The minimum distance allowed set by default for all atoms type.
-        #. pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
+        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
            A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
            First defined elements pair distance will cancel all redundant. 
            If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
@@ -38,13 +39,14 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
            It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
            and 0 means accepting all steps regardless whether squaredDeviations increases or not.
     """
-    def __init__(self, engine, defaultDistance=1.5, pairsDistance=None, rejectProbability=1):
+    def __init__(self, engine, defaultDistance=1.5, typeDefinition='element', pairsDistanceDefinition=None, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
         self.set_default_distance(defaultDistance)
-        # set pairsDistance
-        self.set_pairs_distance(pairsDistance)
+        # set type definition
+        self.__pairsDistanceDefinition = None
+        self.set_type_definition(typeDefinition, pairsDistanceDefinition)
                   
     @property
     def defaultDistance(self):
@@ -78,10 +80,41 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         return self.__upperLimitArray
         
     @property
-    def elementsPairs(self):
-        """ Get elements pairs """
-        return self.__elementsPairs
+    def typesPairs(self):
+        """ Get types pairs """
+        return self.__typesPairs
         
+    @property
+    def typeDefinition(self):
+        """ Get the type definition. """
+        return self.__typeDefinition
+        
+    @property
+    def types(self):
+        """ Get the defined types set. """
+        return self.__types
+    
+    @property
+    def allTypes(self):
+        """ Get all atoms types. """
+        return self.__allTypes 
+        
+    @property
+    def numberOfTypes(self):
+        """ Get the number of defined types in the configuration. """
+        return self.__numberOfTypes
+        
+    @property
+    def typesIndexes(self):
+        """ Get types indexes list. """
+        return self.__typesIndexes
+
+    @property
+    def numberOfAtomsPerType(self):
+        """ Get number of atoms per type dict. """
+        return self.__numberOfAtomsPerType
+        
+    
     def listen(self, message, argument=None):
         """   
         listen to any message sent from the Broadcaster.
@@ -91,12 +124,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed", "update molecules indexes"):
-            if self.engine is not None:
-                self.__elementsPairs = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
-                self.set_pairs_distance(self.__pairsDistanceDefinition)
-            else:
-                self.__elementsPairs = None
-                self.set_pairs_distance(self.__pairsDistanceDefinition)
+            self.set_type_definition(self.__typeDefinition, self.__pairsDistanceDefinition)
         elif message in("update boundary conditions",):
             self.reset_constraint()        
                 
@@ -112,12 +140,71 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         assert defaultDistance>=0, LOGGER.error("defaultDistance must be positive")
         self.__defaultDistance = defaultDistance
         
-    def set_pairs_distance(self, pairsDistance):
+    def set_type_definition(self, typeDefinition, pairsDistanceDefinition=None):
+        """ 
+        Its an alias to set_pairs_distance used when typeDefinition needs to be re-defined.
+        
+        :Parameters:
+            #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
+            #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
+               If None is given the already defined pairsDistanceDefinition will be used and passed to set_pairs_distance method.
+        """
+        # set typeDefinition
+        assert typeDefinition in ("name", "element"), LOGGER.error("typeDefinition must be either 'name' or 'element'")
+        if self.engine is None:
+            types                = None
+            allTypes             = None
+            numberOfTypes        = None
+            typesIndexes         = None
+            numberOfAtomsPerType = None
+        elif typeDefinition == "name":
+            types                = self.engine.names
+            allTypes             = self.engine.allNames
+            numberOfTypes        = self.engine.numberOfNames
+            typesIndexes         = self.engine.namesIndexes
+            numberOfAtomsPerType = self.engine.numberOfAtomsPerName
+        elif typeDefinition == "element":
+            types                = self.engine.elements
+            allTypes             = self.engine.allElements
+            numberOfTypes        = self.engine.numberOfElements
+            typesIndexes         = self.engine.elementsIndexes
+            numberOfAtomsPerType = self.engine.numberOfAtomsPerElement
+        # check pdb atoms
+        if self.engine is not None:
+            lastMolIdx = None
+            lut = {}
+            for idx in range(len(allTypes)):
+                molIdx = self.engine.moleculesIndexes[idx]
+                name   = allTypes[idx]
+                if lastMolIdx != molIdx:
+                    lut = {}
+                    lastMolIdx = molIdx
+                if lut.has_key(name):
+                    raise Exception( LOGGER.error("molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, typeDefinition, name, self.__class__.__name__)) )
+                else:
+                    lut[name] = 1
+        # set type definition
+        self.__typeDefinition       = typeDefinition
+        self.__types                = types
+        self.__allTypes             = allTypes
+        self.__numberOfTypes        = numberOfTypes
+        self.__typesIndexes         = typesIndexes 
+        self.__numberOfAtomsPerType = numberOfAtomsPerType
+        if self.__types is None:
+            self.__typesPairs = None
+        else:
+            self.__typesPairs = sorted(itertools.combinations_with_replacement(self.__types,2))
+        # set pair distance
+        if pairsDistanceDefinition is None:
+            pairsDistanceDefinition = self.__pairsDistanceDefinition
+        self.set_pairs_distance(pairsDistanceDefinition)
+        
+    def set_pairs_distance(self, pairsDistanceDefinition):
         """ 
         Sets the pairs intermolecular minimum distance. 
         
         :Parameters:
-            #. pairsDistance (None, list, set, tuple): The minimum distance set to every pair of elements. 
+            #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
                A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
                First defined elements pair distance will cancel all redundant. 
                If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
@@ -128,54 +215,69 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         """
         if self.engine is None:
             newPairsDistance = None
-        elif pairsDistance is None:
+        elif pairsDistanceDefinition is None:
             newPairsDistance = {}
-            for el1 in self.engine.elements:
+            for el1 in self.__types:
                 newPairsDistance[el1] = {}
-                for el2 in self.engine.elements:
+                for el2 in self.__types:
                     newPairsDistance[el1][el2] = self.__defaultDistance
         else:
             newPairsDistance = {}
-            assert isinstance(pairsDistance, (list, set, tuple)), LOGGER.error("pairsDistance must be a list")
-            for pair in pairsDistance:
-                assert isinstance(pair, (list, set, tuple)), LOGGER.error("pairsDistance list items must be lists as well")
+            assert isinstance(pairsDistanceDefinition, (list, set, tuple)), LOGGER.error("pairsDistanceDefinition must be a list")
+            for pair in pairsDistanceDefinition:
+                assert isinstance(pair, (list, set, tuple)), LOGGER.error("pairsDistanceDefinition list items must be lists as well")
                 pair = list(pair)
-                assert len(pair)==3, LOGGER.error("pairsDistance list pair item list must have three items")
-                if pair[0] not in self.engine.elements:
-                    log.LocalLogger("fullrmc").logger.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[0])
+                assert len(pair)==3, LOGGER.error("pairsDistanceDefinition list pair item list must have three items")
+                if pair[0] not in self.__types:
+                    LOGGER.warn("pairsDistanceDefinition list pair item '%s' is not a valid engine type '%s', definition item omitted"%(pair[0], self.__typeDefinition) )
                     continue
-                if pair[1] not in self.engine.elements: 
-                    log.LocalLogger("fullrmc").logger.warn("pairsDistance list pair item '%s' is not a valid engine element, definition item omitted"%pair[1])
+                if pair[1] not in self.__types: 
+                    LOGGER.warn("pairsDistanceDefinition list pair item '%s' is not a valid engine type '%s', definition item omitted"%(pair[1], self.__typeDefinition) )
                     continue
                 # create elements keys
                 if not newPairsDistance.has_key(pair[0]):
                     newPairsDistance[pair[0]] = {}
                 if not newPairsDistance.has_key(pair[1]):
                     newPairsDistance[pair[1]] = {}
-                assert is_number(pair[2]), LOGGER.error("pairsDistance list pair item list third item must be a number")
+                assert is_number(pair[2]), LOGGER.error("pairsDistanceDefinition list pair item list third item must be a number")
                 distance = FLOAT_TYPE(pair[2])
-                assert distance>=0, LOGGER.error("pairsDistance list pair item list third item must be bigger than 0")
+                assert distance>=0, LOGGER.error("pairsDistanceDefinition list pair item list third item must be bigger than 0")
                 # set minimum distance
-                if newPairsDistancepair[0].has_key(pair[1]):
-                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
+                if newPairsDistance[pair[0]].has_key(pair[1]):
+                    LOGGER.warn("types pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
                 else:
                     newPairsDistance[pair[0]][pair[1]] = distance
-                if newPairsDistancepair[1].has_key(pair[0]):
-                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
+                if newPairsDistance[pair[1]].has_key(pair[0]) and pair[0]!=pair[1]:
+                    LOGGER.warn("types pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
                 else:
                     newPairsDistance[pair[1]][pair[0]] = distance
+            # complete not defined distances
+            for el1 in self.__types:
+                if not newPairsDistance.has_key(el1):
+                    newPairsDistance[el1] = {}
+                for el2 in self.__types:
+                    if not newPairsDistance.has_key(el2):
+                        newPairsDistance[el2] = {}
+                    if not newPairsDistance[el1].has_key(el2): 
+                        if newPairsDistance[el2].has_key(el1):
+                            newPairsDistance[el1][el2] = newPairsDistance[el2][el1]
+                        else:
+                            LOGGER.warn("types pair ('%s','%s') distance definition is not defined and therefore it is set to the default distance '%s'"%(el1, el2, self.__defaultDistance))
+                            newPairsDistance[el1][el2] = self.__defaultDistance
+                            newPairsDistance[el2][el1] = self.__defaultDistance
+                    assert newPairsDistance[el1][el2] == newPairsDistance[el2][el1], LOGGER.error("types '%s', and '%s' pair distance definitions are in conflict. (%s,%s, %s) and (%s,%s, %s)"%(el1,el2, el1,el2,newPairsDistance[el1][el2], el2,el1, newPairsDistance[el2][el1])) 
+                 
         # set new pairsDistance value
-        self.__pairsDistanceDefinition = pairsDistance
+        self.__pairsDistanceDefinition = pairsDistanceDefinition
         self.__pairsDistance = newPairsDistance
         if self.__pairsDistance is not None:
-            self.__lowerLimitArray = np.zeros((self.engine.numberOfElements, self.engine.numberOfElements, 1), dtype=FLOAT_TYPE) 
-            self.__upperLimitArray = np.zeros((self.engine.numberOfElements, self.engine.numberOfElements, 1), dtype=FLOAT_TYPE) 
-            for idx1 in range(self.engine.numberOfElements):
-                el1 = self.engine.elements[idx1]
-                for idx2 in range(self.engine.numberOfElements): 
-                    el1  = self.engine.elements[idx1]
+            self.__lowerLimitArray = np.zeros((self.__numberOfTypes, self.__numberOfTypes, 1), dtype=FLOAT_TYPE) 
+            self.__upperLimitArray = np.zeros((self.__numberOfTypes, self.__numberOfTypes, 1), dtype=FLOAT_TYPE) 
+            for idx1 in range(self.__numberOfTypes):
+                el1 = self.__types[idx1]
+                for idx2 in range(self.__numberOfTypes): 
+                    el2  = self.__types[idx1]
                     dist = self.__pairsDistance[el1][el2]
-                    assert dist == self.__pairsDistance[el2][el1], LOGGER.error("pairsDistance must be symmetric")
                     self.__upperLimitArray[idx1,idx2,0] = FLOAT_TYPE(dist)
                     self.__upperLimitArray[idx2,idx1,0] = FLOAT_TYPE(dist)
         else:
@@ -216,15 +318,15 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
         """
         if self.data is None:
-            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
+            LOGGER.warn("data must be computed first using 'compute_data' method.")
             return {}
         output = {}
-        for pair in self.__elementsPairs:
+        for pair in self.__typesPairs:
             output["intermd_%s-%s" % pair] = FLOAT_TYPE(0.0)
-        for pair in self.__elementsPairs:
+        for pair in self.__typesPairs:
             # get index of element
-            idi = self.engine.elements.index(pair[0])
-            idj = self.engine.elements.index(pair[1])
+            idi = self.__types.index(pair[0])
+            idj = self.__types.index(pair[1])
             # get mean value
             number        = self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0]
             distanceSum   = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
@@ -232,14 +334,15 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             if number != 0:
                 output["intermd_%s-%s" % pair] += FLOAT_TYPE((distanceSum-number*thresholdDist)**2) 
         return output    
-        
+    
+
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
         _,_,number,distanceSum = full_distances( boxCoords=self.engine.boxCoordinates,
                                                  basis=self.engine.basisVectors,
                                                  moleculeIndex = self.engine.moleculesIndexes,
-                                                 elementIndex = self.engine.elementsIndexes,
-                                                 numberOfElements = self.engine.numberOfElements,
+                                                 elementIndex = self.__typesIndexes,
+                                                 numberOfElements = self.__numberOfTypes,
                                                  lowerLimit=self.__lowerLimitArray,
                                                  upperLimit=self.__upperLimitArray,
                                                  interMolecular = True,
@@ -259,13 +362,12 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        
         _,_,numberM,distanceSumM = multiple_distances( indexes = indexes,
                                                        boxCoords=self.engine.boxCoordinates,
                                                        basis=self.engine.basisVectors,
                                                        moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.engine.elementsIndexes,
-                                                       numberOfElements = self.engine.numberOfElements,
+                                                       elementIndex = self.__typesIndexes,
+                                                       numberOfElements = self.__numberOfTypes,
                                                        lowerLimit=self.__lowerLimitArray,
                                                        upperLimit=self.__upperLimitArray,
                                                        allAtoms = True,
@@ -275,8 +377,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         _,_,numberF,distanceSumF = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
                                                    basis=self.engine.basisVectors,
                                                    moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.engine.elementsIndexes[indexes],
-                                                   numberOfElements = self.engine.numberOfElements,
+                                                   elementIndex = self.__typesIndexes[indexes],
+                                                   numberOfElements = self.__numberOfTypes,
                                                    lowerLimit=self.__lowerLimitArray,
                                                    upperLimit=self.__upperLimitArray,
                                                    countWithinLimits = True,
@@ -301,8 +403,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                                                        boxCoords=self.engine.boxCoordinates,
                                                        basis=self.engine.basisVectors,
                                                        moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.engine.elementsIndexes,
-                                                       numberOfElements = self.engine.numberOfElements,
+                                                       elementIndex = self.__typesIndexes,
+                                                       numberOfElements = self.__numberOfTypes,
                                                        lowerLimit=self.__lowerLimitArray,
                                                        upperLimit=self.__upperLimitArray,
                                                        allAtoms = True,
@@ -312,8 +414,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         _,_,numberF,distanceSumF = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
                                                    basis=self.engine.basisVectors,
                                                    moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.engine.elementsIndexes[indexes],
-                                                   numberOfElements = self.engine.numberOfElements,
+                                                   elementIndex = self.__typesIndexes[indexes],
+                                                   numberOfElements = self.__numberOfTypes,
                                                    lowerLimit=self.__lowerLimitArray,
                                                    upperLimit=self.__upperLimitArray,
                                                    countWithinLimits = True,
@@ -592,10 +694,10 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                 pair = list(pair)
                 assert len(pair)==4, LOGGER.error("pairsLimitsDefinition list pair item list must have four items")
                 if pair[0] not in self.__types:
-                    log.LocalLogger("fullrmc").logger.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[0])
+                    LOGGER.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[0])
                     continue
                 if pair[1] not in self.__types: 
-                    log.LocalLogger("fullrmc").logger.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[1])
+                    LOGGER.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[1])
                     continue
                 # create type keys
                 if not pairsLimitsDict.has_key(pair[0]):
@@ -610,11 +712,11 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                 assert upper>lower, LOGGER.error("pairsLimitsDefinition list pair item list fourth item must be bigger than the third item")
                 # set minimum distance
                 if pairsLimitsDict[pair[0]].has_key(pair[1]):
-                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
+                    LOGGER.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
                 else:
                     pairsLimitsDict[pair[0]][pair[1]] = (lower, upper)
                 if pairsLimitsDict[pair[1]].has_key(pair[0]):
-                    log.LocalLogger("fullrmc").logger.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
+                    LOGGER.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
                 else:
                     pairsLimitsDict[pair[1]][pair[0]] = (lower, upper)
         # complete pairsLimitsDict to all elements
@@ -701,7 +803,7 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
         """
         if self.data is None:
-            log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
+            LOGGER.warn("data must be computed first using 'compute_data' method.")
             return {}
         output = {}
         for pair in self.__typesPairs:

@@ -23,23 +23,34 @@ Inheritance diagram
 
 Welcoming videos
 ================    
-+---------------------------------------------------------+------------------------------+
-|.. raw:: html                                            | Molecular system full RMC    |  
-|                                                         | simulation. Groups are set to|
-|        <iframe width="580" height="315"                 | molecules and smart moves are|
-|        src="https://www.youtube.com/embed/untepXVc3BQ"  | applied. Translations along  |
-|        frameborder="0" allowfullscreen>                 | symmetry axes, rotations     |
-|        </iframe>                                        | about symmetry axes, etc.    |
-|                                                         |                              |
-+---------------------------------------------------------+------------------------------+
-|.. raw:: html                                            | Molecular system mere atomic |  
-|                                                         | RMC simulation. Covalent bond|
-|        <iframe width="580" height="315"                 | electron density polarization|
-|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"  | is modelled by allowing      |
-|        frameborder="0" allowfullscreen>                 | fullrmc to explore across    |
-|        </iframe>                                        | energy low correlation       |
-|                                                         | barriers.                    |
-+---------------------------------------------------------+------------------------------+
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Molecular system full RMC                    |  
+|                                                              | simulation. Groups are set to                |
+|        <iframe width="580" height="315"                      | molecules and smart moves are                |
+|        src="https://www.youtube.com/embed/untepXVc3BQ"       | applied. Translations along                  |
+|        frameborder="0" allowfullscreen>                      | symmetry axes, rotations                     |
+|        </iframe>                                             | about symmetry axes, etc.                    |
+|                                                              |                                              |
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Atomic binary Nickel-Titanium shape memory   |  
+|                                                              | alloy system phase transformation RMC        |
+|        <iframe width="580" height="315"                      | simulation. Random atomic translations are   |
+|        src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0" | enough to reproduce short range ordering. But|
+|        frameborder="0" allowfullscreen>                      | swapping atoms is necessary to fit long range|
+|        </iframe>                                             | atomic correlations.                         |
+|                                                              |                                              |
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Molecular system mere atomic                 |  
+|                                                              | RMC simulation. Covalent bond                |
+|        <iframe width="580" height="315"                      | electron density polarization                |
+|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"       | is modelled by allowing                      |
+|        frameborder="0" allowfullscreen>                      | fullrmc to explore across                    |
+|        </iframe>                                             | energy low correlation                       |
+|                                                              | barriers.                                    |
++--------------------------------------------------------------+----------------------------------------------+
+
+
+
 
 Brief Description
 =================

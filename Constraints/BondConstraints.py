@@ -69,7 +69,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
     @property
     def bondsMap(self):
         """ Get bonds map"""
-        return self.self.__bondsMap
+        return self.__bondsMap
     
     @property
     def bonds(self):

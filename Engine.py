@@ -272,12 +272,12 @@ class Engine(object):
         
     @property
     def elementsIndexes(self):
-        """ Get the defined elements indexes list. """
+        """ Get all atoms element index in elements list. """
         return self.__elementsIndexes
     
     @property
     def elements(self):
-        """ Get the defined elements set. """
+        """ Get sorted set of all existing atom elements. """
         return self.__elements
     
     @property
@@ -287,17 +287,17 @@ class Engine(object):
         
     @property
     def namesIndexes(self):
-        """ """
+        """ Get all atoms name index in names list"""
         return self.__namesIndexes
         
     @property
     def names(self):
-        """ Get the defined atom names set. """
+        """ Get sorted set of all existing atom names. """
         return self.__names
     
     @property
     def allNames(self):
-        """ Get all atoms names. """
+        """ Get all atoms name list. """
         return self.__allNames
         
     @property
@@ -317,7 +317,7 @@ class Engine(object):
         
     @property
     def numberOfElements(self):
-        """ Get the number of defined elements in the configuration. """
+        """ Get the number of different elements in the configuration. """
         return len(self.__elements)
      
     @property

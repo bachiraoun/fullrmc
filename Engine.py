@@ -11,10 +11,8 @@ inter-molecular-distances, etc.
 import os
 import time
 import sys
-import warnings
 import atexit
 import tempfile
-from collections import OrderedDict
 
 # external libraries imports
 import numpy as np
@@ -29,8 +27,9 @@ from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicB
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.transform_coordinates import transform_coordinates
 from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.Group import Group
+from fullrmc.Core.MoveGenerator import SwapGenerator
 from fullrmc.Core.GroupSelector import GroupSelector
 from fullrmc.Selectors.RandomSelectors import RandomSelector
 
@@ -66,6 +65,27 @@ class Engine(object):
             #. constraints (None, list): The list of constraints instances.
             #. tolerance (number): The runtime tolerance parameters. 
                It's the percentage of allowed unsatisfactory 'tried' moves. 
+      
+    
+    .. code-block:: python
+        
+        # import engine
+        from fullrmc.Engine import Engine
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # save engine
+        ENGINE.save("system.rmc")
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        # Re-define moves generators if needed ...
+        
+        # run engine for 10000 steps and save only at the end
+        ENGINE.run(numberOfSteps=10000, saveFrequency=10000, savePath="system.rmc")
+    
     """
     
     def __init__(self, pdb, boundaryConditions=None,
@@ -252,12 +272,12 @@ class Engine(object):
         
     @property
     def elementsIndexes(self):
-        """ Get the defined elements indexes list. """
+        """ Get all atoms element index in elements list. """
         return self.__elementsIndexes
     
     @property
     def elements(self):
-        """ Get the defined elements set. """
+        """ Get sorted set of all existing atom elements. """
         return self.__elements
     
     @property
@@ -267,17 +287,17 @@ class Engine(object):
         
     @property
     def namesIndexes(self):
-        """ """
+        """ Get all atoms name index in names list"""
         return self.__namesIndexes
         
     @property
     def names(self):
-        """ Get the defined atom names set. """
+        """ Get sorted set of all existing atom names. """
         return self.__names
     
     @property
     def allNames(self):
-        """ Get all atoms names. """
+        """ Get all atoms name list. """
         return self.__allNames
         
     @property
@@ -286,13 +306,18 @@ class Engine(object):
         return len(self.__names)
     
     @property
+    def numberOfAtoms(self):
+        """ Get the number of atoms in pdb."""
+        return len(self.__pdb)
+        
+    @property
     def numberOfAtomsPerName(self):
         """ Get the number of atoms per name dictionary. """
         return self.__numberOfAtomsPerName
         
     @property
     def numberOfElements(self):
-        """ Get the number of defined elements in the configuration. """
+        """ Get the number of different elements in the configuration. """
         return len(self.__elements)
      
     @property
@@ -373,13 +398,25 @@ class Engine(object):
               
     def export_pdb(self, path):
         """
-        Export a pdb file for the last configuration state
+        Export a pdb file of the last refined and save configuration state.
         
         :Parameters:
             #. path (string): the pdb file path.
         """
         self.pdb.export_pdb(path, coordinates=self.__realCoordinates, boundaryConditions=self.__boundaryConditions )
+    
+    def get_pdb(self):
+        """
+        get a pdb instance of the last refined and save configuration state.
         
+        :Returns:
+            #. pdb (pdbParser): the pdb instance.
+        """
+        pdb = self.pdb.get_copy()
+        pdb.set_coordinates(self.__realCoordinates)
+        pdb.set_boundary_conditions(self.__boundaryConditions)
+        return pdb
+                
     def set_tolerance(self, tolerance):
         """   
         Sets the runtime engine tolerance value.
@@ -429,7 +466,7 @@ class Engine(object):
         Add group to engine groups list.
         
         :Parameters:
-            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
+            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.
             #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
         """
         if isinstance(g, Group):
@@ -461,8 +498,10 @@ class Engine(object):
         Sets the engine groups of indexes.
         
         :Parameters:
-            #. groups (None, list): list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
-               If None, single atom groups of all atoms will be all automatically created.
+            #. groups (None, list): list of groups, where every group must be a Group instance or 
+               a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.\n
+               If None, single atom groups of all atoms will be all automatically created 
+               which is the same as using set_groups_as_atoms method.
         """
         self.__groups = []
         if groups is None:
@@ -491,6 +530,10 @@ class Engine(object):
                 self.add_group(g, broadcast=False)
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
+        
+    def set_groups_as_atoms(self):
+        """ Automatically set engine groups as single atom groups of all atoms. """
+        self.set_groups(None)
         
     def set_groups_as_molecules(self):
         """ Automatically set engine groups indexes according to molecules indexes. """
@@ -553,14 +596,25 @@ class Engine(object):
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
         
-    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines"):
+    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines", params=""):
         """ Visualize the last configuration using pdbParser visualize method.
         
         :Parameters:
             #. boxWidth (number): Visualize the simulation box by giving the lines width.
                If 0 then the simulation box is not visualized.
-            #. boxWidth (str): Specify the simulation box color.
-            #. representation(str): Choose representation method.
+            #. boxWidth (str): Choose the simulation box color among the following:\n
+               blue, red, gray, orange, yellow, tan, silver, green,
+               white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+               black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
+               blue3, violet, violet2, magenta, magenta2, red2, red3, 
+               orange2, orange3.
+            #. representation(str): Choose representation method among the following:\n
+               Lines, Bonds, DynamicBonds, HBonds, Points, 
+               VDW, CPK, Licorice, Beads, Dotted, Solvent.
+            #. params(str): Set the representation parameters:\n
+               Points representation accept only size parameter e.g. 5\n
+               CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
+               'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. 0.5 20 0.1 20
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
@@ -597,7 +651,7 @@ class Engine(object):
                 LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
         # representation
         fd.write("mol delrep 0 top\n")
-        fd.write("mol representation %s\n"%representation)
+        fd.write("mol representation %s %s\n"%(representation, params) )
         fd.write("mol delrep 0 top\n")
         fd.write('mol addrep top\n')
         #fd.write("sel default style VDW\n")
@@ -843,26 +897,42 @@ class Engine(object):
     
     def compute_chi_square(self, constraints, current=True):
         """
-        Computes the total chiSquare of the given constraints.
+        Computes the total chiSquare of the given the squared deviations of the constraints.
         
+        .. math::
+            \\chi^{2} = \\sum \\limits_{i}^{N} (\\frac{SD_{i}}{variance_{i}})^{2}
+          
+        Where:\n    
+        :math:`variance_{i}` is the variance value of the constraint i. \n
+        :math:`SD_{i}` the squared deviations of the constraint i defined as :math:`\\sum \\limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}` \n
+             
         :Parameters:
             #. constraints (list): All constraints used to calculate total chiSquare.
-            #. current (bool): If True it uses constraints chiSquare argument, 
-               False it uses constraint's afterMoveChiSquare argument.
+            #. current (bool): If True it uses constraints squaredDeviations argument, 
+               False it uses constraint's afterMoveSquaredDeviations argument.
         
         :Returns:
             #. totalChiSquare (list): The computed total chiSquare.
         """
         if current:
-            attr = "chiSquare"
+            attr = "squaredDeviations"
         else:
-            attr = "afterMoveChiSquare"
+            attr = "afterMoveSquaredDeviations"
         chis = []
         for c in constraints:
-            chi = getattr(c, attr)
-            assert chi is not None, LOGGER.error("chiSquare for constraint %s is not computed yet. Try to initialize constraint"%c)
-            chis.append(c.contribution*chi)
+            SD = getattr(c, attr)
+            assert SD is not None, LOGGER.error("constraint %s %s is not computed yet. Try to initialize constraint"%(c,attr))
+            chis.append(SD/c.varianceSquared)
         return np.sum(chis)
+    
+    def set_chi_square(self):
+        """
+        Computes and sets the total chiSquare of active constraints.
+        """
+        # get and initialize used constraints
+        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
+        # compute chiSquare
+        self.__chiSquare = self.compute_chi_square(_constraints, current=True)
         
     def get_used_constraints(self):
         """
@@ -871,44 +941,48 @@ class Engine(object):
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
         usedConstraints = []
         for c in self.__constraints:
             if c.used:
                 usedConstraints.append(c)
         # get EnhanceOnlyConstraints list
-        enhanceOnlyConstraints = []
+        rigidConstraints = []
         constraints = []
         for c in usedConstraints:
-            if isinstance(c, EnhanceOnlyConstraint):
-                enhanceOnlyConstraints.append(c)
+            if isinstance(c, RigidConstraint):
+                rigidConstraints.append(c)
             else:
                 constraints.append(c)
         # return constraints
-        return usedConstraints, constraints, enhanceOnlyConstraints
+        return usedConstraints, constraints, rigidConstraints
         
-    def initialize_used_constraints(self):
+    def initialize_used_constraints(self, force=False):
         """
         Calls get_used_constraints method, re-initializes constraints when needed and return them all.
         
+        :parameters:
+            #. force (bool): Whether to force initializing constraints regardless of their state.
+
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. EnhanceOnlyConstraint (list): All active EnhanceOnlyConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
         """
+        assert isinstance(force, bool), LOGGER.error("force must be boolean")
         # get used constraints
-        usedConstraints, constraints, enhanceOnlyConstraints = self.get_used_constraints()
+        usedConstraints, constraints, rigidConstraints = self.get_used_constraints()
         # initialize out-of-dates constraints
         for c in usedConstraints:
-            if c.state != self.__state:
+            if c.state != self.__state or force:
                 LOGGER.info("Initializing constraint data '%s'"%c.__class__.__name__)
                 c.compute_data()
                 c.set_state(self.__state)
                 if c.originalData is None:
                     c._set_original_data(c.data)
         # return constraints
-        return usedConstraints, constraints, enhanceOnlyConstraints
+        return usedConstraints, constraints, rigidConstraints
         
     def __runtime_get_number_of_steps(self, numberOfSteps):
         # check numberOfSteps
@@ -970,7 +1044,7 @@ class Engine(object):
         if _xyzFrequency is not None:
             _xyzfd = open(_xyzPath, 'a')
         # get and initialize used constraints
-        _usedConstraints, _constraints, _enhanceOnlyConstraints = self.initialize_used_constraints()
+        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
         if not len(_usedConstraints):
             LOGGER.warn("No constraints are used. Configuration will be randomize")
         # compute chiSquare
@@ -978,7 +1052,8 @@ class Engine(object):
         # initialize useful arguments
         _engineStartTime    = time.time()
         _lastSavedChiSquare = self.__chiSquare
-        _beforeMoveCoords   = None
+        _coordsBeforeMove   = None
+        _moveTried          = False
         # initialize group selector
         self.__groupSelector._runtime_initialize()
         
@@ -995,38 +1070,45 @@ class Engine(object):
             groupAtomsIndexes = group.indexes
             # get move generator
             groupMoveGenerator = group.moveGenerator
-            # get before move coordinates
-            if _beforeMoveCoords is None or not self.__groupSelector.isRefining:
-                _beforeMoveCoords = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            # get group atoms coordinates before applying move 
+            if isinstance(groupMoveGenerator, SwapGenerator):
+                groupAtomsIndexes = groupMoveGenerator.get_ready_for_move(groupAtomsIndexes)
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            elif _coordsBeforeMove is None or not self.__groupSelector.isRecurring:
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            elif self.__groupSelector.explore:
+                if _moveTried:
+                    _coordsBeforeMove = movedRealCoordinates
+            elif not self.__groupSelector.refine:
+                _coordsBeforeMove = np.array(self.__realCoordinates[groupAtomsIndexes], dtype=self.__realCoordinates.dtype)
+            #else:
+            #    raise Exception(LOGGER.critical("Unknown recurrence mode, unable to get coordinates before applying move."))
             # compute moved coordinates
-            #print self.__groupSelector.lastSelectedIndex
-            #print groupAtomsIndexes
-            #print np.sum(_beforeMoveCoords), np.sum(self.__realCoordinates[groupAtomsIndexes]),np.sum(_beforeMoveCoords-self.__realCoordinates[groupAtomsIndexes]), self.__groupSelector.isRefining
-            movedRealCoordinates = groupMoveGenerator.move(_beforeMoveCoords)
+            movedRealCoordinates = groupMoveGenerator.move(_coordsBeforeMove)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
-            ########################### compute enhanceOnlyConstraints ############################
+            ########################### compute rigidConstraints ############################
             rejectMove = False
-            for c in _enhanceOnlyConstraints:
+            for c in _rigidConstraints:
                 # compute before move
                 c.compute_before_move(indexes = groupAtomsIndexes)
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
-                # calculate rejectMove
-                rejectMove = c.should_step_get_rejected(c.afterMoveChiSquare)
+                # get rejectMove
+                rejectMove = c.should_step_get_rejected(c.afterMoveSquaredDeviations)
+                #print c.__class__.__name__, c.squaredDeviations, c.afterMoveSquaredDeviations, rejectMove
                 if rejectMove:
                     break
+            _moveTried = not rejectMove
             ############################## reject move before trying ##############################
             if rejectMove:
-                _moveTried = False
-                # enhanceOnlyConstraints reject move
-                for c in _enhanceOnlyConstraints:
+                # rigidConstraints reject move
+                for c in _rigidConstraints:
                     c.reject_move(indexes=groupAtomsIndexes)
                 # log generated move rejected before getting tried
                 LOGGER.log("move not tried","Generated move %i is not tried"%self.__tried)
             ###################################### try move #######################################
             else:
                 self.__tried += 1
-                _moveTried = True
                 for c in _constraints:
                     # compute before move
                     c.compute_before_move(indexes = groupAtomsIndexes)
@@ -1034,7 +1116,8 @@ class Engine(object):
                     c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
             ################################ compute new chiSquare ################################
                 newChiSquare = self.compute_chi_square(_constraints, current=False)
-                if len(_constraints) and (newChiSquare >= self.__chiSquare):
+                #if len(_constraints) and (newChiSquare >= self.__chiSquare):
+                if newChiSquare > self.__chiSquare:
                     if generate_random_float() > self.__tolerance:
                         rejectMove = True
                     else:
@@ -1068,7 +1151,7 @@ class Engine(object):
                 acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
                 LOGGER.log("move accepted","Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
             ##################################### save engine #####################################
-            if saveFrequency is not None:
+            if _saveFrequency is not None:
                 if not(step+1)%_saveFrequency:
                     if _lastSavedChiSquare==self.__chiSquare:
                         LOGGER.info("Save engine omitted because no improvement made since last save.")

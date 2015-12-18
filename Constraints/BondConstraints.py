@@ -15,10 +15,10 @@ from timeit import default_timer as timer
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.bonds import full_bonds
 
-class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class BondConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the bond between 2 defined atoms.
     
@@ -30,20 +30,46 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Second item the second atom index forming the bond, 
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+    
+    .. code-block:: python
+    
+        ## Water (H2O) molecule sketch
+        ## 
+        ##              O
+        ##            /   \      
+        ##         /   H2O   \  
+        ##       H1           H2 
+ 
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.BondConstraints import BondConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        BC = BondConstraint(engine=None)
+        ENGINE.add_constraints(BC)
+        
+        # define intra-molecular bonds 
+        BC.create_angles_by_definition( bondsDefinition={"H2O": [ ('O','H1', 0.88, 1.02),
+                                                                  ('O','H2', 0.88, 1.02) ]} )
+    
     """
     
-    def __init__(self, engine, bondsMap=None, rejectProbability=None):
+    def __init__(self, engine, bondsMap=None, rejectProbability=1):
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_bonds(bondsMap)
         
     @property
     def bondsMap(self):
         """ Get bonds map"""
-        return self.self.__bondsMap
+        return self.__bondsMap
     
     @property
     def bonds(self):
@@ -51,12 +77,12 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         return self.__bonds
         
     @property
-    def chiSquare(self):
-        """Get constraint's current chi square."""
+    def squaredDeviations(self):
+        """Get constraint's current squared deviation."""
         if self.data is None:
             return None
         else: 
-            return self.compute_chi_square(data = self.data)
+            return self.compute_squared_deviations(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -67,16 +93,16 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
-            self.__initialize_constraint__()        
+            self.reset_constraint()        
         
-    def should_step_get_rejected(self, chiSquare):
+    def should_step_get_rejected(self, squaredDeviations):
         """
-        Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+        Overloads 'RigidConstraint' should_step_get_rejected method.
+        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. chiSquare (number): not used in this case
+            #. squaredDeviations (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -164,7 +190,7 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
                                                 "lower"  : np.array(bonds["lower"]  , dtype = FLOAT_TYPE),
                                                 "upper"  : np.array(bonds["upper"]  , dtype = FLOAT_TYPE) }
         # reset constraint
-        self.__initialize_constraint__()
+        self.reset_constraint()
     
     def create_bonds_by_definition(self, bondsDefinition):
         """ 
@@ -252,20 +278,39 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # create bonds
         self.set_bonds(bondsMap=bondsMap)
     
-    def compute_chi_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{C} 
+            ( \\beta_{i} - \\beta_{i}^{min} ) ^{2} 
+            \\int_{0}^{\\beta_{i}^{min}} \\delta(\\beta-\\beta_{i}) d \\beta
+            +
+            ( \\beta_{i} - \\beta_{i}^{max} ) ^{2} 
+            \\int_{\\beta_{i}^{max}}^{\\infty} \\delta(\\beta-\\beta_{i}) d \\beta
+                               
+        Where:\n
+        :math:`C` is the total number of defined bonds constraints. \n
+        :math:`\\beta_{i}^{min}` is the bond constraint lower limit set for constraint i. \n
+        :math:`\\beta_{i}^{max}` is the bond constraint upper limit set for constraint i. \n
+        :math:`\\beta_{i}` is the bond length computed for constraint i. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{\\beta_{i}^{min}} \\delta(\\beta-\\beta_{i}) d \\beta` 
+        is equal to 1 if :math:`0 \\leqslant \\beta_{i} \\leqslant \\beta_{i}^{min}` and 0 elsewhere.\n
+        :math:`\\int_{\\beta_{i}^{max}}^{\\pi} \\delta(\\beta-\\beta_{i}) d \\beta` 
+        is equal to 1 if :math:`\\beta_{i}^{max} \\leqslant \\beta_{i} \\leqslant \\infty` and 0 elsewhere.\n
+
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute chiSquare.
+            #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        chiSquare = 0
+        squaredDeviations = 0
         for idx, bond in data.items():
-            chiSquare +=  np.sum(bond["reducedDistances"]**2)
-        FLOAT_TYPE( chiSquare )
+            squaredDeviations +=  np.sum(bond["reducedDistances"]**2)
+        FLOAT_TYPE( squaredDeviations )
 
     def get_constraint_value(self):
         """
@@ -286,8 +331,8 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        #self.set_chi_square( self.compute_chi_square(data = self.__data) )
+        # set squaredDeviations
+        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 
@@ -335,8 +380,8 @@ class BondConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move( dataDict )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
-        #self.set_after_move_chi_square( self.compute_chi_square(data = dataDict ) )
+        # compute squaredDeviations after move
+        #self.set_after_move_squared_deviations( self.compute_squared_deviations(data = dataDict ) )
   
     def accept_move(self, indexes):
         """ 

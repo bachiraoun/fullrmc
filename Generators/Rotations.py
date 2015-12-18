@@ -55,11 +55,32 @@ from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 class RotationGenerator(MoveGenerator):
     """ 
     Generates random rotational moves upon groups of atoms.
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, Group): The group instance.
         #. amplitude (number): the maximum rotation angle allowed in degrees.
            It must be strictly bigger than 0 and strictly smaller than 360.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Rotations import RotationGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random rotations.
+        # Maximum rotation amplitude is set to 5 degrees to all defined groups
+        for g in ENGINE.groups:
+            if len(g) >1:
+                g.set_move_generator( RotationGenerator(amplitude=5) )
+           
     """
     def __init__(self, group=None, amplitude=2):
         super(RotationGenerator, self).__init__(group=group)
@@ -139,6 +160,26 @@ class RotationAboutAxisGenerator(RotationGenerator):
         #. amplitude (number): The maximum allowed rotation angle in degrees.
            It must be strictly bigger than 0 and strictly smaller than 360.
         #. axis (list,set,tuple,numpy.ndarray): The rotational axis vector.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Rotations import RotationAboutAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random rotations about (1,1,1) a pre-defined axis.
+        # Maximum rotation amplitude is set to 5 degrees to all defined groups
+        for g in ENGINE.groups:
+            if len(g) >1:
+                g.set_move_generator( RotationAboutAxisGenerator(amplitude=5, axis=(1,1,1)) )
+                
     """
     
     def __init__(self, group=None, amplitude=2, axis=(1,0,0)):
@@ -150,7 +191,16 @@ class RotationAboutAxisGenerator(RotationGenerator):
     def axis(self):
         """ Get rotation axis."""
         return self.__axis
+    
+    def check_group(self, group):
+        """
+        Checks the generator's group.
         
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        return True, "" 
+            
     def set_axis(self, axis):
         """
         Sets the axis along which the rotation will be performed.
@@ -196,14 +246,34 @@ class RotationAboutAxisGenerator(RotationGenerator):
 class RotationAboutSymmetryAxisGenerator(RotationGenerator):    
     """ 
     Generates random rotational moves upon groups of atoms about one of their symmetry axis.
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint fullrmc engine.
         #. amplitude (number): The maximum rotation angle in degrees.
            It must be strictly bigger than 0 and strictly smaller than 360.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis 
-    """
     
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Rotations import RotationAboutSymmetryAxisGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random rotations about the second symmetry axis of each group.
+        # Maximum rotation amplitude is set to 5 degrees to all defined groups
+        for g in ENGINE.groups:
+            if len(g) >1:
+                g.set_move_generator( RotationAboutSymmetryAxisGenerator(amplitude=5, axis=1) )
+                
+    """
     def __init__(self, group=None, amplitude=2, axis=0):
         super(RotationAboutSymmetryAxisGenerator, self).__init__(group=group, amplitude=amplitude)
         # set amplitude
@@ -258,14 +328,34 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
 class RotationAboutSymmetryAxisPath(PathGenerator):    
     """ 
     Generates rotational moves upon groups of atoms about one of their symmetry axis.
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, fullrmc.Engine): The constraint fullrmc engine.
         #. axis (integer): Must be 0,1 or 2 for respectively the main, secondary or tertiary symmetry axis.
         #. path (List): list of angles.
         #. randomize (boolean): Whether to pull moves randomly from path or pull moves in order at every step.
-    """
     
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Rotations import RotationAboutSymmetryAxisPath
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to pre-defined rotations about the second symmetry axis of each group.
+        angles = [-0.1, -0.5, -0.05, 0.5, 0.01, 2, 3, 1, -3]
+        for g in ENGINE.groups:
+            if len(g) >1:
+                g.set_move_generator( RotationAboutSymmetryAxisPath(axis=1, path=angles) )
+                
+    """
     def __init__(self, group=None,  axis=0, path=None, randomize=False):
         # initialize PathGenerator
         PathGenerator.__init__(self, group=group, path=path, randomize=randomize)
@@ -363,6 +453,7 @@ class OrientationGenerator(MoveGenerator):
     """ 
     Generates rotational moves upon groups of atoms to align and orient along an axis.
     Orientation rotations are computed randomly allowing offset angle between grouAxis and orientationAxis 
+    Only groups of more than 1 atom are accepted.
     
     :Parameters:
         #. group (None, Group): The group instance.
@@ -381,6 +472,27 @@ class OrientationGenerator(MoveGenerator):
            If True, orientationAxis will be flipped forcing anti-parallel orientation.
            If False, orientationAxis will not be flipped forcing parallel orientation.
            If None, no flipping is forced, flipping can be set randomly to True or False during run time execution.     
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Rotations import OrientationGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to orientations of each group third symmetry axis 
+        # towards the (-1,0,2) the predefined axis within maximum 5 degrees.
+        for g in ENGINE.groups:
+            if len(g) >1:
+                g.set_move_generator( OrientationGenerator(maximumOffsetAngle=5, 
+                                                           groupAxis={"symmetry":2},
+                                                           orientationAxis={"fixed":(-1,0,2)}) )
     """
     def __init__(self, group=None, maximumOffsetAngle=10, groupAxis={"symmetry":0}, orientationAxis={"fixed":(1,0,0)}, flip=None):
         super(OrientationGenerator, self).__init__(group=group)

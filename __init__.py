@@ -1,12 +1,57 @@
 """ 
+Inheritance diagram
+===================  
+.. inheritance-diagram:: fullrmc.Engine.Engine
 
-.. raw:: html
+.. inheritance-diagram:: fullrmc.Core.Group.Group
+    
+.. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
+                         fullrmc.Selectors.OrderedSelectors
+                         fullrmc.Generators.Translations 
+                         fullrmc.Generators.Rotations 
+                         fullrmc.Generators.Swaps
+                         fullrmc.Generators.Agitations
+                         fullrmc.Constraints.CoordinationNumberConstraints
+                         fullrmc.Constraints.DistanceConstraints
+                         fullrmc.Constraints.BondConstraints
+                         fullrmc.Constraints.AngleConstraints
+                         fullrmc.Constraints.ImproperAngleConstraints
+                         fullrmc.Constraints.PairDistributionConstraints
+                         fullrmc.Constraints.PairCorrelationConstraints
+    :parts: 1
+    
 
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/untepXVc3BQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco" 
-        frameborder="0" allowfullscreen>
-        </iframe>
+Welcoming videos
+================    
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Molecular system full RMC                    |  
+|                                                              | simulation. Groups are set to                |
+|        <iframe width="580" height="315"                      | molecules and smart moves are                |
+|        src="https://www.youtube.com/embed/untepXVc3BQ"       | applied. Translations along                  |
+|        frameborder="0" allowfullscreen>                      | symmetry axes, rotations                     |
+|        </iframe>                                             | about symmetry axes, etc.                    |
+|                                                              |                                              |
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Atomic binary Nickel-Titanium shape memory   |  
+|                                                              | alloy system phase transformation RMC        |
+|        <iframe width="580" height="315"                      | simulation. Random atomic translations are   |
+|        src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0" | enough to reproduce short range ordering. But|
+|        frameborder="0" allowfullscreen>                      | swapping atoms is necessary to fit long range|
+|        </iframe>                                             | atomic correlations.                         |
+|                                                              |                                              |
++--------------------------------------------------------------+----------------------------------------------+
+|.. raw:: html                                                 | Molecular system mere atomic                 |  
+|                                                              | RMC simulation. Covalent bond                |
+|        <iframe width="580" height="315"                      | electron density polarization                |
+|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"       | is modelled by allowing                      |
+|        frameborder="0" allowfullscreen>                      | fullrmc to explore across                    |
+|        </iframe>                                             | energy low correlation                       |
+|                                                              | barriers.                                    |
++--------------------------------------------------------------+----------------------------------------------+
 
+
+Brief Description
+=================
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
 fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
 model is adjusted until its atoms position have the greatest consistency with a set of experimental data.\n
@@ -199,12 +244,80 @@ the Engine is run for additional several hours to refine atoms positions separat
 |   Tetrahydrofuran randomly generated.  |   calculated before any fitting.       |   calculated after about 20 hours of   |
 |                                        |                                        |   Engine runtime.                      |
 +----------------------------------------+----------------------------------------+----------------------------------------+
+
+
+Installation
+============ 
+fullrmc requires:
+#. Python (>= 2.6 or < 3),
+#. NumPy (lower version tested is 1.7.1),
+#. cython (lower version tested is 0.21.1),
+#. matplotlib (lower version tested is 1.4),
+#. pdbParser (lower version tested is 0.1.2),
+#. pysimplelog (lower version tested is 0.1.7).
+
+**Installation using pip:**\n
+numpy and cython must be installed and updated manually. 
+   
+   .. code-block:: bash  
+    
+       pip install -U "numpy>=1.7.1"
+       pip install -U "cython>=0.21.1"
+       
+When you already have a working installation of numpy and cython.
+   
+   .. code-block:: bash  
+    
+       pip install fullrmc
+
+**Installation by cloning github repository:**\n
+   * Ensure all fullrmc required packages are installed.
+    
+    .. code-block:: python
+        
+        # check whether all packages are already installed
+        import numpy
+        assert numpy.__version__ >= '1.7.1', 'numpy installation must be upgraded'
+        import cython
+        assert cython.__version__ >= '0.21.1', 'cython installation must be upgraded'
+        import pdbParser
+        assert pdbParser.__version__ >= '0.1.2', 'pdbParser installation must be upgraded'
+        import pysimplelog
+        assert pysimplelog.__version__ >= '0.1.7', 'pysimplelog installation must be upgraded'
+        import matplotlib
+        assert matplotlib.__version__ >= '1.4', 'matplotlib installation must be upgraded'
+           
+   * Locate python's site-packages using:
+     
+     .. code-block:: python
+     
+        import os, site
+        os.path.join(os.path.dirname(os.__file__), 'site_packages')
+
+   * Navigate to site_packages folder and clone git repository:\n
+   
+    .. code-block:: bash
+       
+       git clone https://github.com/bachiraoun/fullrmc.git   
+
+   * Compile fullrmc Extension files. Change directory to .../site_packages/fullrmc/Extensions:\n
+      
+    .. code-block:: bash  
+    
+        python setup.py build_ext --inplace 
+        
 """
+# get package info
+from __pkginfo__ import __version__, __author__, __email__
 
-__version__ = 1.0
+def get_version():
+    return __version__ 
 
+def get_author():
+    return __author__     
  
- 
- 
- 
- 
+def get_email():
+    return __email__   
+    
+    
+    

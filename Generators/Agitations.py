@@ -46,6 +46,7 @@ class DistanceAgitationGenerator(MoveGenerator):
     both atoms away from each other or closer to each other along the direction line between them.
     This is mainly used to shake two atoms bond distance by increasing and decreasing 
     the bond length.
+    Only groups of length 2 are accepted.
      
     :Parameters:
         #. group (None, Group): The group instance. It must contain exactly 2 indexes.
@@ -60,6 +61,25 @@ class DistanceAgitationGenerator(MoveGenerator):
            the other succumb the agitation to adjust the distance. For instance in a C-H group it can be useful and 
            logical to adjust the bond length by moving only the hydrogen atom along the bond direction.
                    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Agitations import DistanceAgitationGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random agitations of distance seperating two atoms.
+        # Maximum agitation amplitude is set to to 0.5A
+        for g in ENGINE.groups:
+            if len(g)==2:
+                g.set_move_generator( DistanceAgitationGenerator(amplitude=0.5) )
+                
     """
     def __init__(self, group=None, amplitude=0.2, symmetric=True, shrink=None, agitate=(True,True)):
         super(DistanceAgitationGenerator, self).__init__(group=group)
@@ -202,7 +222,8 @@ class AngleAgitationGenerator(MoveGenerator):
     central atom will always remain fixed. Distances between left/right and central atoms will remain
     unchanged. This is mainly used to shake bonded atoms angles by increasing and decreasing 
     the bond length.
-     
+    Only groups of length 3 are accepted.
+    
     :Parameters:
         #. group (None, Group): The group instance. It must contain exactly three indexes in respective
            order (central, left, right) atoms indexes.
@@ -215,7 +236,26 @@ class AngleAgitationGenerator(MoveGenerator):
         #. agitate (tuple): It's a tuple of two boolean values for respectively (left, right) atoms, 
            at least one of them must be True. Whether to agitate the left atom, the right or both. 
            This is useful to set an atom fixed while only the other succumb the agitation to adjust the angle.
-                   
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Generators.Agitations import AngleAgitationGenerator
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups selector if needed ...
+        
+        # set moves generators to random agitations of the angle formed between
+        # one central atom and other two. Maximum agitation amplitude is set to to 10.
+        for g in ENGINE.groups:
+            if len(g)==3:
+                g.set_move_generator( AngleAgitationGenerator(amplitude=10) )
+                
     """
     def __init__(self, group=None, amplitude=2, symmetric=True, shrink=None, agitate=(True,True)):
         super(AngleAgitationGenerator, self).__init__(group=group)

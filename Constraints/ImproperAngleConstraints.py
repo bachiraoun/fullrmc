@@ -15,10 +15,10 @@ from timeit import default_timer as timer
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, EnhanceOnlyConstraint
+from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.improper_angles import full_improper_angles
 
-class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
+class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
     The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.
@@ -34,13 +34,45 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
                #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
                #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
-        #. rejectProbability (None, numpy.ndarray): rejection probability numpy.array.
-           If None, rejectProbability will be automatically generated to 1 for all step where chiSquare increase.
+        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+    
+    .. code-block:: python
+        
+        ## Tetrahydrofuran (THF) molecule sketch
+        ## 
+        ##              O
+        ##   H41      /   \      H11
+        ##      \  /         \  /
+        ## H42-- C4    THF    C1 --H12
+        ##        \  MOLECULE /
+        ##         \         /
+        ##   H31-- C3-------C2 --H21
+        ##        /         \\
+        ##     H32            H22 
+        ##
+ 
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        IAC = ImproperAngleConstraint(engine=None)
+        ENGINE.add_constraints(IAC)
+        
+        # define intra-molecular improper angles 
+        IAC.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
+                                                                    ('C3','O','C1','C4', -15, 15) ] })
+                                                                  
     """
     
-    def __init__(self, engine, anglesMap=None, rejectProbability=None):
+    def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint
-        EnhanceOnlyConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_angles(anglesMap)
         
@@ -60,12 +92,12 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         return self.__atomsLUAD
         
     @property
-    def chiSquare(self):
-        """ Get constraint's current chi square."""
+    def squaredDeviations(self):
+        """ Get constraint's current squared deviation."""
         if self.data is None:
             return None
         else: 
-            return self.compute_chi_square(data = self.data)
+            return self.compute_squared_deviations(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -76,16 +108,16 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed","update boundary conditions",):
-            self.__initialize_constraint__()        
+            self.reset_constraint()        
         
-    def should_step_get_rejected(self, chiSquare):
+    def should_step_get_rejected(self, squaredDeviations):
         """
-        Overloads 'EnhanceOnlyConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not chiSquare.
+        Overloads 'RigidConstraint' should_step_get_rejected method.
+        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. chiSquare (number): not used in this case
+            #. squaredDeviations (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -202,7 +234,7 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
                 lut = self.__atomsLUAD.get(idx, [] )
                 self.__atomsLUAD[INT_TYPE(idx)] = sorted(set(lut))
         # reset constraint
-        self.__initialize_constraint__()
+        self.reset_constraint()
     
     def create_angles_by_definition(self, anglesDefinition):
         """ 
@@ -297,20 +329,39 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         # create angles
         self.set_angles(anglesMap=anglesMap)
     
-    def compute_chi_square(self, data):
+    def compute_squared_deviations(self, data):
         """ 
-        Compute the chi square of data not satisfying constraint conditions. 
+        Compute the squared deviation of data not satisfying constraint conditions. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{C} 
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
+            +
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
+                               
+        Where:\n
+        :math:`C` is the total number of defined improper angles constraints. \n
+        :math:`\\theta_{i}^{min}` is the improper angle constraint lower limit set for constraint i. \n
+        :math:`\\theta_{i}^{max}` is the improper angle constraint upper limit set for constraint i. \n
+        :math:`\\theta_{i}` is the improper angle computed for constraint i. \n
+        :math:`\\delta` is the Dirac delta function. \n
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
+
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute chiSquare.
+            #. data (numpy.array): The constraint value data to compute squaredDeviations.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
-        chiSquare = 0
+        squaredDeviations = 0
         for idx, angle in data.items():
-            chiSquare +=  np.sum(angle["reducedAngles"]**2)
-        FLOAT_TYPE( chiSquare )
+            squaredDeviations +=  np.sum(angle["reducedAngles"]**2)
+        FLOAT_TYPE( squaredDeviations )
 
     def get_constraint_value(self):
         """
@@ -339,8 +390,8 @@ class ImproperAngleConstraint(EnhanceOnlyConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        #self.set_chi_square( self.compute_chi_square(data = self.__data) )
+        # set squaredDeviations
+        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 

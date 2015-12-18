@@ -24,14 +24,37 @@ class DefinedOrderSelector(GroupSelector):
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
            If None, order is set automatically to all groups indexes list.
-        #. recur (None, integer): Set number of times to recur.
-           If None, recur is equivalent to 0.
-           Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.
-    """
     
-    def __init__(self, engine, recur=None, order=None):
+    .. code-block:: python
+        
+        # import external libraries
+        import numpy as np
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.OrderedSelectors import DefinedOrderSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        ##### set the order of selection from closest to the origin to the further. #####
+        # compute groups centers
+        centers   = [np.sum(ENGINE.realCoordinates[g.indexes], axis=0)/len(g) for g in ENGINE.groups]
+        # compute distances to origin
+        distances = [np.sqrt(np.add.reduce(c**2)) for c in centers]
+        # compute increasing order
+        order     = np.argsort(distances)
+        # set group selector
+        ENGINE.set_group_selector( DefinedOrderSelector(ENGINE, order = order) )         
+    
+    """
+    def __init__(self, engine, order=None):
         # initialize GroupSelector
-        super(DefinedOrderSelector, self).__init__(engine=engine, recur=recur)
+        super(DefinedOrderSelector, self).__init__(engine=engine)
         # set order
         self.set_order(order)
         # initialize selector
@@ -118,9 +141,6 @@ class DirectionalOrderSelector(DefinedOrderSelector):
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
-        #. recur (None, integer): Set number of times to recur.
-           If None, recur is equivalent to 0.
-           Recurrence property is only used when the selector instance is wrapped with a RecursiveGroupSelector.
         #. center (None, list, set, tuple, numpy.ndarray): The center of expansion.
            If None, the center is automatically set to the origin (0,0,0).
         #. expand (bool): Whether to set the order from the the further to the closest 
@@ -158,15 +178,34 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         frameborder="0" allowfullscreen>
         </iframe>
        
-    """
     
-    def __init__(self, engine, recur=None, center=None, expand=True,
+    .. code-block:: python
+        
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # Add constraints ...
+        # Re-define groups if needed ...
+        # Re-define groups generators as needed ...
+        
+        # Set the order of selection from further to the closest to a (1,1,1).
+        # Automatically adjust the groups move generators allowing modulation of amplitudes.
+        ENGINE.set_group_selector( DirectionalOrderSelector(ENGINE, 
+                                                            center = (1,1,1),
+                                                            adjustMoveGenerators=True) )         
+        
+    """
+    def __init__(self, engine, center=None, expand=True,
                        adjustMoveGenerators=False,
                        generatorsParams={"TG":{"amplitude":0.1, "damping":0.1, "angle":90},
                                          "RG":{"amplitude":10}}):
         # initialize GroupSelector
-        super(DirectionalOrderSelector, self).__init__(engine=engine, recur=recur, order=None)
-        # set order
+        super(DirectionalOrderSelector, self).__init__(engine=engine, order=None)
+        # set center
         self.set_center(center)
         # set expand
         self.set_expand(expand)  
@@ -310,8 +349,11 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         Set expand.
         
         :Parameters:
-            #. expand (bool): Whether to set the order from the the further to the closest 
-               or from the closest to the further if it is set to False.   
+            #. adjustMoveGenerators (bool): If set to True, all groups move generator instances will
+               be changed automatically at engine runtime to a MoveGeneratorCollector of 
+               TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
+               Generators parameters can be given by generatorsParams. It is advisable to 
+               set this flag to True in order to take advantage of an automatic and intelligent directional moves.  
         """  
         assert isinstance(adjustMoveGenerators, bool), LOGGER.error("adjustMoveGenerators must be boolean")
         self.__adjustMoveGenerators = adjustMoveGenerators

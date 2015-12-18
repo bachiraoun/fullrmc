@@ -22,40 +22,78 @@ from fullrmc.Core.pair_distribution_histogram import single_pair_distribution_hi
 
 class PairDistributionConstraint(ExperimentalConstraint):
     """
-    It controls the total pair distribution function (pdf) of the system noted as G(r). 
-    The pair distribution function is the directly calculated quantity from a powder diffraction
-    experiments. It is obtained from the experimentally determined total-scattering structure 
-    function S(Q), by a Sine Fourier transform. pdf tells the probability of finding 
-    atomic pairs separated by the real space distance r.
-    The mathematical definition of the G(r) is:
+    It controls the total reduced pair distribution function (pdf) of the system noted as G(r). 
+    The pair distribution function is directly calculated from powder diffraction experimental
+    data. It is obtained from the experimentally determined total-scattering structure 
+    function S(Q), by a Sine Fourier transform according to. 
+    
+    .. math::
+        
+        G(r) = \\frac{2}{\\pi} \\int_{0}^{\\infty} Q [S(Q)-1]sin(Qr)dQ \n
+        S(Q) = 1+ \\frac{1}{Q} \\int_{0}^{\\infty} G(r) sin(Qr) dr
+        
+    Theoretically G(r) oscillates around zero. Also :math:`G(r) \\rightarrow 0` when :math:`r \\rightarrow \\infty`
+    and :math:`G(r) \\rightarrow 0` when :math:`r \\rightarrow 0` with a slope of :math:`-4\\pi\\rho_{0}` 
+    where :math:`\\rho_{0}` is the number density of the material. \n
+    Model wise, G(r) is computed after calculating the so called Pair Correlation Function 
+    noted as g(r). The relation between G(r) and g(r) is given by\n
 
     .. math::
         
-        G(r) = \\frac{1}{\\pi} \\int_{0}^{\\infty} Q [S(Q)-1]sin(Qr)dQ = 4 \\pi [\\rho(r) - \\rho_{0}] \n
-        G(r) = \\frac{R(r)}{r} - 4 \\pi r \\rho_{0} \n
-        R(r) = 4 \\pi r^2 \\rho(r) =\\frac{1}{N} \\sum \\limits_{i}^{N} \\sum \\limits_{j \\neq i}^{N} \\frac{b_i b_j}{\\langle b \\rangle ^2} \\delta ( r - r_{ij} )  
+        G(r) = 4 \\pi r (\\rho_{r} - \\rho_{0})
+             = 4 \\pi \\rho_{0} r (g(r)-1) 
+             = \\frac{R(r)}{r} - 4 \\pi \\rho_{0}
+        
+    :math:`\\rho_{r}` is the number density fluctuation at distance :math:`r`. 
+    The computation of g(r) is straightforward from an atomistic model and it is given
+    by :math:`g(r)=\\rho_{r} / \\rho_{0}`.\n
     
+    :math:`R(r)` is called the radial distribution function. :math:`R(r)` is a very 
+    important function because it describes directly the system's structure since
+    :math:`R(r)dr` gives the number of atoms in an annulus of thickness dr at distance 
+    r from another atom. Therefore, the coordination number, or the number 
+    of neighbors within the distances interval :math:`[a,b]`
+    is given by :math:`\\int_{a}^{b} R(r) dr`\n
+    
+    Finally, g(r) is calculated after binning all pair atomic distances into a weighted
+    histograms of values :math:`n(r)` from which local number densities are computed as in the following.
+    
+    .. math::
+        g(r) = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{\\rho_{i,j}(r)}{\\rho_{0}} 
+             = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} 
+           
     Where:\n
     :math:`Q` is the momentum transfer. \n
     :math:`r` is the distance between two atoms. \n
-    :math:`\\rho(r)` is the sperical average defined as :math:`\\int n(r^{'}).n(r-r^{'}) dr`. \n
-    :math:`\\rho_{0}` is the  average number density of the samples. \n
+    :math:`\\rho_{i,j}(r)` is the pair density function of atoms i and j. \n
+    :math:`\\rho_{0}` is the  average number density of the system. \n
+    :math:`w_{i,j}` is the relative weighting of atom types i and j. \n
     :math:`R(r)` is the radial distribution function (rdf). \n
     :math:`N` is the total number of atoms. \n
-    :math:`b_i` is the scattering length for atom i. \n
-    :math:`r_{ij}` is the distance between atoms i and j. \n
-    :math:`\\langle b \\rangle` is the average scattering length over all atoms  \n
-    :math:`\\sum \\limits_{j \\neq i}^{N} \\delta ( r - r_{ij} )` is the probability density 
-    of some atoms being r distant from each other.
+    :math:`V` is the volume of the system. \n
+    :math:`n_{i,j}(r)` is the number of atoms i neighbouring j at a distance r. \n
+    :math:`v(r)` is the annulus volume at distance r and of thickness dr. \n
+    :math:`N_{i,j}` is the total number of atoms i and j in the system. \n
 
-    **NB**: pair distribution function G(r) and the pair correlation function g(r) are directly 
-    related as in the following :math:`G(r)=r(g(r)-1)`
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+           important in order to get a reasonable and plausible modal.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
+           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         #. weighting (string): The elements weighting.
         #. scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.
+        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+           It must be a list of exactly three entries.\n
+           1. The frequency in number of generated moves of finding the best scale factor. 
+              If 0 frequency is given, it means that the scale factor is fixed.
+           2. The minimum allowed scale factor value.
+           3. The maximum allowed scale factor value.
         #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
            of the system prior to comparing it with the experimental data. In general, the experimental pair
            distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
@@ -65,18 +103,49 @@ class PairDistributionConstraint(ExperimentalConstraint):
            If None, the limits will be automatically set the the min and max distance of the experimental data.
            If not None, a tuple of exactly two items where the first is the minimum distance or None 
            and the second is the maximum distance or None.
+    
+    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
+    untouched and the limits minimum and maximum won't be checked.
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
+        
+        # create engine 
+        ENGINE = Engine(pdb='system.pdb')
+        
+        # create and add constraint
+        PDC = PairDistributionConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
+        ENGINE.add_constraints(PDC)
+    
     """
-    def __init__(self, engine, experimentalData, weighting="atomicNumber", scaleFactor=1.0, windowFunction=None, limits=None):
+    def __init__(self, engine, experimentalData, dataWeights=None, weighting="atomicNumber", 
+                       scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
+                       windowFunction=None, limits=None):
         self.__limits = limits
         # initialize constraint
-        super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData)
+        super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
         # set elements weighting
         self.set_weighting(weighting)
         # set window function
         self.set_window_function(windowFunction)
-        # set window function
-        self.set_scale_factor(scaleFactor)
         
+    def __set_used_data_weights(self, minDistIdx=None, maxDistIdx=None):
+        # set used dataWeights
+        if self.dataWeights is None:
+            self._usedDataWeights = None
+        else:
+            if minDistIdx is None:
+                minDistIdx = 0
+            if maxDistIdx is None:
+                maxDistIdx = self.experimentalData.shape[0]
+            self._usedDataWeights  = np.copy(self.dataWeights[minDistIdx:maxDistIdx+1])
+            assert np.sum(self._usedDataWeights), LOGGER.error("used points dataWeights are all zero.")
+            self._usedDataWeights /= FLOAT_TYPE( np.sum(self._usedDataWeights) )
+            self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
+            
     @property
     def bin(self):
         """ Gets the experimental data distances bin. """
@@ -133,11 +202,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
         return self.__windowFunction
     
     @property
-    def scaleFactor(self):
-        """ Get the scaleFactor. """
-        return self.__scaleFactor
-    
-    @property
     def limits(self):
         """ The histogram computation limits."""
         return self.__limits
@@ -161,7 +225,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 self.__elementsPairs   = None
                 self.__weightingScheme = None
         elif message in("update boundary conditions",):
-            self.__initialize_constraint__()
+            self.reset_constraint()
             
     def set_weighting(self, weighting):
         """
@@ -188,21 +252,13 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if windowFunction is not None:
             assert isinstance(windowFunction, np.ndarray), LOGGER.error("windowFunction must be a numpy.ndarray")
             assert windowFunction.dtype.type is FLOAT_TYPE, LOGGER.error("windowFunction type must be %s"%FLOAT_TYPE)
-            assert len(windowFunction.shape) == 1, LOGGER.error("experimentalData must be of dimension 2")
+            assert len(windowFunction.shape) == 1, LOGGER.error("windowFunction must be of dimension 1")
+            assert len(windowFunction) <= self.experimentalData.shape[0], LOGGER.error("windowFunction length must be smaller than experimental data")
             # normalize window function
             windowFunction /= np.sum(windowFunction)
+        # check window size
         # set windowFunction
         self.__windowFunction = windowFunction
-    
-    def set_scale_factor(self, scaleFactor):
-        """
-        Sets the scale factor.
-        
-        :Parameters:
-             #. scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.
-        """
-        assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
-        self.__scaleFactor = FLOAT_TYPE(scaleFactor)
     
     def set_experimental_data(self, experimentalData):
         """
@@ -217,6 +273,29 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set limits
         self.set_limits(self.__limits)
     
+    def set_data_weights(self, dataWeights):
+        """
+        Set experimental data points weight.
+        
+        :Parameters: 
+        
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+           important in order to get a reasonable and plausible modal.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
+           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
+        """
+        super(PairDistributionConstraint, self).set_data_weights(dataWeights=dataWeights)
+        self.__set_used_data_weights()
+        
+    def compute_and_set_squared_deviations(self):
+        """ Computes and sets the constraint's squaredDeviations."""
+        # set squaredDeviations
+        totalPDF = self.get_constraint_value()["pdf_total"]
+        self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPDF))
+        
     def set_limits(self, limits):
         """
         Set the histogram computation limits.
@@ -255,27 +334,24 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set minimumDistance and maximumDistance 
         self.__minimumDistance = FLOAT_TYPE(self.experimentalData[minDistIdx,0] - self.__bin/2. )
         self.__maximumDistance = FLOAT_TYPE(self.experimentalData[maxDistIdx,0] + self.__bin/2. )
-        # normalize limits indexes
+        # get histogram size    
+        self.__histogramSize = INT_TYPE((self.__maximumDistance-self.__minimumDistance)/self.__bin)
+        # get histogram edges
+        self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+1)], dtype=FLOAT_TYPE)       
+        self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
+        self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        # set limits indexes for range
         if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
             minDistIdx = self.experimentalData.shape[0]
         if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
             maxDistIdx = self.experimentalData.shape[0]
-        # get histogram size    
-        self.__histogramSize = INT_TYPE(maxDistIdx-minDistIdx)
-        # get histogram edges
-        self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+INT_TYPE(1))], dtype=FLOAT_TYPE)       
-        self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
-        self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
-        # set experimental
-        if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
-            minDistIdx = self.experimentalData.shape[0] + 1
-        if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
-            maxDistIdx = self.experimentalData.shape[0] + 1
-        self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx,0]
-        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx,1] 
+        self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx+1,0]
+        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx+1,1] 
         # check distances and shells
         for diff in self.__shellsCenter-self.__experimentalDistances:
             assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")
+        # set used dataWeights
+        self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)   
         # reset constraint
         self.reset_constraint()
         
@@ -301,23 +377,79 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # data format is correct
         return True, ""
 
-    def compute_chi_square(self, data):
+    def compute_squared_deviations(self, modelData):
         """ 
-        Compute the chi square between data and the experimental one. 
+        Compute the squared deviation between modal computed data and the experimental ones. 
         
+        .. math::
+            SD = \\sum \\limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}
+         
+        Where:\n
+        :math:`N` is the total number of experimental data points. \n
+        :math:`W_{i}` is the data point weight. It becomes equivalent to 1 when dataWeights is set to None. \n
+        :math:`Y(X_{i})` is the experimental data point :math:`X_{i}`. \n
+        :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
+
         :Parameters:
-            #. data (numpy.array): The data to compare with the experimental one and compute the chi square.
+            #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.
             
         :Returns:
-            #. chiSquare (number): The calculated chiSquare multiplied by the contribution factor of the constraint.
+            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
         # compute difference
-        diff = self.__experimentalPDF-data
-        # return chi square
-        return np.add.reduce((diff)**2)*self.contribution
+        diff = self.__experimentalPDF-modelData
+        # return squared deviation
+        if self._usedDataWeights is None:
+            return np.add.reduce((diff)**2)
+        else:
+            return np.add.reduce(self._usedDataWeights*((diff)**2))
         
+    def __get_total_Gr(self, data):
+        """
+        This method is created just to speed up the computation of the total gr upon fitting.
+        """
+        #import time
+        #startTime = time.clock()
+        Gr = np.zeros(self.__histogramSize, dtype=np.float32)
+        for pair in self.__elementsPairs:
+            # get weighting scheme
+            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
+            if wij is None:
+                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
+            # get number of atoms per element
+            ni = self.engine.numberOfAtomsPerElement[pair[0]]
+            nj = self.engine.numberOfAtomsPerElement[pair[1]]
+            # get index of element
+            idi = self.engine.elements.index(pair[0])
+            idj = self.engine.elements.index(pair[1])
+            # get Nij
+            if idi == idj:
+                Nij = ni*(ni-1)/2.0 
+                Dij = Nij/self.engine.volume  
+                nij = data["intra"][idi,idj,:]+data["inter"][idi,idj,:]
+                Gr += wij*nij/Dij      
+            else:
+                Nij = ni*nj
+                Dij = Nij/self.engine.volume
+                nij = data["intra"][idi,idj,:]+data["intra"][idj,idi,:] + data["inter"][idi,idj,:]+data["inter"][idj,idi,:]  
+                Gr += wij*nij/Dij
+        # Devide by shells volume
+        Gr /= self.shellsVolumes
+        # compute total G(r)
+        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
+        Gr   = (4.*np.pi*self.__shellsCenter*rho0)*( Gr-1)
+        # Multiply by scale factor
+        self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr, self._usedDataWeights)
+        Gr *= self._fittedScaleFactor
+        # convolve total with window function
+        if self.__windowFunction is not None:
+            Gr = np.convolve(Gr, self.__windowFunction, 'same')
+        #t = time.clock()-startTime
+        #print "%.7f(s) -->  %.7f(Ms)"%(t, 1000000*t)
+        return Gr
+    
     def _get_constraint_value(self, data):
-        ###################### THIS SHOULD BE OPTIMIZED ######################
+        # http://erice2011.docking.org/upload/Other/Billinge_PDF/03-ReadingMaterial/BillingePDF2011.pdf    page 6
         #import time
         #startTime = time.clock()
         output = {}
@@ -325,37 +457,43 @@ class PairDistributionConstraint(ExperimentalConstraint):
             output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
             output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
             output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-        output["pdf_total"] = np.zeros(self.__histogramSize, dtype=np.float32)
+        gr = np.zeros(self.__histogramSize, dtype=np.float32)
         for pair in self.__elementsPairs:
             # get weighting scheme
-            w = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
-            if w is None:
-                w = self.__weightingScheme[pair[1]+"-"+pair[0]]
+            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
+            if wij is None:
+                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
             # get number of atoms per element
             ni = self.engine.numberOfAtomsPerElement[pair[0]]
             nj = self.engine.numberOfAtomsPerElement[pair[1]]
             # get index of element
             idi = self.engine.elements.index(pair[0])
             idj = self.engine.elements.index(pair[1])
-            # get nij
+            # get Nij
             if idi == idj:
-                nij = ni*(ni-1)/2.0 
+                Nij = ni*(ni-1)/2.0 
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] 
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:]                
             else:
-                nij = ni*nj
+                Nij = ni*nj
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
+            # compute g(r)
+            nij = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
+            dij = nij/self.__shellsVolumes
+            Dij = Nij/self.engine.volume
+            gr += wij*dij/Dij
             # calculate intensityFactor
-            intensityFactor = (self.engine.volume*w)/(nij*self.__shellsVolumes)
+            intensityFactor = (self.engine.volume*wij)/(Nij*self.__shellsVolumes)
             # divide by factor
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
             output["rdf_total_%s-%s" % pair]  = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
-            output["pdf_total_%s-%s" % pair]  = output["rdf_total_%s-%s" % pair]
-            # normalize to g(r)
-            output["pdf_total_%s-%s" % pair]  = (output["pdf_total_%s-%s" % pair]-w)*self.__shellsCenter
-            output["pdf_total"]              += self.__scaleFactor*output["pdf_total_%s-%s" % pair] 
+            ## compute g(r) equivalent to earlier gr += wij*dij/Dij
+            #gr += output["rdf_total_%s-%s" % pair] 
+        # compute total G(r)
+        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
+        output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellsCenter*rho0) * (gr-1)
         # convolve total with window function
         if self.__windowFunction is not None:
             output["pdf"] = np.convolve(output["pdf_total"], self.__windowFunction, 'same')
@@ -404,9 +542,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set chiSquare
-        totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_chi_square(self.compute_chi_square(data = totalPDF))
+        # set squaredDeviations
+        totalPDF = self.__get_total_Gr(self.data)
+        self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPDF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -473,16 +611,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute chiSquare after move
+        # compute squaredDeviations after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
-        data = self.data
-        # change temporarily data
-        self.set_data( {"intra":dataIntra, "inter":dataInter} )
-        totalPDF = self.get_constraint_value()["pdf_total"]
-        self.set_after_move_chi_square( self.compute_chi_square(data = totalPDF) )
-        # change back data
-        self.set_data( data )
+        totalPDF = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter})
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(modelData = totalPDF) )
     
     def accept_move(self, indexes):
         """ 
@@ -498,9 +631,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_chi_square( self.afterMoveChiSquare )
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_squared_deviations( self.afterMoveSquaredDeviations )
+        self.set_after_move_squared_deviations( None )
+        # set new scale factor
+        self._set_fitted_scale_factor_value(self._fittedScaleFactor)
     
     def reject_move(self, indexes):
         """ 
@@ -512,11 +647,102 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update chiSquare
-        self.set_after_move_chi_square( None )
+        # update squaredDeviations
+        self.set_after_move_squared_deviations( None )
 
+    def plot(self, ax=None, intra=True, inter=True, 
+                   xlabel=True, xlabelSize=16,
+                   ylabel=True, ylabelSize=16,
+                   legend=True, legendCols=2, legendLoc='best',
+                   title=True, titleChiSquare=True, titleScaleFactor=True):
+        """ 
+        Plot pair distribution constraint.
+        
+        :Parameters:
+            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+               If ax is given, the figure won't be rendered and drawn.
+               If None is given a new plot figure will be created and the figue will be rendered and drawn.
+            #. intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.
+            #. inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.
+            #. xlabel (boolean): Whether to create x label.
+            #. xlabelSize (number): The x label font size.
+            #. ylabel (boolean): Whether to create y label.
+            #. ylabelSize (number): The y label font size.
+            #. legend (boolean): Whether to create the legend or not
+            #. legendCols (integer): Legend number of columns.
+            #. legendLoc (string): The legend location. Anything among
+               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
+               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
+               is accepted.
+            #. title (boolean): Whether to create the title or not
+            #. titleChiSquare (boolean): Whether to show contraint's chi square value in title.
+            #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
+        
+        :Returns:
+            #. axes (matplotlib Axes): The matplotlib axes.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # import matplotlib
+        import matplotlib.pyplot as plt
+        # get axes
+        if ax is None:
+            AXES = plt.gca()
+        else:
+            AXES = ax   
+        # Create plotting styles
+        COLORS  = ["b",'g','r','c','y','m']
+        MARKERS = ["",'.','+','^','|']
+        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(['--'], list(reversed(COLORS)))]
+        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTRA_STYLES)]
+        INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
+        INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
+        # plot experimental
+        AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
+        AXES.plot(self.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+        # plot without window function
+        if self.windowFunction is not None:
+            AXES.plot(self.shellsCenter, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+        # plot partials
+        intraStyleIndex = 0
+        interStyleIndex = 0
+        for key, val in output.items():
+            if key in ("pdf_total", "pdf"):
+                continue
+            elif "intra" in key and intra:
+                AXES.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
+                intraStyleIndex+=1
+            elif "inter" in key and inter:
+                AXES.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
+                interStyleIndex+=1
+        # plot legend
+        if legend:
+            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+        # set title
+        if title:
+            t = ''
+            if titleChiSquare and self.squaredDeviations is not None:
+                t += "$\chi^2=%.6f$ "%(self.squaredDeviations)
+            if titleScaleFactor:
+                t += " - "*(len(t)>0) + "$scale$ $factor=%.6f$"%(self.scaleFactor)
+            if len(t):
+                AXES.set_title(t)
+        # set axis labels
+        if xlabel:
+            AXES.set_xlabel("$r(\AA)$", size=xlabelSize)
+        if ylabel:
+            AXES.set_ylabel("$G(r)$"  , size=ylabelSize)
+        # set background color
+        plt.gcf().patch.set_facecolor('white')
+        #show
+        if ax is None:
+            plt.show()
+        return AXES
 
-
+        
 #class StructureFactor(PairDistributionFunction):
 #     pass
 

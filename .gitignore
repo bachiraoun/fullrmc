@@ -1,5 +1,7 @@
 *.pyc
 .svn
+.gitignore
+MANIFEST.in
 
 # sub packages
 /core

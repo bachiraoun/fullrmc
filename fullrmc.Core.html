@@ -57,14 +57,14 @@
 <li><a class="reference internal" href="#module-fullrmc.Core.Group">Group</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.GroupSelector">GroupSelector</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.MoveGenerator">MoveGenerator</a></li>
-<li><a class="reference internal" href="#angles">angles</a></li>
-<li><a class="reference internal" href="#bonds">bonds</a></li>
-<li><a class="reference internal" href="#distances">distances</a></li>
-<li><a class="reference internal" href="#get-reciprocal-basis">get_reciprocal_basis</a></li>
-<li><a class="reference internal" href="#improper-angles">improper_angles</a></li>
-<li><a class="reference internal" href="#pair-distribution-histogram">pair_distribution_histogram</a></li>
-<li><a class="reference internal" href="#atomic-coordination-number">atomic_coordination_number</a></li>
-<li><a class="reference internal" href="#transform-coordinates">transform_coordinates</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.angles">angles</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.bonds">bonds</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.distances">distances</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.improper_angles">improper_angles</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
 </ul>
 </li>
 </ul>
@@ -3543,29 +3543,598 @@ If randomize is False, weights list is ignored upon generator selection from col
 </dd></dl>
 
 </div>
-<div class="section" id="angles">
-<h2>angles<a class="headerlink" href="#angles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.angles">
+<span id="angles"></span><h2>angles<a class="headerlink" href="#module-fullrmc.Core.angles" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to calculate angles constraints. 
+It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_angles</strong>: It calculates the angles constraint of a single atom.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>centralAtomIndex (int32): The central atom index.</li>
+<li>leftIndexes (int32 array): The centralAtom&#8217;s angles left atoms indexes.</li>
+<li>rightIndexes (int32 array): The centralAtom&#8217;s angles right atoms indexes. number of leftIndexes must be equal to number of rightIndexes.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>lowerLimit (float32 array): The (numberOfLeftIndexes) array for lower limit or minimum bond length allowed.</li>
+<li>upperLimit (float32 array): The (numberOfLeftIndexes) array for upper limit or maximum bond length allowed.</li>
+<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): It has only two keys.<ol class="arabic">
+<li>angles: The calculated angles (rad).</li>
+<li>reducedAngles: The reduced angles (rad)</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_angles</strong>: It calculates the angles constraint of all atoms given a angles dictionary.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>angles (python dictionary): The angles dictionary. Where keys are central atoms indexes and values are dictionary of leftIndexes array, rightIndexes array, lowerLimit array, upperLimit array</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): where keys are central atoms indexes and values are dictionaries of exactly two keys as such.<ol class="arabic">
+<li>angles: The calculated bonds length</li>
+<li>reducedAngles: The reduced bonds length</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="bonds">
-<h2>bonds<a class="headerlink" href="#bonds" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.bonds">
+<span id="bonds"></span><h2>bonds<a class="headerlink" href="#module-fullrmc.Core.bonds" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to calculate bonds constraints. It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_bonds</strong>: It calculates the bonds constraint of a single atom.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of the atom.</li>
+<li>bondedIndexes (int32 array): The bonded atoms indexes array.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>lowerLimit (float32 array): The (numberOfBondedAtoms) array for lower limit or minimum bond length allowed.</li>
+<li>upperLimit (float32 array): The (numberOfBondedAtoms) array for upper limit or maximum bond length allowed.</li>
+<li>reduceDistanceToUpper (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceDistanceToLower (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): It has only two keys.<ol class="arabic">
+<li>bondsLength: The calculated bonds length</li>
+<li>reducedDistances: The reduced bonds length</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_bonds</strong>: It calculates the bonds constraint of all atoms given a bonds dictionary.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>bonds (python dictionary): The bonds dictionary. Where keys are atoms indexes and values are dictionary of bondedIndexes array, lowerLimit array, upperLimit array</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>reduceDistanceToUpper (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceDistanceToLower (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): where keys are atomsIndexes and values are dictionaries of exactly two keys as such.<ol class="arabic">
+<li>bondsLength: The calculated bonds length</li>
+<li>reducedDistances: The reduced bonds length</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="distances">
-<h2>distances<a class="headerlink" href="#distances" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.distances">
+<span id="distances"></span><h2>distances<a class="headerlink" href="#module-fullrmc.Core.distances" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to calculate distances constraints. 
+It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_distances</strong>: It calculates the distances constraint of a single atom.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of the atom.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>dintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.</li>
+<li>dinter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.</li>
+<li>nintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular counted elements.</li>
+<li>ninter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular counted elements.</li>
+<li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
+<li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
+<li>interMolecular (bool): Whether to consider inter-molecular distances. DEFAULT: True</li>
+<li>intraMolecular (bool): Whether to consider intra-molecular distances. DEFAULT: True</li>
+<li>countWithinLimits (bool): Whether to count distances and atoms found within the lower and upper limits or outside. DEFAULT: True</li>
+<li>reduceDistanceToUpper (bool): Whether to reduce counted distances to the difference between the found distance and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
+<li>reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False</li>
+<li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.</li>
+<li>dinter (float32 array): The updated (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.</li>
+<li>nintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular counted elements.</li>
+<li>ninter (float32 array): The updated (numberOfElements,numberOfElements,1) array for inter-molecular counted elements.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>multiple_distances</strong>: It calculates the distances constraint of multiple atoms. It creates the inter and intra-molecular histogram distances and numbers arrays and calls single_distances method for every desired atom index.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (int32 array): The atoms indexes array.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>numberOfElements (int32): The number of elements in the system.</li>
+<li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
+<li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
+<li>interMolecular (bool): Whether to consider inter-molecular distances. DEFAULT: True</li>
+<li>intraMolecular (bool): Whether to consider intra-molecular distances. DEFAULT: True</li>
+<li>countWithinLimits (bool): Whether to count distances and atoms found within the lower and upper limits or outside.</li>
+<li>reduceDistanceToUpper (bool): Whether to reduce counted distances to the difference between the found distance and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
+<li>reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False</li>
+<li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.</li>
+<li>dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.</li>
+<li>nintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted elements.</li>
+<li>ninter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted elements.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_distances</strong>: It calculates the distances constraint for all atoms. It calls multiple_distances method for all atoms.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>numberOfElements (int32): The number of elements in the system.</li>
+<li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
+<li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
+<li>interMolecular (bool): Whether to consider inter-molecular distances. DEFAULT: True</li>
+<li>intraMolecular (bool): Whether to consider intra-molecular distances. DEFAULT: True</li>
+<li>countWithinLimits (bool): Whether to count distances and atoms found within the lower and upper limits or outside. DEFAULT: True</li>
+<li>reduceDistanceToUpper (bool): Whether to reduce counted distances to the difference between the found distance and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
+<li>reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.</li>
+<li>dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.</li>
+<li>nintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted elements.</li>
+<li>ninter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted elements.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="get-reciprocal-basis">
-<h2>get_reciprocal_basis<a class="headerlink" href="#get-reciprocal-basis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.get_reciprocal_basis">
+<span id="get-reciprocal-basis"></span><h2>get_reciprocal_basis<a class="headerlink" href="#module-fullrmc.Core.get_reciprocal_basis" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to compute reciprocal basis.</p>
+<dl class="docutils">
+<dt><strong>get_reciprocal_basis</strong>: It computes the reciprocal basis vectors array.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>basis (float32 array): The (3,3) basis vectors array.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rbasis (float32 array): The (3,3) normalized with the basis volume reciprocal basis vectors array.</li>
+<li>volume (float32): The basis volume.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="improper-angles">
-<h2>improper_angles<a class="headerlink" href="#improper-angles" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.improper_angles">
+<span id="improper-angles"></span><h2>improper_angles<a class="headerlink" href="#module-fullrmc.Core.improper_angles" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to calculate angles constraints. 
+It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_improper_angles</strong>: It calculates the improper angles constraint between an improper atom and a plane atoms.</dt>
+<dd><dl class="first last docutils">
+<dt>The plane normal vector is calculated using the right-hand rule where thumb=ox vector, index=oy vector hence oz=normal=second finger</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>improperAtomIndex (int32): The atom index that must be in plane.</li>
+<li>oAtomIndex (int32 array): The first atom index to build the plane considered as origin.</li>
+<li>xAtomIndex (int32 array): The second atom index to build the plane considered as ox vector. number of oAtomIndex must be equal to number of xAtomIndex.</li>
+<li>yAtomIndex (int32 array): The third atom index to build the plane considered as oy vector. number of xAtomIndex must be equal to number of yAtomIndex.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>lowerLimit (float32 array): The (oAtomIndex) array for lower limit or minimum bond length allowed.</li>
+<li>upperLimit (float32 array): The (oAtomIndex) array for upper limit or maximum bond length allowed.</li>
+<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): It has only two keys.<ol class="arabic">
+<li>angles: The calculated angles (rad).</li>
+<li>reducedAngles: The reduced angles (rad)</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>full_improper_angles</strong>: It calculates the improper angles constraint of all atoms given a angles dictionary.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>angles (python dictionary): The angles dictionary. Where keys are the improper atoms indexes and values are dictionary of oAtomIndex array, xAtomIndex array, yAtomIndex array, lowerLimit array, upperLimit array</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (python dictionary): where keys are central atoms indexes and values are dictionaries of exactly two keys as such.<ol class="arabic">
+<li>angles: The calculated bonds length</li>
+<li>reducedAngles: The reduced bonds length</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="pair-distribution-histogram">
-<h2>pair_distribution_histogram<a class="headerlink" href="#pair-distribution-histogram" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.pair_distribution_histogram">
+<span id="pair-distribution-histogram"></span><h2>pair_distribution_histogram<a class="headerlink" href="#module-fullrmc.Core.pair_distribution_histogram" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to calculate pair distribution histograms. It contains the following methods.</p>
+<p><strong>single_pair_distribution_histograms</strong>: It calculates the pair distribution histograms of a single atom.</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of the atom.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>hintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
+<li>hinter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
+<li>bin (bool): The histogram bin size.</li>
+<li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>hintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
+<li>hinter (float32 array): The updated (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="docutils">
+<dt><strong>multiple_pair_distribution_histograms</strong>: It calculates the pair distribution histograms of multiple atoms. </dt>
+<dd><p class="first">It creates the inter and intra-molecular distance histograms and calls 
+single_pair_distribution_histograms method for every desired atom index.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of the atom.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>numberOfElements (int32): The number of elements in the system.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
+<li>histSize(int32): The histograms size.</li>
+<li>bin (bool): The histogram bin size.</li>
+<li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>hintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
+<li>hinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_pair_distribution_histograms</strong>:  It calculates the pair distribution histograms of all atoms. </dt>
+<dd><p class="first">It calls multiple_distances method for all atoms.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of the atom.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>numberOfElements (int32): The number of elements in the system.</li>
+<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
+<li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
+<li>histSize(int32): The histograms size.</li>
+<li>bin (bool): The histogram bin size.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>hintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
+<li>hinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
-<div class="section" id="atomic-coordination-number">
-<h2>atomic_coordination_number<a class="headerlink" href="#atomic-coordination-number" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.atomic_coordination_number">
+<span id="atomic-coordination-number"></span><h2>atomic_coordination_number<a class="headerlink" href="#module-fullrmc.Core.atomic_coordination_number" title="Permalink to this headline">¶</a></h2>
+<p>This is a C++ compiled Cython generated module to calculate atomic coordination number constraints. 
+It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>single_shell_coordination_number</strong>: It computes the neighbours indexes around a certain atom </dt>
+<dd><dl class="first last docutils">
+<dt>within a lower and upper shell limits.   </dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>indexes (int32 array): The indexes of atoms to find neighbours from.</li>
+<li>lowerLimit (float32 array): The coordination number shell lower limit or minimum distance.</li>
+<li>upperLimit (float32 array): The coordination number shell upper limit or maximum distance.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>neighbours (python List): List of neighbours indexes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>single_atomic_coordination_number</strong>: It computes the coordination number around a certain atom</dt>
+<dd><dl class="first last docutils">
+<dt>in all defined shells.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+<dt><strong>multiple_atomic_coordination_number</strong>: It computes the coordination number of multiple atoms.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (int32): The list of atoms to compute their coordination number.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>full_atomic_coordination_number</strong>: It computes the coordination number of all system&#8217;s atoms.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+<li>typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.</li>
+<li>coordNumData (python List): The coordination number data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordNumData (python List): The coordination number data updated.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>atom_coordination_number_data</strong>: It cocd mputes all coordination number informations and atoms</dt>
+<dd><dl class="first last docutils">
+<dt>involved in a given atom coordination number calculation.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The atom index to compute the neighbour atom indexes around.</li>
+<li>boxCoords (float32 array): The whole system box coordinates.</li>
+<li>basis (float32 array): The box vectors.</li>
+<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
+<li>typesIndex (int32 array): The atoms&#8217;s types array, assigning a type for every atom.</li>
+<li>typesDefinition (python dictionary): The coordination number definition per atom type.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atoms (python List): The List of atoms involved in a way or another with the coordination number of atomIndex.</li>
+<li>shells (python List): The List of shells indexes corresponding to the list of atoms.</li>
+<li>neighbours (python List): The List of atoms found neighbouring atoms in corresponding shells.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd>
+</dl>
 </div>
-<div class="section" id="transform-coordinates">
-<h2>transform_coordinates<a class="headerlink" href="#transform-coordinates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.transform_coordinates">
+<span id="transform-coordinates"></span><h2>transform_coordinates<a class="headerlink" href="#module-fullrmc.Core.transform_coordinates" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled Cython generated module to transform coordinates. It contains the following methods.</p>
+<dl class="docutils">
+<dt><strong>transform_coordinates</strong>: It transforms coordinates array.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>transMatrix (float32 array): The (3,3) transformation matrix</li>
+<li>coords (float32 array): The (N,3) coordinates array.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>transCoords (float32 array): The (N,3) transformed coordinates array.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
 </div>
 </div>
 

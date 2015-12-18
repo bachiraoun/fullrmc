@@ -50,6 +50,11 @@ Welcoming videos
 +--------------------------------------------------------------+----------------------------------------------+
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
 Brief Description
 =================
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
@@ -316,8 +321,16 @@ def get_version():
 def get_author():
     return __author__     
  
+<<<<<<< HEAD
 def get_email():
     return __email__   
     
     
     
+=======
+def get_version():
+    return __version__ 
+ 
+ 
+ 
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2

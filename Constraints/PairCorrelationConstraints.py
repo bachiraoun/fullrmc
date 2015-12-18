@@ -117,12 +117,21 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         """
         This method is created just to speed up the computation of the total gr upon fitting.
         """
+<<<<<<< HEAD
         gr = np.zeros(self.histogramSize, dtype=np.float32)
         for pair in self.elementsPairs:
             # get weighting scheme
             wij = self.weightingScheme.get(pair[0]+"-"+pair[1], None)
             if wij is None:
                 wij = self.weightingScheme[pair[1]+"-"+pair[0]]
+=======
+        gr = np.zeros(self.__histogramSize, dtype=np.float32)
+        for pair in self.__elementsPairs:
+            # get weighting scheme
+            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
+            if wij is None:
+                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             # get number of atoms per element
             ni = self.engine.numberOfAtomsPerElement[pair[0]]
             nj = self.engine.numberOfAtomsPerElement[pair[1]]
@@ -133,6 +142,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             if idi == idj:
                 Nij = ni*(ni-1)/2.0 
                 Dij = Nij/self.engine.volume
+<<<<<<< HEAD
                 nij = data["intra"][idi,idj,:]+data["inter"][idi,idj,:]
                 gr += wij*nij/Dij      
             else:
@@ -163,6 +173,36 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             wij = self.weightingScheme.get(pair[0]+"-"+pair[1], None)
             if wij is None:
                 wij = self.weightingScheme[pair[1]+"-"+pair[0]]
+=======
+                dij = (data["intra"][idi,idj,:]+data["inter"][idi,idj,:])/self.__shellsVolumes   
+                gr += wij*dij/Dij      
+            else:
+                Nij = ni*nj
+                Dij = Nij/self.engine.volume
+                dij = (data["intra"][idj,idi,:]+data["inter"][idj,idi,:])/self.__shellsVolumes
+                gr += wij*dij/Dij
+        # compute total G(r)
+        self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, gr)
+        gr *= self._fittedScaleFactor
+        # convolve total with window function
+        if self.__windowFunction is not None:
+            gr = np.convolve(gr, self.__windowFunction, 'same')
+        return gr
+
+        
+    def _get_constraint_value(self, data):
+        # http://erice2011.docking.org/upload/Other/Billinge_PDF/03-ReadingMaterial/BillingePDF2011.pdf     page 6
+        output = {}
+        for pair in self.__elementsPairs:
+            output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
+        for pair in self.__elementsPairs:
+            # get weighting scheme
+            wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
+            if wij is None:
+                wij = self.__weightingScheme[pair[1]+"-"+pair[0]]
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             # get number of atoms per element
             ni = self.engine.numberOfAtomsPerElement[pair[0]]
             nj = self.engine.numberOfAtomsPerElement[pair[1]]
@@ -179,7 +219,11 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
             # calculate intensityFactor
+<<<<<<< HEAD
             intensityFactor = (self.engine.volume*wij)/(Nij*self.shellsVolumes)
+=======
+            intensityFactor = (self.engine.volume*w)/(Nij*self.shellsVolumes)
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             # multiply by intensityFactor
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
@@ -223,7 +267,11 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
         totalPCF = self.__get_total_gr(self.data)
+<<<<<<< HEAD
         self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPCF))
+=======
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPCF))
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     
     def compute_before_move(self, indexes):
         """ 
@@ -295,6 +343,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalPCF = self.__get_total_gr({"intra":dataIntra, "inter":dataInter})
         # set after move squared deviations
+<<<<<<< HEAD
         self.set_after_move_squared_deviations( self.compute_squared_deviations(modelData = totalPCF) )
 
     def plot(self, ax=None, intra=True, inter=True, 
@@ -310,17 +359,31 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             #. intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.
             #. inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.
             #. legend (boolean): Whether to create the legend or not
+=======
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPCF) )
+
+    def plot(self, intra=True, inter=True, legendCols=2, legendLoc='best'):
+        """ 
+        Plot pair distribution constraint.
+        
+        :Parameters:
+            #. intra (bool): Whether to add intra-molecular pair distribution function features to the plot.
+            #. inter (bool): Whether to add inter-molecular pair distribution function features to the plot.
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             #. legendCols (integer): Legend number of columns.
             #. legendLoc (string): The legend location. Anything among
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
+<<<<<<< HEAD
             #. title (boolean): Whether to create the title or not
             #. titleChiSquare (boolean): Whether to show contraint's chi square value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
         :Returns:
             #. axes (matplotlib Axes): The matplotlib axes.
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         """
         # get constraint value
         output = self.get_constraint_value()
@@ -329,11 +392,14 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             return
         # import matplotlib
         import matplotlib.pyplot as plt
+<<<<<<< HEAD
         # get axes
         if ax is None:
             AXES = plt.gca()
         else:
             AXES = ax   
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # Create plotting styles
         COLORS  = ["b",'g','r','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -342,11 +408,19 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
         # plot experimental
+<<<<<<< HEAD
         AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
         AXES.plot(self.shellsCenter, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
         # plot without window function
         if self.windowFunction is not None:
             AXES.plot(self.shellsCenter, output["pcf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+=======
+        plt.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
+        plt.plot(self.shellsCenter, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+        # plot without window function
+        if self.windowFunction is not None:
+            plt.plot(self.shellsCenter, output["pcf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # plot partials
         intraStyleIndex = 0
         interStyleIndex = 0
@@ -354,6 +428,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             if key in ("pcf_total", "pcf"):
                 continue
             elif "intra" in key and intra:
+<<<<<<< HEAD
                 AXES.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
                 intraStyleIndex+=1
             elif "inter" in key and inter:
@@ -382,6 +457,25 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             plt.show()
         return AXES
         
+=======
+                plt.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
+                intraStyleIndex+=1
+            elif "inter" in key and inter:
+                plt.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
+                interStyleIndex+=1
+        # plot legend
+        plt.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+        # set title
+        if self.squaredDeviations is not None:
+            plt.title("$\chi^2=%.6f$ - $scale$ $factor=%.6f$"%(self.squaredDeviations, self.scaleFactor))
+        # set axis labels
+        plt.xlabel("$r(\AA)$", size=16)
+        plt.ylabel("$g(r)$", size=16)
+        # set background color
+        plt.gcf().patch.set_facecolor('white')
+        #show
+        plt.show()
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         
         
         

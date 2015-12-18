@@ -166,7 +166,11 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
                 for cnEl in cnValues:
                     assert isinstance(cnEl, (list, set, tuple)), LOGGER.error("Coordination number key '%s' definition values must be a list of lists."%key)    
                     cnEl = list(cnEl)
+<<<<<<< HEAD
                     assert len(cnEl)==5, LOGGER.error("Coordination number key '%s' definition values must be a list of lists of length 5 each."%key)    
+=======
+                    assert len(cnEl)==5, LOGGER.error("Coordination number key '%s' definition values must be a list of lists of length 4 each."%key)    
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
                     # check every and each item of the definition
                     atomType, minDis, maxDis, minNum, maxNum = cnEl
                     assert atomType in self.__types, LOGGER.error("Coordination number key '%s'. Definition first value must be a valid type %s."%(key, self.__types))
@@ -202,7 +206,11 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         typeData['minNumOfNeig'] = []
         typeData['maxNumOfNeig'] = []
         typeData['neigTypeIdx']  = []
+<<<<<<< HEAD
         self.__typesCoordNumDef  = {}
+=======
+        self.__typesCoordNumDef = {}
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # initialize typesCoordNumDef
         for typeName in self.__types:
             typeIdx  = self.__typesLUT[typeName] 
@@ -231,7 +239,11 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
             typeName = self.__allTypes[idx]
             typeIdx  = self.__typesLUT[typeName]
             typeDef  = self.__typesCoordNumDef.get(typeName, None)
+<<<<<<< HEAD
             data     = {}
+=======
+            data = {}
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             if not len(self.__typesCoordNumDef[typeIdx]['neigTypeIdx']):
                 data['neighbours'] = {}
                 data['deviations'] = np.array([0], dtype=INT_TYPE)

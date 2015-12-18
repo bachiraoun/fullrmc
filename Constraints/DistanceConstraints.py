@@ -169,6 +169,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             numberOfTypes        = self.engine.numberOfElements
             typesIndexes         = self.engine.elementsIndexes
             numberOfAtomsPerType = self.engine.numberOfAtomsPerElement
+<<<<<<< HEAD
         ## check pdb atoms
         #if self.engine is not None:
         #    lastMolIdx = None
@@ -182,6 +183,22 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         #            raise Exception( LOGGER.error("molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, typeDefinition, name, self.__class__.__name__)) )
         #        else:
         #            lut[name] = 1
+=======
+        # check pdb atoms
+        if self.engine is not None:
+            lastMolIdx = None
+            lut = {}
+            for idx in range(len(allTypes)):
+                molIdx = self.engine.moleculesIndexes[idx]
+                name   = allTypes[idx]
+                if lastMolIdx != molIdx:
+                    lut = {}
+                    lastMolIdx = molIdx
+                if lut.has_key(name):
+                    raise Exception( LOGGER.error("molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, typeDefinition, name, self.__class__.__name__)) )
+                else:
+                    lut[name] = 1
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # set type definition
         self.__typeDefinition       = typeDefinition
         self.__types                = types

@@ -19,7 +19,10 @@ from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.angles import full_angles
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
 class BondsAngleConstraint(RigidConstraint, SingularConstraint):
     """
     Its controls the angle between 3 defined atoms.

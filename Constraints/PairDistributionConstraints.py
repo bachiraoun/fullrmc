@@ -47,6 +47,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
     :math:`\\rho_{r}` is the number density fluctuation at distance :math:`r`. 
     The computation of g(r) is straightforward from an atomistic model and it is given
     by :math:`g(r)=\\rho_{r} / \\rho_{0}`.\n
+<<<<<<< HEAD
     
     :math:`R(r)` is called the radial distribution function. :math:`R(r)` is a very 
     important function because it describes directly the system's structure since
@@ -55,6 +56,16 @@ class PairDistributionConstraint(ExperimentalConstraint):
     of neighbors within the distances interval :math:`[a,b]`
     is given by :math:`\\int_{a}^{b} R(r) dr`\n
     
+=======
+    
+    :math:`R(r)` is called the radial distribution function. :math:`R(r)` is a very 
+    important function because it describes directly the system's structure since
+    :math:`R(r)dr` gives the number of atoms in an annulus of thickness dr at distance 
+    r from another atom. Therefore, the coordination number, or the number 
+    of neighbors within the distances interval :math:`[a,b]`
+    is given by :math:`\\int_{a}^{b} R(r) dr`\n
+    
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     Finally, g(r) is calculated after binning all pair atomic distances into a weighted
     histograms of values :math:`n(r)` from which local number densities are computed as in the following.
     
@@ -121,12 +132,20 @@ class PairDistributionConstraint(ExperimentalConstraint):
         ENGINE.add_constraints(PDC)
     
     """
+<<<<<<< HEAD
     def __init__(self, engine, experimentalData, dataWeights=None, weighting="atomicNumber", 
+=======
+    def __init__(self, engine, experimentalData, weighting="atomicNumber", 
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
                        scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
                        windowFunction=None, limits=None):
         self.__limits = limits
         # initialize constraint
+<<<<<<< HEAD
         super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+=======
+        super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # set elements weighting
         self.set_weighting(weighting)
         # set window function
@@ -273,6 +292,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set limits
         self.set_limits(self.__limits)
     
+<<<<<<< HEAD
     def set_data_weights(self, dataWeights):
         """
         Set experimental data points weight.
@@ -290,11 +310,17 @@ class PairDistributionConstraint(ExperimentalConstraint):
         super(PairDistributionConstraint, self).set_data_weights(dataWeights=dataWeights)
         self.__set_used_data_weights()
         
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     def compute_and_set_squared_deviations(self):
         """ Computes and sets the constraint's squaredDeviations."""
         # set squaredDeviations
         totalPDF = self.get_constraint_value()["pdf_total"]
+<<<<<<< HEAD
         self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPDF))
+=======
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPDF))
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         
     def set_limits(self, limits):
         """
@@ -377,6 +403,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # data format is correct
         return True, ""
 
+<<<<<<< HEAD
     def compute_squared_deviations(self, modelData):
         """ 
         Compute the squared deviation between modal computed data and the experimental ones. 
@@ -392,11 +419,28 @@ class PairDistributionConstraint(ExperimentalConstraint):
 
         :Parameters:
             #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.
+=======
+    def compute_squared_deviations(self, data):
+        """ 
+        Compute the squared deviation between data and the experimental one. 
+        
+        .. math::
+            SD = \\sum \\limits_{i}^{N} (Y(X_{i})-F(X_{i}))^{2}
+         
+        Where:\n
+        :math:`N` is the total number of experimental data points. \n
+        :math:`Y(X_{i})` is the experimentation data point :math:`X_{i}`. \n
+        :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
+
+        :Parameters:
+            #. data (numpy.array): The data to compare with the experimental one and compute the squared deviation.
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             
         :Returns:
             #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
         """
         # compute difference
+<<<<<<< HEAD
         diff = self.__experimentalPDF-modelData
         # return squared deviation
         if self._usedDataWeights is None:
@@ -404,6 +448,12 @@ class PairDistributionConstraint(ExperimentalConstraint):
         else:
             return np.add.reduce(self._usedDataWeights*((diff)**2))
         
+=======
+        diff = self.__experimentalPDF-data
+        # return squared deviation
+        return np.add.reduce((diff)**2)
+    
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     def __get_total_Gr(self, data):
         """
         This method is created just to speed up the computation of the total gr upon fitting.
@@ -425,6 +475,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             # get Nij
             if idi == idj:
                 Nij = ni*(ni-1)/2.0 
+<<<<<<< HEAD
                 Dij = Nij/self.engine.volume  
                 nij = data["intra"][idi,idj,:]+data["inter"][idi,idj,:]
                 Gr += wij*nij/Dij      
@@ -441,6 +492,21 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # Multiply by scale factor
         self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr, self._usedDataWeights)
         Gr *= self._fittedScaleFactor
+=======
+                Dij = Nij/self.engine.volume
+                dij = (data["intra"][idi,idj,:]+data["inter"][idi,idj,:])/self.__shellsVolumes   
+                Gr += wij*dij/Dij      
+            else:
+                Nij = ni*nj
+                Dij = Nij/self.engine.volume
+                dij = (data["intra"][idj,idi,:]+data["inter"][idj,idi,:])/self.__shellsVolumes
+                Gr += wij*dij/Dij
+        # compute total G(r)
+        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
+        Gr   = (4.*np.pi*self.__shellsCenter*rho0) * (Gr-1)
+        self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr)
+        Gr   = self._fittedScaleFactor * Gr
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # convolve total with window function
         if self.__windowFunction is not None:
             Gr = np.convolve(Gr, self.__windowFunction, 'same')
@@ -543,8 +609,13 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set squaredDeviations
+<<<<<<< HEAD
         totalPDF = self.__get_total_Gr(self.data)
         self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPDF))
+=======
+        totalPDF = self.__get_total_Gr(self.data)#self.get_constraint_value()["pdf_total"]
+        self.set_squared_deviations(self.compute_squared_deviations(data = totalPDF))
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     
     def compute_before_move(self, indexes):
         """ 
@@ -615,7 +686,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalPDF = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter})
+<<<<<<< HEAD
         self.set_after_move_squared_deviations( self.compute_squared_deviations(modelData = totalPDF) )
+=======
+        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = totalPDF) )
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
     
     def accept_move(self, indexes):
         """ 
@@ -649,16 +724,23 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_after_move(None)
         # update squaredDeviations
         self.set_after_move_squared_deviations( None )
+<<<<<<< HEAD
 
     def plot(self, ax=None, intra=True, inter=True, 
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
                    title=True, titleChiSquare=True, titleScaleFactor=True):
+=======
+
+
+    def plot(self, intra=True, inter=True, legendCols=2, legendLoc='best'):
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         """ 
         Plot pair distribution constraint.
         
         :Parameters:
+<<<<<<< HEAD
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
                If ax is given, the figure won't be rendered and drawn.
                If None is given a new plot figure will be created and the figue will be rendered and drawn.
@@ -669,17 +751,24 @@ class PairDistributionConstraint(ExperimentalConstraint):
             #. ylabel (boolean): Whether to create y label.
             #. ylabelSize (number): The y label font size.
             #. legend (boolean): Whether to create the legend or not
+=======
+            #. intra (bool): Whether to add intra-molecular pair distribution function features to the plot.
+            #. inter (bool): Whether to add inter-molecular pair distribution function features to the plot.
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
             #. legendCols (integer): Legend number of columns.
             #. legendLoc (string): The legend location. Anything among
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
+<<<<<<< HEAD
             #. title (boolean): Whether to create the title or not
             #. titleChiSquare (boolean): Whether to show contraint's chi square value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
         :Returns:
             #. axes (matplotlib Axes): The matplotlib axes.
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         """
         # get constraint value
         output = self.get_constraint_value()
@@ -688,11 +777,14 @@ class PairDistributionConstraint(ExperimentalConstraint):
             return
         # import matplotlib
         import matplotlib.pyplot as plt
+<<<<<<< HEAD
         # get axes
         if ax is None:
             AXES = plt.gca()
         else:
             AXES = ax   
+=======
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # Create plotting styles
         COLORS  = ["b",'g','r','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -701,11 +793,19 @@ class PairDistributionConstraint(ExperimentalConstraint):
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
         # plot experimental
+<<<<<<< HEAD
         AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
         AXES.plot(self.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
         # plot without window function
         if self.windowFunction is not None:
             AXES.plot(self.shellsCenter, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+=======
+        plt.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
+        plt.plot(self.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+        # plot without window function
+        if self.windowFunction is not None:
+            plt.plot(self.shellsCenter, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
         # plot partials
         intraStyleIndex = 0
         interStyleIndex = 0
@@ -713,6 +813,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             if key in ("pdf_total", "pdf"):
                 continue
             elif "intra" in key and intra:
+<<<<<<< HEAD
                 AXES.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
                 intraStyleIndex+=1
             elif "inter" in key and inter:
@@ -741,6 +842,25 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if ax is None:
             plt.show()
         return AXES
+=======
+                plt.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
+                intraStyleIndex+=1
+            elif "inter" in key and inter:
+                plt.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
+                interStyleIndex+=1
+        # plot legend
+        plt.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+        # set title
+        if self.squaredDeviations is not None:
+            plt.title("$\chi^2=%.6f$ - $scale$ $factor=%.6f$"%(self.squaredDeviations, self.scaleFactor))
+        # set axis labels
+        plt.xlabel("$r(\AA)$", size=16)
+        plt.ylabel("$G(r)$", size=16)
+        # set background color
+        plt.gcf().patch.set_facecolor('white')
+        #show
+        plt.show()
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
 
         
 #class StructureFactor(PairDistributionFunction):

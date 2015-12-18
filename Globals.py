@@ -7,7 +7,11 @@ import os
 
 # external libraries imports
 import numpy as np
+<<<<<<< HEAD
 from pysimplelog import Logger as LOG
+=======
+from simplelogger import SimpleLogger
+>>>>>>> 1218b7511b5ec4b0f951880d15321eb096f6e5a2
 
 # data types definitions
 INT_TYPE   = np.int32   # must be the integer type for the whole package

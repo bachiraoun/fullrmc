@@ -291,7 +291,7 @@ When you already have a working installation of numpy and cython.
      
      .. code-block:: python
      
-        import os, site
+        import os
         os.path.join(os.path.dirname(os.__file__), 'site_packages')
 
    * Navigate to site_packages folder and clone git repository:\n

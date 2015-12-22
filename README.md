@@ -24,9 +24,14 @@ among other functionalities:
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
 ## Installation
-fullrmc is still going through testing and further implementations. 
-Among others, the Core module is not yet uploaded to github for protection purposes. 
-A first version with full access to the code will be released soon only after the package gets officially published.
+
+fullrmc requires:
+* Python (>= 2.6 or < 3),
+* NumPy (lower version tested is 1.7.1),
+* cython (lower version tested is 0.21.1),
+* matplotlib (lower version tested is 1.4),
+* pdbParser (lower version tested is 0.1.2),
+* pysimplelog (lower version tested is 0.1.7).
 
 ## Online documentation
 http://bachiraoun.github.io/fullrmc/

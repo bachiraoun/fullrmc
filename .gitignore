@@ -1,8 +1,17 @@
+# certain extensions
 *.pyc
-.svn
-.gitignore
-MANIFEST.in
+*.pyd
+*.so
+*.c
+*.cpp
+*.log
+*.rmc
 
 # sub packages
 /docs
 /tests
+
+# files
+.svn
+.gitignore
+MANIFEST.in

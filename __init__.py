@@ -249,12 +249,12 @@ the Engine is run for additional several hours to refine atoms positions separat
 Installation
 ============ 
 fullrmc requires:
-#. Python (>= 2.6 or < 3),
-#. NumPy (lower version tested is 1.7.1),
-#. cython (lower version tested is 0.21.1),
-#. matplotlib (lower version tested is 1.4),
-#. pdbParser (lower version tested is 0.1.2),
-#. pysimplelog (lower version tested is 0.1.7).
+#. Python (>= 2.6 and < 3),
+#. NumPy (lowest version tested is 1.7.1),
+#. cython (lowest version tested is 0.21.1),
+#. matplotlib (lowest version tested is 1.4),
+#. pdbParser (lowest version tested is 0.1.2),
+#. pysimplelog (lowest version tested is 0.1.7).
 
 **Installation using pip:**\n
 numpy and cython must be installed and updated manually. 
@@ -271,7 +271,7 @@ When you already have a working installation of numpy and cython.
        pip install fullrmc
 
 **Installation by cloning github repository:**\n
-   * Ensure all fullrmc required packages are installed.
+   * Ensure all fullrmc required packages are installed:
     
     .. code-block:: python
         
@@ -298,12 +298,13 @@ When you already have a working installation of numpy and cython.
    
     .. code-block:: bash
        
+       cd .../site_packages
        git clone https://github.com/bachiraoun/fullrmc.git   
 
    * Compile fullrmc Extension files. Change directory to .../site_packages/fullrmc/Extensions:\n
       
     .. code-block:: bash  
-    
+        cd .../site_packages/fullrmc/Extensions
         python setup.py build_ext --inplace 
         
 """

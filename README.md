@@ -30,11 +30,11 @@ Installation
 ============
 ##### fullrmc requires:
 * Python (>= 2.6 and < 3),
-* NumPy (lower version tested is 1.7.1),
-* cython (lower version tested is 0.21.1),
-* matplotlib (lower version tested is 1.4),
-* pdbParser (lower version tested is 0.1.2),
-* pysimplelog (lower version tested is 0.1.7).
+* NumPy (lowest version tested is 1.7.1),
+* cython (lowest version tested is 0.21.1),
+* matplotlib (lowest version tested is 1.4),
+* pdbParser (lowest version tested is 0.1.2),
+* pysimplelog (lowest version tested is 0.1.7).
 
 ##### Installation using pip:
 numpy and cython must be installed and updated manually. 

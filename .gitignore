@@ -4,8 +4,5 @@
 MANIFEST.in
 
 # sub packages
-/core
-/Extensions
-/Examples
 /docs
 /tests

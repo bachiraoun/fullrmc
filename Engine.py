@@ -612,9 +612,9 @@ class Engine(object):
                Lines, Bonds, DynamicBonds, HBonds, Points, 
                VDW, CPK, Licorice, Beads, Dotted, Solvent.
             #. params(str): Set the representation parameters.
-               #. Points representation accept only size parameter e.g. '5'
-               #. CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
-                  'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
+                  * Points representation accept only size parameter e.g. '5'
+                  * CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
+                     'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")

@@ -602,7 +602,7 @@ class Engine(object):
         :Parameters:
             #. boxWidth (number): Visualize the simulation box by giving the lines width.
                If 0 then the simulation box is not visualized.
-            #. boxWidth (str): Choose the simulation box color among the following:\n
+            #. boxColor (str): Choose the simulation box color among the following:\n
                blue, red, gray, orange, yellow, tan, silver, green,
                white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
                black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
@@ -611,10 +611,10 @@ class Engine(object):
             #. representation(str): Choose representation method among the following:\n
                Lines, Bonds, DynamicBonds, HBonds, Points, 
                VDW, CPK, Licorice, Beads, Dotted, Solvent.
-            #. params(str): Set the representation parameters:\n
-               Points representation accept only size parameter e.g. 5\n
-               CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
-               'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. 0.5 20 0.1 20
+            #. params(str): Set the representation parameters.
+               #. Points representation accept only size parameter e.g. '5'
+               #. CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
+                  'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")

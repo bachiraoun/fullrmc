@@ -610,7 +610,7 @@ If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed
 <li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
 If 0 then the simulation box is not visualized.</p>
 </li>
-<li><p class="first">boxWidth (str): Choose the simulation box color among the following:</p>
+<li><p class="first">boxColor (str): Choose the simulation box color among the following:</p>
 <p>blue, red, gray, orange, yellow, tan, silver, green,
 white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
 black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
@@ -621,10 +621,20 @@ orange2, orange3.</p>
 <p>Lines, Bonds, DynamicBonds, HBonds, Points, 
 VDW, CPK, Licorice, Beads, Dotted, Solvent.</p>
 </li>
-<li><p class="first">params(str): Set the representation parameters:</p>
-<p>Points representation accept only size parameter e.g. 5</p>
-<p>CPK representation accept respectively 4 parameters as the following &#8216;Sphere Scale&#8217;,
-&#8216;Sphere Resolution&#8217;, &#8216;Bond Radius&#8217;, &#8216;Bond Resolution&#8217; e.g. 0.5 20 0.1 20</p>
+<li><dl class="first docutils">
+<dt>params(str): Set the representation parameters.</dt>
+<dd><ul class="first last">
+<li><p class="first">Points representation accept only size parameter e.g. &#8216;5&#8217;</p>
+</li>
+<li><dl class="first docutils">
+<dt>CPK representation accept respectively 4 parameters as the following &#8216;Sphere Scale&#8217;,</dt>
+<dd><p class="first last">&#8216;Sphere Resolution&#8217;, &#8216;Bond Radius&#8217;, &#8216;Bond Resolution&#8217; e.g. &#8216;0.5 20 0.1 20&#8217;</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
 </li>
 </ol>
 </td>

@@ -46,31 +46,37 @@ pip install fullrmc
 ```
 
 ##### Installation by cloning github repository
-Ensure all fullrmc required packages are installed.
+Ensure all fullrmc required packages are installed and up to data by executing the 
+following python script:
 ```python
 # check whether all packages are already installed
-import numpy
-assert numpy.__version__ >= '1.7.1', 'numpy installation must be upgraded'
-import cython
-assert cython.__version__ >= '0.21.1', 'cython installation must be upgraded'
-import pdbParser
-assert pdbParser.__version__ >= '0.1.2', 'pdbParser installation must be upgraded'
-import pysimplelog
-assert pysimplelog.__version__ >= '0.1.7', 'pysimplelog installation must be upgraded'
-import matplotlib
-assert matplotlib.__version__ >= '1.4', 'matplotlib installation must be upgraded'
+from pkg_resources import parse_version as PV
+for name, ver in [('numpy'      ,'1.7.1') ,
+                  ('cython'     ,'0.21.1'),
+                  ('pdbParser'  ,'0.1.2') ,
+                  ('pysimplelog','0.1.7') ,
+                  ('matplotlib' ,'1.4'  )]:
+    try:
+        lib = __import__(name)
+    except:
+        print '%s must be installed for fullrmc to run properly.'%(name)
+    else:
+        if PV(lib.__version__) < PV(ver):
+            print '%s installed version %s is below minimum suggested version %s. Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
+        else:
+            print '%s is installed properly and minimum version requirement is met.'%(name)
 ```
-Locate python's site-packages using:
+Locate python's site-packages by executing the following python script:
 ```python
 import os
 os.path.join(os.path.dirname(os.__file__), 'site_packages')
 ```
-Navigate to site_packages folder and clone git repository:
+Navigate to site_packages folder and clone git repository from command line:
 ```bash
 cd .../site_packages
 git clone https://github.com/bachiraoun/fullrmc.git  
 ``` 
-Compile fullrmc Extension files. Change directory to .../site_packages/fullrmc/Extensions
+Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions from command line as the following:
 ```bash
 cd .../site_packages/fullrmc/Extensions
 python setup.py build_ext --inplace 

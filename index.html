@@ -147,43 +147,31 @@
 <h2>Welcoming videos<a class="headerlink" href="#welcoming-videos" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="57%" />
-<col width="43%" />
+<col width="100%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><div class="first last"><iframe width="580" height="315"
+<tr class="row-odd"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/untepXVc3BQ"
 frameborder="0" allowfullscreen>
-</iframe></div></td>
-<td>Molecular system full RMC
-simulation. Groups are set to
-molecules and smart moves are
-applied. Translations along
-symmetry axes, rotations
-about symmetry axes, etc.</td>
+</iframe></div><p class="last">Molecular system full RMC simulation. Groups are set to molecules and smart moves are
+applied. Translations along symmetry axes, rotations about symmetry axes, etc.</p>
+</td>
 </tr>
-<tr class="row-even"><td><div class="first last"><iframe width="580" height="315"
+<tr class="row-even"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0"
 frameborder="0" allowfullscreen>
-</iframe></div></td>
-<td>Atomic binary Nickel-Titanium shape memory
-alloy system phase transformation RMC
-simulation. Random atomic translations are
-enough to reproduce short range ordering. But
-swapping atoms is necessary to fit long range
-atomic correlations.</td>
+</iframe></div><p class="last">Atomic binary Nickel-Titanium shape memory alloy system phase transformation RMC
+simulation. Random atomic translations are enough to reproduce short range ordering.
+But swapping atoms is necessary to fit long range atomic correlations.</p>
+</td>
 </tr>
-<tr class="row-odd"><td><div class="first last"><iframe width="580" height="315"
+<tr class="row-odd"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/xnG0wnEfbJ8"
 frameborder="0" allowfullscreen>
-</iframe></div></td>
-<td>Molecular system mere atomic
-RMC simulation. Covalent bond
-electron density polarization
-is modelled by allowing
-fullrmc to explore across
-energy low correlation
-barriers.</td>
+</iframe></div><p class="last">Molecular system mere atomic RMC simulation. Covalent bond electron density
+polarization is modelled by allowing fullrmc to explore across energy low correlation
+barriers.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -405,13 +393,18 @@ Engine runtime.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>fullrmc requires:
-#. Python (&gt;= 2.6 and &lt; 3),
-#. NumPy (lowest version tested is 1.7.1),
-#. cython (lowest version tested is 0.21.1),
-#. matplotlib (lowest version tested is 1.4),
-#. pdbParser (lowest version tested is 0.1.2),
-#. pysimplelog (lowest version tested is 0.1.7).</p>
+<dl class="docutils">
+<dt>fullrmc requires:</dt>
+<dd><ol class="first last arabic simple">
+<li>Python (&gt;= 2.6 and &lt; 3),</li>
+<li>NumPy (lowest version tested is 1.7.1),</li>
+<li>cython (lowest version tested is 0.21.1),</li>
+<li>matplotlib (lowest version tested is 1.4),</li>
+<li>pdbParser (lowest version tested is 0.1.2),</li>
+<li>pysimplelog (lowest version tested is 0.1.7).</li>
+</ol>
+</dd>
+</dl>
 <p><strong>Installation using pip:</strong></p>
 <p>numpy and cython must be installed and updated manually.</p>
 <blockquote>
@@ -429,31 +422,37 @@ pip install -U <span class="s2">&quot;cython&gt;=0.21.1&quot;</span>
 <p><strong>Installation by cloning github repository:</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>Ensure all fullrmc required packages are installed:</li>
+<li>Ensure all fullrmc required packages are installed and up to data by executing the
+following python script:</li>
 </ul>
 <blockquote>
 <div><div class="highlight-python"><div class="highlight"><pre><span class="c"># check whether all packages are already installed</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="k">assert</span> <span class="n">numpy</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s">&#39;1.7.1&#39;</span><span class="p">,</span> <span class="s">&#39;numpy installation must be upgraded&#39;</span>
-<span class="kn">import</span> <span class="nn">cython</span>
-<span class="k">assert</span> <span class="n">cython</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s">&#39;0.21.1&#39;</span><span class="p">,</span> <span class="s">&#39;cython installation must be upgraded&#39;</span>
-<span class="kn">import</span> <span class="nn">pdbParser</span>
-<span class="k">assert</span> <span class="n">pdbParser</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s">&#39;0.1.2&#39;</span><span class="p">,</span> <span class="s">&#39;pdbParser installation must be upgraded&#39;</span>
-<span class="kn">import</span> <span class="nn">pysimplelog</span>
-<span class="k">assert</span> <span class="n">pysimplelog</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s">&#39;0.1.7&#39;</span><span class="p">,</span> <span class="s">&#39;pysimplelog installation must be upgraded&#39;</span>
-<span class="kn">import</span> <span class="nn">matplotlib</span>
-<span class="k">assert</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">__version__</span> <span class="o">&gt;=</span> <span class="s">&#39;1.4&#39;</span><span class="p">,</span> <span class="s">&#39;matplotlib installation must be upgraded&#39;</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;cython&#39;</span>     <span class="p">,</span><span class="s">&#39;0.21.1&#39;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s">&#39;0.1.2&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s">&#39;0.1.7&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s">&#39;1.4&#39;</span>  <span class="p">)]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> must be installed for fullrmc to run properly&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">PV</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">PV</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> installed version </span><span class="si">%s</span><span class="s"> is below minimum suggested version </span><span class="si">%s</span><span class="s">.Updating </span><span class="si">%s</span><span class="s"> is highly recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ul>
-<li><p class="first">Locate python&#8217;s site-packages using:</p>
+<li><p class="first">Locate python&#8217;s site-packages by executing the following python script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;site_packages&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Navigate to site_packages folder and clone git repository:</p>
+<li><p class="first">Navigate to site_packages folder and clone git repository from command line:</p>
 </li>
 </ul>
 <blockquote>
@@ -463,10 +462,15 @@ git clone https://github.com/bachiraoun/fullrmc.git
 </div>
 </div></blockquote>
 <ul class="simple">
-<li>Compile fullrmc Extension files. Change directory to .../site_packages/fullrmc/Extensions:</li>
+<li>Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions
+from command line as the following:</li>
 </ul>
 <blockquote>
-<div></div></blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> .../site_packages/fullrmc/Extensions
+python setup.py build_ext --inplace   
+</pre></div>
+</div>
+</div></blockquote>
 </div></blockquote>
 </div>
 <div class="section" id="sub-packages">

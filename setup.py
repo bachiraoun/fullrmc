@@ -1,6 +1,6 @@
 """
-In order to work properly, this script must be put one layer/folder/directory 
-outside of pdbParser package directory.
+In order to work properly, this script must be put one layer or directory
+outside of fullrmc package directory.
 """ 
 # standard distribution imports
 import os, sys, subprocess
@@ -271,7 +271,7 @@ metadata = dict(# package
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.1.7",
                                     "pdbParser>=0.1.2",
-                                    "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left for the user to install.
+                                    "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )
 

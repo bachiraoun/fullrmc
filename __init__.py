@@ -23,31 +23,44 @@ Inheritance diagram
 
 Welcoming videos
 ================    
-+--------------------------------------------------------------+----------------------------------------------+
-|.. raw:: html                                                 | Molecular system full RMC                    |  
-|                                                              | simulation. Groups are set to                |
-|        <iframe width="580" height="315"                      | molecules and smart moves are                |
-|        src="https://www.youtube.com/embed/untepXVc3BQ"       | applied. Translations along                  |
-|        frameborder="0" allowfullscreen>                      | symmetry axes, rotations                     |
-|        </iframe>                                             | about symmetry axes, etc.                    |
-|                                                              |                                              |
-+--------------------------------------------------------------+----------------------------------------------+
-|.. raw:: html                                                 | Atomic binary Nickel-Titanium shape memory   |  
-|                                                              | alloy system phase transformation RMC        |
-|        <iframe width="580" height="315"                      | simulation. Random atomic translations are   |
-|        src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0" | enough to reproduce short range ordering. But|
-|        frameborder="0" allowfullscreen>                      | swapping atoms is necessary to fit long range|
-|        </iframe>                                             | atomic correlations.                         |
-|                                                              |                                              |
-+--------------------------------------------------------------+----------------------------------------------+
-|.. raw:: html                                                 | Molecular system mere atomic                 |  
-|                                                              | RMC simulation. Covalent bond                |
-|        <iframe width="580" height="315"                      | electron density polarization                |
-|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"       | is modelled by allowing                      |
-|        frameborder="0" allowfullscreen>                      | fullrmc to explore across                    |
-|        </iframe>                                             | energy low correlation                       |
-|                                                              | barriers.                                    |
-+--------------------------------------------------------------+----------------------------------------------+
++---------------------------------------------------------------------------------------+
+|.. raw:: html                                                                          |  
+|                                                                                       |
+|        <iframe width="580" height="315"                                               |
+|        src="https://www.youtube.com/embed/untepXVc3BQ"                                |
+|        frameborder="0" allowfullscreen>                                               |
+|        </iframe>                                                                      |
+|                                                                                       |
+|                                                                                       |
+|Molecular system full RMC simulation. Groups are set to molecules and smart moves are  |
+|applied. Translations along symmetry axes, rotations about symmetry axes, etc.         |
+|                                                                                       |    
++---------------------------------------------------------------------------------------+
+|.. raw:: html                                                                          | 
+|                                                                                       | 
+|        <iframe width="580" height="315"                                               | 
+|        src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0"                          | 
+|        frameborder="0" allowfullscreen>                                               | 
+|        </iframe>                                                                      | 
+|                                                                                       | 
+|                                                                                       |
+|Atomic binary Nickel-Titanium shape memory alloy system phase transformation RMC       |
+|simulation. Random atomic translations are enough to reproduce short range ordering.   |
+|But swapping atoms is necessary to fit long range atomic correlations.                 |    
+|                                                                                       |
++---------------------------------------------------------------------------------------+
+|.. raw:: html                                                                          |
+|                                                                                       |
+|        <iframe width="580" height="315"                                               |
+|        src="https://www.youtube.com/embed/xnG0wnEfbJ8"                                |
+|        frameborder="0" allowfullscreen>                                               |   
+|        </iframe>                                                                      |    
+|                                                                                       |
+|                                                                                       |
+|Molecular system mere atomic RMC simulation. Covalent bond electron density            |   
+|polarization is modelled by allowing fullrmc to explore across energy low correlation  |
+|barriers.                                                                              |     
++---------------------------------------------------------------------------------------+
 
 
 Brief Description
@@ -249,12 +262,12 @@ the Engine is run for additional several hours to refine atoms positions separat
 Installation
 ============ 
 fullrmc requires:
-#. Python (>= 2.6 and < 3),
-#. NumPy (lowest version tested is 1.7.1),
-#. cython (lowest version tested is 0.21.1),
-#. matplotlib (lowest version tested is 1.4),
-#. pdbParser (lowest version tested is 0.1.2),
-#. pysimplelog (lowest version tested is 0.1.7).
+   #. Python (>= 2.6 and < 3),
+   #. NumPy (lowest version tested is 1.7.1),
+   #. cython (lowest version tested is 0.21.1),
+   #. matplotlib (lowest version tested is 1.4),
+   #. pdbParser (lowest version tested is 0.1.2),
+   #. pysimplelog (lowest version tested is 0.1.7).
 
 **Installation using pip:**\n
 numpy and cython must be installed and updated manually. 
@@ -271,42 +284,53 @@ When you already have a working installation of numpy and cython.
        pip install fullrmc
 
 **Installation by cloning github repository:**\n
-   * Ensure all fullrmc required packages are installed:
+   * Ensure all fullrmc required packages are installed and up to data by executing the
+     following python script:
     
     .. code-block:: python
         
         # check whether all packages are already installed
-        import numpy
-        assert numpy.__version__ >= '1.7.1', 'numpy installation must be upgraded'
-        import cython
-        assert cython.__version__ >= '0.21.1', 'cython installation must be upgraded'
-        import pdbParser
-        assert pdbParser.__version__ >= '0.1.2', 'pdbParser installation must be upgraded'
-        import pysimplelog
-        assert pysimplelog.__version__ >= '0.1.7', 'pysimplelog installation must be upgraded'
-        import matplotlib
-        assert matplotlib.__version__ >= '1.4', 'matplotlib installation must be upgraded'
+        from pkg_resources import parse_version as PV
+        for name, ver in [('numpy'      ,'1.7.1') ,
+                          ('cython'     ,'0.21.1'),
+                          ('pdbParser'  ,'0.1.2') ,
+                          ('pysimplelog','0.1.7') ,
+                          ('matplotlib' ,'1.4'  )]:
+            try:
+                lib = __import__(name)
+            except:
+                print '%s must be installed for fullrmc to run properly'%(name)
+            else:
+                if PV(lib.__version__) < PV(ver):
+                    print '%s installed version %s is below minimum suggested version %s.\
+Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
+                else:
+                    print '%s is installed properly and minimum version requirement is met.'%(name)
+        
            
-   * Locate python's site-packages using:
+   * Locate python's site-packages by executing the following python script:
      
      .. code-block:: python
      
         import os
         os.path.join(os.path.dirname(os.__file__), 'site_packages')
 
-   * Navigate to site_packages folder and clone git repository:\n
+   * Navigate to site_packages folder and clone git repository from command line:
    
     .. code-block:: bash
        
        cd .../site_packages
        git clone https://github.com/bachiraoun/fullrmc.git   
 
-   * Compile fullrmc Extension files. Change directory to .../site_packages/fullrmc/Extensions:\n
-      
-    .. code-block:: bash  
-        cd .../site_packages/fullrmc/Extensions
-        python setup.py build_ext --inplace 
-        
+   * Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions
+     from command line as the following:
+     
+    .. code-block:: bash
+       
+       cd .../site_packages/fullrmc/Extensions
+       python setup.py build_ext --inplace   
+       
+     
 """
 # get package info
 from __pkginfo__ import __version__, __author__, __email__

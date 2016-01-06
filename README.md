@@ -26,6 +26,10 @@ News
 * Groups swap and atoms position exchange added to generators.
 * Machine learning is added to group selection. First tests are very promising show great improvements.
 
+Ask your questions
+==================
+https://groups.google.com/forum/#!forum/fullrmc
+
 Installation
 ============
 ##### fullrmc requires:

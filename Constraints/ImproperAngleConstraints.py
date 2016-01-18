@@ -382,9 +382,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_improper_angles( anglesDict=anglesDict ,
-                                         boxCoords=self.engine.boxCoordinates,
-                                         basis=self.engine.basisVectors ,
+        dataDict = full_improper_angles( anglesDict         = anglesDict ,
+                                         boxCoords          = self.engine.boxCoordinates,
+                                         basis              = self.engine.basisVectors ,
                                          reduceAngleToUpper = False,
                                          reduceAngleToLower = False)
         self.set_data( dataDict )
@@ -408,9 +408,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_improper_angles( anglesDict=anglesDict ,
-                                         boxCoords=self.engine.boxCoordinates,
-                                         basis=self.engine.basisVectors ,
+        dataDict = full_improper_angles( anglesDict         = anglesDict ,
+                                         boxCoords          = self.engine.boxCoordinates,
+                                         basis              = self.engine.basisVectors ,
                                          reduceAngleToUpper = False,
                                          reduceAngleToLower = False)
         # set data before move
@@ -436,9 +436,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data before move
-        dataDict = full_improper_angles( anglesDict=anglesDict ,
-                                         boxCoords=self.engine.boxCoordinates,
-                                         basis=self.engine.basisVectors ,
+        dataDict = full_improper_angles( anglesDict         = anglesDict ,
+                                         boxCoords          = self.engine.boxCoordinates,
+                                         basis              = self.engine.basisVectors ,
                                          reduceAngleToUpper = False,
                                          reduceAngleToLower = False)
         # set data after move

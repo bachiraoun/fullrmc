@@ -323,9 +323,9 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        dataDict = full_bonds(bonds = self.__bonds, 
-                              boxCoords = self.engine.boxCoordinates,
-                              basis  = self.engine.basisVectors,
+        dataDict = full_bonds(bonds                 = self.__bonds, 
+                              boxCoords             = self.engine.boxCoordinates,
+                              basis                 = self.engine.basisVectors,
                               reduceDistanceToUpper = False,
                               reduceDistanceToLower = False)
         self.set_data( dataDict )
@@ -346,9 +346,9 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         for idx in indexes:
             bondsDict[idx] = self.__bonds[idx]
         # compute data before move
-        dataDict = full_bonds(bonds = bondsDict, 
-                              boxCoords = self.engine.boxCoordinates,
-                              basis  = self.engine.basisVectors,
+        dataDict = full_bonds(bonds                 = bondsDict, 
+                              boxCoords             = self.engine.boxCoordinates,
+                              basis                 = self.engine.basisVectors,
                               reduceDistanceToUpper = False,
                               reduceDistanceToLower = False)
         # set data before move
@@ -372,9 +372,9 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data after move
-        dataDict = full_bonds(bonds = bondsDict, 
-                              boxCoords = self.engine.boxCoordinates,
-                              basis  = self.engine.basisVectors,
+        dataDict = full_bonds(bonds                 = bondsDict, 
+                              boxCoords             = self.engine.boxCoordinates,
+                              basis                 = self.engine.basisVectors,
                               reduceDistanceToUpper = False,
                               reduceDistanceToLower = False)
         self.set_active_atoms_data_after_move( dataDict )

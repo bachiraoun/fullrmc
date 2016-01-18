@@ -196,14 +196,10 @@ def find_package_data(where='.', package='', relativePath='',
 ##############################################################################################
 
 # get extensions
-EXTENSIONS = [# get_reciprocal_basis
-              Extension('fullrmc.Core.get_reciprocal_basis',
+EXTENSIONS = [# boundary_conditions_collection
+              Extension('fullrmc.Core.boundary_conditions_collection',
               include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"get_reciprocal_basis.pyx")]),
-              # transform_coordinates
-              Extension('fullrmc.Core.transform_coordinates',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"transform_coordinates.pyx")]),
+              sources = [os.path.join(EXTENSIONS_PATH,"boundary_conditions_collection.pyx")]),
               # pair_distribution_histogram
               Extension('fullrmc.Core.pair_distribution_histogram',
               include_dirs=[np.get_include()],
@@ -254,7 +250,7 @@ metadata = dict(# package
                 # info
                 version          = PACKAGE_INFO['__version__'] ,
                 author           = "Bachir AOUN",
-                author_email     = "bachir.aoun@e-aoun.com",
+                author_email     = "fullrmc@gmail.com",
                 # Description
                 description      = "\n".join(DESCRIPTION),
                 long_description = "\n".join(LONG_DESCRIPTION),
@@ -270,7 +266,7 @@ metadata = dict(# package
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.1.7",
-                                    "pdbParser>=0.1.2",
+                                    "pdbParser>=0.1.3",
                                     "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

@@ -25,7 +25,7 @@ from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicB
 
 # fullrmc library imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.transform_coordinates import transform_coordinates
+from fullrmc.Core.boundary_conditions_collection import transform_coordinates
 from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.Group import Group
@@ -403,6 +403,7 @@ class Engine(object):
         :Parameters:
             #. path (string): the pdb file path.
         """
+        # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
         self.pdb.export_pdb(path, coordinates=self.__realCoordinates, boundaryConditions=self.__boundaryConditions )
     
     def get_pdb(self):
@@ -554,6 +555,65 @@ class Engine(object):
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
             
+    def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
+        """
+        Sets the configuration pdb. Engine and constraintsData will be automatically reset
+        
+        :Parameters:
+            #. pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.
+            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
+               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
+            #. names (None, list): All pdb atoms names list.
+               If None names will be calculated automatically by parsing pdb instance.
+            #. elements (None, list): All pdb atoms elements list.
+               If None elements will be calculated automatically by parsing pdb instance.
+            #. moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
+               If None moleculesIndexes will be calculated automatically by parsing pdb instance.
+            #. moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
+               If None, it is automatically generated as the pdb residues name.
+        """
+        if pdb is None:
+            pdb = pdbParser()
+            bc  = PeriodicBoundaries()
+            bc.set_vectors(1)
+            pdb.set_boundary_conditions(bc)
+        if not isinstance(pdb, pdbParser):
+            try:
+                pdb = pdbParser(pdb)
+            except:
+                raise Exception( LOGGER.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
+        # set pdb
+        self.__pdb = pdb        
+        
+        #### CONVERT PDB COORDINATES TO CARTESIAN CAN BE ADDED HERE ####
+        ##### transform coords into cartesian orthonormal system
+        ####self.__pdbBasis    = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
+        ####self.__pdbRecBasis = get_reciprocal_basis(self.__pdbBasis)[0]
+        ####RC = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE)  
+        ####cartesianCoords = transform_coordinates(self.__pdbRecBasis, RC).astype(FLOAT_TYPE)
+        
+        # get coordinates
+        self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE) 
+        
+        # reset configuration state
+        self.__state = time.time()
+        # set boundary conditions
+        if boundaryConditions is None:
+            boundaryConditions = pdb.boundaryConditions
+        self.set_boundary_conditions(boundaryConditions)
+        # get elementsIndexes
+        self.set_elements_indexes(elements)
+        # get namesIndexes
+        self.set_names_indexes(names)
+        # get moleculesIndexes
+        self.set_molecules_indexes(moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
+        # broadcast to constraints
+        self.__broadcaster.broadcast("update pdb")
+        # reset engine flags
+        self.reset_engine()
+        
     def set_boundary_conditions(self, boundaryConditions):
         """
         Sets the configuration boundary conditions. Any type of periodic boundary conditions are allowed and not restricted to cubic.
@@ -589,126 +649,14 @@ class Engine(object):
             self.__volume = FLOAT_TYPE(boundaryConditions.get_box_volume())
         # get box coordinates
         if isinstance(self.__boundaryConditions, PeriodicBoundaries):
-            self.__boxCoordinates = np.array( self.__boundaryConditions.real_to_box_array(self.__realCoordinates), dtype=FLOAT_TYPE)
+            self.__boxCoordinates = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=self.__realCoordinates)
         else:
             self.__boxCoordinates = None
+        # check box coordinates for none periodic boundary conditions
+        if self.__boxCoordinates is None:
             raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
-        
-    def visualize(self, boxWidth=2, boxColor="yellow", representation="Lines", params=""):
-        """ Visualize the last configuration using pdbParser visualize method.
-        
-        :Parameters:
-            #. boxWidth (number): Visualize the simulation box by giving the lines width.
-               If 0 then the simulation box is not visualized.
-            #. boxColor (str): Choose the simulation box color among the following:\n
-               blue, red, gray, orange, yellow, tan, silver, green,
-               white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
-               black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
-               blue3, violet, violet2, magenta, magenta2, red2, red3, 
-               orange2, orange3.
-            #. representation(str): Choose representation method among the following:\n
-               Lines, Bonds, DynamicBonds, HBonds, Points, 
-               VDW, CPK, Licorice, Beads, Dotted, Solvent.
-            #. params(str): Set the representation parameters.
-                  * Points representation accept only size parameter e.g. '5'
-                  * CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
-                     'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
-        """
-        # check boxWidth argument
-        assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
-        boxWidth = int(boxWidth)
-        assert boxWidth>=0, LOGGER.error("boxWidth must be a positive") 
-        # check boxColor argument
-        colors = ['blue', 'red', 'gray', 'orange', 'yellow', 'tan', 'silver', 'green',
-                  'white', 'pink', 'cyan', 'purple', 'lime', 'mauve', 'ochre', 'iceblue', 
-                  'black', 'yellow2', 'yellow3', 'green2', 'green3', 'cyan2', 'cyan3', 'blue2',
-                  'blue3', 'violet', 'violet2', 'magenta', 'magenta2', 'red2', 'red3', 
-                  'orange2','orange3']
-        assert boxColor in colors, LOGGER.error("boxColor is not a recognized color name among %s"%str(colors))
-        # check representation argument
-        reps = ["Lines","Bonds","DynamicBonds","HBonds","Points","VDW","CPK",
-                "Licorice","Beads","Dotted","Solvent"]
-        assert representation in reps, LOGGER.error("representation is not a recognized among allowed ones %s"%str(reps))
-        # create .tcl file
-        (vmdfd, tclFile) = tempfile.mkstemp()
-        # write tclFile
-        tclFile += ".tcl"
-        fd = open(tclFile, "w")
-        # visualize box
-        if boxWidth>0 and isinstance(self.__boundaryConditions, PeriodicBoundaries):
-            try:
-                a = self.__boundaryConditions.get_a()
-                b = self.__boundaryConditions.get_b()
-                c = self.__boundaryConditions.get_c()
-                alpha = self.__boundaryConditions.get_alpha()*180./np.pi
-                beta = self.__boundaryConditions.get_beta()*180./np.pi
-                gamma = self.__boundaryConditions.get_gamma()*180./np.pi
-                fd.write("set cell [pbc set {%.3f %.3f %.3f %.3f %.3f %.3f} -all]\n"%(a,b,c,alpha,beta,gamma))
-                fd.write("pbc box -center origin -color %s -width %.2f\n"%(boxColor,boxWidth))
-            except:
-                LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
-        # representation
-        fd.write("mol delrep 0 top\n")
-        fd.write("mol representation %s %s\n"%(representation, params) )
-        fd.write("mol delrep 0 top\n")
-        fd.write('mol addrep top\n')
-        #fd.write("sel default style VDW\n")
-        fd.close()
-        self.__pdb.visualize(coordinates=self.__realCoordinates, startupScript=tclFile)
-        # remove .tcl file
-        os.remove(tclFile)
-        
-    def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
-        """
-        Sets the configuration pdb. Engine and constraintsData will be automatically reset
-        
-        :Parameters:
-            #. pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.
-            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
-               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
-               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
-               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
-            #. names (None, list): All pdb atoms names list.
-               If None names will be calculated automatically by parsing pdb instance.
-            #. elements (None, list): All pdb atoms elements list.
-               If None elements will be calculated automatically by parsing pdb instance.
-            #. moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-               If None moleculesIndexes will be calculated automatically by parsing pdb instance.
-            #. moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
-               If None, it is automatically generated as the pdb residues name.
-        """
-        if pdb is None:
-            pdb = pdbParser()
-            bc  = PeriodicBoundaries()
-            bc.set_vectors(1)
-            pdb.set_boundary_conditions(bc)
-        if not isinstance(pdb, pdbParser):
-            try:
-                pdb = pdbParser(pdb)
-            except:
-                raise Exception( LOGGER.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
-        # set pdb
-        self.__pdb = pdb        
-        # get coordinates
-        self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE) 
-        # reset configuration state
-        self.__state = time.time()
-        # set boundary conditions
-        if boundaryConditions is None:
-            boundaryConditions = pdb.boundaryConditions
-        self.set_boundary_conditions(boundaryConditions)
-        # get elementsIndexes
-        self.set_elements_indexes(elements)
-        # get namesIndexes
-        self.set_names_indexes(names)
-        # get moleculesIndexes
-        self.set_molecules_indexes(moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
-        # broadcast to constraints
-        self.__broadcaster.broadcast("update pdb")
-        # reset engine flags
-        self.reset_engine()
         
     def set_molecules_indexes(self, moleculesIndexes=None, moleculesNames=None):
         """
@@ -836,6 +784,81 @@ class Engine(object):
             self.__numberOfAtomsPerName[n] += 1
         # broadcast to constraints
         self.__broadcaster.broadcast("update names indexes")
+    
+    def visualize(self, foldIntoBox=False, boxAtOrigin=False, 
+                        boxWidth=2, boxColor="yellow", representation="Lines", 
+                        params=""):
+        """ Visualize the last configuration using pdbParser visualize method.
+        
+        :Parameters:
+            #. foldIntoBox (boolean): Whether to fold all atoms into simulation box before visualization.
+            #. boxAtOrigin (boolean): Whether to center simulation box at origin.
+            #. boxWidth (number): Visualize the simulation box by giving the lines width.
+               If 0 then the simulation box is not visualized.
+            #. boxColor (str): Choose the simulation box color among the following:\n
+               blue, red, gray, orange, yellow, tan, silver, green,
+               white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+               black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
+               blue3, violet, violet2, magenta, magenta2, red2, red3, 
+               orange2, orange3.
+            #. representation(str): Choose representation method among the following:\n
+               Lines, Bonds, DynamicBonds, HBonds, Points, 
+               VDW, CPK, Licorice, Beads, Dotted, Solvent.
+            #. params(str): Set the representation parameters.
+                  * Points representation accept only size parameter e.g. '5'
+                  * CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
+                     'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
+        """
+        # check boxWidth argument
+        assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
+        boxWidth = int(boxWidth)
+        assert boxWidth>=0, LOGGER.error("boxWidth must be a positive") 
+        # check boxColor argument
+        colors = ['blue', 'red', 'gray', 'orange', 'yellow', 'tan', 'silver', 'green',
+                  'white', 'pink', 'cyan', 'purple', 'lime', 'mauve', 'ochre', 'iceblue', 
+                  'black', 'yellow2', 'yellow3', 'green2', 'green3', 'cyan2', 'cyan3', 'blue2',
+                  'blue3', 'violet', 'violet2', 'magenta', 'magenta2', 'red2', 'red3', 
+                  'orange2','orange3']
+        assert boxColor in colors, LOGGER.error("boxColor is not a recognized color name among %s"%str(colors))
+        # check representation argument
+        reps = ["Lines","Bonds","DynamicBonds","HBonds","Points","VDW","CPK",
+                "Licorice","Beads","Dotted","Solvent"]
+        assert representation in reps, LOGGER.error("representation is not a recognized among allowed ones %s"%str(reps))
+        # create .tcl file
+        (vmdfd, tclFile) = tempfile.mkstemp()
+        # write tclFile
+        tclFile += ".tcl"
+        fd = open(tclFile, "w")
+        # visualize box
+        if boxWidth>0 and isinstance(self.__boundaryConditions, PeriodicBoundaries):
+            try:
+                a = self.__boundaryConditions.get_a()
+                b = self.__boundaryConditions.get_b()
+                c = self.__boundaryConditions.get_c()
+                alpha = self.__boundaryConditions.get_alpha()*180./np.pi
+                beta = self.__boundaryConditions.get_beta()*180./np.pi
+                gamma = self.__boundaryConditions.get_gamma()*180./np.pi
+                fd.write("set cell [pbc set {%.3f %.3f %.3f %.3f %.3f %.3f} -all]\n"%(a,b,c,alpha,beta,gamma))
+                if boxAtOrigin:
+                    fd.write("pbc box -center origin -color %s -width %.2f\n"%(boxColor,boxWidth))
+                else:
+                    fd.write("pbc box -color %s -width %.2f\n"%(boxColor,boxWidth))
+            except:
+                LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
+        # representation
+        fd.write("mol delrep 0 top\n")
+        fd.write("mol representation %s %s\n"%(representation, params) )
+        fd.write("mol delrep 0 top\n")
+        fd.write('mol addrep top\n')
+        #fd.write("sel default style VDW\n")
+        fd.close()
+        coords = self.__realCoordinates
+        # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
+        if foldIntoBox:
+            coords = self.__boundaryConditions.fold_real_array(self.__realCoordinates)
+        self.__pdb.visualize(coordinates=coords, startupScript=tclFile)
+        # remove .tcl file
+        os.remove(tclFile)
         
     def add_constraints(self, constraints):
         """

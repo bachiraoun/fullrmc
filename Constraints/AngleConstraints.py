@@ -374,9 +374,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.__angles[idx] 
         # compute data before move
-        dataDict = full_angles( anglesDict=anglesDict ,
-                                boxCoords=self.engine.boxCoordinates,
-                                basis=self.engine.basisVectors ,
+        dataDict = full_angles( anglesDict         = anglesDict ,
+                                boxCoords          = self.engine.boxCoordinates,
+                                basis              = self.engine.basisVectors ,
                                 reduceAngleToUpper = False,
                                 reduceAngleToLower = False)
         self.set_data( dataDict )
@@ -400,9 +400,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_angles( anglesDict=anglesDict ,
-                                boxCoords=self.engine.boxCoordinates,
-                                basis=self.engine.basisVectors ,
+        dataDict = full_angles( anglesDict         = anglesDict ,
+                                boxCoords          = self.engine.boxCoordinates,
+                                basis              = self.engine.basisVectors ,
                                 reduceAngleToUpper = False,
                                 reduceAngleToLower = False)
         # set data before move
@@ -428,9 +428,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data before move
-        dataDict = full_angles( anglesDict=anglesDict ,
-                                boxCoords=self.engine.boxCoordinates,
-                                basis=self.engine.basisVectors ,
+        dataDict = full_angles( anglesDict         = anglesDict ,
+                                boxCoords          = self.engine.boxCoordinates,
+                                basis              = self.engine.basisVectors ,
                                 reduceAngleToUpper = False,
                                 reduceAngleToLower = False)
         # set data after move
@@ -716,13 +716,13 @@ class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
      
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        self.__coordAngData = full_atomic_coordination_angle( boxCoords = self.engine.boxCoordinates,
-                                                              basis = self.engine.basisVectors,
-                                                              moleculeIndex = self.engine.moleculesIndexes,
-                                                              typesIndex = self.__typesIndexes,
+        self.__coordAngData = full_atomic_coordination_angle( boxCoords       = self.engine.boxCoordinates,
+                                                              basis           = self.engine.basisVectors,
+                                                              moleculeIndex   = self.engine.moleculesIndexes,
+                                                              typesIndex      = self.__typesIndexes,
                                                               typesDefinition = self.__typesCoordAngDef,
-                                                              typeIndexesLUT=self.__typeIndexesLUT,
-                                                              coordAngData = self.__coordAngData)
+                                                              typeIndexesLUT  = self.__typeIndexesLUT,
+                                                              coordAngData    = self.__coordAngData)
         ## update data
         #self.set_data( self.__coordAngData )
         #self.set_active_atoms_data_before_move(None)

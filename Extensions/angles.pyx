@@ -56,6 +56,15 @@ cdef C_FLOAT32 FLOAT_TWO       = 2.0
 cdef C_FLOAT32 BOX_LENGTH      = 1.0
 cdef C_FLOAT32 HALF_BOX_LENGTH = 0.5
 
+
+cdef extern from "math.h":
+    C_FLOAT32 floor(C_FLOAT32 x)
+    C_FLOAT32 ceil(C_FLOAT32 x)
+    C_FLOAT32 sqrt(C_FLOAT32 x)
+
+cdef inline C_FLOAT32 round(C_FLOAT32 num):
+    return floor(num + HALF_BOX_LENGTH) if (num > FLOAT_ZERO) else ceil(num - HALF_BOX_LENGTH)
+    
        
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -95,18 +104,15 @@ def single_angles( C_INT32 centralAtomIndex,
         inLoopLeftAtomIndex  = leftIndexes[i]
         inLoopRightAtomIndex = rightIndexes[i]
         # calculate left vector
-        box_dx = (boxCoords[inLoopLeftAtomIndex,0] - atomBox_x)%1
-        box_dy = (boxCoords[inLoopLeftAtomIndex,1] - atomBox_y)%1
-        box_dz = (boxCoords[inLoopLeftAtomIndex,2] - atomBox_z)%1
+        box_dx = boxCoords[inLoopLeftAtomIndex,0]-atomBox_x
+        box_dy = boxCoords[inLoopLeftAtomIndex,1]-atomBox_y
+        box_dz = boxCoords[inLoopLeftAtomIndex,2]-atomBox_z
         sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
         sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
         sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
         leftVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
         leftVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
         leftVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
@@ -118,25 +124,22 @@ def single_angles( C_INT32 centralAtomIndex,
         leftVector_y /= vectorNorm
         leftVector_z /= vectorNorm
         # calculate right vector
-        box_dx = (boxCoords[inLoopRightAtomIndex,0] - atomBox_x)%1
-        box_dy = (boxCoords[inLoopRightAtomIndex,1] - atomBox_y)%1
-        box_dz = (boxCoords[inLoopRightAtomIndex,2] - atomBox_z)%1
+        box_dx = boxCoords[inLoopRightAtomIndex,0]-atomBox_x
+        box_dy = boxCoords[inLoopRightAtomIndex,1]-atomBox_y
+        box_dz = boxCoords[inLoopRightAtomIndex,2]-atomBox_z
         sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
         sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
         sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
         rightVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
         rightVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
         rightVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
-        # normalize right vector
-        vectorNorm = sqrt(rightVector_x*rightVector_x + rightVector_y*rightVector_y + rightVector_z*rightVector_z)
+        # normalize left vector
+        vectorNorm = sqrt(leftVector_x*leftVector_x + leftVector_y*leftVector_y + leftVector_z*leftVector_z)
         if vectorNorm==0:
-            raise Exception("Computing angle, vector between %i and %i atoms is found to have null length"%(centralAtomIndex, inLoopRightAtomIndex))
+            raise Exception("Computing angle, vector between %i and %i atoms is found to have null length"%(centralAtomIndex, inLoopLeftAtomIndex))
         rightVector_x /= vectorNorm
         rightVector_y /= vectorNorm
         rightVector_z /= vectorNorm

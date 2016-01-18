@@ -60,7 +60,16 @@ cdef C_FLOAT32 HALF_BOX_LENGTH = 0.5
 cdef C_FLOAT32 PI              = 3.141592653589793
 cdef C_FLOAT32 PI_2            = PI/2
 
-       
+ 
+cdef extern from "math.h":
+    C_FLOAT32 floor(C_FLOAT32 x)
+    C_FLOAT32 ceil(C_FLOAT32 x)
+    C_FLOAT32 sqrt(C_FLOAT32 x)
+
+cdef inline C_FLOAT32 round(C_FLOAT32 num):
+    return floor(num + HALF_BOX_LENGTH) if (num > FLOAT_ZERO) else ceil(num - HALF_BOX_LENGTH)
+
+      
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -104,21 +113,19 @@ def single_improper_angles( C_INT32 improperAtomIndex,
         inLoopXAtomIndex = xAtomIndex[i]
         inLoopYAtomIndex = yAtomIndex[i]
         ########################### improper vector ###########################
-        box_dx = (atomBox_x - boxCoords[inLoopOAtomIndex,0])%1
-        box_dy = (atomBox_y - boxCoords[inLoopOAtomIndex,0])%1
-        box_dz = (atomBox_z - boxCoords[inLoopOAtomIndex,0])%1
+        box_dx = boxCoords[i,0]-atomBox_x
+        box_dy = boxCoords[i,1]-atomBox_y
+        box_dz = boxCoords[i,2]-atomBox_z
         sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
         sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
         sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
-        improperVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
-        improperVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
-        improperVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
+        # get real difference
+        improperVector_x = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+        improperVector_y = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+        improperVector_z = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
         # normalize improper vector
         vectorNorm = sqrt(improperVector_x*improperVector_x + improperVector_y*improperVector_y + improperVector_z*improperVector_z)
         if vectorNorm==0:
@@ -127,22 +134,20 @@ def single_improper_angles( C_INT32 improperAtomIndex,
         improperVector_y /= vectorNorm
         improperVector_z /= vectorNorm
         ############################## ox vector ##############################
-        box_dx = (boxCoords[inLoopXAtomIndex,0] - boxCoords[inLoopOAtomIndex,0])%1
-        box_dy = (boxCoords[inLoopXAtomIndex,1] - boxCoords[inLoopOAtomIndex,0])%1
-        box_dz = (boxCoords[inLoopXAtomIndex,2] - boxCoords[inLoopOAtomIndex,0])%1
+        box_dx = boxCoords[inLoopXAtomIndex,0] - boxCoords[inLoopOAtomIndex,0]
+        box_dy = boxCoords[inLoopXAtomIndex,1] - boxCoords[inLoopOAtomIndex,0]
+        box_dz = boxCoords[inLoopXAtomIndex,2] - boxCoords[inLoopOAtomIndex,0]
         sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
         sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
         sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
-        oxVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
-        oxVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
-        oxVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
-        # normalize ox vector
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
+        # get real difference
+        oxVector_x = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+        oxVector_y = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+        oxVector_z = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+        # normalize improper vector
         vectorNorm = sqrt(oxVector_x*oxVector_x + oxVector_y*oxVector_y + oxVector_z*oxVector_z)
         if vectorNorm==0:
             raise Exception("Computing improper angle, vector between %i and %i atoms is found to have null length"%(inLoopOAtomIndex, inLoopXAtomIndex))
@@ -150,18 +155,15 @@ def single_improper_angles( C_INT32 improperAtomIndex,
         oxVector_y /= vectorNorm
         oxVector_z /= vectorNorm
         ############################## oy vector ##############################
-        box_dx = (boxCoords[inLoopYAtomIndex,0] - boxCoords[inLoopOAtomIndex,0])%1
-        box_dy = (boxCoords[inLoopYAtomIndex,1] - boxCoords[inLoopOAtomIndex,0])%1
-        box_dz = (boxCoords[inLoopYAtomIndex,2] - boxCoords[inLoopOAtomIndex,0])%1
+        box_dx = boxCoords[inLoopYAtomIndex,0] - boxCoords[inLoopOAtomIndex,0]
+        box_dy = boxCoords[inLoopYAtomIndex,1] - boxCoords[inLoopOAtomIndex,0]
+        box_dz = boxCoords[inLoopYAtomIndex,2] - boxCoords[inLoopOAtomIndex,0]
         sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
         sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
         sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
         oyVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
         oyVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
         oyVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
@@ -174,9 +176,9 @@ def single_improper_angles( C_INT32 improperAtomIndex,
         oyVector_z /= vectorNorm
         ############################## oz vector ##############################
         # compute OZ vector as a×b= (a2b3−a3b2)i−(a1b3−a3b1)j+(a1b2−a2b1)k.
-        ozVector_x = oxVector_y*oyVector_z - oxVector_z*oyVector_y
+        ozVector_x =  oxVector_y*oyVector_z - oxVector_z*oyVector_y
         ozVector_y = -oxVector_x*oyVector_z + oxVector_z*oyVector_x
-        ozVector_z = oxVector_x*oyVector_y - oxVector_y*oyVector_x
+        ozVector_z =  oxVector_x*oyVector_y - oxVector_y*oyVector_x
         ################################ angle ################################
         # compute dot product
         dot = improperVector_x*ozVector_x + improperVector_y*ozVector_y + improperVector_z*ozVector_z

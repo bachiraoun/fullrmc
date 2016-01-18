@@ -1,4 +1,23 @@
 """ 
+Questions and Answers forum
+===========================
+.. raw:: html 
+                
+   <iframe id="forum_embed"
+     src="javascript:void(0)"
+     scrolling="no"
+     frameborder="0"
+     height="700">
+   </iframe>
+   
+   <script type="text/javascript">
+     document.getElementById('forum_embed').src =
+        'https://groups.google.com/forum/embed/?place=forum/fullrmc'
+        + '&showsearch=true&showpopout=true&showtabs=false'
+        + '&parenturl=' + encodeURIComponent(window.location.href);
+   </script>
+
+    
 Inheritance diagram
 ===================  
 .. inheritance-diagram:: fullrmc.Engine.Engine
@@ -329,19 +348,21 @@ Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
        
        cd .../site_packages/fullrmc/Extensions
        python setup.py build_ext --inplace   
-       
-     
+      
 """
-# get package info
+# import package info
 from __pkginfo__ import __version__, __author__, __email__
 
 def get_version():
+    """Get fullrmc's version number."""
     return __version__ 
 
 def get_author():
+    """Get fullrmc's author name."""
     return __author__     
  
 def get_email():
+    """Get fullrmc's official email."""
     return __email__   
     
     

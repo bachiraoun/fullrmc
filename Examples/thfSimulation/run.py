@@ -331,8 +331,8 @@ PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENG
 
 # ############ RUN ENGINE ############ #
 #ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_original.pdb"%(ENGINE.generated)) )
-bonds_CH(ENGINE)
-angles_HCH(ENGINE)
+#bonds_CH(ENGINE)
+#angles_HCH(ENGINE)
 atoms(ENGINE, explore=False, refine=False)
 # refine scaling factor
 PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 

@@ -312,13 +312,13 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
          
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        self.__coordNumData = full_atomic_coordination_number( boxCoords = self.engine.boxCoordinates,
-                                                               basis = self.engine.basisVectors,
-                                                               moleculeIndex = self.engine.moleculesIndexes,
-                                                               typesIndex = self.__typesIndexes,
+        self.__coordNumData = full_atomic_coordination_number( boxCoords       = self.engine.boxCoordinates,
+                                                               basis           = self.engine.basisVectors,
+                                                               moleculeIndex   = self.engine.moleculesIndexes,
+                                                               typesIndex      = self.__typesIndexes,
                                                                typesDefinition = self.__typesCoordNumDef,
-                                                               typeIndexesLUT=self.__typeIndexesLUT,
-                                                               coordNumData = self.__coordNumData)
+                                                               typeIndexesLUT  = self.__typeIndexesLUT,
+                                                               coordNumData    = self.__coordNumData)
         # update data
         self.set_data( self.__coordNumData )
         self.set_active_atoms_data_before_move(None)
@@ -353,11 +353,11 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         neighbours           = [] 
         affectedAtomsIndexes = []
         for idx in indexes:
-            data = atom_coordination_number_data( atomIndex = idx,
-                                                  boxCoords = self.engine.boxCoordinates,
-                                                  basis = self.engine.basisVectors,
-                                                  moleculeIndex = self.engine.moleculesIndexes,
-                                                  typesIndex = self.__typesIndexes,
+            data = atom_coordination_number_data( atomIndex       = idx,
+                                                  boxCoords       = self.engine.boxCoordinates,
+                                                  basis           = self.engine.basisVectors,
+                                                  moleculeIndex   = self.engine.moleculesIndexes,
+                                                  typesIndex      = self.__typesIndexes,
                                                   typesDefinition = self.__typesCoordNumDef)
             neighboursOfAtom.extend(data[0])
             neighboursShellIdx.extend(data[1])
@@ -442,6 +442,9 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
+        # check if constraints data before are already computed
+        if self.activeAtomsDataBeforeMove is None:
+            return
         # reset data
         affectedIndexes = self.activeAtomsDataBeforeMove['affectedIndexes']
         afterMoveData   = self.activeAtomsDataBeforeMove['data']

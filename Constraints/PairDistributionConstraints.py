@@ -339,7 +339,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # get histogram edges
         self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+1)], dtype=FLOAT_TYPE)       
         self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
-        self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        #self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
+        self.__shellsVolumes = FLOAT_TYPE(4.0/3.)*PI*((self.__edges[1:])**3 - self.__edges[0:-1]**3)
         # set limits indexes for range
         if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
             minDistIdx = self.experimentalData.shape[0]
@@ -410,7 +411,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         """
         #import time
         #startTime = time.clock()
-        Gr = np.zeros(self.__histogramSize, dtype=np.float32)
+        Gr = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
         for pair in self.__elementsPairs:
             # get weighting scheme
             wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
@@ -436,7 +437,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # Devide by shells volume
         Gr /= self.shellsVolumes
         # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
+        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
         Gr   = (4.*np.pi*self.__shellsCenter*rho0)*( Gr-1)
         # Multiply by scale factor
         self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr, self._usedDataWeights)
@@ -454,10 +455,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
         #startTime = time.clock()
         output = {}
         for pair in self.__elementsPairs:
-            output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-            output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-            output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=np.float32)
-        gr = np.zeros(self.__histogramSize, dtype=np.float32)
+            output["rdf_intra_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
+            output["rdf_inter_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
+            output["rdf_total_%s-%s" % pair] = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
+        gr = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
         for pair in self.__elementsPairs:
             # get weighting scheme
             wij = self.__weightingScheme.get(pair[0]+"-"+pair[1], None)
@@ -492,7 +493,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             ## compute g(r) equivalent to earlier gr += wij*dij/Dij
             #gr += output["rdf_total_%s-%s" % pair] 
         # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(np.float32)
+        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
         output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellsCenter*rho0) * (gr-1)
         # convolve total with window function
         if self.__windowFunction is not None:
@@ -529,15 +530,15 @@ class PairDistributionConstraint(ExperimentalConstraint):
         
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        intra,inter = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates,
-                                                         basis=self.engine.basisVectors,
-                                                         moleculeIndex=self.engine.moleculesIndexes,
-                                                         elementIndex=self.engine.elementsIndexes,
-                                                         numberOfElements=self.engine.numberOfElements,
-                                                         minDistance=self.__minimumDistance,
-                                                         maxDistance=self.__maximumDistance,
-                                                         histSize=self.__histogramSize,
-                                                         bin=self.__bin )
+        intra,inter = full_pair_distribution_histograms( boxCoords        = self.engine.boxCoordinates,
+                                                         basis            = self.engine.basisVectors,
+                                                         moleculeIndex    = self.engine.moleculesIndexes,
+                                                         elementIndex     = self.engine.elementsIndexes,
+                                                         numberOfElements = self.engine.numberOfElements,
+                                                         minDistance      = self.__minimumDistance,
+                                                         maxDistance      = self.__maximumDistance,
+                                                         histSize         = self.__histogramSize,
+                                                         bin              = self.__bin )
         # update data
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
@@ -553,26 +554,26 @@ class PairDistributionConstraint(ExperimentalConstraint):
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
-                                                               boxCoords=self.engine.boxCoordinates,
-                                                               basis=self.engine.basisVectors,
-                                                               moleculeIndex=self.engine.moleculesIndexes,
-                                                               elementIndex=self.engine.elementsIndexes,
-                                                               numberOfElements=self.engine.numberOfElements,
-                                                               minDistance=self.__minimumDistance,
-                                                               maxDistance=self.__maximumDistance,
-                                                               histSize=self.__histogramSize,
-                                                               bin=self.__bin,
-                                                               allAtoms = True)
-        intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
-                                                           basis=self.engine.basisVectors,
-                                                           moleculeIndex=self.engine.moleculesIndexes[indexes],
-                                                           elementIndex=self.engine.elementsIndexes[indexes],
-                                                           numberOfElements=self.engine.numberOfElements,
-                                                           minDistance=self.__minimumDistance,
-                                                           maxDistance=self.__maximumDistance,
-                                                           histSize=self.__histogramSize,
-                                                           bin=self.__bin )
+        intraM,interM = multiple_pair_distribution_histograms( indexes          = indexes,
+                                                               boxCoords        = self.engine.boxCoordinates,
+                                                               basis            = self.engine.basisVectors,
+                                                               moleculeIndex    = self.engine.moleculesIndexes,
+                                                               elementIndex     = self.engine.elementsIndexes,
+                                                               numberOfElements = self.engine.numberOfElements,
+                                                               minDistance      = self.__minimumDistance,
+                                                               maxDistance      = self.__maximumDistance,
+                                                               histSize         = self.__histogramSize,
+                                                               bin              = self.__bin,
+                                                               allAtoms         = True)
+        intraF,interF = full_pair_distribution_histograms( boxCoords        = self.engine.boxCoordinates[indexes],
+                                                           basis            = self.engine.basisVectors,
+                                                           moleculeIndex    = self.engine.moleculesIndexes[indexes],
+                                                           elementIndex     = self.engine.elementsIndexes[indexes],
+                                                           numberOfElements = self.engine.numberOfElements,
+                                                           minDistance      = self.__minimumDistance,
+                                                           maxDistance      = self.__maximumDistance,
+                                                           histSize         = self.__histogramSize,
+                                                           bin              = self.__bin )
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
     
@@ -588,26 +589,26 @@ class PairDistributionConstraint(ExperimentalConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # calculate pair distribution function
-        intraM,interM = multiple_pair_distribution_histograms( indexes = indexes,
-                                                               boxCoords=self.engine.boxCoordinates,
-                                                               basis=self.engine.basisVectors,
-                                                               moleculeIndex=self.engine.moleculesIndexes,
-                                                               elementIndex=self.engine.elementsIndexes,
-                                                               numberOfElements=self.engine.numberOfElements,
-                                                               minDistance=self.__minimumDistance,
-                                                               maxDistance=self.__maximumDistance,
-                                                               histSize=self.__histogramSize,
-                                                               bin=self.__bin,
-                                                               allAtoms = True)
-        intraF,interF = full_pair_distribution_histograms( boxCoords=self.engine.boxCoordinates[indexes],
-                                                           basis=self.engine.basisVectors,
-                                                           moleculeIndex=self.engine.moleculesIndexes[indexes],
-                                                           elementIndex=self.engine.elementsIndexes[indexes],
-                                                           numberOfElements=self.engine.numberOfElements,
-                                                           minDistance=self.__minimumDistance,
-                                                           maxDistance=self.__maximumDistance,
-                                                           histSize=self.__histogramSize,
-                                                           bin=self.__bin )
+        intraM,interM = multiple_pair_distribution_histograms( indexes          = indexes,
+                                                               boxCoords        = self.engine.boxCoordinates,
+                                                               basis            = self.engine.basisVectors,
+                                                               moleculeIndex    = self.engine.moleculesIndexes,
+                                                               elementIndex     = self.engine.elementsIndexes,
+                                                               numberOfElements = self.engine.numberOfElements,
+                                                               minDistance      = self.__minimumDistance,
+                                                               maxDistance      = self.__maximumDistance,
+                                                               histSize         = self.__histogramSize,
+                                                               bin              = self.__bin,
+                                                               allAtoms         = True)
+        intraF,interF = full_pair_distribution_histograms( boxCoords        = self.engine.boxCoordinates[indexes],
+                                                           basis            = self.engine.basisVectors,
+                                                           moleculeIndex    = self.engine.moleculesIndexes[indexes],
+                                                           elementIndex     = self.engine.elementsIndexes[indexes],
+                                                           numberOfElements = self.engine.numberOfElements,
+                                                           minDistance      = self.__minimumDistance,
+                                                           maxDistance      = self.__maximumDistance,
+                                                           histSize         = self.__histogramSize,
+                                                           bin              = self.__bin )
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData

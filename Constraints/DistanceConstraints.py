@@ -21,29 +21,45 @@ from fullrmc.Core.distances import multiple_distances, full_distances
 
 class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
     """
+    .. py:class::InterMolecularDistanceConstraint
+
     Its controls the inter-molecular distances between atoms.
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
-        #. defaultDistance (number): The minimum distance allowed set by default for all atoms type.
-        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
-        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
-           A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
+        #. defaultDistance (number): The minimum distance allowed set by default for all 
+           atoms type.
+        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules 
+           about how to differentiate between atoms and how to parse pairsLimits.
+        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
+           every pair of elements. 
+           A list of tuples must be given, all missing pairs will get automatically 
+           assigned the given defaultMinimumDistance value.
            First defined elements pair distance will cancel all redundant. 
-           If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
+           If None is given all pairs will be automatically generated and assigned the 
+           given defaultMinimumDistance value .
            ::
            
                e.g. [('h','h',1.5), ('h','c',2.015), ...] 
            
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. flexible (boolean): Whether to allow atoms to break constraints definition 
+           under the condition of decreasing total squaredDeviations. If flexible is set 
+           to False, atoms will never be allowed to cross from above to below minimum 
+           allowed distance. Even if the later will decrease some other unsatisfying 
+           atoms distances, and therefore the total squaredDeviations of the constraint. 
+        #. rejectProbability (Number): rejecting probability of all steps where 
+           squaredDeviations increases. It must be between 0 and 1 where 1 means 
+           rejecting all steps where squaredDeviations increases and 0 means accepting 
+           all steps regardless whether squaredDeviations increases or not.
     """
-    def __init__(self, engine, defaultDistance=1.5, typeDefinition='element', pairsDistanceDefinition=None, rejectProbability=1):
+    def __init__(self, engine, defaultDistance=1.5, typeDefinition='element', pairsDistanceDefinition=None, 
+                       flexible=True, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
         self.set_default_distance(defaultDistance)
+        # set flexible
+        self.set_flexible(flexible)
         # set type definition
         self.__pairsDistanceDefinition = None
         self.set_type_definition(typeDefinition, pairsDistanceDefinition)
@@ -62,6 +78,16 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
     def pairsDistance(self):
         """ Get elements pairs """
         return self.__pairsDistance
+    
+    @property
+    def flexible(self):
+        """ Get flexible flag """
+        return self.__flexible
+    
+    @property
+    def powerLaw(self):
+        """ Get the power law """
+        return self.__powerLaw
         
     @property
     def lowerLimitArray(self):
@@ -128,6 +154,21 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         elif message in("update boundary conditions",):
             self.reset_constraint()        
                 
+    def set_flexible(self, flexible):
+        """ 
+        Sets flexible flag.
+        
+        :Parameters:
+            #. flexible (boolean): Whether to allow atoms to break constraints definition 
+               under the condition of decreasing total squaredDeviations. If flexible is 
+               set to False, atoms will never be allowed to cross from above to below 
+               minimum allowed distance. Even if the later will decrease some other 
+               unsatisfying atoms distances, and therefore the total squaredDeviations 
+               of the constraint. 
+        """
+        assert isinstance(flexible, bool), LOGGER.error("flexible must be boolean")
+        self.__flexible = flexible
+        
     def set_default_distance(self, defaultDistance):
         """ 
         Sets the default intermolecular minimum distance. 
@@ -264,8 +305,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                             LOGGER.warn("types pair ('%s','%s') distance definition is not defined and therefore it is set to the default distance '%s'"%(el1, el2, self.__defaultDistance))
                             newPairsDistance[el1][el2] = self.__defaultDistance
                             newPairsDistance[el2][el1] = self.__defaultDistance
-                    assert newPairsDistance[el1][el2] == newPairsDistance[el2][el1], LOGGER.error("types '%s', and '%s' pair distance definitions are in conflict. (%s,%s, %s) and (%s,%s, %s)"%(el1,el2, el1,el2,newPairsDistance[el1][el2], el2,el1, newPairsDistance[el2][el1])) 
-                 
+                    assert newPairsDistance[el1][el2] == newPairsDistance[el2][el1], LOGGER.error("types '%s', and '%s' pair distance definitions are in conflict. (%s,%s, %s) and (%s,%s, %s)"%(el1,el2, el1,el2,newPairsDistance[el1][el2], el2,el1, newPairsDistance[el2][el1]))       
         # set new pairsDistance value
         self.__pairsDistanceDefinition = pairsDistanceDefinition
         self.__pairsDistance = newPairsDistance
@@ -275,21 +315,43 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             for idx1 in range(self.__numberOfTypes):
                 el1 = self.__types[idx1]
                 for idx2 in range(self.__numberOfTypes): 
-                    el2  = self.__types[idx1]
+                    el2  = self.__types[idx2]
                     dist = self.__pairsDistance[el1][el2]
                     self.__upperLimitArray[idx1,idx2,0] = FLOAT_TYPE(dist)
                     self.__upperLimitArray[idx2,idx1,0] = FLOAT_TYPE(dist)
         else:
             self.__lowerLimitArray = None     
-            self.__upperLimitArray = None                 
-            
+            self.__upperLimitArray = None          
+  
+    
+    def should_step_get_rejected(self, squaredDeviations):
+        """
+        Given a squaredDeviations, return whether to keep or reject new squaredDeviations 
+        according to the constraint rejectProbability.
+        In addition, if flexible flag is set to True, total number of atoms not satisfying 
+        constraints definition must be decreasing or at least remain the same.
+        
+        :Parameters:
+            #. squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations
+        
+        :Return:
+            #. result (boolean): True to reject step, False to accept
+        """
+        if not self.__flexible:
+            cond = self.activeAtomsDataAfterMove["number"]>self.activeAtomsDataBeforeMove["number"]
+            if np.any(cond):
+                return True
+        # compute if step should get rejected normally
+        return super(InterMolecularDistanceConstraint, self).should_step_get_rejected(squaredDeviations)
+        
+    
     def compute_squared_deviations(self, data):
         """ 
         Compute the squared deviations (SD) of data not satisfying constraint conditions. 
         
         .. math::
             SD = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} 
-            (d_{ij}-D_{ij})^{2} 
+            \\left| d_{ij}-D_{ij}) \\right| 
             \\int_{0}^{D_{ij}} \\delta(x-d_{ij}) dx 
                   
         Where:\n
@@ -327,26 +389,28 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             idi = self.__types.index(pair[0])
             idj = self.__types.index(pair[1])
             # get mean value
-            number        = self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0]
-            distanceSum   = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
-            thresholdDist = self.__pairsDistance[pair[0]][pair[1]]
+            number = FLOAT_TYPE(self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0])
             if number != 0:
-                output["intermd_%s-%s" % pair] += FLOAT_TYPE((distanceSum-number*thresholdDist)**2) 
+                distanceSum   = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
+                output["intermd_%s-%s" % pair] += FLOAT_TYPE(distanceSum/number) 
         return output    
     
 
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        _,_,number,distanceSum = full_distances( boxCoords=self.engine.boxCoordinates,
-                                                 basis=self.engine.basisVectors,
-                                                 moleculeIndex = self.engine.moleculesIndexes,
-                                                 elementIndex = self.__typesIndexes,
-                                                 numberOfElements = self.__numberOfTypes,
-                                                 lowerLimit=self.__lowerLimitArray,
-                                                 upperLimit=self.__upperLimitArray,
-                                                 interMolecular = True,
-                                                 intraMolecular = False,
-                                                 countWithinLimits = True)
+        _,_,number,distanceSum = full_distances( boxCoords             = self.engine.boxCoordinates,
+                                                 basis                 = self.engine.basisVectors,
+                                                 moleculeIndex         = self.engine.moleculesIndexes,
+                                                 elementIndex          = self.__typesIndexes,
+                                                 numberOfElements      = self.__numberOfTypes,
+                                                 lowerLimit            = self.__lowerLimitArray,
+                                                 upperLimit            = self.__upperLimitArray,
+                                                 interMolecular        = True,
+                                                 intraMolecular        = False,
+                                                 reduceDistance        = False,
+                                                 reduceDistanceToUpper = True,
+                                                 reduceDistanceToLower = False,
+                                                 countWithinLimits     = True)
         # update data
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
@@ -361,28 +425,34 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        _,_,numberM,distanceSumM = multiple_distances( indexes = indexes,
-                                                       boxCoords=self.engine.boxCoordinates,
-                                                       basis=self.engine.basisVectors,
-                                                       moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.__typesIndexes,
-                                                       numberOfElements = self.__numberOfTypes,
-                                                       lowerLimit=self.__lowerLimitArray,
-                                                       upperLimit=self.__upperLimitArray,
-                                                       allAtoms = True,
-                                                       countWithinLimits = True,
-                                                       interMolecular = True,
-                                                       intraMolecular = False)
-        _,_,numberF,distanceSumF = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
-                                                   basis=self.engine.basisVectors,
-                                                   moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.__typesIndexes[indexes],
-                                                   numberOfElements = self.__numberOfTypes,
-                                                   lowerLimit=self.__lowerLimitArray,
-                                                   upperLimit=self.__upperLimitArray,
-                                                   countWithinLimits = True,
-                                                   interMolecular = True,
-                                                   intraMolecular = False)
+        _,_,numberM,distanceSumM = multiple_distances( indexes               = indexes,
+                                                       boxCoords             = self.engine.boxCoordinates,
+                                                       basis                 = self.engine.basisVectors,
+                                                       moleculeIndex         = self.engine.moleculesIndexes,
+                                                       elementIndex          = self.__typesIndexes,
+                                                       numberOfElements      = self.__numberOfTypes,
+                                                       lowerLimit            = self.__lowerLimitArray,
+                                                       upperLimit            = self.__upperLimitArray,
+                                                       allAtoms              = True,
+                                                       countWithinLimits     = True,
+                                                       reduceDistance        = False,
+                                                       reduceDistanceToUpper = True,
+                                                       reduceDistanceToLower = False,
+                                                       interMolecular        = True,
+                                                       intraMolecular        = False)
+        _,_,numberF,distanceSumF = full_distances( boxCoords             = self.engine.boxCoordinates[indexes],
+                                                   basis                 = self.engine.basisVectors,
+                                                   moleculeIndex         = self.engine.moleculesIndexes[indexes],
+                                                   elementIndex          = self.__typesIndexes[indexes],
+                                                   numberOfElements      = self.__numberOfTypes,
+                                                   lowerLimit            = self.__lowerLimitArray,
+                                                   upperLimit            = self.__upperLimitArray,
+                                                   countWithinLimits     = True,
+                                                   reduceDistance        = False,
+                                                   reduceDistanceToUpper = True,
+                                                   reduceDistanceToLower = False,
+                                                   interMolecular        = True,
+                                                   intraMolecular        = False)
         self.set_active_atoms_data_before_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         self.set_active_atoms_data_after_move(None)
     
@@ -398,28 +468,34 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # calculate pair distribution function
-        _,_,numberM,distanceSumM = multiple_distances( indexes = indexes,
-                                                       boxCoords=self.engine.boxCoordinates,
-                                                       basis=self.engine.basisVectors,
-                                                       moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.__typesIndexes,
-                                                       numberOfElements = self.__numberOfTypes,
-                                                       lowerLimit=self.__lowerLimitArray,
-                                                       upperLimit=self.__upperLimitArray,
-                                                       allAtoms = True,
-                                                       countWithinLimits = True,
-                                                       interMolecular = True,
-                                                       intraMolecular = False)
-        _,_,numberF,distanceSumF = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
-                                                   basis=self.engine.basisVectors,
-                                                   moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.__typesIndexes[indexes],
-                                                   numberOfElements = self.__numberOfTypes,
-                                                   lowerLimit=self.__lowerLimitArray,
-                                                   upperLimit=self.__upperLimitArray,
-                                                   countWithinLimits = True,
-                                                   interMolecular = True,
-                                                   intraMolecular = False)
+        _,_,numberM,distanceSumM = multiple_distances( indexes               = indexes,
+                                                       boxCoords             = self.engine.boxCoordinates,
+                                                       basis                 = self.engine.basisVectors,
+                                                       moleculeIndex         = self.engine.moleculesIndexes,
+                                                       elementIndex          = self.__typesIndexes,
+                                                       numberOfElements      = self.__numberOfTypes,
+                                                       lowerLimit            = self.__lowerLimitArray,
+                                                       upperLimit            = self.__upperLimitArray,
+                                                       allAtoms              = True,
+                                                       countWithinLimits     = True,
+                                                       reduceDistance        = False,
+                                                       reduceDistanceToUpper = True,
+                                                       reduceDistanceToLower = False,
+                                                       interMolecular        = True,
+                                                       intraMolecular        = False)
+        _,_,numberF,distanceSumF = full_distances( boxCoords             = self.engine.boxCoordinates[indexes],
+                                                   basis                 = self.engine.basisVectors,
+                                                   moleculeIndex         = self.engine.moleculesIndexes[indexes],
+                                                   elementIndex          = self.__typesIndexes[indexes],
+                                                   numberOfElements      = self.__numberOfTypes,
+                                                   lowerLimit            = self.__lowerLimitArray,
+                                                   upperLimit            = self.__upperLimitArray,
+                                                   countWithinLimits     = True,
+                                                   reduceDistance        = False,
+                                                   reduceDistanceToUpper = True,
+                                                   reduceDistanceToLower = False,
+                                                   interMolecular        = True,
+                                                   intraMolecular        = False)
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
@@ -820,19 +896,19 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        number,distanceSum,_,_ = full_distances( boxCoords=self.engine.boxCoordinates,
-                                                 basis=self.engine.basisVectors,
-                                                 moleculeIndex = self.engine.moleculesIndexes,
-                                                 elementIndex = self.__typesIndexes,
-                                                 numberOfElements = self.__numberOfTypes,
-                                                 lowerLimit=self.__lowerLimitArray,
-                                                 upperLimit=self.__upperLimitArray,
-                                                 countWithinLimits = False,
-                                                 reduceDistance = True,
+        number,distanceSum,_,_ = full_distances( boxCoords             = self.engine.boxCoordinates,
+                                                 basis                 = self.engine.basisVectors,
+                                                 moleculeIndex         = self.engine.moleculesIndexes,
+                                                 elementIndex          = self.__typesIndexes,
+                                                 numberOfElements      = self.__numberOfTypes,
+                                                 lowerLimit            = self.__lowerLimitArray,
+                                                 upperLimit            = self.__upperLimitArray,
+                                                 countWithinLimits     = False,
+                                                 reduceDistance        = True,
                                                  reduceDistanceToUpper = False,
                                                  reduceDistanceToLower = False,
-                                                 interMolecular = False,
-                                                 intraMolecular = True)
+                                                 interMolecular        = False,
+                                                 intraMolecular        = True)
         # update data
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
@@ -847,34 +923,34 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Parameters:
             #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        numberM,distanceSumM,_,_ = multiple_distances( indexes = indexes,
-                                                       boxCoords=self.engine.boxCoordinates,
-                                                       basis=self.engine.basisVectors,
-                                                       moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.__typesIndexes,
-                                                       numberOfElements = self.__numberOfTypes,
-                                                       lowerLimit=self.__lowerLimitArray,
-                                                       upperLimit=self.__upperLimitArray,
-                                                       allAtoms = True,
-                                                       countWithinLimits = False,
-                                                       reduceDistance = True,
+        numberM,distanceSumM,_,_ = multiple_distances( indexes               = indexes,
+                                                       boxCoords             = self.engine.boxCoordinates,
+                                                       basis                 = self.engine.basisVectors,
+                                                       moleculeIndex         = self.engine.moleculesIndexes,
+                                                       elementIndex          = self.__typesIndexes,
+                                                       numberOfElements      = self.__numberOfTypes,
+                                                       lowerLimit            = self.__lowerLimitArray,
+                                                       upperLimit            = self.__upperLimitArray,
+                                                       allAtoms              = True,
+                                                       countWithinLimits     = False,
+                                                       reduceDistance        = True,
                                                        reduceDistanceToUpper = False,
                                                        reduceDistanceToLower = False,
-                                                       interMolecular = False,
-                                                       intraMolecular = True)
-        numberF,distanceSumF,_,_ = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
-                                                   basis=self.engine.basisVectors,
-                                                   moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.__typesIndexes[indexes],
-                                                   numberOfElements = self.__numberOfTypes,
-                                                   lowerLimit=self.__lowerLimitArray,
-                                                   upperLimit=self.__upperLimitArray,
-                                                   countWithinLimits = False,
-                                                   reduceDistance = True,
+                                                       interMolecular        = False,
+                                                       intraMolecular        = True)
+        numberF,distanceSumF,_,_ = full_distances( boxCoords             = self.engine.boxCoordinates[indexes],
+                                                   basis                 = self.engine.basisVectors,
+                                                   moleculeIndex         = self.engine.moleculesIndexes[indexes],
+                                                   elementIndex          = self.__typesIndexes[indexes],
+                                                   numberOfElements      = self.__numberOfTypes,
+                                                   lowerLimit            = self.__lowerLimitArray,
+                                                   upperLimit            = self.__upperLimitArray,
+                                                   countWithinLimits     = False,
+                                                   reduceDistance        = True,
                                                    reduceDistanceToUpper = False,
                                                    reduceDistanceToLower = False,
-                                                   interMolecular = False,
-                                                   intraMolecular = True)
+                                                   interMolecular        = False,
+                                                   intraMolecular        = True)
         self.set_active_atoms_data_before_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         self.set_active_atoms_data_after_move(None)
     
@@ -890,34 +966,34 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # calculate pair distribution function
-        numberM,distanceSumM,_,_ = multiple_distances( indexes = indexes,
-                                                       boxCoords=self.engine.boxCoordinates,
-                                                       basis=self.engine.basisVectors,
-                                                       moleculeIndex = self.engine.moleculesIndexes,
-                                                       elementIndex = self.__typesIndexes,
-                                                       numberOfElements = self.__numberOfTypes,
-                                                       lowerLimit=self.__lowerLimitArray,
-                                                       upperLimit=self.__upperLimitArray,
-                                                       allAtoms = True,
-                                                       countWithinLimits = False,
-                                                       reduceDistance = True,
+        numberM,distanceSumM,_,_ = multiple_distances( indexes               = indexes,
+                                                       boxCoords             = self.engine.boxCoordinates,
+                                                       basis                 = self.engine.basisVectors,
+                                                       moleculeIndex         = self.engine.moleculesIndexes,
+                                                       elementIndex          = self.__typesIndexes,
+                                                       numberOfElements      = self.__numberOfTypes,
+                                                       lowerLimit            = self.__lowerLimitArray,
+                                                       upperLimit            = self.__upperLimitArray,
+                                                       allAtoms              = True,
+                                                       countWithinLimits     = False,
+                                                       reduceDistance        = True,
                                                        reduceDistanceToUpper = False,
                                                        reduceDistanceToLower = False,
-                                                       interMolecular = False,
-                                                       intraMolecular = True)
-        numberF,distanceSumF,_,_ = full_distances( boxCoords=self.engine.boxCoordinates[indexes],
-                                                   basis=self.engine.basisVectors,
-                                                   moleculeIndex = self.engine.moleculesIndexes[indexes],
-                                                   elementIndex = self.__typesIndexes[indexes],
-                                                   numberOfElements = self.__numberOfTypes,
-                                                   lowerLimit=self.__lowerLimitArray,
-                                                   upperLimit=self.__upperLimitArray,
-                                                   countWithinLimits = False,
-                                                   reduceDistance = True,
+                                                       interMolecular        = False,
+                                                       intraMolecular        = True)
+        numberF,distanceSumF,_,_ = full_distances( boxCoords             = self.engine.boxCoordinates[indexes],
+                                                   basis                 = self.engine.basisVectors,
+                                                   moleculeIndex         = self.engine.moleculesIndexes[indexes],
+                                                   elementIndex          = self.__typesIndexes[indexes],
+                                                   numberOfElements      = self.__numberOfTypes,
+                                                   lowerLimit            = self.__lowerLimitArray,
+                                                   upperLimit            = self.__upperLimitArray,
+                                                   countWithinLimits     = False,
+                                                   reduceDistance        = True,
                                                    reduceDistanceToUpper = False,
                                                    reduceDistanceToLower = False,
-                                                   interMolecular = False,
-                                                   intraMolecular = True)
+                                                   interMolecular        = False,
+                                                   intraMolecular        = True)
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData

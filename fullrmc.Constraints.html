@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="top" title="fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -879,18 +879,18 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-c1278a8d430e387bfe20be084826cfea09bec855.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-c89eab3c4ad1a9034598dd6526d57d559ca4d987.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
-<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="311,5,524,31"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="311,5,524,31"/>
 <area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="311,55,524,80"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.DistanceConstraints.</tt><tt class="descname">InterMolecularDistanceConstraint</tt><big>(</big><em>engine</em>, <em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>flexible=True</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -900,21 +900,33 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
 </li>
-<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all atoms type.</p>
+<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all 
+atoms type.</p>
 </li>
-<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
+<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules 
+about how to differentiate between atoms and how to parse pairsLimits.</p>
 </li>
-<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
-A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
+<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
+every pair of elements. 
+A list of tuples must be given, all missing pairs will get automatically 
+assigned the given defaultMinimumDistance value.
 First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
+If None is given all pairs will be automatically generated and assigned the 
+given defaultMinimumDistance value .</p>
 <div class="highlight-python"><div class="highlight"><pre>e.g. [(&#39;h&#39;,&#39;h&#39;,1.5), (&#39;h&#39;,&#39;c&#39;,2.015), ...] 
 </pre></div>
 </div>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">flexible (boolean): Whether to allow atoms to break constraints definition 
+under the condition of decreasing total squaredDeviations. If flexible is set 
+to False, atoms will never be allowed to cross from above to below minimum 
+allowed distance. Even if the later will decrease some other unsatisfying 
+atoms distances, and therefore the total squaredDeviations of the constraint.</p>
+</li>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where 
+squaredDeviations increases. It must be between 0 and 1 where 1 means 
+rejecting all steps where squaredDeviations increases and 0 means accepting 
+all steps regardless whether squaredDeviations increases or not.</p>
 </li>
 </ol>
 </td>
@@ -937,6 +949,18 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.pairsDistance">
 <tt class="descname">pairsDistance</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.pairsDistance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements pairs</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.flexible">
+<tt class="descname">flexible</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.flexible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get flexible flag</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.powerLaw">
+<tt class="descname">powerLaw</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.powerLaw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the power law</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1014,6 +1038,28 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_flexible">
+<tt class="descname">set_flexible</tt><big>(</big><em>flexible</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_flexible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets flexible flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>flexible (boolean): Whether to allow atoms to break constraints definition 
+under the condition of decreasing total squaredDeviations. If flexible is 
+set to False, atoms will never be allowed to cross from above to below 
+minimum allowed distance. Even if the later will decrease some other 
+unsatisfying atoms distances, and therefore the total squaredDeviations 
+of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_default_distance">
 <tt class="descname">set_default_distance</tt><big>(</big><em>defaultDistance</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.set_default_distance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the default intermolecular minimum distance.</p>
@@ -1074,12 +1120,37 @@ If None is given all pairs will be automatically generated and assigned the give
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.should_step_get_rejected">
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations 
+according to the constraint rejectProbability.
+In addition, if flexible flag is set to True, total number of atoms not satisfying 
+constraints definition must be decreasing or at least remain the same.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to reject step, False to accept</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations">
 <tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
 <div class="math">
 \[SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} 
-(d_{ij}-D_{ij})^{2} 
+\left| d_{ij}-D_{ij}) \right| 
 \int_{0}^{D_{ij}} \delta(x-d_{ij}) dx \]</div>
 <p>Where:</p>
 <p><span class="math">\(N\)</span> is the total number of atoms in the system.</p>
@@ -2868,7 +2939,7 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
         <li class="right" >
           <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
              >previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

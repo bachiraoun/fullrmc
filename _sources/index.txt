@@ -1,3 +1,8 @@
+Versions Information
+====================
+.. automodule:: fullrmc.__pkginfo__
+
+
 fullrmc package
 ===============
 .. automodule:: fullrmc
@@ -6,7 +11,7 @@ Sub-packages
 ------------
 
 .. toctree::
- 
+    
     fullrmc.Core
     fullrmc.Selectors
     fullrmc.Generators

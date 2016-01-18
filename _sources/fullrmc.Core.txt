@@ -66,14 +66,6 @@ distances
     :undoc-members:
     :show-inheritance:
 
-get_reciprocal_basis
---------------------
-
-.. automodule:: fullrmc.Core.get_reciprocal_basis
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 improper_angles
 ---------------
 
@@ -98,10 +90,10 @@ atomic_coordination_number
     :undoc-members:
     :show-inheritance:
 
-transform_coordinates
----------------------
+boundary_conditions_collection
+------------------------------
 
-.. automodule:: fullrmc.Core.transform_coordinates
+.. automodule:: fullrmc.Core.boundary_conditions_collection
     :members:
     :undoc-members:
     :show-inheritance:

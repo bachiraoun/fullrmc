@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="top" title="fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
-    <link rel="prev" title="fullrmc package" href="index.html" /> 
+    <link rel="prev" title="Versions Information" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,9 +42,9 @@
           <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="fullrmc package"
+          <a href="index.html" title="Versions Information"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -60,18 +60,17 @@
 <li><a class="reference internal" href="#module-fullrmc.Core.angles">angles</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.bonds">bonds</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.distances">distances</a></li>
-<li><a class="reference internal" href="#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.improper_angles">improper_angles</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
-<li><a class="reference internal" href="#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.boundary_conditions_collection">boundary_conditions_collection</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">fullrmc package</a></p>
+                        title="previous chapter">Versions Information</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="fullrmc.Selectors.html"
                         title="next chapter">fullrmc.Selectors package</a></p>
@@ -3780,31 +3779,6 @@ It contains the following methods.</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="module-fullrmc.Core.get_reciprocal_basis">
-<span id="get-reciprocal-basis"></span><h2>get_reciprocal_basis<a class="headerlink" href="#module-fullrmc.Core.get_reciprocal_basis" title="Permalink to this headline">¶</a></h2>
-<p>This is a C compiled Cython generated module to compute reciprocal basis.</p>
-<dl class="docutils">
-<dt><strong>get_reciprocal_basis</strong>: It computes the reciprocal basis vectors array.</dt>
-<dd><table class="first last docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>basis (float32 array): The (3,3) basis vectors array.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>rbasis (float32 array): The (3,3) normalized with the basis volume reciprocal basis vectors array.</li>
-<li>volume (float32): The basis volume.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd>
-</dl>
-</div>
 <div class="section" id="module-fullrmc.Core.improper_angles">
 <span id="improper-angles"></span><h2>improper_angles<a class="headerlink" href="#module-fullrmc.Core.improper_angles" title="Permalink to this headline">¶</a></h2>
 <p>This is a C compiled Cython generated module to calculate angles constraints. 
@@ -4111,11 +4085,29 @@ It contains the following methods.</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="module-fullrmc.Core.transform_coordinates">
-<span id="transform-coordinates"></span><h2>transform_coordinates<a class="headerlink" href="#module-fullrmc.Core.transform_coordinates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-fullrmc.Core.boundary_conditions_collection">
+<span id="boundary-conditions-collection"></span><h2>boundary_conditions_collection<a class="headerlink" href="#module-fullrmc.Core.boundary_conditions_collection" title="Permalink to this headline">¶</a></h2>
 <p>This is a C compiled Cython generated module to transform coordinates. It contains the following methods.</p>
 <dl class="docutils">
-<dt><strong>transform_coordinates</strong>: It transforms coordinates array.</dt>
+<dt><strong>get_reciprocal_basis</strong>: Computes reciprocal box matrix.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>basis (float32 array): The (3,3) box matrix</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rbasis (float32 array): The (3,3) reciprocal box matrix.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>transform_coordinates</strong>: Transforms coordinates array.</dt>
 <dd><table class="first last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4128,6 +4120,27 @@ It contains the following methods.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>transCoords (float32 array): The (N,3) transformed coordinates array.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd>
+<dt><strong>box_coordinates_real_distances</strong>: Computes atomic real distances given box coordinates.</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>atomIndex (int32): The index of atom to compute the distance from.</li>
+<li>indexes (int32 array): The list of atom indexes to compute the distance to</li>
+<li>boxCoords (float32 array): The (N,3) box coordinates array.</li>
+<li>basis (float32 array): The (3,3) box matrix</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>distances (float32 array): The (N,) distances array.</li>
 </ol>
 </td>
 </tr>
@@ -4157,9 +4170,9 @@ It contains the following methods.</p>
           <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="fullrmc package"
+          <a href="index.html" title="Versions Information"
              >previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

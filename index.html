@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package" href="#" />
+    <link rel="top" title="fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package" href="#" />
     <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" /> 
   </head>
   <body>
@@ -40,14 +40,30 @@
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              accesskey="N">next</a> |</li>
-        <li><a href="#">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">fullrmc package</a><ul>
+<li><a class="reference internal" href="#">Versions Information</a><ul>
+<li><a class="reference internal" href="#version-0-1-0">Version 0.1.0:</a><ul>
+<li><a class="reference internal" href="#modules-and-definitions">Modules and definitions:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#version-0-2-0">Version 0.2.0:</a><ul>
+<li><a class="reference internal" href="#new-modules-and-definitions">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#known-bugs-and-issues">Known bugs and issues:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#version-0-3-0">Version 0.3.0:</a><ul>
+<li><a class="reference internal" href="#fixes-and-improvements">Fixes and improvements:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-fullrmc">fullrmc package</a><ul>
 <li><a class="reference internal" href="#questions-and-answers-forum">Questions and Answers forum</a></li>
 <li><a class="reference internal" href="#inheritance-diagram">Inheritance diagram</a></li>
 <li><a class="reference internal" href="#welcoming-videos">Welcoming videos</a></li>
@@ -84,7 +100,98 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-fullrmc">
+  <div class="section" id="module-fullrmc.__pkginfo__">
+<span id="versions-information"></span><h1>Versions Information<a class="headerlink" href="#module-fullrmc.__pkginfo__" title="Permalink to this headline">¶</a></h1>
+<p>Latest stable version source code: <a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a></p>
+<p>Latest pypi installable version: <a class="reference external" href="https://pypi.python.org/pypi/fullrmc/">https://pypi.python.org/pypi/fullrmc/</a></p>
+<div class="section" id="version-0-1-0">
+<h2>Version 0.1.0:<a class="headerlink" href="#version-0-1-0" title="Permalink to this headline">¶</a></h2>
+<p>This version was not published.</p>
+<div class="section" id="modules-and-definitions">
+<h3>Modules and definitions:<a class="headerlink" href="#modules-and-definitions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Selectors:
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt></a>
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">WeightedRandomSelector</span></tt></a>
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a>
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DirectionalOrderSelector</span></tt></a></li>
+<li>Constraints:
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a></li>
+<li>Generators:
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationAlongAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationAlongSymmetryAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationTowardsCenterGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationTowardsAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationTowardsSymmetryAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath"><tt class="xref py py-class docutils literal"><span class="pre">TranslationAlongSymmetryAxisPath</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">RotationGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">RotationAboutAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator"><tt class="xref py py-class docutils literal"><span class="pre">RotationAboutSymmetryAxisGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath"><tt class="xref py py-class docutils literal"><span class="pre">RotationAboutSymmetryAxisPath</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a></li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="version-0-2-0">
+<h2>Version 0.2.0:<a class="headerlink" href="#version-0-2-0" title="Permalink to this headline">¶</a></h2>
+<p>This is the first officially published version. 
+Source code can be found, downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.2.0">here</a>.</p>
+<div class="section" id="new-modules-and-definitions">
+<h3>New Modules and definitions:<a class="headerlink" href="#new-modules-and-definitions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Selectors:
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></tt></a></li>
+<li>Constraints:
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint"><tt class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></tt></a>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.AtomicCoordinationAngleConstraint" title="fullrmc.Constraints.AngleConstraints.AtomicCoordinationAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationAngleConstraint</span></tt></a></li>
+<li>Generators:
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><tt class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></tt></a></li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="known-bugs-and-issues">
+<h3>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Boundary conditions handling for all non cubic, tetragonal nor orthorhombic systems
+is prone to distances calculation errors caused by pdbParser (&lt;=0.1.2). Newer
+fullrmc versions will include its own boundary conditions implementation.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="version-0-3-0">
+<h2>Version 0.3.0:<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h2>
+<p>This version uses pdbParser (&gt;0.1.2). 
+Source code can be found, downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.0">here</a>.</p>
+<div class="section" id="fixes-and-improvements">
+<h3>Fixes and improvements:<a class="headerlink" href="#fixes-and-improvements" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Periodic boundary conditions handling fixed and seperated from pdbParser.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> squared deviation computation changed 
+from square law to absolute value. Therefore small values are not under-represented
+in the total squared deviation calculation.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> &#8216;flexible&#8217; flag added.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="module-fullrmc">
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="questions-and-answers-forum">
 <h2>Questions and Answers forum<a class="headerlink" href="#questions-and-answers-forum" title="Permalink to this headline">¶</a></h2>
@@ -92,7 +199,6 @@
   src="javascript:void(0)"
   scrolling="no"
   frameborder="0"
-  width="900"
   height="700">
 </iframe>
 
@@ -105,9 +211,9 @@
 <div class="section" id="inheritance-diagram">
 <h2>Inheritance diagram<a class="headerlink" href="#inheritance-diagram" title="Permalink to this headline">¶</a></h2>
 <p class="graphviz">
-<img src="_images/inheritance-8e942cd238c02ba10b1e955656c006897015baa9.png" alt="Inheritance diagram of fullrmc.Engine.Engine" usemap="#inheritanceee53c315b6" class="inheritance"/>
+<img src="_images/inheritance-3d071c39b17361f51ff2fb2b522e8c8443fea127.png" alt="Inheritance diagram of fullrmc.Engine.Engine" usemap="#inheritanceee53c315b6" class="inheritance"/>
 <map id="inheritanceee53c315b6" name="inheritanceee53c315b6">
-<area shape="rect" id="node1" href="fullrmc.html#fullrmc.Engine.Engine" title="The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. " alt="" coords="5,5,153,31"/>
+<area shape="rect" id="node1" title="The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. " alt="" coords="5,5,153,31"/>
 </map>
 </p>
 <p class="graphviz">
@@ -117,7 +223,7 @@
 </map>
 </p>
 <p class="graphviz">
-<img src="_images/inheritance-8633db010a708e254241e865634a0512708cca07.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Constraints.CoordinationNumberConstraints, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance8feaae1757" class="inheritance"/>
+<img src="_images/inheritance-d19aac93ba8c7be51cd48046733da82a7d9039d1.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Constraints.CoordinationNumberConstraints, fullrmc.Constraints.DistanceConstraints, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance8feaae1757" class="inheritance"/>
 <map id="inheritance8feaae1757" name="inheritance8feaae1757">
 <area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="172,464,335,489"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="It is the parent class for all moves generators." alt="" coords="5,612,115,637"/>
@@ -133,7 +239,7 @@
 <area shape="rect" id="node8" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="467,351,578,376"/>
 <area shape="rect" id="node9" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="447,400,598,425"/>
 <area shape="rect" id="node16" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="441,153,605,179"/>
-<area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="416,203,629,228"/>
+<area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="416,203,629,228"/>
 <area shape="rect" id="node18" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="416,252,629,277"/>
 <area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="189,301,317,327"/>
 <area shape="rect" id="node6" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination number between atoms. " alt="" coords="720,277,959,303"/>
@@ -503,11 +609,10 @@ python setup.py build_ext --inplace
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.angles">angles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.bonds">bonds</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.distances">distances</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.get_reciprocal_basis">get_reciprocal_basis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.improper_angles">improper_angles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.pair_distribution_histogram">pair_distribution_histogram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.atomic_coordination_number">atomic_coordination_number</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.transform_coordinates">transform_coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fullrmc.Core.html#module-fullrmc.Core.boundary_conditions_collection">boundary_conditions_collection</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="fullrmc.Selectors.html">fullrmc.Selectors package</a><ul>
@@ -991,72 +1096,6 @@ which is the same as using set_groups_as_atoms method.</p>
 
 <dl class="method">
 <dt>
-<tt class="descname">set_boundary_conditions</tt><big>(</big><em>boundaryConditions</em><big>)</big></dt>
-<dd><p>Sets the configuration boundary conditions. Any type of periodic boundary conditions are allowed and not restricted to cubic.
-Engine and constraintsData will be automatically reset.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration&#8217;s boundary conditions.
-If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
-If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
-If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<tt class="descname">visualize</tt><big>(</big><em>boxWidth=2</em>, <em>boxColor='yellow'</em>, <em>representation='Lines'</em>, <em>params=''</em><big>)</big></dt>
-<dd><p>Visualize the last configuration using pdbParser visualize method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
-If 0 then the simulation box is not visualized.</p>
-</li>
-<li><p class="first">boxColor (str): Choose the simulation box color among the following:</p>
-<p>blue, red, gray, orange, yellow, tan, silver, green,
-white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
-black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
-blue3, violet, violet2, magenta, magenta2, red2, red3, 
-orange2, orange3.</p>
-</li>
-<li><p class="first">representation(str): Choose representation method among the following:</p>
-<p>Lines, Bonds, DynamicBonds, HBonds, Points, 
-VDW, CPK, Licorice, Beads, Dotted, Solvent.</p>
-</li>
-<li><dl class="first docutils">
-<dt>params(str): Set the representation parameters.</dt>
-<dd><ul class="first last">
-<li><p class="first">Points representation accept only size parameter e.g. &#8216;5&#8217;</p>
-</li>
-<li><dl class="first docutils">
-<dt>CPK representation accept respectively 4 parameters as the following &#8216;Sphere Scale&#8217;,</dt>
-<dd><p class="first last">&#8216;Sphere Resolution&#8217;, &#8216;Bond Radius&#8217;, &#8216;Bond Resolution&#8217; e.g. &#8216;0.5 20 0.1 20&#8217;</p>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
 <tt class="descname">set_pdb</tt><big>(</big><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><big>)</big></dt>
 <dd><p>Sets the configuration pdb. Engine and constraintsData will be automatically reset</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1077,6 +1116,27 @@ If None elements will be calculated automatically by parsing pdb instance.</li>
 If None moleculesIndexes will be calculated automatically by parsing pdb instance.</li>
 <li>moleculesNames (None, list): The molecules names list. Must have the length of the number of atoms.
 If None, it is automatically generated as the pdb residues name.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_boundary_conditions</tt><big>(</big><em>boundaryConditions</em><big>)</big></dt>
+<dd><p>Sets the configuration boundary conditions. Any type of periodic boundary conditions are allowed and not restricted to cubic.
+Engine and constraintsData will be automatically reset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
+If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.</li>
 </ol>
 </td>
 </tr>
@@ -1133,6 +1193,55 @@ If None elements will be calculated automatically by parsing pdb instance.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>names (None, list): The names indexes list.
 If None names will be generated automatically by parsing pdbParser instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">visualize</tt><big>(</big><em>foldIntoBox=False</em>, <em>boxAtOrigin=False</em>, <em>boxWidth=2</em>, <em>boxColor='yellow'</em>, <em>representation='Lines'</em>, <em>params=''</em><big>)</big></dt>
+<dd><p>Visualize the last configuration using pdbParser visualize method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">foldIntoBox (boolean): Whether to fold all atoms into simulation box before visualization.</p>
+</li>
+<li><p class="first">boxAtOrigin (boolean): Whether to center simulation box at origin.</p>
+</li>
+<li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
+If 0 then the simulation box is not visualized.</p>
+</li>
+<li><p class="first">boxColor (str): Choose the simulation box color among the following:</p>
+<p>blue, red, gray, orange, yellow, tan, silver, green,
+white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
+blue3, violet, violet2, magenta, magenta2, red2, red3, 
+orange2, orange3.</p>
+</li>
+<li><p class="first">representation(str): Choose representation method among the following:</p>
+<p>Lines, Bonds, DynamicBonds, HBonds, Points, 
+VDW, CPK, Licorice, Beads, Dotted, Solvent.</p>
+</li>
+<li><dl class="first docutils">
+<dt>params(str): Set the representation parameters.</dt>
+<dd><ul class="first last">
+<li><p class="first">Points representation accept only size parameter e.g. &#8216;5&#8217;</p>
+</li>
+<li><dl class="first docutils">
+<dt>CPK representation accept respectively 4 parameters as the following &#8216;Sphere Scale&#8217;,</dt>
+<dd><p class="first last">&#8216;Sphere Resolution&#8217;, &#8216;Bond Radius&#8217;, &#8216;Bond Resolution&#8217; e.g. &#8216;0.5 20 0.1 20&#8217;</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
 </ol>
 </td>
 </tr>
@@ -1324,7 +1433,7 @@ If None, no .xyz file will be generated.</li>
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              >next</a> |</li>
-        <li><a href="#">fullrmc 0.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</title>
-
+    <title>Versions Information &mdash; fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</title>
+    
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package" href="#" />
+    <link rel="top" title="fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package" href="#" />
     <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              accesskey="N">next</a> |</li>
-        <li><a href="#">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -48,6 +48,8 @@
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Versions Information</a><ul>
+<li><a class="reference internal" href="#must-know">Must know</a></li>
+<li><a class="reference internal" href="#versions">Versions</a><ul>
 <li><a class="reference internal" href="#version-0-1-0">Version 0.1.0:</a><ul>
 <li><a class="reference internal" href="#modules-and-definitions">Modules and definitions:</a></li>
 </ul>
@@ -61,6 +63,12 @@
 <li><a class="reference internal" href="#fixes-and-improvements">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#version-0-3-1">Version 0.3.1:</a><ul>
+<li><a class="reference internal" href="#id1">Fixes and improvements:</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#module-fullrmc">fullrmc package</a><ul>
@@ -71,7 +79,11 @@
 <li><a class="reference internal" href="#tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point">Tetrahydrofuran simple example yet complete and straight to the point</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#sub-packages">Sub-packages</a></li>
-<li><a class="reference internal" href="#sub-modules">Sub-modules</a></li>
+<li><a class="reference internal" href="#sub-modules">Sub-modules</a><ul>
+<li><a class="reference internal" href="#types">Types:</a></li>
+<li><a class="reference internal" href="#variables">Variables:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -102,13 +114,27 @@
             
   <div class="section" id="module-fullrmc.__pkginfo__">
 <span id="versions-information"></span><h1>Versions Information<a class="headerlink" href="#module-fullrmc.__pkginfo__" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="must-know">
+<h2>Must know<a class="headerlink" href="#must-know" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>fullrmc uses pdbParser library to parse input pdb files and to visualize
+system&#8217;s atomic structure using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.  
+VMD which stands for Visual Molecular Dynamics is a free software for 
+displaying and animating large molecular systems.</li>
+<li>pdbParser in general automatically detects VMD executable when installed.
+fullrmc will work fine without VMD, but make sure it&#8217;s installed if you
+want to use the convenient visualize method of fullrmc&#8217;s Engine.</li>
+</ol>
+</div>
+<div class="section" id="versions">
+<h2>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h2>
 <p>Latest stable version source code: <a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a></p>
 <p>Latest pypi installable version: <a class="reference external" href="https://pypi.python.org/pypi/fullrmc/">https://pypi.python.org/pypi/fullrmc/</a></p>
 <div class="section" id="version-0-1-0">
-<h2>Version 0.1.0:<a class="headerlink" href="#version-0-1-0" title="Permalink to this headline">¶</a></h2>
-<p>This version was not published.</p>
+<h3>Version 0.1.0:<a class="headerlink" href="#version-0-1-0" title="Permalink to this headline">¶</a></h3>
+<p>This version is not published.</p>
 <div class="section" id="modules-and-definitions">
-<h3>Modules and definitions:<a class="headerlink" href="#modules-and-definitions" title="Permalink to this headline">¶</a></h3>
+<h4>Modules and definitions:<a class="headerlink" href="#modules-and-definitions" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Selectors:
@@ -143,12 +169,12 @@
 </div>
 </div>
 <div class="section" id="version-0-2-0">
-<h2>Version 0.2.0:<a class="headerlink" href="#version-0-2-0" title="Permalink to this headline">¶</a></h2>
+<h3>Version 0.2.0:<a class="headerlink" href="#version-0-2-0" title="Permalink to this headline">¶</a></h3>
 <p>This is the first officially published version. 
-Source code can be found, downloaded and installed from 
-<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.2.0">here</a>.</p>
+Code can be downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.2.0">pypi fullrmc 0.2.0</a>.</p>
 <div class="section" id="new-modules-and-definitions">
-<h3>New Modules and definitions:<a class="headerlink" href="#new-modules-and-definitions" title="Permalink to this headline">¶</a></h3>
+<h4>New Modules and definitions:<a class="headerlink" href="#new-modules-and-definitions" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Selectors:
@@ -161,23 +187,22 @@ Source code can be found, downloaded and installed from
 </div></blockquote>
 </div>
 <div class="section" id="known-bugs-and-issues">
-<h3>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Permalink to this headline">¶</a></h3>
+<h4>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Boundary conditions handling for all non cubic, tetragonal nor orthorhombic systems
-is prone to distances calculation errors caused by pdbParser (&lt;=0.1.2). Newer
-fullrmc versions will include its own boundary conditions implementation.</li>
+is prone to distances calculation errors caused by pdbParser (&lt;=0.1.2).</li>
 </ol>
 </div></blockquote>
 </div>
 </div>
 <div class="section" id="version-0-3-0">
-<h2>Version 0.3.0:<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h2>
-<p>This version uses pdbParser (&gt;0.1.2). 
-Source code can be found, downloaded and installed from 
-<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.0">here</a>.</p>
+<h3>Version 0.3.0:<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h3>
+<p>Starting from this version, pdbParser (&gt;=0.1.3) is used. 
+Code can be downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.0">pypi fullrmc 0.3.0</a>.</p>
 <div class="section" id="fixes-and-improvements">
-<h3>Fixes and improvements:<a class="headerlink" href="#fixes-and-improvements" title="Permalink to this headline">¶</a></h3>
+<h4>Fixes and improvements:<a class="headerlink" href="#fixes-and-improvements" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Periodic boundary conditions handling fixed and seperated from pdbParser.</li>
@@ -187,6 +212,25 @@ in the total squared deviation calculation.</li>
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> &#8216;flexible&#8217; flag added.</li>
 </ol>
 </div></blockquote>
+</div>
+</div>
+<div class="section" id="version-0-3-1">
+<h3>Version 0.3.1:<a class="headerlink" href="#version-0-3-1" title="Permalink to this headline">¶</a></h3>
+<p>Code can be downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.1">pypi fullrmc 0.3.1</a>.</p>
+<div class="section" id="id1">
+<h4>Fixes and improvements:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Erroneous wx imports from thfSimulation Example is removed.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> 
+check_experimental_data merged and sorted distances bug fixed.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> 
+set_limits bug fixed.</li>
+<li><tt class="xref py py-class docutils literal"><span class="pre">Engine</span></tt> add_group method allows list, set, tuples as well as integers.</li>
+</ol>
+</div></blockquote>
+</div>
 </div>
 </div>
 </div>
@@ -653,8 +697,9 @@ inter-molecular-distances, etc.</p>
 <em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
-It has the capability to use and fit simultaneously multiple sets of experimental data. 
-One can also define other constraints such as distances, bonds length, angles and many others.</p>
+It has the capability to use and fit simultaneously multiple sets of 
+experimental data. One can also define other constraints such as distances, 
+bonds length, angles and many others.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1029,13 +1074,14 @@ If None, RandomSelector is set automatically.</li>
 <dl class="method">
 <dt>
 <tt class="descname">add_group</tt><big>(</big><em>g</em>, <em>broadcast=True</em><big>)</big></dt>
-<dd><p>Add group to engine groups list.</p>
+<dd><p>Add a group to engine groups list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.</li>
+<li>g (Group, integer, list, set, tuple numpy.ndattay): Group instance, integer, 
+list, tuple, set or numpy.ndarray of atoms indexes of atoms indexes.</li>
 <li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;. Keep True unless you know what you are doing.</li>
 </ol>
 </td>
@@ -1052,12 +1098,12 @@ If None, RandomSelector is set automatically.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">groups (None, list): list of groups, where every group must be a Group instance or 
-a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.</p>
-<p>If None, single atom groups of all atoms will be all automatically created 
-which is the same as using set_groups_as_atoms method.</p>
-</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>groups (None, Group, list): A single Group instance or a list, tuple, 
+set of any of Group instance, integer, list, set, tuple or numpy.ndarray 
+of atom indexes that will be set one by one by set_group method.
+If None, single atom groups of all atoms will be all automatically created 
+which is the same as using set_groups_as_atoms method.</li>
 </ol>
 </td>
 </tr>
@@ -1406,12 +1452,31 @@ If None, no .xyz file will be generated.</li>
 </dd></dl>
 
 <p>This module provides all the global types, variables and some general methods that fullrmc needs.</p>
+<div class="section" id="types">
+<h3>Types:<a class="headerlink" href="#types" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>INT_TYPE: The integer data type adopted by fullrmc.</li>
+<li>FLOAT_TYPE: The floating data type adopted by fullrmc.</li>
+</ol>
+</div>
+<div class="section" id="variables">
+<h3>Variables:<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li>PRECISION: The floating data type precision variable.</li>
+<li>FLOAT_PLUS_INFINITY: The floating data type maximum possible number.</li>
+<li>FLOAT_MINUS_INFINITY: The floating data type minimum possible number.</li>
+<li>INT_PLUS_INFINITY: The integer data type maximum possible number.</li>
+<li>INT_MINUS_INFINITY: The integer data type minimum possible number.</li>
+<li>PI: pi the ratio of a circle&#8217;s circumference to its diameter.</li>
+</ol>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">fullrmc.Globals.</tt><tt class="descname">Logger</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pysimplelog.SimpleLog.Logger</span></tt></p>
+<p>fullrmc&#8217;s logger.</p>
 </dd></dl>
 
+</div>
 </div>
 </div>
 
@@ -1433,7 +1498,7 @@ If None, no .xyz file will be generated.</li>
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              >next</a> |</li>
-        <li><a href="#">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

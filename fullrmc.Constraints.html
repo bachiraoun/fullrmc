@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.0',
+        VERSION:     '0.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="top" title="fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
     <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -2044,11 +2044,6 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </pre></div>
 </div>
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data">
-<tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value">
 <tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
@@ -2291,14 +2286,14 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsCenter">
-<tt class="descname">shellsCenter</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsCenter" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellCenters">
+<tt class="descname">shellCenters</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellCenters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the shells center array</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsVolumes">
-<tt class="descname">shellsVolumes</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellsVolumes" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellVolumes">
+<tt class="descname">shellVolumes</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellVolumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the shells volume array</p>
 </dd></dl>
 
@@ -2457,7 +2452,25 @@ If not None, a tuple of minimum distance or None and maximum distance or None sh
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.check_experimental_data">
 <tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Check whether experimental data is correct.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (object): The experimental data to check.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): Whether it is correct or not.</li>
+<li>message (str): Checking message that explains whats&#8217;s wrong with the given data</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations">
@@ -2939,7 +2952,7 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
         <li class="right" >
           <a href="fullrmc.Generators.html" title="fullrmc.Generators package"
              >previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -1,5 +1,19 @@
 """
 This module provides all the global types, variables and some general methods that fullrmc needs.
+
+Types:
+======
+#. INT_TYPE: The integer data type adopted by fullrmc.
+#. FLOAT_TYPE: The floating data type adopted by fullrmc.
+
+Variables:
+==========
+#. PRECISION: The floating data type precision variable.
+#. FLOAT_PLUS_INFINITY: The floating data type maximum possible number. 
+#. FLOAT_MINUS_INFINITY: The floating data type minimum possible number. 
+#. INT_PLUS_INFINITY: The integer data type maximum possible number. 
+#. INT_MINUS_INFINITY: The integer data type minimum possible number. 
+#. PI: pi the ratio of a circle's circumference to its diameter.
 """
 # standard libraries imports
 import sys
@@ -31,6 +45,7 @@ PI                   = FLOAT_TYPE(np.pi)                    # pi the ratio of a 
 
 # Create LOGGER
 class Logger(LOG):
+    """fullrmc's logger."""
     def __new__(cls, *args, **kwds):
         #Singleton interface for logger
         thisSingleton = cls.__dict__.get("__thisSingleton__")

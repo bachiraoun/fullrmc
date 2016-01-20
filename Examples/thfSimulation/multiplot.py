@@ -3,7 +3,6 @@ import os
 import itertools
 
 # external libraries imports
-import wx
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec

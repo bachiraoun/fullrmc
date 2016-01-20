@@ -7,6 +7,7 @@ Questions and Answers forum
      src="javascript:void(0)"
      scrolling="no"
      frameborder="0"
+     width="100%"
      height="700">
    </iframe>
    
@@ -282,11 +283,11 @@ Installation
 ============ 
 fullrmc requires:
    #. Python (>= 2.6 and < 3),
-   #. NumPy (lowest version tested is 1.7.1),
-   #. cython (lowest version tested is 0.21.1),
-   #. matplotlib (lowest version tested is 1.4),
-   #. pdbParser (lowest version tested is 0.1.2),
-   #. pysimplelog (lowest version tested is 0.1.7).
+   #. NumPy (lowest version tested is 1.7.1)
+   #. cython (lowest version tested is 0.21.1)
+   #. matplotlib (lowest version tested is 1.4)
+   #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0)
+   #. pysimplelog (lowest version tested is 0.1.7)
 
 **Installation using pip:**\n
 numpy and cython must be installed and updated manually. 
@@ -312,7 +313,7 @@ When you already have a working installation of numpy and cython.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
-                          ('pdbParser'  ,'0.1.2') ,
+                          ('pdbParser'  ,'0.1.3') ,
                           ('pysimplelog','0.1.7') ,
                           ('matplotlib' ,'1.4'  )]:
             try:

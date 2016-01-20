@@ -37,8 +37,9 @@ from fullrmc.Selectors.RandomSelectors import RandomSelector
 class Engine(object):
     """ 
     The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
-    It has the capability to use and fit simultaneously multiple sets of experimental data. 
-    One can also define other constraints such as distances, bonds length, angles and many others.   
+    It has the capability to use and fit simultaneously multiple sets of 
+    experimental data. One can also define other constraints such as distances, 
+    bonds length, angles and many others.   
     
     :Parameters:
             #. pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.
@@ -439,7 +440,6 @@ class Engine(object):
         :Parameters:
             #. groups (None, GroupSelector): the GroupSelector instance. 
                If None, RandomSelector is set automatically.
-
         """
         if selector is None:
             selector = RandomSelector(self)
@@ -457,35 +457,44 @@ class Engine(object):
         self.__broadcaster.add_listener(self.__groupSelector)
     
     def clear_groups(self):
-        """
-        Clear all engine defined groups
+        """ Clear all engine defined groups
         """
         self.__groups = []
         
     def add_group(self, g, broadcast=True):
         """
-        Add group to engine groups list.
+        Add a group to engine groups list.
         
         :Parameters:
-            #. g (Group, numpy.ndattay): Group instance or a numpy.ndarray of atoms indexes of type fullrmc INT_TYPE.
+            #. g (Group, integer, list, set, tuple numpy.ndattay): Group instance, integer, 
+               list, tuple, set or numpy.ndarray of atoms indexes of atoms indexes.
             #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
         """
         if isinstance(g, Group):
             assert np.max(g.indexes)<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
             gr = g
+        elif is_integer(g):
+            g = INT_TYPE(g)
+            assert g<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
+            gr = Group(indexes= [g] )
+        elif isinstance(g, (list, set, tuple)):
+            sortedGroup = sorted(set(g))
+            assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
+            assert is_integer(sortedGroup[-1]), LOGGER.error("group indexes must be integers")
+            assert sortedGroup[-1]<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
+            gr = Group(indexes= sortedGroup )
         else:
-            assert isinstance(g, np.ndarray), LOGGER.error("each group in groups must be a numpy.ndarray or fullrmc Group instance")
+            assert isinstance(g, np.ndarray), LOGGER.error("each group in groups can be either a list, set, tuple, numpy.ndarray or fullrmc Group instance")
             # check group dimension
             assert len(g.shape) == 1, LOGGER.error("each group must be a numpy.ndarray of dimension 1")
             assert len(g), LOGGER.error("group found to have no indexes")
             # check type
-            assert g.dtype.type is INT_TYPE, LOGGER.error("each group in groups must be of type numpy.int32")
+            assert "int" in g.dtype.name, LOGGER.error("each group in groups must be of integer type")
             # sort and check limits
             sortedGroup = sorted(set(g))
             assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
-            assert sortedGroup[0]>=0, LOGGER.error("group index must equal or bigger than 0")
             assert sortedGroup[-1]<len(self.__pdb), LOGGER.error("group index must be smaller than number of atoms in pdb")
-            gr = Group(indexes=g)
+            gr = Group(indexes= g )
         # append group
         self.__groups.append( gr )
         # set group engine
@@ -499,8 +508,9 @@ class Engine(object):
         Sets the engine groups of indexes.
         
         :Parameters:
-            #. groups (None, list): list of groups, where every group must be a Group instance or 
-               a numpy.ndarray of atoms indexes of type  fullrmc INT_TYPE.\n
+            #. groups (None, Group, list): A single Group instance or a list, tuple, 
+               set of any of Group instance, integer, list, set, tuple or numpy.ndarray 
+               of atom indexes that will be set one by one by set_group method.
                If None, single atom groups of all atoms will be all automatically created 
                which is the same as using set_groups_as_atoms method.
         """
@@ -510,7 +520,7 @@ class Engine(object):
         elif isinstance(groups, Group):
             self.add_group(groups, broadcast=False)
         else:
-            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
+            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a None, Group, list, set or tuple")
             for g in groups:
                 self.add_group(g, broadcast=False)
         # broadcast to constraints

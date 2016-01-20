@@ -172,14 +172,14 @@ class PairDistributionConstraint(ExperimentalConstraint):
         return self.__experimentalDistances
         
     @property
-    def shellsCenter(self):
+    def shellCenters(self):
         """ Get the shells center array"""
-        return self.__shellsCenter
+        return self.__shellCenters
         
     @property
-    def shellsVolumes(self):
+    def shellVolumes(self):
         """ Get the shells volume array"""
-        return self.__shellsVolumes
+        return self.__shellVolumes
         
     @property
     def experimentalPDF(self):
@@ -314,11 +314,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
             if limits[0] is not None:
                 assert is_number(limits[0]), LOGGER.error("if not None, the first limits element must be a number")
                 limits[0] = FLOAT_TYPE(limits[0])
-                assert is_number(limits[0]), LOGGER.error("if not None, the first limits element must be a positive number")
+                assert limits[0]>=0, LOGGER.error("if not None, the first limits element must be bigger or equal to 0")
             if limits[1] is not None:
                 assert is_number(limits[1]), LOGGER.error("if not None, the second limits element must be a number")
                 limits[1] = FLOAT_TYPE(limits[1])
-                assert is_number(limits[1]), LOGGER.error("if not None, the second limits element must be a positive number")
+                assert limits[1]>0, LOGGER.error("if not None, the second limits element must be a positive number")
             if  limits[0] is not None and limits[1] is not None:
                 assert limits[0]<limits[1], LOGGER.error("if not None, the first limits element must be smaller than the second limits element")
             self.__limits = (limits[0], limits[1])
@@ -328,28 +328,22 @@ class PairDistributionConstraint(ExperimentalConstraint):
         else:
             minDistIdx = (np.abs(self.experimentalData[:,0]-self.__limits[0])).argmin()
         if self.__limits[1] is None:
-            maxDistIdx = -1
+            maxDistIdx = self.experimentalData.shape[0]-1
         else:
             maxDistIdx =(np.abs(self.experimentalData[:,0]-self.__limits[1])).argmin()
-        # set minimumDistance and maximumDistance 
+        # set minimumDistance, edges, maximumDistance and histogramSize
         self.__minimumDistance = FLOAT_TYPE(self.experimentalData[minDistIdx,0] - self.__bin/2. )
-        self.__maximumDistance = FLOAT_TYPE(self.experimentalData[maxDistIdx,0] + self.__bin/2. )
-        # get histogram size    
-        self.__histogramSize = INT_TYPE((self.__maximumDistance-self.__minimumDistance)/self.__bin)
-        # get histogram edges
-        self.__edges         = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(self.__histogramSize+1)], dtype=FLOAT_TYPE)       
-        self.__shellsCenter  = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
-        #self.__shellsVolumes = FLOAT_TYPE(4.0)*PI*self.__shellsCenter*self.__shellsCenter*self.__bin 
-        self.__shellsVolumes = FLOAT_TYPE(4.0/3.)*PI*((self.__edges[1:])**3 - self.__edges[0:-1]**3)
-        # set limits indexes for range
-        if (minDistIdx == -1) or (minDistIdx == self.experimentalData.shape[0]):
-            minDistIdx = self.experimentalData.shape[0]
-        if (maxDistIdx == -1) or (maxDistIdx == self.experimentalData.shape[0]):
-            maxDistIdx = self.experimentalData.shape[0]
+        self.__edges           = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(maxDistIdx-minDistIdx+2)], dtype=FLOAT_TYPE)       
+        self.__maximumDistance = self.__edges[-1]  
+        self.__histogramSize   = INT_TYPE( len(self.__edges)-1 )
+        # get shell centers and volumes
+        self.__shellCenters = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
+        self.__shellVolumes = FLOAT_TYPE(4.0/3.)*PI*((self.__edges[1:])**3 - self.__edges[0:-1]**3)
+        # set experimental distances and pdf
         self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx+1,0]
         self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx+1,1] 
         # check distances and shells
-        for diff in self.__shellsCenter-self.__experimentalDistances:
+        for diff in self.__shellCenters-self.__experimentalDistances:
             assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")
         # set used dataWeights
         self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)   
@@ -357,6 +351,16 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.reset_constraint()
         
     def check_experimental_data(self, experimentalData):
+        """
+        Check whether experimental data is correct.
+ 
+        :Parameters:
+            #. experimentalData (object): The experimental data to check.
+ 
+        :Returns:
+            #. result (boolean): Whether it is correct or not.
+            #. message (str): Checking message that explains whats's wrong with the given data
+        """
         if not isinstance(experimentalData, np.ndarray):
             return False, "experimentalData must be a numpy.ndarray"
         if experimentalData.dtype.type is not FLOAT_TYPE:
@@ -366,7 +370,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if experimentalData.shape[1] !=2:
             return False, "experimentalData must have only 2 columns"
         # check distances order
-        if np.sum( np.array(sorted(experimentalData[0]), dtype=FLOAT_TYPE)-experimentalData[0] )>PRECISION:
+        inOrder = (np.array(sorted(experimentalData[:,0]), dtype=FLOAT_TYPE)-experimentalData[:,0])<=PRECISION
+        if not np.all(inOrder):
             return False, "experimentalData distances are not sorted in order"
         if experimentalData[0][0]<0:
             return False, "experimentalData distances min value is found negative"
@@ -435,10 +440,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 nij = data["intra"][idi,idj,:]+data["intra"][idj,idi,:] + data["inter"][idi,idj,:]+data["inter"][idj,idi,:]  
                 Gr += wij*nij/Dij
         # Devide by shells volume
-        Gr /= self.shellsVolumes
+        Gr /= self.shellVolumes
         # compute total G(r)
         rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
-        Gr   = (4.*np.pi*self.__shellsCenter*rho0)*( Gr-1)
+        Gr   = (4.*np.pi*self.__shellCenters*rho0)*( Gr-1)
         # Multiply by scale factor
         self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr, self._usedDataWeights)
         Gr *= self._fittedScaleFactor
@@ -481,11 +486,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
             # compute g(r)
             nij = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
-            dij = nij/self.__shellsVolumes
+            dij = nij/self.__shellVolumes
             Dij = Nij/self.engine.volume
             gr += wij*dij/Dij
             # calculate intensityFactor
-            intensityFactor = (self.engine.volume*wij)/(Nij*self.__shellsVolumes)
+            intensityFactor = (self.engine.volume*wij)/(Nij*self.__shellVolumes)
             # divide by factor
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
@@ -494,7 +499,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             #gr += output["rdf_total_%s-%s" % pair] 
         # compute total G(r)
         rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
-        output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellsCenter*rho0) * (gr-1)
+        output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellCenters*rho0) * (gr-1)
         # convolve total with window function
         if self.__windowFunction is not None:
             output["pdf"] = np.convolve(output["pdf_total"], self.__windowFunction, 'same')
@@ -703,10 +708,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
         # plot experimental
         AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
-        AXES.plot(self.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+        AXES.plot(self.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
         # plot without window function
         if self.windowFunction is not None:
-            AXES.plot(self.shellsCenter, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+            AXES.plot(self.shellCenters, output["pdf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
         # plot partials
         intraStyleIndex = 0
         interStyleIndex = 0
@@ -714,10 +719,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
             if key in ("pdf_total", "pdf"):
                 continue
             elif "intra" in key and intra:
-                AXES.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
+                AXES.plot(self.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
                 intraStyleIndex+=1
             elif "inter" in key and inter:
-                AXES.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
+                AXES.plot(self.shellCenters, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
                 interStyleIndex+=1
         # plot legend
         if legend:

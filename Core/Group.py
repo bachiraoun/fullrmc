@@ -106,7 +106,8 @@ class Group(object):
         # create group of indexes
         group = []
         for idx in list(indexes):
-            assert is_integer(idx), LOGGER.error("indexes must be integers")
+            assert is_integer(idx), LOGGER.error("group indexes must be integers")
+            assert idx>=0, LOGGER.error("group index must equal or bigger than 0")
             group.append(int(idx))
         # create indexes
         self.__indexes = np.array(group, dtype=INT_TYPE)

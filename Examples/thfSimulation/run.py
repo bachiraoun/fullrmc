@@ -103,13 +103,11 @@ if CONSTRUCT:
     B_CONSTRAINT.set_used(True)
     BA_CONSTRAINT.set_used(True)
     IA_CONSTRAINT.set_used(True)
-    ENGINE.initialize_used_constraints()
+    #ENGINE.initialize_used_constraints()
     # save engine
     ENGINE.save(engineFilePath)
 else:
     ENGINE = Engine(pdb=None).load(engineFilePath)
-    
-    
     
 # ############ RUN C-H BONDS ############ #
 def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True, exportPdb=False): 
@@ -333,10 +331,22 @@ PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENG
 #ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_original.pdb"%(ENGINE.generated)) )
 #bonds_CH(ENGINE)
 #angles_HCH(ENGINE)
+PDF_CONSTRAINT.set_limits((0,4))
 atoms(ENGINE, explore=False, refine=False)
 # refine scaling factor
-PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
 atoms(ENGINE, explore=True, refine=False)
+PDF_CONSTRAINT.set_limits((None,None))
+atoms(ENGINE, explore=False, refine=False)
+about0(ENGINE)
+about1(ENGINE)
+about2(ENGINE)
+along0(ENGINE)
+along1(ENGINE)
+along2(ENGINE)
+molecules(ENGINE)
+atoms(ENGINE, explore=True, refine=False)
+# allow scale adjustment
+PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
 about0(ENGINE)
 about1(ENGINE)
 about2(ENGINE)

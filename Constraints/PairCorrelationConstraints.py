@@ -93,26 +93,6 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         ENGINE.add_constraints(PCC)
         
     """
-    def check_experimental_data(self, experimentalData):
-        if not isinstance(experimentalData, np.ndarray):
-            return False, "experimentalData must be a numpy.ndarray"
-        if experimentalData.dtype.type is not FLOAT_TYPE:
-            return False, "experimentalData type must be %s"%FLOAT_TYPE
-        if len(experimentalData.shape) !=2:
-            return False, "experimentalData must be of dimension 2"
-        if experimentalData.shape[1] !=2:
-            return False, "experimentalData must have only 2 columns"
-        # check distances order
-        if np.sum( np.array(sorted(experimentalData[0]), dtype=FLOAT_TYPE)-experimentalData[0] )>PRECISION:
-            return False, "experimentalData distances are not sorted in order"
-        bin  = experimentalData[1,0] -experimentalData[0,0]
-        bins = experimentalData[1:,0]-experimentalData[0:-1,0]
-        for b in bins:
-            if np.abs(b-bin)>PRECISION:
-                return False, "experimentalData distances bins are found not coherent"
-        # data format is correct
-        return True, ""
-    
     def __get_total_gr(self, data):
         """
         This method is created just to speed up the computation of the total gr upon fitting.
@@ -141,7 +121,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 nij = data["intra"][idi,idj,:]+data["intra"][idj,idi,:] + data["inter"][idi,idj,:]+data["inter"][idj,idi,:]   
                 gr += wij*nij/Dij
         # Multiply by scale factor and deviding by shells volume
-        gr /= self.shellsVolumes
+        gr /= self.shellVolumes
         # Multiply by scale factor
         self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, gr, self._usedDataWeights)
         gr *= self._fittedScaleFactor
@@ -179,7 +159,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 output["rdf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
                 output["rdf_inter_%s-%s" % pair] += data["inter"][idi,idj,:] + data["inter"][idj,idi,:]
             # calculate intensityFactor
-            intensityFactor = (self.engine.volume*wij)/(Nij*self.shellsVolumes)
+            intensityFactor = (self.engine.volume*wij)/(Nij*self.shellVolumes)
             # multiply by intensityFactor
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
@@ -343,10 +323,10 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
         # plot experimental
         AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
-        AXES.plot(self.shellsCenter, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+        AXES.plot(self.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
         # plot without window function
         if self.windowFunction is not None:
-            AXES.plot(self.shellsCenter, output["pcf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
+            AXES.plot(self.shellCenters, output["pcf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
         # plot partials
         intraStyleIndex = 0
         interStyleIndex = 0
@@ -354,10 +334,10 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             if key in ("pcf_total", "pcf"):
                 continue
             elif "intra" in key and intra:
-                AXES.plot(self.shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
+                AXES.plot(self.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
                 intraStyleIndex+=1
             elif "inter" in key and inter:
-                AXES.plot(self.shellsCenter, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
+                AXES.plot(self.shellCenters, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
                 interStyleIndex+=1
         # plot legend
         if legend:

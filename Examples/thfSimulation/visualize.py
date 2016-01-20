@@ -14,9 +14,8 @@ if engineSavePath not in os.listdir("."):
     exit()
 else:
     ENGINE = Engine(pdb=None).load(engineSavePath)
-
-# visualize    
-ENGINE.visualize()     
+    # visualize    
+    ENGINE.visualize()     
     
     
     

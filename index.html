@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.1',
+        VERSION:     '0.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package" href="#" />
+    <link rel="top" title="fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package" href="#" />
     <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" /> 
   </head>
   <body>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              accesskey="N">next</a> |</li>
-        <li><a href="#">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
@@ -65,6 +65,10 @@
 </li>
 <li><a class="reference internal" href="#version-0-3-1">Version 0.3.1:</a><ul>
 <li><a class="reference internal" href="#id1">Fixes and improvements:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#version-0-3-2">Version 0.3.2:</a><ul>
+<li><a class="reference internal" href="#id2">Fixes and improvements:</a></li>
 </ul>
 </li>
 </ul>
@@ -116,7 +120,7 @@
 <span id="versions-information"></span><h1>Versions Information<a class="headerlink" href="#module-fullrmc.__pkginfo__" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="must-know">
 <h2>Must know<a class="headerlink" href="#must-know" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
+<ul class="simple">
 <li>fullrmc uses pdbParser library to parse input pdb files and to visualize
 system&#8217;s atomic structure using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.  
 VMD which stands for Visual Molecular Dynamics is a free software for 
@@ -124,7 +128,13 @@ displaying and animating large molecular systems.</li>
 <li>pdbParser in general automatically detects VMD executable when installed.
 fullrmc will work fine without VMD, but make sure it&#8217;s installed if you
 want to use the convenient visualize method of fullrmc&#8217;s Engine.</li>
-</ol>
+<li>Unless <tt class="xref py py-class docutils literal"><span class="pre">Engine</span></tt> set_molecules_indexes method is used explicitly, 
+molecules are classified by parsing the structure 
+<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> file 
+<strong>Residue name</strong>, <strong>Residue sequence number</strong> and <strong>Segment identifier</strong> 
+attributes. Therefore a molecule is the collection of all atoms sharing 
+the same three later attributes value.</li>
+</ul>
 </div>
 <div class="section" id="versions">
 <h2>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h2>
@@ -190,8 +200,9 @@ Code can be downloaded and installed from
 <h4>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Boundary conditions handling for all non cubic, tetragonal nor orthorhombic systems
-is prone to distances calculation errors caused by pdbParser (&lt;=0.1.2).</li>
+<li>Boundary conditions handling for all non cubic, tetragonal nor 
+orthorhombic systems is prone to distances calculation errors 
+caused by pdbParser (&lt;=0.1.2).</li>
 </ol>
 </div></blockquote>
 </div>
@@ -206,9 +217,9 @@ Code can be downloaded and installed from
 <blockquote>
 <div><ol class="arabic simple">
 <li>Periodic boundary conditions handling fixed and seperated from pdbParser.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> squared deviation computation changed 
-from square law to absolute value. Therefore small values are not under-represented
-in the total squared deviation calculation.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> squared deviation computation 
+changed from square law to absolute value. Therefore small values are not 
+under-represented in the total squared deviation calculation.</li>
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><tt class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></tt></a> &#8216;flexible&#8217; flag added.</li>
 </ol>
 </div></blockquote>
@@ -228,6 +239,24 @@ check_experimental_data merged and sorted distances bug fixed.</li>
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> 
 set_limits bug fixed.</li>
 <li><tt class="xref py py-class docutils literal"><span class="pre">Engine</span></tt> add_group method allows list, set, tuples as well as integers.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="version-0-3-2">
+<h3>Version 0.3.2:<a class="headerlink" href="#version-0-3-2" title="Permalink to this headline">¶</a></h3>
+<p>Code can be downloaded and installed from 
+<a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.2">pypi fullrmc 0.3.2</a>.</p>
+<div class="section" id="id2">
+<h4>Fixes and improvements:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> 
+binning precision fixed. Histogram compiled C code adjusted accordingly.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint"><tt class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></tt></a> set_coordination_number_definition 
+method error message made more clear.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint"><tt class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></tt></a> compiled C++ code boundary conditions
+distances computation fixed for multiple box separation.</li>
 </ol>
 </div></blockquote>
 </div>
@@ -345,14 +374,16 @@ barriers.</p>
 </div>
 <div class="section" id="brief-description">
 <h2>Brief Description<a class="headerlink" href="#brief-description" title="Permalink to this headline">¶</a></h2>
-<p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
-fullrmc (<a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a>) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
-model is adjusted until its atoms position have the greatest consistency with a set of experimental data.</p>
-<p>fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. 
-fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure. 
-fullrmc&#8217;s Engine sub-module is the main module that contains the definition of &#8216;Engine&#8217; which 
-is the main and only class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
-atomic configuration files &#8216;.pdb&#8217; (<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">http://deposit.rcsb.org/adit/docs/pdb_atom_format.html</a>) and handles  
+<p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter 
+physics and solid state chemistry. fullrmc is a RMC modelling package to solve an inverse 
+problem whereby an atomic/molecular model is adjusted until its atoms position have the 
+greatest consistency with a set of experimental data.</p>
+<p>fullrmc is a python package with its core and calculation modules optimized and compiled 
+in Cython. fullrmc is not a standard RMC package but it is rather unique in its approach 
+to solving an atomic or molecular structure. fullrmc&#8217;s Engine sub-module is the main module 
+that contains the definition of &#8216;Engine&#8217; which is the main and only class used to launch 
+an RMC calculation. Engine reads only Protein Data Bank formatted atomic configuration 
+<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> files and handles  
 other definitions and attributes such as:</p>
 <blockquote>
 <div><ol class="arabic simple">
@@ -686,12 +717,14 @@ python setup.py build_ext --inplace
 </div>
 <div class="section" id="sub-modules">
 <h2>Sub-modules<a class="headerlink" href="#sub-modules" title="Permalink to this headline">¶</a></h2>
-<p>Engine is the fullrmc main module. It contains &#8216;Engine&#8217; the main class of fullrmc which is the 
-Reverse Monte Carlo artist. The engine class takes only Protein Data Bank formatted files &#8216;.pdb&#8217; 
-(<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">http://deposit.rcsb.org/adit/docs/pdb_atom_format.html</a>) as atomic/molecular input structure. 
-It handles and fits simultaneously many experimental data while controlling the evolution of the 
-system using user-defined molecular or atomistic constraints such as bond-length, bond-angles, 
-inter-molecular-distances, etc.</p>
+<p>Engine is the fullrmc main module. It contains &#8216;Engine&#8217; the main class 
+of fullrmc which is the Reverse Monte Carlo artist. The engine class 
+takes only Protein Data Bank formatted files 
+<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> as 
+atomic/molecular input structure. It handles and fits simultaneously many 
+experimental data while controlling the evolution of the system using 
+user-defined molecular or atomistic constraints such as bond-length, 
+bond-angles, inter-molecular-distances, etc.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><tt class="descclassname">fullrmc.Engine.</tt><tt class="descname">Engine</tt><big>(</big><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em>, <em>groups=None</em>, <em>groupSelector=None</em>, <em>constraints=None</em>, <em>tolerance=0.0</em><big>)</big></dt>
@@ -1498,7 +1531,7 @@ If None, no .xyz file will be generated.</li>
         <li class="right" >
           <a href="fullrmc.Core.html" title="fullrmc.Core package"
              >next</a> |</li>
-        <li><a href="#">fullrmc 0.3.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

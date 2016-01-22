@@ -158,6 +158,26 @@ def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True, exportPdb=F
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_angles_HCH.pdb"%(ENGINE.generated)) )    
 
 # ############ RUN ATOMS ############ #    
+def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True, exportPdb=False):
+    allElements = ENGINE.allElements
+    groups = []
+    for idx, el in enumerate(allElements):
+        if el == type:
+            groups.append( [idx] )
+    ENGINE.set_groups(groups)
+    # set selector
+    if refine or explore:
+        gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=refine, explore=explore)
+        ENGINE.set_group_selector(gs)
+    # number of steps
+    nsteps = recur*len(ENGINE.groups)
+    for stepIdx in range(rang):
+        LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        if exportPdb:
+            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_atoms.pdb"%(ENGINE.generated)) )
+            
+# ############ RUN ATOMS ############ #    
 def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True, exportPdb=False):
     ENGINE.set_groups_as_atoms()  
     # set selector
@@ -329,12 +349,14 @@ PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENG
 
 # ############ RUN ENGINE ############ #
 #ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_original.pdb"%(ENGINE.generated)) )
-#bonds_CH(ENGINE)
-#angles_HCH(ENGINE)
 PDF_CONSTRAINT.set_limits((0,4))
 atoms(ENGINE, explore=False, refine=False)
+atoms_type(ENGINE, explore=False, refine=False)
+bonds_CH(ENGINE)
+angles_HCH(ENGINE)
 # refine scaling factor
 atoms(ENGINE, explore=True, refine=False)
+atoms_type(ENGINE, explore=True, refine=False)
 PDF_CONSTRAINT.set_limits((None,None))
 atoms(ENGINE, explore=False, refine=False)
 about0(ENGINE)

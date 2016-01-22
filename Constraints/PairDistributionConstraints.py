@@ -331,20 +331,21 @@ class PairDistributionConstraint(ExperimentalConstraint):
             maxDistIdx = self.experimentalData.shape[0]-1
         else:
             maxDistIdx =(np.abs(self.experimentalData[:,0]-self.__limits[1])).argmin()
-        # set minimumDistance, edges, maximumDistance and histogramSize
+        # set minimumDistance, maximumDistance
         self.__minimumDistance = FLOAT_TYPE(self.experimentalData[minDistIdx,0] - self.__bin/2. )
-        self.__edges           = np.array([self.__minimumDistance+idx*self.__bin for idx in xrange(maxDistIdx-minDistIdx+2)], dtype=FLOAT_TYPE)       
-        self.__maximumDistance = self.__edges[-1]  
-        self.__histogramSize   = INT_TYPE( len(self.__edges)-1 )
-        # get shell centers and volumes
-        self.__shellCenters = (self.__edges[1:]+self.__edges[0:-1])/FLOAT_TYPE(2.)
+        self.__maximumDistance = FLOAT_TYPE(self.experimentalData[maxDistIdx,0] + self.__bin/2. )
+        self.__shellCenters    = np.array([self.experimentalData[idx,0] for idx in range(minDistIdx,maxDistIdx+1)],dtype=FLOAT_TYPE)
+        # set histogram edges
+        edges = [self.experimentalData[idx,0] - self.__bin/2. for idx in range(minDistIdx,maxDistIdx+1)]
+        edges.append( self.experimentalData[maxDistIdx,0] + self.__bin/2. )
+        self.__edges = np.array(edges, dtype=FLOAT_TYPE)
+        # set histogram size
+        self.__histogramSize = INT_TYPE( len(self.__edges)-1 )
+        # set shell centers and volumes
         self.__shellVolumes = FLOAT_TYPE(4.0/3.)*PI*((self.__edges[1:])**3 - self.__edges[0:-1]**3)
         # set experimental distances and pdf
         self.__experimentalDistances = self.experimentalData[minDistIdx:maxDistIdx+1,0]
-        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx+1,1] 
-        # check distances and shells
-        for diff in self.__shellCenters-self.__experimentalDistances:
-            assert abs(diff)<=PRECISION, LOGGER.error("experimental data distances are not coherent")
+        self.__experimentalPDF       = self.experimentalData[minDistIdx:maxDistIdx+1,1]      
         # set used dataWeights
         self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)   
         # reset constraint

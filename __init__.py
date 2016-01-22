@@ -85,14 +85,16 @@ Welcoming videos
 
 Brief Description
 =================
-Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter physics and solid state chemistry.
-fullrmc (https://github.com/bachiraoun/fullrmc) is a RMC modelling package to solve an inverse problem whereby an atomic/molecular 
-model is adjusted until its atoms position have the greatest consistency with a set of experimental data.\n
-fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. 
-fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure. 
-fullrmc's Engine sub-module is the main module that contains the definition of 'Engine' which 
-is the main and only class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
-atomic configuration files '.pdb' (http://deposit.rcsb.org/adit/docs/pdb_atom_format.html) and handles  
+Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter 
+physics and solid state chemistry. fullrmc is a RMC modelling package to solve an inverse 
+problem whereby an atomic/molecular model is adjusted until its atoms position have the 
+greatest consistency with a set of experimental data.\n
+fullrmc is a python package with its core and calculation modules optimized and compiled 
+in Cython. fullrmc is not a standard RMC package but it is rather unique in its approach 
+to solving an atomic or molecular structure. fullrmc's Engine sub-module is the main module 
+that contains the definition of 'Engine' which is the main and only class used to launch 
+an RMC calculation. Engine reads only Protein Data Bank formatted atomic configuration 
+`'.pdb' <http://deposit.rcsb.org/adit/docs/pdb_atom_format.html>`_ files and handles  
 other definitions and attributes such as:
 
     #. **Group**: Engine doesn't understand atoms or molecules but group of atom indexes instead. 

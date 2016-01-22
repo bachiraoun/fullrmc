@@ -160,12 +160,6 @@ def single_pair_distribution_histograms( C_INT32 atomIndex,
             continue
         # get index
         binIndex = <C_INT32>((distance-minDistance)/bin)
-        if binIndex==histSize: # correct for floating error
-            prstr  = "min:%s    max:%s    distance:%s\n"%(str(minDistance), str(maxDistance), str(distance))
-            prstr += "distance-min:%s    (distance-min)/bin:%s    bin:%s    binIndex:%s    histSize:%s\n"%(str(distance-minDistance), str((distance-minDistance)/bin), str(bin),str(binIndex), str(hintra.shape[2]))
-            prstr += "atomIdx:%s    molIdx:%s    atomMolIdx:%s\n"%(str(atomIndex), str(moleculeIndex[i]), str(atomMoleculeIndex))
-            print prstr
-            binIndex = binIndex-INT32_ONE
         # increment histograms
         if moleculeIndex[i] == atomMoleculeIndex:
             hintra[atomSymbolIndex,elementIndex[i],binIndex] += FLOAT32_ONE

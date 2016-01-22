@@ -93,6 +93,7 @@ ctypedef np.float32_t C_FLOAT32
 ctypedef np.int32_t   C_INT32
 
 # declare constants
+cdef C_FLOAT32 FLOAT32_ZERO    = 0.0
 cdef C_FLOAT32 BOX_LENGTH      = 1.0
 cdef C_FLOAT32 HALF_BOX_LENGTH = 0.5
 cdef C_FLOAT32 FLOAT32_ONE     = 1.0
@@ -100,6 +101,14 @@ cdef C_INT32   INT32_ONE       = 1
 cdef C_INT32   INT32_ZERO      = 0
 
 
+cdef extern from "math.h":
+    C_FLOAT32 floor(C_FLOAT32 x)
+    C_FLOAT32 ceil(C_FLOAT32 x)
+    C_FLOAT32 sqrt(C_FLOAT32 x)
+
+cdef inline C_FLOAT32 round(C_FLOAT32 num):
+    return floor(num + HALF_BOX_LENGTH) if (num > FLOAT32_ZERO) else ceil(num - HALF_BOX_LENGTH)
+  
     
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -138,19 +147,18 @@ def single_shell_coordination_number( C_INT32 atomIndex,
         if loopIdx == atomIndex: continue
         # if intra skip
         if moleculeIndex[loopIdx] == atomMoleculeIndex: continue
-        # calculate distance  
-        box_dx = (boxCoords[loopIdx,0]-atomBox_x)%1
-        box_dy = (boxCoords[loopIdx,1]-atomBox_y)%1
-        box_dz = (boxCoords[loopIdx,2]-atomBox_z)%1
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
+        # calculate difference
+        box_dx = boxCoords[loopIdx,0]-atomBox_x
+        box_dy = boxCoords[loopIdx,1]-atomBox_y
+        box_dz = boxCoords[loopIdx,2]-atomBox_z
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
+        # get real difference
         real_dx = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         real_dy = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
         real_dz = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+        # calculate distance         
         distance = <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz)
         # check limits
         if distance<lowerLimit:

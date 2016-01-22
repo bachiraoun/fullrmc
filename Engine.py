@@ -1,10 +1,12 @@
 """
-Engine is the fullrmc main module. It contains 'Engine' the main class of fullrmc which is the 
-Reverse Monte Carlo artist. The engine class takes only Protein Data Bank formatted files '.pdb' 
-(http://deposit.rcsb.org/adit/docs/pdb_atom_format.html) as atomic/molecular input structure. 
-It handles and fits simultaneously many experimental data while controlling the evolution of the 
-system using user-defined molecular or atomistic constraints such as bond-length, bond-angles, 
-inter-molecular-distances, etc. 
+Engine is the fullrmc main module. It contains 'Engine' the main class 
+of fullrmc which is the Reverse Monte Carlo artist. The engine class 
+takes only Protein Data Bank formatted files 
+`'.pdb' <http://deposit.rcsb.org/adit/docs/pdb_atom_format.html>`_ as 
+atomic/molecular input structure. It handles and fits simultaneously many 
+experimental data while controlling the evolution of the system using 
+user-defined molecular or atomistic constraints such as bond-length, 
+bond-angles, inter-molecular-distances, etc. 
 """
 
 # standard libraries imports

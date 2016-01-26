@@ -1,20 +1,21 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--COMMENT THE FOLLOWING TO REMOVE EXTRA SPACE-->
+<!--<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">-->
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</title>
     
-    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.2',
+        VERSION:     '0.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +25,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    <link rel="top" title="fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package" href="index.html" />
     <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
-    <link rel="prev" title="Versions Information" href="index.html" />
+    <link rel="prev" title="fullrmc package" href="index.html" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
 <!--[if lte IE 6]>
@@ -35,6 +36,58 @@
 
   </head>
   <body>
+
+<!-- ------------------------------------- -->
+<!-- ----- CREATE A STATIC MENU BAR ------ -->
+<div class="menu-container">
+<div class="menu"> 
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="versions.html">Versions</a></li>
+        <li><a href="forum.html">Q&A Forum</a></li>
+        <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+        <li><a href="fullrmc.Generators.html">Generators</a></li>
+        <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+        <li><a href="">Examples</a></li>
+        <a href="https://github.com/bachiraoun/fullrmc.git">
+          <img class="fork-me" 
+               style="position: absolute; right: 0"
+               src="_static/forkme.png"
+               alt="Fork me on GitHub" /> 
+        </a>
+    </ul> 
+    <div class="clear"></div>
+</div>
+</div>    
+<!----------  STATIC MENU BAR STYLE --------->    
+<style>
+.menu-container{ background-color:black; margin:0;} /* background-color:#11303d */
+    .nav-container{ z-index: 9999; position: fixed; left: 0; top: 0; width: 100%;}
+    
+.menu { height: 47px}
+    .menu ul { list-style: none; }
+    .menu ul li{float: left; margin-top: 6px; padding: 6px; border-right: 1px solid #ACACAC;}
+    .menu ul li:first-child{ padding-left: 0;}
+    .menu ul li a { font-size:18px; color:white;}
+    .menu ul li a:hover{ text-decoration: underline;}
+</style>
+<!-- jQuery SCRIPT TO KEEP MENU BAR ON TOP -->
+<script>
+jQuery("document").ready(function($){
+
+	var nav = $('.menu-container');
+    
+	$(window).scroll(function () {
+		if ($(this).scrollTop() > 0) {
+			nav.addClass("nav-container");
+		} else {
+			nav.removeClass("nav-container");
+		}
+	});
+});
+</script> 
+<!-- ------ ENF OF MENU BAR CREATION ----- -->
+<!-- ------------------------------------- -->
 
     <div class="related">
       <h3>Navigation</h3>
@@ -49,9 +102,9 @@
           <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Versions Information"
+          <a href="index.html" title="fullrmc package"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -4158,7 +4211,7 @@ It contains the following methods.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">Versions Information</a></p>
+                        title="previous chapter">fullrmc package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="fullrmc.Selectors.html"
                         title="next chapter">fullrmc.Selectors package</a></p>
@@ -4192,9 +4245,9 @@ It contains the following methods.</p>
           <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Versions Information"
+          <a href="index.html" title="fullrmc package"
              >previous</a> |</li>
-        <li><a href="index.html">fullrmc 0.3.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

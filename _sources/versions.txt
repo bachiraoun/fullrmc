@@ -1,0 +1,4 @@
+Versions Information
+====================
+.. automodule:: fullrmc.__pkginfo__
+

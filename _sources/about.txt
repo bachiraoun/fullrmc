@@ -1,0 +1,73 @@
+History
+=======
+This project has started in 2015 as a consequence of the incapability 
+of modelling complex atomic systems' structure. Since fullrmc was official
+published a first official release 0.2.0 was made. Later, successive releases 
+were made as needed.
+
+Author
+======
+* Bachir Aoun
+
+Citing fullrmc
+==============
+If you use fullrmc in a scientific publication, 
+we would appreciate citations to the following paper:
+
+Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
+with Machine Learning and Artificial Intelligence; Bachir Aoun, 
+Journal of Computational Chemistry 2016
+
+Bibtex entry:
+
+.. code-block:: latex
+
+    @article {JCC:JCC24304,
+    author = {Aoun, Bachir},
+    title = {Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence},
+    journal = {Journal of Computational Chemistry},
+    issn = {1096-987X},
+    url = {http://dx.doi.org/10.1002/jcc.24304},
+    doi = {10.1002/jcc.24304},
+    pages = {n/a--n/a},
+    keywords = {reverse Monte Carlo, rigid body, machine learning, pair distribution function, modeling},
+    year = {2016},
+    }
+
+
+EndNote entry:
+
+.. code-block:: latex
+    
+    Provider: John Wiley & Sons, Ltd
+    Content:text/plain; charset="UTF-8"
+    
+    TY  - JOUR
+    AU  - Aoun, Bachir
+    TI  - Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence
+    JO  - Journal of Computational Chemistry
+    JA  - J. Comput. Chem.
+    SN  - 1096-987X
+    UR  - http://dx.doi.org/10.1002/jcc.24304
+    DO  - 10.1002/jcc.24304
+    SP  - n/a
+    EP  - n/a
+    KW  - reverse Monte Carlo
+    KW  - rigid body
+    KW  - machine learning
+    KW  - pair distribution function
+    KW  - modeling
+    PY  - 2016
+    ER  - 
+
+
+Youtube channel
+===============
+
+.. raw:: html
+
+    <iframe width="560" height="315" 
+    src="https://www.youtube.com/embed/videoseries?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco" 
+    frameborder="0" allowfullscreen>
+    </iframe>
+    

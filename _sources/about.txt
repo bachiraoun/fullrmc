@@ -14,8 +14,8 @@ Citing fullrmc
 If you use fullrmc in a scientific publication, 
 we would appreciate citations to the following paper:
 
-Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
-with Machine Learning and Artificial Intelligence; Bachir Aoun, 
+Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
+with Machine Learning and Artificial Intelligence; 
 Journal of Computational Chemistry 2016
 
 Bibtex entry:

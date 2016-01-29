@@ -1,7 +1,5 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -25,88 +23,71 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package" href="index.html" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<!--[if lte IE 6]>
-<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
-<![endif]-->
-
-  </head>
-  <body>
-
-<!-- ------------------------------------- -->
-<!-- ----- CREATE A STATIC MENU BAR ------ -->
-<div class="menu-container">
-<div class="menu"> 
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="versions.html">Versions</a></li>
-        <li><a href="forum.html">Q&A Forum</a></li>
-        <li><a href="fullrmc.Selectors.html">Selectors</a></li>
-        <li><a href="fullrmc.Generators.html">Generators</a></li>
-        <li><a href="fullrmc.Constraints.html">Constraints</a></li>
-        <li><a href="examples.html">Examples</a></li>
-        <li><a href="about.html">About</a></li>
-        <a href="https://github.com/bachiraoun/fullrmc.git">
-          <img class="fork-me" 
-               style="position: absolute; right: 0"
-               src="_static/forkme.png"
-               alt="Fork me on GitHub" /> 
-        </a>
-    </ul> 
-    <div class="clear"></div>
-</div>
-</div>    
-<!----------  STATIC MENU BAR STYLE --------->    
-<style>
-.menu-container{ background-color:black; margin:0;} /* background-color:#11303d */
-    .nav-container{ z-index: 9999; position: fixed; left: 0; top: 0; width: 100%;}
-    
-.menu { height: 47px}
-    .menu ul { list-style: none; }
-    .menu ul li{float: left; margin-top: 6px; padding: 6px; border-right: 1px solid #ACACAC;}
-    .menu ul li:first-child{ padding-left: 0;}
-    .menu ul li a { font-size:16px; color:white;}
-    .menu ul li a:hover{ text-decoration: underline;}
-</style>
-<!-- jQuery SCRIPT TO KEEP MENU BAR ON TOP -->
-<script>
-jQuery("document").ready(function($){
-
-	var nav = $('.menu-container');
-    
-	$(window).scroll(function () {
-		if ($(this).scrollTop() > 0) {
-			nav.addClass("nav-container");
-		} else {
-			nav.removeClass("nav-container");
-		}
-	});
-});
-</script> 
-<!-- ------ ENF OF MENU BAR CREATION ----- -->
-<!-- ------------------------------------- -->
-
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package" href="index.html" />  
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <a href="https://github.com/bachiraoun/fullrmc.git">
+                  <img style="position: absolute; right: 0; top:0"
+                       src="_static/forkme.png"
+                       alt="Fork me on GitHub" /> 
+                </a>
+            </ul> 
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 40px; background-color:black; margin:0;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
     <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="#" title="General Index"
-             accesskey="I">index</a></li>
+             accesskey="I">index</a>
+        </li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
+             >modules</a>
+             |
+        
+        </li>
         <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
 
 <h1 id="index">Index</h1>
 
@@ -2718,9 +2699,10 @@ jQuery("document").ready(function($){
 
 
 
-          </div>
         </div>
-      </div>
+            </div>
+        </div>
+        
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none">
@@ -2738,22 +2720,27 @@ jQuery("document").ready(function($){
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
+        
+        <div class="clearer"></div>
+        </div>
     <div class="related">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="#" title="General Index"
-             >index</a></li>
+             >index</a>
+        </li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
+             >modules</a>
+             |
+        
+        </li>
         <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2015, Bachir Aoun.
-    </div>
-  </body>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
 </html>

@@ -41,12 +41,26 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
-                <a href="https://github.com/bachiraoun/fullrmc.git">
-                  <img style="position: absolute; right: 0; top:0"
-                       src="_static/forkme.png"
-                       alt="Fork me on GitHub" /> 
-                </a>
-            </ul> 
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right: 0; top:0;"
+                           height="40";>
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
             <div class="clear"></div>
         </div>
         <!----------  STATIC MENU BAR STYLE --------->    
@@ -3024,31 +3038,6 @@ to ensure that all affect atoms with the swap are updated.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>indexes (numpy.ndarray): All the atoms involved in the swap move 
 including the given groupAtomsIndexes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.SwapGenerator.transform_coordinates">
-<tt class="descname">transform_coordinates</tt><big>(</big><em>coordinates</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transform coordinates by swapping. This method is called in every move.
-This method MUST NOT be overloaded in ANY SwapGenerator sub-class.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>coordinates (np.ndarray): The coordinates on which to apply the swapping.</li>
-<li>argument (object): Any other argument needed to perform the move.
-In General it&#8217;s not needed.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>coordinates (np.ndarray): The new coordinates after applying the move.</li>
 </ol>
 </td>
 </tr>

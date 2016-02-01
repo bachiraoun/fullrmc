@@ -39,12 +39,26 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
-                <a href="https://github.com/bachiraoun/fullrmc.git">
-                  <img style="position: absolute; right: 0; top:0"
-                       src="_static/forkme.png"
-                       alt="Fork me on GitHub" /> 
-                </a>
-            </ul> 
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right: 0; top:0;"
+                           height="40";>
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
             <div class="clear"></div>
         </div>
         <!----------  STATIC MENU BAR STYLE --------->    
@@ -106,6 +120,88 @@ molecules are classified by parsing the structure
 attributes. Therefore a molecule is the collection of all atoms sharing 
 the same three later attributes value.</li>
 </ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>fullrmc requires:</dt>
+<dd><ol class="first last arabic simple">
+<li>Python (&gt;= 2.6 and &lt; 3),</li>
+<li>NumPy (lowest version tested is 1.7.1)</li>
+<li>cython (lowest version tested is 0.21.1)</li>
+<li>matplotlib (lowest version tested is 1.4)</li>
+<li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0)</li>
+<li>pysimplelog (lowest version tested is 0.1.7)</li>
+</ol>
+</dd>
+</dl>
+<p><strong>Installation using pip:</strong></p>
+<p>numpy and cython must be installed and updated manually.</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre>pip install -U <span class="s2">&quot;numpy&gt;=1.7.1&quot;</span>
+pip install -U <span class="s2">&quot;cython&gt;=0.21.1&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>When you already have a working installation of numpy and cython.</p>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre>pip install fullrmc
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Installation by cloning github repository:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li>Ensure all fullrmc required packages are installed and up to data by executing the
+following python script:</li>
+</ul>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="c"># check whether all packages are already installed</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;cython&#39;</span>     <span class="p">,</span><span class="s">&#39;0.21.1&#39;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s">&#39;0.1.3&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s">&#39;0.1.7&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s">&#39;1.4&#39;</span>  <span class="p">)]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">lib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> must be installed for fullrmc to run properly&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">PV</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">PV</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> installed version </span><span class="si">%s</span><span class="s"> is below minimum suggested version </span><span class="si">%s</span><span class="s">.Updating </span><span class="si">%s</span><span class="s"> is highly recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ul>
+<li><p class="first">Locate python&#8217;s site-packages by executing the following python script:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">__file__</span><span class="p">),</span> <span class="s">&#39;site_packages&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Navigate to site_packages folder and clone git repository from command line:</p>
+</li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> .../site_packages
+git clone https://github.com/bachiraoun/fullrmc.git   
+</pre></div>
+</div>
+</div></blockquote>
+<ul class="simple">
+<li>Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions
+from command line as the following:</li>
+</ul>
+<blockquote>
+<div><div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> .../site_packages/fullrmc/Extensions
+python setup.py build_ext --inplace   
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
 </div>
 <div class="section" id="versions">
 <h2>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h2>
@@ -224,6 +320,17 @@ distances computation fixed for multiple box separation.</li>
 </div></blockquote>
 </div>
 </div>
+<div class="section" id="id7">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.3">Version 0.3.3</a>:<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h4>New Modules and definitions:<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapCentersGenerator" title="fullrmc.Generators.Swaps.SwapCentersGenerator"><tt class="xref py py-class docutils literal"><span class="pre">SwapCentersGenerator</span></tt></a> added.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
 </div>
 </div>
 
@@ -238,6 +345,7 @@ distances computation fixed for multiple box separation.</li>
   <ul>
 <li><a class="reference internal" href="#">Versions Information</a><ul>
 <li><a class="reference internal" href="#must-know">Must know</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#versions">Versions</a><ul>
 <li><a class="reference internal" href="#version-0-1-0">Version 0.1.0:</a><ul>
 <li><a class="reference internal" href="#modules-and-definitions">Modules and definitions:</a></li>
@@ -258,6 +366,10 @@ distances computation fixed for multiple box separation.</li>
 </li>
 <li><a class="reference internal" href="#id5">Version 0.3.2:</a><ul>
 <li><a class="reference internal" href="#id6">Fixes and improvements:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id7">Version 0.3.3:</a><ul>
+<li><a class="reference internal" href="#id8">New Modules and definitions:</a></li>
 </ul>
 </li>
 </ul>

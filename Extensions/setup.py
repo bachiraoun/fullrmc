@@ -85,6 +85,13 @@ pyx = [# boundary_conditions_collection
        include_dirs=[np.get_include()],
        language="c++",
        sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination_number.pyx")]),
+       
+       ########## TESTS ########## 
+       # atomic_distances
+       Extension('atomic_distances',
+       include_dirs=[np.get_include()],
+       language="c",
+       sources = [os.path.join(EXTENSIONS_PATH,"atomic_distances.pyx")]),
        ]
 
 # setup all c and cpp files

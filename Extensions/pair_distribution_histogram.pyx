@@ -243,5 +243,3 @@ def full_pair_distribution_histograms( np.ndarray[C_FLOAT32, ndim=2] boxCoords n
                                                  bin = bin,
                                                  allAtoms=False)
                                            
-   
-    

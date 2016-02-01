@@ -1,35 +1,13 @@
 """ 
-Questions and Answers forum
-===========================
-.. raw:: html 
-                
-   <iframe id="forum_embed"
-     src="javascript:void(0)"
-     scrolling="no"
-     frameborder="0"
-     width="100%"
-     height="700">
-   </iframe>
-   
-   <script type="text/javascript">
-     document.getElementById('forum_embed').src =
-        'https://groups.google.com/forum/embed/?place=forum/fullrmc'
-        + '&showsearch=true&showpopout=true&showtabs=false'
-        + '&parenturl=' + encodeURIComponent(window.location.href);
-   </script>
-
-    
-Inheritance diagram
-===================  
 .. inheritance-diagram:: fullrmc.Engine.Engine
 
-.. inheritance-diagram:: fullrmc.Core.Group.Group
+.. inheritance-diagram:: fullrmc.Core.Group.Group 
     
 .. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
                          fullrmc.Selectors.OrderedSelectors
                          fullrmc.Generators.Translations 
                          fullrmc.Generators.Rotations 
-                         fullrmc.Generators.Swaps
+                         fullrmc.Generators.Swaps 
                          fullrmc.Generators.Agitations
                          fullrmc.Constraints.CoordinationNumberConstraints
                          fullrmc.Constraints.DistanceConstraints
@@ -280,78 +258,6 @@ the Engine is run for additional several hours to refine atoms positions separat
 |                                        |                                        |   Engine runtime.                      |
 +----------------------------------------+----------------------------------------+----------------------------------------+
 
-
-Installation
-============ 
-fullrmc requires:
-   #. Python (>= 2.6 and < 3),
-   #. NumPy (lowest version tested is 1.7.1)
-   #. cython (lowest version tested is 0.21.1)
-   #. matplotlib (lowest version tested is 1.4)
-   #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0)
-   #. pysimplelog (lowest version tested is 0.1.7)
-
-**Installation using pip:**\n
-numpy and cython must be installed and updated manually. 
-   
-   .. code-block:: bash  
-    
-       pip install -U "numpy>=1.7.1"
-       pip install -U "cython>=0.21.1"
-       
-When you already have a working installation of numpy and cython.
-   
-   .. code-block:: bash  
-    
-       pip install fullrmc
-
-**Installation by cloning github repository:**\n
-   * Ensure all fullrmc required packages are installed and up to data by executing the
-     following python script:
-    
-    .. code-block:: python
-        
-        # check whether all packages are already installed
-        from pkg_resources import parse_version as PV
-        for name, ver in [('numpy'      ,'1.7.1') ,
-                          ('cython'     ,'0.21.1'),
-                          ('pdbParser'  ,'0.1.3') ,
-                          ('pysimplelog','0.1.7') ,
-                          ('matplotlib' ,'1.4'  )]:
-            try:
-                lib = __import__(name)
-            except:
-                print '%s must be installed for fullrmc to run properly'%(name)
-            else:
-                if PV(lib.__version__) < PV(ver):
-                    print '%s installed version %s is below minimum suggested version %s.\
-Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
-                else:
-                    print '%s is installed properly and minimum version requirement is met.'%(name)
-        
-           
-   * Locate python's site-packages by executing the following python script:
-     
-     .. code-block:: python
-     
-        import os
-        os.path.join(os.path.dirname(os.__file__), 'site_packages')
-
-   * Navigate to site_packages folder and clone git repository from command line:
-   
-    .. code-block:: bash
-       
-       cd .../site_packages
-       git clone https://github.com/bachiraoun/fullrmc.git   
-
-   * Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions
-     from command line as the following:
-     
-    .. code-block:: bash
-       
-       cd .../site_packages/fullrmc/Extensions
-       python setup.py build_ext --inplace   
-      
 """
 # import package info
 from __pkginfo__ import __version__, __author__, __email__

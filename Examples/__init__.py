@@ -1,3 +1,11 @@
+"""
+.. py:function:: get_available_examples()
+
+    Get all available examples as delivered in the standard distribution.
+    
+    :Returns:
+        #. examples (list): List of examples paths.
+    """
 # standard distribution imports
 import os
 

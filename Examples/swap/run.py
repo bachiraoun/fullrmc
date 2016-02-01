@@ -93,7 +93,7 @@ PDF_CONSTRAINT, ACN_CONSTRAINT, EMD_CONSTRAINT = ENGINE.constraints
 
 
 # run engine
-#ENGINE.export_pdb( os.path.join("pdbFiles","0.pdb") )
+ENGINE.export_pdb( os.path.join("pdbFiles","0.pdb") )
 for _ in range(10):
     run_normal(nsteps=100, saveFrequency=100, engineFilePath=engineFilePath, exportPdb=False)
 for _ in range(99):

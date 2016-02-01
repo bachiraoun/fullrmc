@@ -157,7 +157,6 @@ class SwapGenerator(MoveGenerator):
         assert swapLength>0, LOGGER.error("swapLength must be bigger than 0")
         self.__swapLength = swapLength
         self.__swapList   = ()
-        self.__swapArray  = np.empty( (self.__swapLength,3), dtype=FLOAT_TYPE )
         
     def set_group(self, group):
         """
@@ -238,26 +237,6 @@ class SwapGenerator(MoveGenerator):
         self.__groupAtomsIndexes = groupAtomsIndexes
         self.__swapAtomsIndexes  = self.__swapList[ randint(0,len(self.__swapList)-1) ]
         return np.concatenate( (self.__groupAtomsIndexes,self.__swapAtomsIndexes) )
-                
-    def transform_coordinates(self, coordinates, argument=None):
-        """
-        Transform coordinates by swapping. This method is called in every move.
-        This method MUST NOT be overloaded in ANY SwapGenerator sub-class.
-        
-        :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the swapping.
-            #. argument (object): Any other argument needed to perform the move.
-               In General it's not needed.
-            
-        :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the move.
-        """
-        # swap coordinates
-        self.__swapArray[:,:]   = coordinates[:self.__swapLength ,:]
-        coordinates[:self.__swapLength ,:] = coordinates[self.__swapLength :,:]
-        coordinates[self.__swapLength :,:] = self.__swapArray[:,:]
-        # return
-        return coordinates
         
         
         

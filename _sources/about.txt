@@ -1,3 +1,6 @@
+.. role:: underline
+   :class: underline
+
 History
 =======
 This project has started in 2015 as a consequence of the incapability 
@@ -14,11 +17,14 @@ Citing fullrmc
 If you use fullrmc in a scientific publication, 
 we would appreciate citations to the following paper:
 
+
+:underline:`Text entry:`
+
 Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
 with Machine Learning and Artificial Intelligence; 
-Journal of Computational Chemistry 2016
+*J. Comput. Chem.* (2016)
 
-Bibtex entry:
+:underline:`Bibtex entry:`  
 
 .. code-block:: latex
 
@@ -35,7 +41,7 @@ Bibtex entry:
     }
 
 
-EndNote entry:
+:underline:`EndNote entry:` 
 
 .. code-block:: latex
     

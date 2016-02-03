@@ -10,9 +10,17 @@
  */
  
 @import url("basic.css");
+
+/* -- special fullrmc ----------------------------------------------------------- */
+
+.underline {
+  text-decoration: underline;
+}
+.overline {
+  text-decoration: overline;
+}
    
-/* -- page layout ----------------------------------------------------------- */
- 
+/* -- page layout ----------------------------------------------------------- */ 
 body {
     font-family: "Nobile", sans-serif;
     font-size: 100%;

@@ -43,8 +43,7 @@
                 <li><a href="about.html">About</a></li>
                 <!-- pypi and github forkme link images table -->
                 <li> 
-                    <table style="position: absolute; right: 0; top:0;"
-                           height="40";>
+                    <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
@@ -65,7 +64,7 @@
         </div>
         <!----------  STATIC MENU BAR STYLE --------->    
         <style>
-        .menu { height: 40px; background-color:black; margin:0;  
+        .menu { height: 42px; background-color:black; margin:0px;  
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -2295,7 +2294,7 @@ In General it&#8217;s not needed.</li>
 
 <dl class="class">
 <dt id="fullrmc.Generators.Swaps.SwapCentersGenerator">
-<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Swaps.</tt><tt class="descname">SwapCentersGenerator</tt><big>(</big><em>group=None</em>, <em>swapLength=1</em>, <em>swapList=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Generators.Swaps.</tt><tt class="descname">SwapCentersGenerator</tt><big>(</big><em>group=None</em>, <em>swapList=None</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.SwapGenerator</span></tt></a></p>
 <p>Computes geometric center of the selected group, and swaps its atoms
 by translation to the atoms geometric center of the other atoms which
@@ -2307,13 +2306,9 @@ are randomly selected from swapList and vice-versa.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">group (None, Group): The group instance.</p>
 </li>
-<li><p class="first">swapLength (Integer): The swap length that defines the length of the group 
-and the length of the every swap sub-list in swapList.</p>
-</li>
 <li><p class="first">swapList (None, List): The list of atoms.</p>
 <p>If None is given, no swapping or exchanging will be performed.</p>
-<p>If List is given, it must contain lists of atoms where every 
-sub-list must have the same number of atoms as the group.</p>
+<p>If List is given, it must contain lists of atom indexes.</p>
 </li>
 </ol>
 </td>
@@ -2331,32 +2326,87 @@ sub-list must have the same number of atoms as the group.</p>
 <span class="c"># Re-define groups if needed ...</span>
 <span class="c"># Re-define groups selector if needed ...</span>
 
-<span class="c">##### set swap moves between Lithium and Manganese atoms in Li2MnO3 system #####</span>
-<span class="c"># reset engine groups to atoms to insure atomic grouping of all the system&#39;s atoms</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
-<span class="c"># get all elements list </span>
-<span class="n">elements</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">allElements</span>
-<span class="c"># create list of lithium atoms indexes</span>
-<span class="n">liIndexes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">))</span> <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;li&#39;</span><span class="p">]</span>
-<span class="c"># create list of manganese atoms indexes</span>
-<span class="n">mnIndexes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">elements</span><span class="p">))</span> <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;mn&#39;</span><span class="p">]</span>
-<span class="c"># create swap generator to lithium atoms</span>
-<span class="n">swapWithLi</span> <span class="o">=</span> <span class="n">SwapCentersGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">liIndexes</span><span class="p">)</span>
-<span class="c"># create swap generator to manganese atoms</span>
-<span class="n">swapWithMn</span> <span class="o">=</span> <span class="n">SwapCentersGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">mnIndexes</span><span class="p">)</span>
-<span class="c"># set swap generator to groups</span>
-<span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
-    <span class="c"># get group&#39;s atom index</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c"># set swap to manganese for lithium atoms</span>
-    <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;li&#39;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">swapWithMn</span><span class="p">)</span>
-    <span class="c"># set swap to lithium for manganese atoms</span>
-    <span class="k">elif</span> <span class="n">elements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s">&#39;mn&#39;</span><span class="p">:</span>
-        <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">swapWithLi</span><span class="p">)</span>
-    <span class="c"># the rest are oxygen atoms. Default RandomTranslation generator are kept.</span>
+<span class="c">##### set swap moves between first 10 molecular groups of a system #####</span>
+<span class="c"># reset engine groups to molecules</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_molecules</span><span class="p">()</span>
+<span class="c"># set swap generator to the first 10 groups</span>
+<span class="n">GROUPS</span> <span class="o">=</span> <span class="p">[</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">gidx</span><span class="p">,</span> <span class="n">group</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GROUPS</span><span class="p">):</span>
+    <span class="n">swapList</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">indexes</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span><span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GROUPS</span><span class="p">)</span> <span class="k">if</span> <span class="n">idx</span><span class="o">!=</span><span class="n">gidx</span><span class="p">]</span>
+    <span class="n">swapGen</span>  <span class="o">=</span> <span class="n">SwapCentersGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">swapList</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">swapGen</span><span class="p">)</span>    
 </pre></div>
 </div>
+<dl class="attribute">
+<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.swapLength">
+<tt class="descname">swapLength</tt><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.swapLength" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get swap length. In this Case it is always None as 
+swapLength is not required for this generator.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.swapList">
+<tt class="descname">swapList</tt><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.swapList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get swap list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_length">
+<tt class="descname">set_swap_length</tt><big>(</big><em>swapLength</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set swap length. The swap length that defines the length of the group 
+and the length of the every swap sub-list in swapList. 
+It will automatically be set to None as SwapCentersGenerator 
+does not require a fixed length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>swapLength (None): The swap length.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_list">
+<tt class="descname">set_swap_list</tt><big>(</big><em>swapList</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the swap-list to swap groups centers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">swapList (None, List): The list of atoms.</p>
+<p>If None is given, no swapping or exchanging will be performed.</p>
+<p>If List is given, it must contain lists of atom indexes.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.set_group">
+<tt class="descname">set_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.set_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the MoveGenerator group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.check_group">
 <tt class="descname">check_group</tt><big>(</big><em>group</em><big>)</big><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.check_group" title="Permalink to this definition">¶</a></dt>

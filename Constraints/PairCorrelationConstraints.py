@@ -353,7 +353,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 AXES.set_title(t)
         # set axis labels
         AXES.set_xlabel("$r(\AA)$", size=16)
-        AXES.set_ylabel("$g(r)$"  , size=16)
+        AXES.set_ylabel("$g(r)(\AA^{-2})$"  , size=16)
         # set background color
         plt.gcf().patch.set_facecolor('white')
         #show

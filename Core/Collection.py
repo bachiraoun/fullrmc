@@ -121,6 +121,36 @@ def get_path(key=None):
         assert paths.has_key(key), LOGGER.error("key is not defined")
         return paths[key]
 
+        
+def rebin(data, bin=0.05):
+    """
+    Re-bin 2D data of shape (N,2).
+    
+    :Parameters:
+        #. data (numpy.ndarray): the (N,2) shape data.
+        
+    :Returns:
+        #. X (numpy.ndarray): the first column re-binned.
+        #. Y (numpy.ndarray): the second column re-binned.
+    """
+    x = data[:,0].astype(float)
+    y = data[:,1].astype(float)
+    rx = []
+    ry = []
+    x0 = int(x[0]/bin)*bin-bin/2.
+    xn = int(x[-1]/bin)*bin+bin/2.
+    bins = np.arange(x0,xn, bin)
+    if bins[-1] != xn:
+        bins = np.append(bins, xn)
+    # get weights histogram
+    W,E = np.histogram(x, bins=bins)
+    W[np.where(W==0)[0]] = 1
+    # get data histogram
+    S,E = np.histogram(x, bins=bins, weights=y)
+    # return
+    return (E[1:]+E[:-1])/2., S/W
+    
+    
 def get_random_perpendicular_vector(vector):
     """
     Get random normalized perpendicular vector to a given vector.
@@ -234,7 +264,43 @@ def rotate(xyzArray , rotationMatrix):
     for idx in range(xyzArray.shape[0]):
         xyzArray[idx,:] = np.dot( rotationMatrix, xyzArray[idx,:]).astype(arrayType)
     return xyzArray
+
+def get_orientation_matrix(arrayAxis, alignToAxis):
+    """
+    Get the rotation matrix that aligns arrayAxis to alignToAxis
     
+    :Parameters:
+        #. arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.
+        #. alignToAxis (list, tuple, numpy.ndarray): The axis to align to.
+    """
+    # normalize alignToAxis
+    alignToAxisNorm = np.linalg.norm(alignToAxis)
+    assert alignToAxisNorm>0, LOGGER.error("alignToAxis returned 0 norm")
+    alignToAxis = np.array(alignToAxis, dtype=FLOAT_TYPE)/alignToAxisNorm
+    # normalize arrayAxis
+    arrayAxisNorm = np.linalg.norm(arrayAxis)
+    assert arrayAxisNorm>0, LOGGER.error("arrayAxis returned 0 norm")
+    arrayAxis = np.array(arrayAxis, dtype=FLOAT_TYPE)/arrayAxisNorm
+    # calculate rotationAngle
+    dotProduct = np.dot(arrayAxis, alignToAxis)
+    if np.abs(dotProduct-1) <= PRECISION :
+        rotationAngle = 0
+    elif np.abs(dotProduct+1) <= PRECISION :
+        rotationAngle = PI
+    else:
+        rotationAngle = np.arccos( dotProduct )
+    if np.isnan(rotationAngle) or np.abs(rotationAngle) <= PRECISION :
+        return np.array([[1.,0.,0.],[0.,1.,0.],[0.,0.,1.]]).astype(FLOAT_TYPE)
+    # calculate rotation axis.
+    if np.abs(rotationAngle-PI) <= PRECISION:
+        rotationAxis = get_random_perpendicular_vector(arrayAxis)
+    else:
+        rotationAxis = np.cross(alignToAxis, arrayAxis)
+    #rotationAxis /= np.linalg.norm(rotationAxis)
+    # calculate rotation matrix
+    return get_rotation_matrix(rotationAxis, rotationAngle)
+  
+  
 def orient(xyzArray, arrayAxis, alignToAxis):
     """
     Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis to alignToAXis.
@@ -273,6 +339,124 @@ def orient(xyzArray, arrayAxis, alignToAxis):
     # rotate and return
     return rotate(xyzArray , rotationMatrix)
   
+
+
+def get_superposition_transformation(refArray, array, check=False):
+    """
+        Calculates the rotation matrix and the translations that minimizes the root mean 
+        square deviation between and array of vectors and a reference array.\n   
+        
+        :Parameters:
+            #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
+            #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
+            #. check (boolean): whether to check arguments before generating points.
+        
+        :Returns:
+            #. rotationMatrix (numpy.ndarray): the 3X3 rotation tensor.
+            #. refArrayCOM (numpy.ndarray): the 1X3 vector center of mass of refArray.
+            #. arrayCOM (numpy.ndarray): the 1X3 vector center of mass of array.
+            #. rms (number)
+    """ 
+    if check:
+        # check array
+        assert isinstance(array, np.ndarray), Logger.error("array must be numpy.ndarray instance")
+        assert len(array.shape)<=2, Logger.error("array must be a vector or a matrix")
+        if len(array.shape)==2:
+            assert array.shape[1]==3, Logger.error("array number of columns must be 3")
+        else:
+            assert array.shape[1]==3, Logger.error("vector array number of columns must be 3")
+        # check refArray
+        assert isinstance(refArray, np.ndarray), Logger.error("refArray must be numpy.ndarray instance")
+        assert len(refArray.shape)<=2, Logger.error("refArray must be a vector or a matrix")
+        if len(refArray.shape)==2:
+            assert refArray.shape[1]==3, Logger.error("refArray number of columns must be 3")
+        else:
+            assert refArray.shape[1]==3, Logger.error("vector refArray number of columns must be 3")
+        # check weights
+        assert array.shape == refArray.shape, Logger.error("refArray and array must have the same number of vectors")     
+    # calculate center of mass of array
+    arrayCOM = np.sum(array, axis=0)/array.shape[0]
+    # calculate cross matrix and reference config center of mass
+    r_ref = array-arrayCOM
+    refArrayCOM = np.sum(refArray, axis=1)
+    cross = np.dot(refArray.transpose(),r_ref)
+    possq = np.add.reduce(refArray**2,1)+np.add.reduce(r_ref**2,1)
+    possq = np.sum(possq)
+    # calculate kross
+    kross = np.zeros((4, 4), dtype=FLOAT_TYPE)
+    kross[0, 0] = -cross[0, 0]-cross[1, 1]-cross[2, 2]
+    kross[0, 1] =  cross[1, 2]-cross[2, 1]
+    kross[0, 2] =  cross[2, 0]-cross[0, 2]
+    kross[0, 3] =  cross[0, 1]-cross[1, 0]
+    kross[1, 1] = -cross[0, 0]+cross[1, 1]+cross[2, 2]
+    kross[1, 2] = -cross[0, 1]-cross[1, 0]
+    kross[1, 3] = -cross[0, 2]-cross[2, 0]
+    kross[2, 2] =  cross[0, 0]-cross[1, 1]+cross[2, 2]
+    kross[2, 3] = -cross[1, 2]-cross[2, 1]
+    kross[3, 3] =  cross[0, 0]+cross[1, 1]-cross[2, 2]
+    for i in range(1, 4):
+        for j in range(i):
+            kross[i, j] = kross[j, i]
+    kross = 2.*kross
+    offset = possq - np.add.reduce(refArrayCOM**2)
+    for i in range(4):
+        kross[i, i] = kross[i, i] + offset
+    # get eigen values
+    e, v = np.linalg.eig(kross)
+    i = np.argmin(e)
+    v = np.array(v[:,i], dtype=FLOAT_TYPE)
+    if v[0] < 0: v = -v
+    if e[i] <= 0.:
+        rms = FLOAT_TYPE(0.)
+    else:
+        rms = np.sqrt(e[i])
+    # calculate the rotation matrix
+    rot = np.zeros((3,3,4,4), dtype=FLOAT_TYPE)
+    rot[0,0, 0,0] = FLOAT_TYPE( 1.0)
+    rot[0,0, 1,1] = FLOAT_TYPE( 1.0)
+    rot[0,0, 2,2] = FLOAT_TYPE(-1.0)
+    rot[0,0, 3,3] = FLOAT_TYPE(-1.0)
+    rot[1,1, 0,0] = FLOAT_TYPE( 1.0)
+    rot[1,1, 1,1] = FLOAT_TYPE(-1.0)
+    rot[1,1, 2,2] = FLOAT_TYPE( 1.0)
+    rot[1,1, 3,3] = FLOAT_TYPE(-1.0)
+    rot[2,2, 0,0] = FLOAT_TYPE( 1.0)
+    rot[2,2, 1,1] = FLOAT_TYPE(-1.0)
+    rot[2,2, 2,2] = FLOAT_TYPE(-1.0)
+    rot[2,2, 3,3] = FLOAT_TYPE( 1.0)
+    rot[0,1, 1,2] = FLOAT_TYPE( 2.0)
+    rot[0,1, 0,3] = FLOAT_TYPE(-2.0)
+    rot[0,2, 0,2] = FLOAT_TYPE( 2.0)
+    rot[0,2, 1,3] = FLOAT_TYPE( 2.0)
+    rot[1,0, 0,3] = FLOAT_TYPE( 2.0)
+    rot[1,0, 1,2] = FLOAT_TYPE( 2.0)
+    rot[1,2, 0,1] = FLOAT_TYPE(-2.0)
+    rot[1,2, 2,3] = FLOAT_TYPE( 2.0)
+    rot[2,0, 0,2] = FLOAT_TYPE(-2.0)
+    rot[2,0, 1,3] = FLOAT_TYPE( 2.0)
+    rot[2,1, 0,1] = FLOAT_TYPE( 2.0)
+    rot[2,1, 2,3] = FLOAT_TYPE( 2.0)
+    rotationMatrix = np.dot(np.dot(rot, v), v)
+    return rotationMatrix, refArrayCOM, arrayCOM, rms
+
+
+def superpose_array(refArray, array, check=False):
+    """
+        Calculates the rotation matrix and the translations that minimizes the root mean 
+        square deviation between and array of vectors and a reference array.\n   
+        
+        :Parameters:
+            #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
+            #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
+            #. check (boolean): whether to check arguments before generating points.
+        
+        :Returns:
+            #. superposedArray (numpy.ndarray): the NX3 array to superposed array.
+    """ 
+    rotationMatrix, _,_,_ = get_superposition_transformation(refArray=refArray, array=array, check=check)     
+    return np.dot( rotationMatrix, np.transpose(array).\
+                   reshape(1,3,-1)).transpose().reshape(-1,3)
+    
     
 def generate_points_on_sphere(thetaFrom, thetaTo,
                               phiFrom, phiTo,

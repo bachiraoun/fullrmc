@@ -126,7 +126,8 @@ Modules and definitions:
       :class:`.RotationAboutSymmetryAxisPath`
       :class:`.DistanceAgitationGenerator`
       :class:`.AngleAgitationGenerator`
-        
+    
+    
 `Version 0.2.0 <https://pypi.python.org/pypi/fullrmc/0.2.0>`_:
 --------------------------------------------------------------
 This is the first officially published version. 
@@ -146,6 +147,7 @@ Known bugs and issues:
       orthorhombic systems is prone to distances calculation errors 
       caused by pdbParser (<=0.1.2). 
  
+ 
 `Version 0.3.0 <https://pypi.python.org/pypi/fullrmc/0.3.0>`_:
 --------------------------------------------------------------
 Starting from this version, pdbParser (>=0.1.3) is used. 
@@ -158,6 +160,7 @@ Fixes and improvements:
       under-represented in the total squared deviation calculation.
    #. :class:`.InterMolecularDistanceConstraint` 'flexible' flag added.
 
+   
 `Version 0.3.1 <https://pypi.python.org/pypi/fullrmc/0.3.1>`_:
 --------------------------------------------------------------
 Fixes and improvements:
@@ -168,6 +171,7 @@ Fixes and improvements:
    #. :class:`.PairDistributionConstraint` and :class:`.PairCorrelationConstraint` 
       set_limits bug fixed.
    #. :class:`.Engine` add_group method allows list, set, tuples as well as integers.
+   
    
 `Version 0.3.2 <https://pypi.python.org/pypi/fullrmc/0.3.2>`_:
 --------------------------------------------------------------
@@ -180,15 +184,31 @@ Fixes and improvements:
    #. :class:`.AtomicCoordinationNumberConstraint` compiled C++ code boundary conditions
       distances computation fixed for multiple box separation.
   
+  
 `Version 0.3.3 <https://pypi.python.org/pypi/fullrmc/0.3.3>`_:
 --------------------------------------------------------------
 New Modules and definitions:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   #. :class:`.SwapCentersGenerator` added.
-    
+   #. :class:`.SwapCentersGenerator`
+   
+   
+`Version 0.4.0 <https://pypi.python.org/pypi/fullrmc/0.4.0>`_:
+--------------------------------------------------------------
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. :class:`.StructureFactorConstraint` added computing Static Structure Factor
+   #. :class:`.ReducedStructureFactorConstraint` added computing Reduced Static Structure Factor
+
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+   #. :class:`.PairDistributionConstraint` and :class:`.PairCorrelationConstraint` plot Y axis
+      label units added.
+   #. swap example changed to atomicSimulation and S(q) added to the fitting along with G(r)
+   #. thfSimulation example change to molecularSimulation
+   
 """
 
-__version__ = '0.3.3'
+__version__ = '0.4.0'
 
 __author__ = "Bachir Aoun"
 

@@ -121,7 +121,7 @@ class SwapGenerator(MoveGenerator):
            and the length of the every swap sub-list in swapList.
         #. swapList (None, List): The list of atoms.\n
            If None is given, no swapping or exchanging will be performed.\n
-           If List is given, it must contain lists of atoms where every 
+           If List is given, it must contain lists of atom indexes where every 
            sub-list must have the same number of atoms as the group.
     """
     def __init__(self, group=None, swapLength=1, swapList=None):
@@ -143,6 +143,16 @@ class SwapGenerator(MoveGenerator):
     def swapList(self):
         """ Get swap list."""
         return self.__swapList
+        
+    @property
+    def groupAtomsIndexes (self):
+        """ Get last selected group atoms indexes."""
+        return self.__groupAtomsIndexes 
+    
+    @property
+    def swapAtomsIndexes(self):
+        """ Get last swap atoms indexes."""
+        return self.__swapAtomsIndexes
         
     def set_swap_length(self, swapLength):
         """
@@ -176,7 +186,7 @@ class SwapGenerator(MoveGenerator):
         :Parameters: 
             #. swapList (None, List): The list of atoms.\n 
                If None is given, no swapping or exchanging will be performed.\n
-               If List is given, it must contain lists of atom indxes where every 
+               If List is given, it must contain lists of atom indexes where every 
                sub-list length must be equal to swapLength.
         """
         if swapList is None:
@@ -235,7 +245,7 @@ class SwapGenerator(MoveGenerator):
                including the given groupAtomsIndexes.
         """
         self.__groupAtomsIndexes = groupAtomsIndexes
-        self.__swapAtomsIndexes  = self.__swapList[ randint(0,len(self.__swapList)-1) ]
+        self.__swapAtomsIndexes  = self.swapList[ randint(0,len(self.swapList)-1) ]
         return np.concatenate( (self.__groupAtomsIndexes,self.__swapAtomsIndexes) )
         
         

@@ -444,10 +444,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
         Gr /= self.shellVolumes
         # compute total G(r)
         rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
-        Gr   = (4.*np.pi*self.__shellCenters*rho0)*( Gr-1)
+        Gr   = (4.*PI*self.__shellCenters*rho0)*( Gr-1)
         # Multiply by scale factor
         self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, Gr, self._usedDataWeights)
-        Gr *= self._fittedScaleFactor
+        Gr *= FLOAT_TYPE(self._fittedScaleFactor)
         # convolve total with window function
         if self.__windowFunction is not None:
             Gr = np.convolve(Gr, self.__windowFunction, 'same')
@@ -500,7 +500,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             #gr += output["rdf_total_%s-%s" % pair] 
         # compute total G(r)
         rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
-        output["pdf_total"] = self.scaleFactor * (4.*np.pi*self.__shellCenters*rho0) * (gr-1)
+        output["pdf_total"] = self.scaleFactor * (4.*PI*self.__shellCenters*rho0) * (gr-1)
         # convolve total with window function
         if self.__windowFunction is not None:
             output["pdf"] = np.convolve(output["pdf_total"], self.__windowFunction, 'same')
@@ -741,7 +741,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if xlabel:
             AXES.set_xlabel("$r(\AA)$", size=xlabelSize)
         if ylabel:
-            AXES.set_ylabel("$G(r)$"  , size=ylabelSize)
+            AXES.set_ylabel("$G(r)(\AA^{-2})$"  , size=ylabelSize)
         # set background color
         plt.gcf().patch.set_facecolor('white')
         #show
@@ -749,14 +749,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
             plt.show()
         return AXES
 
-        
-#class StructureFactor(PairDistributionFunction):
-#     pass
-
-
-    
-    
-    
 
 
     

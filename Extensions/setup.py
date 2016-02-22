@@ -91,7 +91,14 @@ pyx = [# boundary_conditions_collection
        Extension('atomic_distances',
        include_dirs=[np.get_include()],
        language="c",
+       #extra_compile_args=['-fopenmp'],
+       #extra_link_args=['-fopenmp'],
        sources = [os.path.join(EXTENSIONS_PATH,"atomic_distances.pyx")]),
+       # reciprocal_space
+       Extension('reciprocal_space',
+       include_dirs=[np.get_include()],
+       language="c",
+       sources = [os.path.join(EXTENSIONS_PATH,"reciprocal_space.pyx")]),
        ]
 
 # setup all c and cpp files

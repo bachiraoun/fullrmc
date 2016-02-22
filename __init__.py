@@ -16,6 +16,7 @@
                          fullrmc.Constraints.ImproperAngleConstraints
                          fullrmc.Constraints.PairDistributionConstraints
                          fullrmc.Constraints.PairCorrelationConstraints
+                         fullrmc.Constraints.StructureFactorConstraints
     :parts: 1
     
 
@@ -59,14 +60,27 @@ Welcoming videos
 |polarization is modelled by allowing fullrmc to explore across energy low correlation  |
 |barriers.                                                                              |     
 +---------------------------------------------------------------------------------------+
+|.. raw:: html                                                                          |
+|                                                                                       |
+|        <iframe width="580" height="315"                                               |
+|        src="https://www.youtube.com/embed/24Rd2EZ2vVo?rel=0"                          |
+|        frameborder="0" allowfullscreen>                                               |   
+|        </iframe>                                                                      |    
+|                                                                                       |
+|                                                                                       |
+|Reverse Monte Carlo traditional fitting mode compared with fullrmc's recursive         |   
+|selection with exploring. This video shows how from a potential point of view exploring|
+|allow to cross forbidden unlikely barriers and going out of local minimas.             |     
++---------------------------------------------------------------------------------------+
 
 
 Brief Description
 =================
 Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter 
-physics and solid state chemistry. fullrmc is a RMC modelling package to solve an inverse 
-problem whereby an atomic/molecular model is adjusted until its atoms position have the 
-greatest consistency with a set of experimental data.\n
+physics and solid state chemistry. fullrmc which stands for FUndamental Library Language 
+for Reverse Monte Carlo is a modelling package to solve an inverse problem whereby an 
+atomic/molecular model is adjusted until its atoms position have the greatest consistency 
+with a set of experimental data.\n
 fullrmc is a python package with its core and calculation modules optimized and compiled 
 in Cython. fullrmc is not a standard RMC package but it is rather unique in its approach 
 to solving an atomic or molecular structure. fullrmc's Engine sub-module is the main module 

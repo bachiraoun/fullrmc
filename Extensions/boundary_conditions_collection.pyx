@@ -161,10 +161,5 @@ def box_coordinates_real_distances( C_INT32 atomIndex,
     return distances
         
         
-        
-        
-        
-        
-        
-        
+
         

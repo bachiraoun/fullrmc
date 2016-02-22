@@ -45,10 +45,11 @@ commands = [# include MANIFEST.in
             'global-exclude *.c',
             'global-exclude *.cpp',
             'global-exclude *.so',
-            # exclude specific files
-            'global-exclude debye_scattering*',
-            'global-exclude atomic_distances*',
             'global-exclude *.rmc',
+            # exclude specific files
+            'global-exclude %s/Extensions/debye_scattering.pyx'%PACKAGE_NAME,
+            'global-exclude %s/Extensions/atomic_distances.pyx'%PACKAGE_NAME,
+            'global-exclude %s/Extensions/reciprocal_space.pyx'%PACKAGE_NAME,
             # exclude all other non necessary files 
             '\n# exclude all other non necessary files ',
             'global-exclude .project',
@@ -68,9 +69,6 @@ commands = [# include MANIFEST.in
             # include all LICENCE files
             '\n# include all license files found',
             'global-include %s/*LICENSE.*'%PACKAGE_NAME,
-            # include all Extension .pyx files
-            '\n# include all Extension .pyx files',
-            'global-include %s/Extensions/*.pyx'%PACKAGE_NAME,
             # include all README files
             '\n# include all readme files found',
             'global-include %s/*README.*'%PACKAGE_NAME,
@@ -93,11 +91,14 @@ Programming Language :: Python
 Programming Language :: Python :: 2
 Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
+Programming Language :: Cython
 Topic :: Software Development
 Topic :: Software Development :: Build Tools
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Artificial Intelligence
 Topic :: Scientific/Engineering :: Physics
+Topic :: Scientific/Engineering :: Mathematics
+Topic :: Scientific/Engineering :: Chemistry
 Operating System :: OS Independent
 Operating System :: Microsoft :: Windows
 Operating System :: POSIX

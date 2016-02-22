@@ -1,3 +1,10 @@
+.. automodule:: fullrmc.Core.GroupSelector
+    :noindex:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+   
+   
 fullrmc.Selectors package
 =========================
 

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.3',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />  
     </head>
   
@@ -95,7 +95,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -107,7 +107,881 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="fullrmc-constraints-package">
+  <p>Constraint contains parent classes for all constraints.
+A Constraint is used to set certain rules to evolve the configuration.
+Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
+<p class="graphviz">
+<img src="_images/inheritance-bac39f6c6eddabe96008cc584fcf4cf13f308c9f.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<map id="inheritance1864cca696" name="inheritance1864cca696">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,87,80"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="158,55,269,80"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="149,104,277,129"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="340,55,484,80"/>
+</map>
+</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">Constraint</tt><big>(</big><em>engine</em><big>)</big></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<tt class="descname">engine</tt></dt>
+<dd><p>Get the engine fullrmc instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">state</tt></dt>
+<dd><p>Get constraint&#8217;s state.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">tried</tt></dt>
+<dd><p>Get constraint&#8217;s number of tried moves.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">accepted</tt></dt>
+<dd><p>Get constraint&#8217;s number of accepted moves.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">used</tt></dt>
+<dd><p>Get whether this constraint is used in the engine run time or set inactive.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">varianceSquared</tt></dt>
+<dd><p>Get constraint&#8217;s varianceSquared used in the engine run time to calculate the total chi square.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">squaredDeviations</tt></dt>
+<dd><p>Get constraint&#8217;s current squared deviations.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">originalData</tt></dt>
+<dd><p>Get constraint&#8217;s original calculated data upon initialization.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">data</tt></dt>
+<dd><p>Get constraint&#8217;s current calculated data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">activeAtomsDataBeforeMove</tt></dt>
+<dd><p>Get constraint&#8217;s current calculated data before last move.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">activeAtomsDataAfterMove</tt></dt>
+<dd><p>Get constraint&#8217;s current calculated data after last move.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">afterMoveSquaredDeviations</tt></dt>
+<dd><p>Get constraint&#8217;s current calculated SquaredDeviations after last move.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big></dt>
+<dd><p>Listen&#8217;s to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>arguments (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_variance_squared</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s variance squared that is used in the computation of the total engine chi square.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): Any positive non zero number.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_used</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets used flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (boolean): True to use this constraint in engine run time.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_state</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s state. 
+When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be recalculated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (object): constraint state value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_tried</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s engine tried moves.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (integer): constraint tried moves value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">increment_tried</tt><big>(</big><big>)</big></dt>
+<dd><p>Increment engine tried moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_accepted</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s engine accepted moves.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (integer): constraint accepted moves value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">increment_accepted</tt><big>(</big><big>)</big></dt>
+<dd><p>Increment engine accepted moves.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_squared_deviations</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s squaredDeviations value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): squaredDeviations value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_data</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s data value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): squaredDeviations value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_active_atoms_data_before_move</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s before move happens active atoms data value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): data value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_active_atoms_data_after_move</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s after move happens active atoms data value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): data value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_after_move_squared_deviations</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s squaredDeviations value after move happens.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): squaredDeviations value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">reset_constraint</tt><big>(</big><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em><big>)</big></dt>
+<dd><p>Resets constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>reinitialize (boolean): If set to True, it will override the rest of the flags 
+and will completely reinitialize the constraint.</li>
+<li>flags (boolean): Reset the state, tried and accepted flags of the constraint.</li>
+<li>data (boolean): Reset the constraints computed data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_engine</tt><big>(</big><em>engine</em><big>)</big></dt>
+<dd><p>Sets the constraints fullrmc engine instance.
+&#8216;engine changed&#8217; message will be broadcasted automatically to the constraint&#8217;s listener listen method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big></dt>
+<dd><p>Computes and sets the constraint&#8217;s squaredDeviations by calling compute_squared_deviations and passing the constraint&#8217;s data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">get_constraint_original_value</tt><big>(</big><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_squared_deviations</tt><big>(</big><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_data</tt><big>(</big><em>indexes</em><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">plot</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">ExperimentalConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><big>)</big></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
+<p>An ExperimentalConstraint is any constraint related to experimental data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
+</li>
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+important in order to get a reasonable and plausible modal.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
+total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
+</li>
+<li><p class="first">scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.</p>
+</li>
+<li><p class="first">adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.</p>
+<ol class="arabic simple">
+<li>The frequency in number of accepted moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
+untouched and the limits minimum and maximum won&#8217;t be checked.</p>
+<dl class="attribute">
+<dt>
+<tt class="descname">experimentalData</tt></dt>
+<dd><p>Gets the experimental data of the constraint.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">dataWeights</tt></dt>
+<dd><p>Get experimental data points weight</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">scaleFactor</tt></dt>
+<dd><p>Get the scaleFactor.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">adjustScaleFactor</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">adjustScaleFactorFrequency</tt></dt>
+<dd><p>Get the scaleFactor adjustment frequency.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">adjustScaleFactorMinimum</tt></dt>
+<dd><p>Get the scaleFactor adjustment minimum number allowed.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">adjustScaleFactorMaximum</tt></dt>
+<dd><p>Get the scaleFactor adjustment maximum number allowed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_scale_factor</tt><big>(</big><em>scaleFactor</em><big>)</big></dt>
+<dd><p>Sets the scale factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_adjust_scale_factor</tt><big>(</big><em>adjustScaleFactor</em><big>)</big></dt>
+<dd><p>Sets adjust scale factor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.<ol class="arabic">
+<li>The frequency in number of accepted moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big></dt>
+<dd><p>Sets the constraint&#8217;s experimental data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_data_weights</tt><big>(</big><em>dataWeights</em><big>)</big></dt>
+<dd><p>Set experimental data points weight.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic">
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+important in order to get a reasonable and plausible modal.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
+total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big></dt>
+<dd><p>Checks the constraint&#8217;s experimental data
+This method must be overloaded in all ExperimentalConstraint sub-classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data numpy.ndarray.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">fit_scale_factor</tt><big>(</big><em>experimentalData</em>, <em>modelData</em>, <em>dataWeights</em><big>)</big></dt>
+<dd><p>The best scale factor value is computed by minimizing <span class="math">\(E=sM\)</span>.</p>
+<dl class="docutils">
+<dt>Where:</dt>
+<dd><ol class="first last arabic simple">
+<li><span class="math">\(E\)</span> is the experimental data.</li>
+<li><span class="math">\(s\)</span> is the scale factor.</li>
+<li><span class="math">\(M\)</span> is the model constraint data.</li>
+</ol>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data.</li>
+<li>modelData (numpy.ndarray): the constraint modal data.</li>
+<li>dataWeights (None, numpy.ndarray): the data points weights to compute the scale factor.
+If None, all data points will be considered as having the same weight.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (number): The new scale factor fit value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: This method won&#8217;t update the internal scale factor value of the constraint.
+It always computes the best scale factor given some experimental and model data</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">get_adjusted_scale_factor</tt><big>(</big><em>experimentalData</em>, <em>modelData</em>, <em>dataWeights</em><big>)</big></dt>
+<dd><p>Checks if scale factor should be updated according to the given scale factor frequency
+and engine&#8217;s accepted steps. If adjustment is due, a new scale factor will be computed  
+using fit_scale_factor method, otherwise the the constraint&#8217;s scale factor will be returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data.</li>
+<li>modelData (numpy.ndarray): the constraint modal data.</li>
+<li>dataWeights (None, numpy.ndarray): the data points weights to compute the scale factor.
+If None, all data points will be considered as having the same weight.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>scaleFactor (number): The constraint&#8217;s scale factor or the new scale factor fit value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: This method WILL NOT UPDATE the internal scale factor value of the constraint.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>experimentalData</em>, <em>modelData</em><big>)</big></dt>
+<dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
+<div class="math">
+\[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
+<p>Where:</p>
+<p><span class="math">\(N\)</span> is the total number of experimental data points.</p>
+<p><span class="math">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1 when dataWeights is set to None.</p>
+<p><span class="math">\(Y(X_{i})\)</span> is the experimental data point <span class="math">\(X_{i}\)</span>.</p>
+<p><span class="math">\(F(X_{i})\)</span> is the computed from the model data  <span class="math">\(X_{i}\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (numpy.ndarray): the experimental data.</li>
+<li>modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">SingularConstraint</tt><big>(</big><em>engine</em><big>)</big></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
+<p>A singular constraint is a constraint that doesn&#8217;t allow multiple instances in the same engine.</p>
+<dl class="attribute">
+<dt>
+<tt class="descname">is_singular</tt></dt>
+<dd><p>Get whether only one instance of this constraint type is present in the engine.
+True for only itself found, False for other instance of the same __class__.__name__</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">assert_singular</tt><big>(</big><big>)</big></dt>
+<dd><p>Checks whether only one instance of this constraint type is present in the engine.
+Raises Exception if multiple instances are present.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">RigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em><big>)</big></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
+<p>A rigid constraint is a constraint that doesn&#8217;t count into the total squaredDeviations of the Engine.
+But it&#8217;s internal squaredDeviations must monotonously decrease or remain the same from one engine step to another.
+If squaredDeviations of an RigidConstraint increases the step will be rejected even before engine&#8217;s new squaredDeviations get computed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<tt class="descname">rejectProbability</tt></dt>
+<dd><p>Get rejection probability.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_reject_probability</tt><big>(</big><em>rejectProbability</em><big>)</big></dt>
+<dd><p>Set the rejection probability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to reject step, False to accept</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">should_step_get_accepted</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to accept step, False to reject</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">QuasiRigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em>, <em>thresholdRatio</em><big>)</big></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a></p>
+<p>A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
+ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum squared 
+deviations. The ratio is computed as between current squared deviations and maximum squared deviations.</p>
+<blockquote>
+<div><div class="math">
+\[ratio = 1-\frac{current\ squared\ deviations}{maximum\ squared\ deviations} \]</div>
+</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
+<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases
+only before threshold ratio is reached. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
+It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
+behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
+constraint becomes always free and useless.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<tt class="descname">thresholdRatio</tt></dt>
+<dd><p>Get threshold ratio.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">currentRatio</tt></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_threshold_ratio</tt><big>(</big><em>thresholdRatio</em><big>)</big></dt>
+<dd><p>Set the rejection probability function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
+It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
+behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
+constraint becomes always free and useless.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
+<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to reject step, False to accept</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">randfloat</tt><big>(</big><big>)</big></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+<div class="section" id="fullrmc-constraints-package">
 <h1>fullrmc.Constraints package<a class="headerlink" href="#fullrmc-constraints-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
@@ -1969,44 +2843,26 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 </dd></dl>
 
 </div>
-<div class="section" id="module-fullrmc.Constraints.PairCorrelationConstraints">
-<span id="paircorrelationconstraints"></span><h2>PairCorrelationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairCorrelationConstraints" title="Permalink to this headline">¶</a></h2>
-<p>PairCorrelationConstraint contains classes for all constraints related experimental pair correlation functions.</p>
+<div class="section" id="module-fullrmc.Constraints.CoordinationNumberConstraints">
+<span id="coordinationnumberconstraints"></span><h2>CoordinationNumberConstraints<a class="headerlink" href="#module-fullrmc.Constraints.CoordinationNumberConstraints" title="Permalink to this headline">¶</a></h2>
+<p>CoordinationNumberConstraints contains classes for all constraints related to coordination numbers in shells around atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-7aa1e1a805080a0bb54bdb072bfe67139fcd8e0f.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
-<map id="inheritance225f361433" name="inheritance225f361433">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="557,5,724,31"/>
+<img src="_images/inheritance-ca1a239d5966f492c3ee41e12330b064358fced5.png" alt="Inheritance diagram of fullrmc.Constraints.CoordinationNumberConstraints" usemap="#inheritanceba4df3afec" class="inheritance"/>
+<map id="inheritanceba4df3afec" name="inheritanceba4df3afec">
+<area shape="rect" id="node1" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination number between atoms. " alt="" coords="485,31,724,56"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="293,55,437,80"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="301,5,429,31"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,55"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,55,245,80"/>
 </map>
 </p>
 <dl class="class">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></tt></a></p>
-<p>It controls the total pair correlation function (pcf) of the system noted as g(r).
-pcf tells the probability of finding atomic pairs separated by the real space distance r.
-Theoretically g(r) oscillates around 1. Also <span class="math">\(g(r) \rightarrow 1\)</span> when <span class="math">\(r \rightarrow \infty\)</span> 
-and it takes the exact value of zero for <span class="math">\(r\)</span> shorter than the distance of the closest possible 
-approach of pairs of atoms.</p>
-<p>The pair correlation function g(r) and pair distribution function G(r) are directly 
-related as in the following <span class="math">\(g(r)=1+(\frac{G(r)}{4 \pi \rho_{0} r})\)</span>.</p>
-<p>g(r) is calculated after binning all pair atomic distances into a weighted
-histograms of values <span class="math">\(n(r)\)</span> from which local number densities are computed as in the following.</p>
-<div class="math">
-\[g(r) = \sum \limits_{i,j}^{N} w_{i,j} \frac{\rho_{i,j}(r)}{\rho_{0}} 
-     = \sum \limits_{i,j}^{N} w_{i,j} \frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} \]</div>
-<p>Where:</p>
-<p><span class="math">\(r\)</span> is the distance between two atoms.</p>
-<p><span class="math">\(\rho_{i,j}(r)\)</span> is the pair density function of atoms i and j.</p>
-<p><span class="math">\(\rho_{0}\)</span> is the  average number density of the system.</p>
-<p><span class="math">\(w_{i,j}\)</span> is the relative weighting of atom types i and j.</p>
-<p><span class="math">\(N\)</span> is the total number of atoms.</p>
-<p><span class="math">\(V\)</span> is the volume of the system.</p>
-<p><span class="math">\(n_{i,j}(r)\)</span> is the number of atoms i neighbouring j at a distance r.</p>
-<p><span class="math">\(v(r)\)</span> is the annulus volume at distance r and of thickness dr.</p>
-<p><span class="math">\(N_{i,j}\)</span> is the total number of atoms i and j in the system.</p>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.CoordinationNumberConstraints.</tt><tt class="descname">AtomicCoordinationNumberConstraint</tt><big>(</big><em>engine</em>, <em>typeDefinition='element'</em>, <em>coordNumDef=None</em>, <em>rejectProbability=1</em>, <em>thresholdRatio=0.8</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="fullrmc.Core.Constraint.QuasiRigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.QuasiRigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
+<p>It&#8217;s a quasi-rigid constraint that controls the inter-molecular coordination number between atoms. 
+The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
+in the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2014,69 +2870,174 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
 </li>
-<li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
+<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all atoms type.</p>
 </li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
-Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
-<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
-array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
+<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
 </li>
-<li><p class="first">weighting (string): The elements weighting.</p>
-</li>
-<li><p class="first">scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.</p>
-</li>
-<li><p class="first">adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
-It must be a list of exactly three entries.</p>
-<ol class="arabic simple">
-<li>The frequency in number of generated moves of finding the best scale factor. 
-If 0 frequency is given, it means that the scale factor is fixed.</li>
-<li>The minimum allowed scale factor value.</li>
-<li>The maximum allowed scale factor value.</li>
+<li><dl class="first docutils">
+<dt>coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are</dt>
+<dd><p class="first">atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
+<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
+<ol class="last arabic simple">
+<li>the neighbouring atom type.</li>
+<li>the lower limit of the coordination shell.</li>
+<li>the upper limit of the coordination shell.</li>
+<li>the minimum number of neighbours in the shell.</li>
+<li>the maximum number of neighbours in the shell.</li>
 </ol>
+</dd>
+</dl>
 </li>
-<li><p class="first">windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
-of the system prior to comparing it with the experimental data. In general, the experimental pair
-distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
-by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
-used to best imitate the numerical artefacts in the experimental data.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
+and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
 </li>
-<li><p class="first">limits (None, tuple, list): The distance limits to compute the histograms.
-If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
-If not None, a tuple of exactly two items where the first is of minimum distance or None 
-and the second is the maximum distance or None.</p>
+<li><p class="first">thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
+It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
+behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
+constraint becomes always free and useless.</p>
 </li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
-untouched and the limits minimum and maximum won&#8217;t be checked.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairCorrelationConstraints</span> <span class="kn">import</span> <span class="n">PairCorrelationConstraint</span>
+<dl class="attribute">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.typeDefinition">
+<tt class="descname">typeDefinition</tt><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get types definition.</p>
+</dd></dl>
 
-<span class="c"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+<dl class="attribute">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.coordNumDefinition">
+<tt class="descname">coordNumDefinition</tt><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.coordNumDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get coordination number definition dictionary</p>
+</dd></dl>
 
-<span class="c"># create and add constraint</span>
-<span class="n">PCC</span> <span class="o">=</span> <span class="n">PairCorrelationConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PCC</span><span class="p">)</span>
+<dl class="method">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.listen">
+<tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>listen to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_type_definition">
+<tt class="descname">set_type_definition</tt><big>(</big><em>typeDefinition</em>, <em>coordNumDef=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_type_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the atoms typing definition.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. 
+It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
+</li>
+<li><p class="first">coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are
+atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
+<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
+<ol class="arabic simple">
+<li>the neighbouring atom type.</li>
+<li>the lower limit of the coordination shell.</li>
+<li>the upper limit of the coordination shell.</li>
+<li>the minimum number of neighbours in the shell.</li>
+<li>the maximum number of neighbours in the shell.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_coordination_number_definition">
+<tt class="descname">set_coordination_number_definition</tt><big>(</big><em>coordNumDef</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_coordination_number_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the coordination number definition.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are
+atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
+<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
+<ol class="arabic simple">
+<li>the neighbouring atom type.</li>
+<li>the lower limit of the coordination shell.</li>
+<li>the upper limit of the coordination shell.</li>
+<li>the minimum number of neighbours in the shell.</li>
+<li>the maximum number of neighbours in the shell.</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre>e.g. {&quot;H&quot;:  [ (&#39;C&#39;,1.,2.,3,3), (&#39;H&#39;,2.,4.5,5,6), (&#39;H&#39;,3.5, 5,6,7), ...], &quot;O&quot;: ... }      
 </pre></div>
 </div>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value">
-<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
+<div class="math">
+\[SD = \sum \limits_{i}^{A} \sum \limits_{s}^{S} 
+(D_{i,s})^{2}  \]\[\begin{split}D_{i,s}=\begin{cases}
+  n_{i,s}-N_{min,i,s}, &amp; \text{if $n_{i,s}&lt;N_{min,i,s}$}.\\
+  n_{i,s}-N_{max,i,s}, &amp; \text{if $n_{i,s}&gt;N_{max,i,s}$}.\\
+  0                  , &amp; \text{if $`N_{min,i,s}&lt;=n_{i,s}&lt;=N_{max,i,s}$}
+\end{cases}\end{split}\]</div>
+<p>Where:</p>
+<p><span class="math">\(A\)</span>           is the total number of atoms in the system.</p>
+<p><span class="math">\(S\)</span>           is the total number of shells defined for atom i.</p>
+<p><span class="math">\(D_{i,s}\)</span>     is the deviations of the coordination number of atom i in shell s.</p>
+<p><span class="math">\(n_{i,s}\)</span>     is the number of neighbours of atom i in shell s.</p>
+<p><span class="math">\(N_{min,i,s}\)</span> is the defined minimum number of neighbours around atom i in shell s.</p>
+<p><span class="math">\(N_{max,i,s}\)</span> is the defined maximum number of neighbours around atom i in shell s.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.get_constraint_value">
+<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets squared deviation per shell definition</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.</li>
+<li>MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.</li>
 </ol>
 </td>
 </tr>
@@ -2085,14 +3046,14 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move">
-<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_before_move">
+<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2108,8 +3069,8 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move">
-<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_after_move">
+<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2126,33 +3087,32 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot pair correlation constraint.</p>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.accept_move">
+<tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn.
-If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
-<li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
-<li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
-&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
-is accepted.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
-<li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes): The matplotlib axes.</li>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.reject_move">
+<tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -2676,26 +3636,44 @@ is accepted.</li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-fullrmc.Constraints.CoordinationNumberConstraints">
-<span id="coordinationnumberconstraints"></span><h2>CoordinationNumberConstraints<a class="headerlink" href="#module-fullrmc.Constraints.CoordinationNumberConstraints" title="Permalink to this headline">¶</a></h2>
-<p>CoordinationNumberConstraints contains classes for all constraints related to coordination numbers in shells around atoms.</p>
+<div class="section" id="module-fullrmc.Constraints.PairCorrelationConstraints">
+<span id="paircorrelationconstraints"></span><h2>PairCorrelationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairCorrelationConstraints" title="Permalink to this headline">¶</a></h2>
+<p>PairCorrelationConstraint contains classes for all constraints related experimental pair correlation functions.</p>
 <p class="graphviz">
-<img src="_images/inheritance-ca1a239d5966f492c3ee41e12330b064358fced5.png" alt="Inheritance diagram of fullrmc.Constraints.CoordinationNumberConstraints" usemap="#inheritanceba4df3afec" class="inheritance"/>
-<map id="inheritanceba4df3afec" name="inheritanceba4df3afec">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination number between atoms. " alt="" coords="485,31,724,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="293,55,437,80"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="301,5,429,31"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,55"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,55,245,80"/>
+<img src="_images/inheritance-7aa1e1a805080a0bb54bdb072bfe67139fcd8e0f.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
+<map id="inheritance225f361433" name="inheritance225f361433">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="340,5,509,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="557,5,724,31"/>
 </map>
 </p>
 <dl class="class">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.CoordinationNumberConstraints.</tt><tt class="descname">AtomicCoordinationNumberConstraint</tt><big>(</big><em>engine</em>, <em>typeDefinition='element'</em>, <em>coordNumDef=None</em>, <em>rejectProbability=1</em>, <em>thresholdRatio=0.8</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="fullrmc.Core.Constraint.QuasiRigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.QuasiRigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
-<p>It&#8217;s a quasi-rigid constraint that controls the inter-molecular coordination number between atoms. 
-The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
-in the system.</p>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></tt></a></p>
+<p>It controls the total pair correlation function (pcf) of the system noted as g(r).
+pcf tells the probability of finding atomic pairs separated by the real space distance r.
+Theoretically g(r) oscillates around 1. Also <span class="math">\(g(r) \rightarrow 1\)</span> when <span class="math">\(r \rightarrow \infty\)</span> 
+and it takes the exact value of zero for <span class="math">\(r\)</span> shorter than the distance of the closest possible 
+approach of pairs of atoms.</p>
+<p>The pair correlation function g(r) and pair distribution function G(r) are directly 
+related as in the following <span class="math">\(g(r)=1+(\frac{G(r)}{4 \pi \rho_{0} r})\)</span>.</p>
+<p>g(r) is calculated after binning all pair atomic distances into a weighted
+histograms of values <span class="math">\(n(r)\)</span> from which local number densities are computed as in the following.</p>
+<div class="math">
+\[g(r) = \sum \limits_{i,j}^{N} w_{i,j} \frac{\rho_{i,j}(r)}{\rho_{0}} 
+     = \sum \limits_{i,j}^{N} w_{i,j} \frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} \]</div>
+<p>Where:</p>
+<p><span class="math">\(r\)</span> is the distance between two atoms.</p>
+<p><span class="math">\(\rho_{i,j}(r)\)</span> is the pair density function of atoms i and j.</p>
+<p><span class="math">\(\rho_{0}\)</span> is the  average number density of the system.</p>
+<p><span class="math">\(w_{i,j}\)</span> is the relative weighting of atom types i and j.</p>
+<p><span class="math">\(N\)</span> is the total number of atoms.</p>
+<p><span class="math">\(V\)</span> is the volume of the system.</p>
+<p><span class="math">\(n_{i,j}(r)\)</span> is the number of atoms i neighbouring j at a distance r.</p>
+<p><span class="math">\(v(r)\)</span> is the annulus volume at distance r and of thickness dr.</p>
+<p><span class="math">\(N_{i,j}\)</span> is the total number of atoms i and j in the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2703,174 +3681,69 @@ in the system.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
 </li>
-<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all atoms type.</p>
+<li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
-<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+important in order to get a reasonable and plausible modal.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
+total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
-<li><dl class="first docutils">
-<dt>coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are</dt>
-<dd><p class="first">atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
-<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
-<ol class="last arabic simple">
-<li>the neighbouring atom type.</li>
-<li>the lower limit of the coordination shell.</li>
-<li>the upper limit of the coordination shell.</li>
-<li>the minimum number of neighbours in the shell.</li>
-<li>the maximum number of neighbours in the shell.</li>
-</ol>
-</dd>
-</dl>
+<li><p class="first">weighting (string): The elements weighting.</p>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.</p>
 </li>
-<li><p class="first">thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
-It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
-behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
-constraint becomes always free and useless.</p>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.typeDefinition">
-<tt class="descname">typeDefinition</tt><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get types definition.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.coordNumDefinition">
-<tt class="descname">coordNumDefinition</tt><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.coordNumDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get coordination number definition dictionary</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.listen">
-<tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>argument (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_type_definition">
-<tt class="descname">set_type_definition</tt><big>(</big><em>typeDefinition</em>, <em>coordNumDef=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_type_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the atoms typing definition.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. 
-It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
-</li>
-<li><p class="first">coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are
-atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
-<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
+<li><p class="first">adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.</p>
 <ol class="arabic simple">
-<li>the neighbouring atom type.</li>
-<li>the lower limit of the coordination shell.</li>
-<li>the upper limit of the coordination shell.</li>
-<li>the minimum number of neighbours in the shell.</li>
-<li>the maximum number of neighbours in the shell.</li>
+<li>The frequency in number of generated moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
 </ol>
+</li>
+<li><p class="first">windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</p>
+</li>
+<li><p class="first">limits (None, tuple, list): The distance limits to compute the histograms.
+If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
+If not None, a tuple of exactly two items where the first is of minimum distance or None 
+and the second is the maximum distance or None.</p>
 </li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
+<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
+untouched and the limits minimum and maximum won&#8217;t be checked.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairCorrelationConstraints</span> <span class="kn">import</span> <span class="n">PairCorrelationConstraint</span>
 
-<dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_coordination_number_definition">
-<tt class="descname">set_coordination_number_definition</tt><big>(</big><em>coordNumDef</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.set_coordination_number_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the coordination number definition.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">coordNumDef (None, dict): The coordination number definition. It must be a dictionary where keys are
-atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set by set_type_definition method.</p>
-<p>Every key value is a list of definitions. Every definition is a tuple or list of 5 items.</p>
-<ol class="arabic simple">
-<li>the neighbouring atom type.</li>
-<li>the lower limit of the coordination shell.</li>
-<li>the upper limit of the coordination shell.</li>
-<li>the minimum number of neighbours in the shell.</li>
-<li>the maximum number of neighbours in the shell.</li>
-</ol>
-<div class="highlight-python"><div class="highlight"><pre>e.g. {&quot;H&quot;:  [ (&#39;C&#39;,1.,2.,3,3), (&#39;H&#39;,2.,4.5,5,6), (&#39;H&#39;,3.5, 5,6,7), ...], &quot;O&quot;: ... }      
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">PCC</span> <span class="o">=</span> <span class="n">PairCorrelationConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PCC</span><span class="p">)</span>
 </pre></div>
 </div>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
-<div class="math">
-\[SD = \sum \limits_{i}^{A} \sum \limits_{s}^{S} 
-(D_{i,s})^{2}  \]\[\begin{split}D_{i,s}=\begin{cases}
-  n_{i,s}-N_{min,i,s}, &amp; \text{if $n_{i,s}&lt;N_{min,i,s}$}.\\
-  n_{i,s}-N_{max,i,s}, &amp; \text{if $n_{i,s}&gt;N_{max,i,s}$}.\\
-  0                  , &amp; \text{if $`N_{min,i,s}&lt;=n_{i,s}&lt;=N_{max,i,s}$}
-\end{cases}\end{split}\]</div>
-<p>Where:</p>
-<p><span class="math">\(A\)</span>           is the total number of atoms in the system.</p>
-<p><span class="math">\(S\)</span>           is the total number of shells defined for atom i.</p>
-<p><span class="math">\(D_{i,s}\)</span>     is the deviations of the coordination number of atom i in shell s.</p>
-<p><span class="math">\(n_{i,s}\)</span>     is the number of neighbours of atom i in shell s.</p>
-<p><span class="math">\(N_{min,i,s}\)</span> is the defined minimum number of neighbours around atom i in shell s.</p>
-<p><span class="math">\(N_{max,i,s}\)</span> is the defined maximum number of neighbours around atom i in shell s.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.get_constraint_value">
-<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets squared deviation per shell definition</p>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value">
+<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.</li>
+<li>PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.</li>
 </ol>
 </td>
 </tr>
@@ -2879,14 +3752,14 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_data">
-<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute data and update engine constraintsData dictionary.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_before_move">
-<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move">
+<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2902,8 +3775,8 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_after_move">
-<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move">
+<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2920,9 +3793,541 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.accept_move">
-<tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept move.</p>
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair correlation constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn.
+If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
+<li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
+<li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not</li>
+<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
+<li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes): The matplotlib axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Constraints.StructureFactorConstraints">
+<span id="structurefactorconstraints"></span><h2>StructureFactorConstraints<a class="headerlink" href="#module-fullrmc.Constraints.StructureFactorConstraints" title="Permalink to this headline">¶</a></h2>
+<p>StructureFactorConstraints contains classes for all constraints related experimental static structure factor functions.</p>
+<p class="graphviz">
+<img src="_images/inheritance-6c272b1698faf9ae6a5e904a76bfd00facd44ff7.png" alt="Inheritance diagram of fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritancecc47322566" class="inheritance"/>
+<map id="inheritancecc47322566" name="inheritancecc47322566">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="It controls the Structure Factor noted as S(Q) and also called" alt="" coords="340,5,511,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="The Reduced Structure Factor that we will also note S(Q) " alt="" coords="559,5,781,31"/>
+</map>
+</p>
+<dl class="class">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</tt><tt class="descname">StructureFactorConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
+<p>It controls the Structure Factor noted as S(Q) and also called
+total-scattering structure function or Static Structure Factor. 
+S(Q) is a dimensionless quantity and the normalization is such 
+that the average value, <span class="math">\(&lt;S(Q)&gt;=1\)</span>.</p>
+<p>It is worth mentioning that S(Q) is nothing other than the normalized and 
+corrected diffraction pattern from all experimental artefacts powder.</p>
+<p>The computation of S(Q) is done through an inverse Sine Fourier transform  
+of the computed pair distribution function noted as G(r).</p>
+<div class="math">
+\[S(Q) = 1+ \frac{1}{Q} \int_{0}^{\infty} G(r) sin(Qr) dr\]</div>
+<p>From an atomistic model and histogram point of view, G(r) is computed as
+the following:</p>
+<div class="math">
+\[G(r) = 4 \pi r (\rho_{r} - \rho_{0})
+     = 4 \pi \rho_{0} r (g(r)-1) 
+     = \frac{R(r)}{r} - 4 \pi \rho_{0}\]</div>
+<p>g(r) is calculated after binning all pair atomic distances into a 
+weighted histograms as the following:</p>
+<div class="math">
+\[g(r) = \sum \limits_{i,j}^{N} w_{i,j} \frac{\rho_{i,j}(r)}{\rho_{0}} 
+     = \sum \limits_{i,j}^{N} w_{i,j} \frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} \]</div>
+<p>Where:</p>
+<p><span class="math">\(Q\)</span> is the momentum transfer.</p>
+<p><span class="math">\(r\)</span> is the distance between two atoms.</p>
+<p><span class="math">\(\rho_{i,j}(r)\)</span> is the pair density function of atoms i and j.</p>
+<p><span class="math">\(\rho_{0}\)</span> is the  average number density of the system.</p>
+<p><span class="math">\(w_{i,j}\)</span> is the relative weighting of atom types i and j.</p>
+<p><span class="math">\(R(r)\)</span> is the radial distribution function (rdf).</p>
+<p><span class="math">\(N\)</span> is the total number of atoms.</p>
+<p><span class="math">\(V\)</span> is the volume of the system.</p>
+<p><span class="math">\(n_{i,j}(r)\)</span> is the number of atoms i neighbouring j at a distance r.</p>
+<p><span class="math">\(v(r)\)</span> is the annulus volume at distance r and of thickness dr.</p>
+<p><span class="math">\(N_{i,j}\)</span> is the total number of atoms i and j in the system.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
+</li>
+<li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
+</li>
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+important in order to get a reasonable and plausible modal.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
+total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
+</li>
+<li><p class="first">weighting (string): The elements weighting.</p>
+</li>
+<li><p class="first">rmin (None, number): The minimum distance value to compute G(r) histogram.
+If None is given, rmin is computed as <span class="math">\(2 \pi / Q_{max}\)</span>.</p>
+</li>
+<li><p class="first">rmax (None, number): The maximum distance value to compute G(r) histogram.
+If None is given, rmax is computed as <span class="math">\(2 \pi / dQ\)</span>.</p>
+</li>
+<li><p class="first">dr (None, number): The distance bin value to compute G(r) histogram.
+If None is given, bin is computed as <span class="math">\(2 \pi / (Q_{max}-Q_{min})\)</span>.</p>
+</li>
+<li><p class="first">scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.</p>
+</li>
+<li><p class="first">adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+It must be a list of exactly three entries.</p>
+<ol class="arabic simple">
+<li>The frequency in number of generated moves of finding the best scale factor. 
+If 0 frequency is given, it means that the scale factor is fixed.</li>
+<li>The minimum allowed scale factor value.</li>
+<li>The maximum allowed scale factor value.</li>
+</ol>
+</li>
+<li><p class="first">windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</p>
+</li>
+<li><p class="first">limits (None, tuple, list): The distance limits to compute the histograms.
+If None, the limits will be automatically set the the min and max distance of the experimental data.
+If not None, a tuple of exactly two items where the first is the minimum distance or None 
+and the second is the maximum distance or None.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
+untouched and the limits minimum and maximum won&#8217;t be checked.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.StructureFactorConstraints</span> <span class="kn">import</span> <span class="n">StructureFactorConstraint</span>
+
+<span class="c"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c"># create and add constraint</span>
+<span class="n">SFC</span> <span class="o">=</span> <span class="n">StructureFactorConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s">&quot;sq.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">SFC</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.rmin">
+<tt class="descname">rmin</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the given histogram minimum distance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.rmax">
+<tt class="descname">rmax</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the given histogram maximum distance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dr">
+<tt class="descname">dr</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the given histogram bin size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.bin">
+<tt class="descname">bin</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the computed histogram distance bin size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.minimumDistance">
+<tt class="descname">minimumDistance</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.minimumDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the computed histogram minimum distance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.maximumDistance">
+<tt class="descname">maximumDistance</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.maximumDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the computed histogram maximum distance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmin">
+<tt class="descname">qmin</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the experimental data reciprocal distances minimum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmax">
+<tt class="descname">qmax</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the experimental data reciprocal distances maximum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.histogramSize">
+<tt class="descname">histogramSize</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.histogramSize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the histogram size</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalRecDist">
+<tt class="descname">experimentalRecDist</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalRecDist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the experimental reciprocal distances array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.shellCenters">
+<tt class="descname">shellCenters</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.shellCenters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the shells center array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.shellVolumes">
+<tt class="descname">shellVolumes</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.shellVolumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the shells volume array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalSF">
+<tt class="descname">experimentalSF</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalSF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the experimental Structure Factor or S(q)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.elementsPairs">
+<tt class="descname">elementsPairs</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.elementsPairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elements pairs</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.weightingScheme">
+<tt class="descname">weightingScheme</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.weightingScheme" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elements weighting scheme.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.windowFunction">
+<tt class="descname">windowFunction</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.windowFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the window function.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.limits">
+<tt class="descname">limits</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>The histogram computation limits.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.Gr2SqMatrix">
+<tt class="descname">Gr2SqMatrix</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.Gr2SqMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get G(r) to S(q) transformation matrix.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.listen">
+<tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_rmin">
+<tt class="descname">set_rmin</tt><big>(</big><em>rmin</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_rmin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set rmin value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rmin (None, number): The minimum distance value to compute G(r) histogram.
+If None is given, rmin is computed as <span class="math">\(2 \pi / Q_{max}\)</span>.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_rmax">
+<tt class="descname">set_rmax</tt><big>(</big><em>rmax</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_rmax" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set rmax value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rmax (None, number): The maximum distance value to compute G(r) histogram.
+If None is given, rmax is computed as <span class="math">\(2 \pi / dQ\)</span>.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_dr">
+<tt class="descname">set_dr</tt><big>(</big><em>dr</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_dr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set dr value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dr (None, number): The distance bin value to compute G(r) histogram.
+If None is given, bin is computed as <span class="math">\(2 \pi / (Q_{max}-Q_{min})\)</span>.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_weighting">
+<tt class="descname">set_weighting</tt><big>(</big><em>weighting</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_weighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets elements weighting. It must a valid entry of pdbParser atoms database</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>weighting (string): The elements weighting.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_window_function">
+<tt class="descname">set_window_function</tt><big>(</big><em>windowFunction</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_window_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the window function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
+of the system prior to comparing it with the experimental data. In general, the experimental pair
+distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
+by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
+used to best imitate the numerical artefacts in the experimental data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_experimental_data">
+<tt class="descname">set_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_experimental_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the constraint&#8217;s experimental data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_limits">
+<tt class="descname">set_limits</tt><big>(</big><em>limits</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the reciprocal distance limits (qmin, qmax).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>limits (None, tuple, list): The distance limits to compute the histograms and compute with the experimental data.
+If None, the limits will be automatically set the the min and max reciprocal distance recorded in the experimental data.
+If not None, a tuple of minimum reciprocal distance (qmin) or None and maximum reciprocal distance (qmax) or None should be given.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_data_weights">
+<tt class="descname">set_data_weights</tt><big>(</big><em>dataWeights</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_data_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set experimental data points weight.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<ol class="arabic">
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+important in order to get a reasonable and plausible modal.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
+total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
+</li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_squared_deviations">
+<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s squaredDeviations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.check_experimental_data">
+<tt class="descname">check_experimental_data</tt><big>(</big><em>experimentalData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether experimental data is correct.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>experimentalData (object): The experimental data to check.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): Whether it is correct or not.</li>
+<li>message (str): Checking message that explains whats&#8217;s wrong with the given data</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_squared_deviations">
+<tt class="descname">compute_squared_deviations</tt><big>(</big><em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
+<div class="math">
+\[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
+<p>Where:</p>
+<p><span class="math">\(N\)</span> is the total number of experimental data points.</p>
+<p><span class="math">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1 when dataWeights is set to None.</p>
+<p><span class="math">\(Y(X_{i})\)</span> is the experimental data point <span class="math">\(X_{i}\)</span>.</p>
+<p><span class="math">\(F(X_{i})\)</span> is the computed from the model data  <span class="math">\(X_{i}\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.get_constraint_value">
+<tt class="descname">get_constraint_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.get_constraint_original_value">
+<tt class="descname">get_constraint_original_value</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.get_constraint_original_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Pair Distribution Functions (PDFs).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data">
+<tt class="descname">compute_data</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move">
+<tt class="descname">compute_before_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2937,9 +4342,27 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.reject_move">
-<tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move.</p>
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_after_move">
+<tt class="descname">compute_after_move</tt><big>(</big><em>indexes</em>, <em>movedBoxCoordinates</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint after move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_move">
+<tt class="descname">accept_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2953,6 +4376,79 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move">
+<tt class="descname">reject_move</tt><big>(</big><em>indexes</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot">
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot structure factor constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn.
+If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
+<li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
+<li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not</li>
+<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
+<li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes): The matplotlib axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</tt><tt class="descname">ReducedStructureFactorConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint</span></tt></a></p>
+<p>The Reduced Structure Factor that we will also note S(Q) 
+is exactly the same quantity as the Structure Factor but with 
+the slight difference that it is normalized to 0 rather than 1 
+and therefore <span class="math">\(&lt;S(Q)&gt;=0\)</span>.</p>
+<p>The computation of S(Q) is done through a Sine inverse Fourier transform  
+of the computed pair distribution function noted as G(r).</p>
+<div class="math">
+\[S(Q) = \frac{1}{Q} \int_{0}^{\infty} G(r) sin(Qr) dr\]</div>
+<p>The only reason why the Reduced Structure Factor is implemented, is because
+many experimental data are treated in this form. And it is just convenient not
+to manipulate the experimental data every time.</p>
 </dd></dl>
 
 </div>
@@ -2972,9 +4468,10 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 <li><a class="reference internal" href="#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.DistanceConstraints">DistanceConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
-<li><a class="reference internal" href="#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
-<li><a class="reference internal" href="#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.CoordinationNumberConstraints">CoordinationNumberConstraints</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.StructureFactorConstraints">StructureFactorConstraints</a></li>
 </ul>
 </li>
 </ul>
@@ -3019,7 +4516,7 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

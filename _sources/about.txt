@@ -3,7 +3,8 @@
 
 History
 =======
-This project has started in 2015 as a consequence of the incapability 
+FUndamental Library Language for Reverse Monte Carlo or fullrmc  
+project has started in 2015 as a consequence of the incapability 
 of modelling complex atomic systems' structure. Since fullrmc was official
 published a first official release 0.2.0 was made. Later, successive releases 
 were made as needed.

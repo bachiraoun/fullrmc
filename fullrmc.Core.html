@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.3.3',
+        VERSION:     '0.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />  
     </head>
@@ -102,7 +102,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -224,6 +224,29 @@ Otherwise all the dictionary is returned.</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.rebin">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">rebin</tt><big>(</big><em>data</em>, <em>bin=0.05</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.rebin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Re-bin 2D data of shape (N,2).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>data (numpy.ndarray): the (N,2) shape data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>X (numpy.ndarray): the first column re-binned.</li>
+<li>Y (numpy.ndarray): the second column re-binned.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.get_random_perpendicular_vector">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_random_perpendicular_vector</tt><big>(</big><em>vector</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_random_perpendicular_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get random normalized perpendicular vector to a given vector.</p>
@@ -332,6 +355,24 @@ The array itself will be rotated and not a copy of it.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.get_orientation_matrix">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_orientation_matrix</tt><big>(</big><em>arrayAxis</em>, <em>alignToAxis</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_orientation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the rotation matrix that aligns arrayAxis to alignToAxis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.</li>
+<li>alignToAxis (list, tuple, numpy.ndarray): The axis to align to.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.orient">
 <tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">orient</tt><big>(</big><em>xyzArray</em>, <em>arrayAxis</em>, <em>alignToAxis</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.orient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis to alignToAXis.</p>
@@ -343,6 +384,59 @@ The array itself will be rotated and not a copy of it.</p>
 <li>xyzArray (numpy.ndarray): the xyz (N,3) array to rotate.</li>
 <li>arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.</li>
 <li>alignToAxis (list, tuple, numpy.ndarray): The axis to align to.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.get_superposition_transformation">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">get_superposition_transformation</tt><big>(</big><em>refArray</em>, <em>array</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.get_superposition_transformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the rotation matrix and the translations that minimizes the root mean 
+square deviation between and array of vectors and a reference array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>refArray (numpy.ndarray): the NX3 reference array to superpose to.</li>
+<li>array (numpy.ndarray): the NX3 array to calculate the transformation of.</li>
+<li>check (boolean): whether to check arguments before generating points.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rotationMatrix (numpy.ndarray): the 3X3 rotation tensor.</li>
+<li>refArrayCOM (numpy.ndarray): the 1X3 vector center of mass of refArray.</li>
+<li>arrayCOM (numpy.ndarray): the 1X3 vector center of mass of array.</li>
+<li>rms (number)</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.superpose_array">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">superpose_array</tt><big>(</big><em>refArray</em>, <em>array</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.superpose_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the rotation matrix and the translations that minimizes the root mean 
+square deviation between and array of vectors and a reference array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>refArray (numpy.ndarray): the NX3 reference array to superpose to.</li>
+<li>array (numpy.ndarray): the NX3 array to calculate the transformation of.</li>
+<li>check (boolean): whether to check arguments before generating points.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>superposedArray (numpy.ndarray): the NX3 array to superposed array.</li>
 </ol>
 </td>
 </tr>
@@ -3621,6 +3715,16 @@ It contains the following methods.</p>
 </table>
 </dd>
 </dl>
+<dl class="function">
+<dt id="fullrmc.Core.angles.full_angles">
+<tt class="descclassname">fullrmc.Core.angles.</tt><tt class="descname">full_angles</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.angles.full_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.angles.single_angles">
+<tt class="descclassname">fullrmc.Core.angles.</tt><tt class="descname">single_angles</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.angles.single_angles" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 <div class="section" id="module-fullrmc.Core.bonds">
 <span id="bonds"></span><h2>bonds<a class="headerlink" href="#module-fullrmc.Core.bonds" title="Permalink to this headline">¶</a></h2>
@@ -4165,21 +4269,6 @@ It contains the following methods.</p>
 </table>
 </dd>
 </dl>
-<dl class="function">
-<dt id="fullrmc.Core.boundary_conditions_collection.box_coordinates_real_distances">
-<tt class="descclassname">fullrmc.Core.boundary_conditions_collection.</tt><tt class="descname">box_coordinates_real_distances</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.boundary_conditions_collection.box_coordinates_real_distances" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fullrmc.Core.boundary_conditions_collection.get_reciprocal_basis">
-<tt class="descclassname">fullrmc.Core.boundary_conditions_collection.</tt><tt class="descname">get_reciprocal_basis</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.boundary_conditions_collection.get_reciprocal_basis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fullrmc.Core.boundary_conditions_collection.transform_coordinates">
-<tt class="descclassname">fullrmc.Core.boundary_conditions_collection.</tt><tt class="descname">transform_coordinates</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.boundary_conditions_collection.transform_coordinates" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 </div>
 
@@ -4258,7 +4347,7 @@ It contains the following methods.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.3.3, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

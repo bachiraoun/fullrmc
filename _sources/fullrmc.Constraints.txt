@@ -1,9 +1,15 @@
+.. automodule:: fullrmc.Core.Constraint
+    :noindex:
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 fullrmc.Constraints package
 ===========================
-
+ 
 AngleConstraints
 ----------------
-
 .. automodule:: fullrmc.Constraints.AngleConstraints
     :members:
     :undoc-members:
@@ -11,7 +17,6 @@ AngleConstraints
 
 BondConstraints
 ---------------
-
 .. automodule:: fullrmc.Constraints.BondConstraints
     :members:
     :undoc-members:
@@ -19,7 +24,6 @@ BondConstraints
 
 DistanceConstraints
 -------------------
-
 .. automodule:: fullrmc.Constraints.DistanceConstraints
     :members:
     :undoc-members:
@@ -27,32 +31,35 @@ DistanceConstraints
 
 ImproperAngleConstraints
 ------------------------
-
 .. automodule:: fullrmc.Constraints.ImproperAngleConstraints
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-PairCorrelationConstraints
----------------------------
-
-.. automodule:: fullrmc.Constraints.PairCorrelationConstraints
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-PairDistributionConstraints
----------------------------
-
-.. automodule:: fullrmc.Constraints.PairDistributionConstraints
     :members:
     :undoc-members:
     :show-inheritance:
 
 CoordinationNumberConstraints
 -----------------------------
-
 .. automodule:: fullrmc.Constraints.CoordinationNumberConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+PairDistributionConstraints
+---------------------------
+.. automodule:: fullrmc.Constraints.PairDistributionConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+PairCorrelationConstraints
+---------------------------
+.. automodule:: fullrmc.Constraints.PairCorrelationConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+StructureFactorConstraints
+--------------------------
+.. automodule:: fullrmc.Constraints.StructureFactorConstraints
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,0 +1,6 @@
+<map id="inheritancecc47322566" name="inheritancecc47322566">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="It controls the total Static Structure Factor noted as S(Q) and also called" alt="" coords="340,5,511,31"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="The Reduced Structure Factor R(Q) is basically the same quantity as" alt="" coords="559,5,781,31"/>
+</map>

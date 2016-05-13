@@ -1,0 +1,78 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/refine/
+
+Description
+===========
+A box of water molecules is used to demonstrate how to use fitting explore
+mode. This example was used to generate the `refine video example 
+<https://youtu.be/tFYHOD00j_o?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
+as seen in the online documentation. When running this example a trajectory
+file will be generated where all moved are saved. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+
+Files
+=====
+#. system.pdb: The initial configuration input file
+#. run.py: The script file used to run the simulation
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`BIASED ENGINE DEFINTION:` 
+
+fullrmc Engine class is overloaded. This is an advanced new engine 
+run method definition. It's defined especially for this example. It
+must not be used in any other real scientific fitting.
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed inter-molecular distance constraint. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define refine to run the fitting engine. This function finishs running
+the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+   #. explore: Groups are using engine set_groups_as_molecules method.
+      Then only first group is kept in the engine keeping all water 
+      molecules fixed. A collection :class:`.MoveGeneratorCollector` 
+      of move generators is created and set to the remaining group. 
+      :class:`.RotationGenerator`  and :class:`.TranslationGenerator` 
+      are added to this collection. In order to perform any none
+      traditional fitting mode, :class:`RecursiveGroupSelector` must be 
+      used. In this case :class:`RandomSelector` is passed to the 
+      recursive selector with refine flag set to True.      
+
+
+:underline:`RUN SIMULATION:` 
+
+refine function is called.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with otherParams 
+argument set to ['mol new trajectory.xyz', 'mol modstyle 0 1 VDW'] because
+only the exploring trajectory is saved and it needs to be loaded as new mol
+in VMD.
+
+
+
+
+
+
+
+
+

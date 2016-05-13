@@ -1,0 +1,85 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/MLSelection/
+
+Description
+===========
+A cubic box of 729 tetrahydrofuran molecules which makes a total of 9477 atoms is used 
+to demonstrate that reinforcement machine learning can improve ratio of accepted moves
+by smartly selecting groups. This example was used to generate the following
+`reinforcement machine learning selection images 
+<fullrmc.Selectors.html#module-fullrmc.Selectors.RandomSelectors>`_.
+It is very interesting to note that by zooming at the very beginning of the simulation,
+a warming up steps are needed for the :class:`.SmartRandomSelector` to learn the system and 
+therefore increase the number of accepted moves by selecting the right groups.
+
+Files
+=====
+#. thf.pdb: The initial configuration input file.
+#. run.py: The script file used to run the simulation.
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`SHUT DOWN LOGGING`
+
+Shut down all standard output logging. Set the level of logging to the maximum
+but force 'move accepted' logging file flag to be always True.
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed constraints.
+
+
+:underline:`CREATE MOVES GENERATORS:` 
+
+Set :class:`.TranslationGenerator` to all groups but 75% of those translation
+generators are given a realistic maximum translation amplitude of :math:`0.3 \AA`
+while the remaining 25% are given an unrealistic maximum amplitude of
+:math:`10 \AA` that will lead to a lot of unaccepted moves. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the normal and machine learning enabled selection tests. 
+All of the following functions finish running the engine using Engine.run method.
+   #. normal_run: Running engine with a normal and traditional random selector 
+      :class:`.RandomSelector`.
+   #. ML_run: Running engine with a reinforcement machine learning enabled
+      random selector :class:`.SmartRandomSelector`.  
+
+
+:underline:`RUN SIMULATION:` 
+
+Run both normal_run and ML_run functions. Then flush the LOGGER to make sure
+everything is written to logging files.
+
+
+:underline:`READ LOGGING FILES DATA:`
+
+Read logged data and save the ratio of accepted moves to data files.
+
+
+:underline:`PLOT LOGGING DATA:`
+
+Plot the results.
+
+
+
+
+
+
+
+
+
+
+ 

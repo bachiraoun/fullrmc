@@ -1,0 +1,102 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/atomicNiTi/
+
+Description
+===========
+A box of 3375 Nickel atoms and 3375 Titanium which makes a total of 6750 arranged
+in a body centred cubic crystal of length :math:`3.05 \AA`. x-rays pair distribution 
+function and Atomic Structure Factor are used simultaneously to build and fit a model.
+In this example, it was necessary to use :class:`.SwapPositionsGenerator` in order to
+fit long ranger ordering. This example was used to generate the 
+`swap video <https://youtu.be/yTnCAw1DK3Q?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
+as seen in the online documentation. 
+
+Files
+=====
+#. system.pdb: The initial configuration input file.
+#. experimental.gr: The x-rays experimental pair distribution function data.
+#. experimental.fq: The x-rays experimental reduced structure factor data.
+#. run.py: The script file used to run the simulation.
+#. plot.py: The script file to plot the last saved engine state of
+   :class:`.PairDistributionConstraint` and
+   :class:`.ReducedStructureFactorConstraint` constraints data.
+#. visualize.py: The script file to visualize the last save configuration
+   using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. if installed.
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Check if engine already saved on disk. In the affirmative load it to continue
+fitting from last saved configuration. Otherwise, build the engine and the needed
+constraints. In this particular example, 'experimental.fq' has no regular bins. 
+Therefore, rebinning it needs to be rebinned using 'fullrmc.Core.Collection.rebin'
+function. Even though engine contains :class:`.AtomicCoordinationNumberConstraint`
+we decided to discard this constraint upon fitting by using set_used method and 
+assigned 'used' flag to False.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine. All of the following functions finish 
+running the engine using Engine.run method.
+   #. run_normal: used set_groups(None) which is equivalent to creating
+      a group per atom. Here the engine runs traditional RMC with 
+      random selection of groups using :class:`.RandomSelector` and random
+      atomic translations using :class:`.TranslationGenerator` move
+      generator.
+   #. run_swap: used set_groups(None) which is equivalent to creating
+      a group per atom. Create two swapping lists. THe first one containing
+      only all Nickel atoms indexes and the second only Titanium atoms indexes.
+      Create two :class:`.SwapPositionsGenerator` for swapping Nickel atoms with
+      Titanium and the other the opposite. Loop over all engine's groups, check
+      whether group's atom is Nickel or Titanium and assign it respectively
+      :class:`.SwapPositionsGenerator` to Titanium atoms and another 
+      :class:`.SwapPositionsGenerator` to Nickel atoms.
+      
+      
+:underline:`RUN SIMULATION:` 
+
+run_normal several times with different number of steps and saving frequencies.
+This sampling is not needed but it was done as such for the purpose of saving
+different pdb file snapshots at different stages of the fitting. At the end
+run_swap is called to fit long range order correlations.
+
+
+:underline:`PLOT PDF CONSTRAINT:` 
+
+Plotting simultaneously :class:`.PairDistributionConstraint` and
+:class:`.ReducedStructureFactorConstraint` data after fitting.
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

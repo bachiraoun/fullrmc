@@ -1,0 +1,73 @@
+.. role:: underline
+   :class: underline
+     
+Relative path
+=============
+../fullrmc/Examples/docking/
+
+Description
+===========
+Here a single molecule is used to demonstrate how to use rotate and translate  
+a group towards another. This example was used to generate the `docking video  
+example <https://youtu.be/Ik0RSQT4DzQ?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
+as seen in the online documentation. When running this example several files
+will be generated where all moved are saved. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+   
+Files
+=====
+#. system.pdb: The single constituted of two molecules
+#. run.py: The script file used to run the simulation
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed inter-molecular distance constraints. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+   #. move_towards: Groups are using engine set_groups_as_molecules method.
+      Then only first group is kept in the engine keeping the other as fixed.
+      A collection of move generators :class:`.MoveGeneratorCollector` is 
+      created and set to the remaining group. :class:`.RotationGenerator` 
+      and :class:`.TranslationTowardsCenterGenerator` are added to this collection.
+
+
+:underline:`RUN SIMULATION:` 
+
+move_towards function is called.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with all saved 
+four trajectories "trajectory.xyz".
+
+
+
+
+
+
+
+
+
+
+

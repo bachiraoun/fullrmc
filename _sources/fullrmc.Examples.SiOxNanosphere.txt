@@ -1,0 +1,83 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/SiOxNanosphere/
+
+Description
+===========
+Isolated Silicon oxide spherical nano-particle is create using 2315 silicon atom  
+and 1094 oxygen atom dispersed in the outer layers at different concentration 
+ratios that decreases with the depth of the nano-particle.
+
+Files
+=====
+#. SiOx.pdb: The initial configuration input file.
+#. SiOx.gr: The x-rays experimental pair distribution function data.
+#. run.py: The script file used to run the simulation.
+#. plot.py: The script file to plot the last saved engine state of
+   :class:`.PairDistributionConstraint` constraint data.
+#. visualize.py: The script file to visualize the last save configuration
+   using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. if installed.
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Check if engine already saved on disk. In the affirmative load it to continue
+fitting from last saved configuration. Otherwise, build the engine and the needed
+constraints. Starting from fullrmc version 1.0.0, fitting non-periodic boundary
+conditions is possible. This is done by computing a shape function that corrects
+for density fluctuation and void at large distances. Here, set_shape_function_parameters
+method is used to fit a shape function :class:`.ShapeFunction` upon computing the 
+experimental constraint :class:`.PairDistributionConstraint`.  
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine. All of the following functions finish 
+running the engine using Engine.run method.
+   #. run_normal_rmc: Runs a normal traditional RMC fit.
+   #. run_explore: Sets :class:`.RecursiveGroupSelector` group selector and runs
+      explore mode.
+   #. expand_nanoparticule: Sets :class:`.DirectionalOrderSelector` group selector
+      and wraps it with :class:`.RecursiveGroupSelector` to allow different fitting
+      modes. :class:`.DirectionalOrderSelector` is initialized with both expand and 
+      adjustMoveGenerators set to True. This means that it will automatically select
+      groups starting from outer layers to the deapest ones and will automatically 
+      set and adjust groups move generators to a collection of :class:`.randomRotation` 
+      and :class:`.TranslationTowardsCenterGenerator` using 
+      :class:`.MoveGeneratorCollector`.
+ 
+ 
+:underline:`RUN SIMULATION:` 
+
+run the different functions to fit the system.
+
+
+:underline:`PLOT PDF CONSTRAINT:` 
+
+Plotting :class:`.PairDistributionConstraint` data after fitting.
+
+   
+   
+      
+      
+
+
+
+
+
+
+
+
+
+
+

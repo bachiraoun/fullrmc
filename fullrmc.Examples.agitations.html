@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Relative path &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="relative-path">
+<h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
+<p>../fullrmc/Examples/agitations/</p>
+</div>
+<div class="section" id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>A box of water molecules is used to demonstrate how to use agitation move
+generators. This example was used to generate the <a class="reference external" href="https://youtu.be/qTJux9kZCOo?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco">agitation video example</a>
+as seen in the online documentation. When running this example several files
+will be generated where all moved are saved. If
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. is installed, the trajectory
+of all moves will be automatically visualized.</p>
+</div>
+<div class="section" id="files">
+<h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li>createWaterBox.py: The script used to create a box of <span class="math">\(10 \AA^{3}\)</span> in size</li>
+<li>waterBox.pdb: The water box system</li>
+<li>run.py: The script file used to run the simulation</li>
+</ol>
+</div>
+<div class="section" id="run-py-explained">
+<h1>run.py explained<a class="headerlink" href="#run-py-explained" title="Permalink to this headline">¶</a></h1>
+<p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
+<p>All useful packages, modules and definitions are imported.</p>
+<p><span class="underline">SHUT DOWN LOGGING:</span></p>
+<p>Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging.</p>
+<p><span class="underline">CREATE ENGINE:</span></p>
+<p>Create the engine and the needed bonds and bond-angles constraints.</p>
+<p><span class="underline">DIFFERENT RUNS:</span></p>
+<p>Define functions to run fitting engine. All of the following functions finish
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>agitate_bonds: Groups are created by O-H pair of atoms using their indexes.
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a> is assigned to each group. A
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make sure selecting every group.
+Number of engine steps is set to 250 * number of groups so each O-H group
+will be agitated 250 times.</li>
+<li>agitate_angles: Groups are created by O-H-H triplets of atoms using
+engine set_groups_as_molecules method. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a>
+is assigned to each group. A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make
+sure selecting every group. Number of engine steps is set to 250 * number
+of groups so each O-H-H group will be agitated 250 times.</li>
+<li>agitate_both: Groups are created by O-H-H triplets of atoms using
+engine set_groups_as_molecules method, then groups of O-H pair of
+atoms are also created and added to the engine.
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a> is assigned to each group.
+A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make sure selecting every group.
+Number of engine steps is set to 250 * number of groups so each
+O-H-H and O-H group will be agitated 250 times.</li>
+</ol>
+</div></blockquote>
+<p><span class="underline">RUN SIMULATION:</span></p>
+<p>All three functions are called consecutively.</p>
+<p><span class="underline">VISUALIZE SIMULATION:</span></p>
+<p>Reset initial pdb to engine instance. Visualize engine along with all saved
+four trajectories &#8220;along0.xyz&#8221;, &#8220;along1.xyz&#8221;, &#8220;along2.xyz&#8221;, &#8220;random.xyz&#8221;.</p>
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Relative path</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
+</ul>
+
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

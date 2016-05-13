@@ -1,0 +1,82 @@
+Relative path
+=============
+../fullrmc/Examples/benchmark/
+
+Description
+===========
+A box of 719 molecules of tetrahydrofuran of a total of 9347 atoms
+is used to benchmark several functionalities of fullrmc. This example 
+is very useful to test the performance of fullrmc. Benchmarking might 
+take several hours. At the end of this example benchmark data will
+be saved and two matplotlib figures will be plotted.
+
+Files
+=====
+#. experimental.gr: x-rays pair distribution function data of tetrahydrofuran liquid
+#. system.pdb: The initial configuration input file
+#. run.py: The script file used to run the simulation
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and all of :class:`PairDistributionConstraint`, 
+:class:`InterMolecularDistanceConstraint`, :class:`BondConstraint`, 
+:class:`BondsAngleConstraint` and :class:`ImproperAngleConstraint` constraints.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine or to visualize saved benchmarks. 
+   #. run: Allows multiple arguments and sets the engine to run a specific 
+      benchmark.
+   #. benchmark_constraints: run and save benchmarks on constraints using 
+      different group sizes.
+   #. benchmark_nsteps: run and save benchmarks on number of steps using a  
+      fixed group size and set of constraints.
+   #. load_and_plot_constraints_benchmark: load and plot saved constraints benchmarks.
+   #. load_and_plot_steps_benchmark: load and plot saved number of steps benchmarks.
+
+   
+:underline:`RUN SIMULATION:` 
+
+benchmark_constraints and benchmark_nsteps functions are called and benchmarks are
+shown at the end
+
+
+:underline:`PLOT BENCHMARKS:` 
+
+If uncommented, load_and_plot_steps_benchmark and load_and_plot_constraints_benchmark 
+functions will be called.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,142 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/molecularTHF/
+
+Description
+===========
+A cubic  box of tetrahydrofuran molecules used to model liquid tetrahydrofuran battery
+electrolyte x-rays pair distribution function. In this example, it was necessary to use 
+many kinds of move generators in order to be able to converge. 
+:class:`.TranslationGenerator`, :class:`.TranslationAlongSymmetryAxisGenerator`, 
+:class:`.RotationGenerator`, :class:`.RotationAboutSymmetryAxisGenerator`, 
+:class:`.DistanceAgitationGenerator`, :class:`.AngleAgitationGenerator`, and a
+collection of those using :class:`.MoveGeneratorCollector` are used at some point.
+Also, different type of selectors are used :class:`.RandomSelector`,
+:class:`.DefinedOrderSelector` and :class:`.RecursiveGroupSelector` with different
+fitting modes (recur, refine and explore). This example was used to generate the 
+`simulation video <https://youtu.be/untepXVc3BQ>`_  as seen in the online documentation. 
+
+
+Files
+=====
+#. create_pdb.py: Script used to create initial configuration.
+#. thf.pdb: The initial configuration input file.
+#. thf_pdf.exp: The x-rays experimental pair distribution function data.
+#. run.py: The script file used to run the simulation.
+#. plot.py: The script file to plot the last saved engine state of
+   :class:`.PairCorrelationConstraint` constraint data.
+#. multiplot.py: The script file to plot the last saved engine state of
+   :class:`.PairCorrelationConstraint` constraint data in three different
+   axes showing multiple zooming to data.
+#. visualize.py: The script file to visualize the last save configuration
+   using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. if installed.
+
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Check if engine already saved on disk. In the affirmative load it to continue
+fitting from last saved configuration. Otherwise, build the engine and the needed
+constraints. Also, in this example we decided to make it a bit more difficult and
+to fit a pair correlation function using :class:`.PairCorrelationConstraint` instead 
+of a pair distribution function. As 'thf_pdf.exp' is a pair distribution function data
+file, we used 'convert_Gr_to_gr' function to convert the latter to pair correlation
+function. Also it makes sense to neglect all initial 'N' negative data points, hence a 
+dataWeights array is created where all its values are equal to 1 except for the first 'N' 
+elements.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine. All of the following functions finish 
+running the engine using Engine.run method.
+   #. bonds_CH: Groups are created by C-H pair of atoms using their indexes.
+      :class:`.DistanceAgitationGenerator` is assigned to each group. A
+      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+      are set to True.
+   #. angles_HCH: Groups are created by C-H-H triplets of atoms using their indexes.
+      class:`.AngleAgitationGenerator` is assigned to each group. A
+      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+      are set to True.
+   #. atoms_type: Groups of single atoms are created using atom type. A
+      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+      are set to True.
+   #. atoms: set_groups_as_atoms method is used to creating a group per atom. A
+      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+      are set to True. 
+   #. about0: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.RotationAboutSymmetryAxisGenerator` with axis=0 is assigned to each group. 
+      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+      with the order of selection being the sorted groups indexes list computed in a such  
+      a way ordering groups from the further to the closest to the center of the 
+      simulation box. 
+   #. about1: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.RotationAboutSymmetryAxisGenerator` with axis=1 is assigned to each group. 
+      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+      with the order of selection being the sorted groups indexes list computed in a such  
+      a way ordering groups from the further to the closest to the center of the 
+      simulation box. 
+   #. about2: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.RotationAboutSymmetryAxisGenerator` with axis=2 is assigned to each group. 
+      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+      with the order of selection being the sorted groups indexes list computed in a such  
+      a way ordering groups from the further to the closest to the center of the 
+      simulation box. 
+   #. along0: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=0 is assigned to each 
+      group. :class:`.DefinedOrderSelector` wrapped with a 
+      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+      indexes list computed in a such a way ordering groups from the further to the 
+      closest to the center of the simulation box. 
+   #. along1: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=1 is assigned to each 
+      group. :class:`.DefinedOrderSelector` wrapped with a 
+      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+      indexes list computed in a such a way ordering groups from the further to the 
+      closest to the center of the simulation box. 
+   #. along2: set_groups_as_molecules method is used to create molecular groups.
+      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=2 is assigned to each 
+      group. :class:`.DefinedOrderSelector` wrapped with a 
+      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+      indexes list computed in a such a way ordering groups from the further to the 
+      closest to the center of the simulation box. 
+   #. molecules: set_groups_as_molecules method is used to create molecular groups. A 
+      collection :class:`.MoveGeneratorCollector` of move generators is created and set 
+      to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
+      added to this collection. :class:`.RecursiveGroupSelector` is used allowing to 
+      refine or explore fitting.
+   #. shrink: set_groups_as_molecules method is used to create molecular groups. A 
+      collection :class:`.MoveGeneratorCollector` of move generators is created and set 
+      to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
+      added to this collection. :class:`.DefinedOrderSelector` wrapped with a 
+      :class:`.RecursiveGroupSelector` with the order of selection being the sorted 
+      groups indexes list computed in a such a way ordering groups from the further to 
+      the closest to the center of the simulation box. New boundary condition is set
+      using set_boundary_conditions method.
+
+
+:underline:`RUN SIMULATION:` 
+
+run the different functions to fit the system.
+
+
+:underline:`PLOT PDF CONSTRAINT:` 
+
+Plotting :class:`.PairCorrelationConstraint` data after fitting.
+
+     
+
+
+
+
+

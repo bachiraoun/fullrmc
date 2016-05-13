@@ -1,0 +1,86 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/exploreCO2/
+
+Description
+===========
+A box of 3000 CO2 molecules which makes a total of 9000 atoms is used to fit 
+x-rays pair distribution function of supercritical CO2 gas under high pressure.
+If it wasn't for explore and refine fitting modes, creating a model is impossible  
+especially because of the peak at :math:`0.67 \AA`. This example was used to generate 
+the `explore CO2 video <https://youtu.be/xnG0wnEfbJ8?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
+as seen in the online documentation. 
+
+Files
+=====
+#. CO2.pdb: The initial configuration input file.
+#. Xrays.gr: The x-rays experimental pair distribution function data.
+#. run.py: The script file used to run the simulation.
+#. plot.py: The script file to plot the last saved engine state of
+   :class:`.PairDistributionConstraint` constraint data.
+#. multiplot.py: The script file to plot the last saved engine state 
+   :class:`.PairDistributionConstraint` constraint data in three different
+   axes just like in the video. 
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed constraints. :class:`.BondsAngleConstraint` 
+is forces O=C=O bond angle to be not more than degrees off by setting the
+limits to be between 170 and 180 degrees. Also all constraints used
+flag are set to True. Actually by default used flag is True, but here we
+wanted to demonstrate how to turn on or off a constraint at any time during 
+the fitting process.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+   #. run_atoms: used set_groups(None) which is equivalent to creating
+      a group per atom. Here the engine runs traditional RMC with 
+      random selection of groups using :class:`.RandomSelector` and random
+      atomic translations using :class:`.TranslationGenerator` move
+      generator.
+   #. run_molecules: Groups are created by molecules using engine
+      set_groups_as_molecules method. :class:`.TranslationGenerator` 
+      and :class:`.RotationGenerator` are collected and passed to a 
+      :class:`.MoveGeneratorCollector` and set to every and each group.
+      :class:`.RecursiveGroupSelector` to allow recurring selection and 
+      therefore enabling fitting modes such as 'recur', 'refine' and 'explore'  
+   #. run_recurring_atoms: Here also set_groups(None) is used which is equivalent 
+      to creating a group per atom. But :class:`.RandomSelector` is wrapped with
+      :class:`.RecursiveGroupSelector` to allow recurring selection and therefore
+      enabling fitting modes such as 'recur', 'refine' and 'explore'
+
+      
+:underline:`RUN SIMULATION:` 
+
+run_atoms and run_molecules functions are called first but this is not enough
+to achieve decent fit and model. Therefore run_recurring_atoms is called twice 
+with explore flag set to True in the first time and refine in the second.
+
+
+:underline:`PLOT PDF CONSTRAINT:` 
+
+Plotting the :class:`.PairDistributionConstraint` data after fitting.
+
+
+
+
+
+
+
+
+

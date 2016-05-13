@@ -1,0 +1,74 @@
+.. role:: underline
+   :class: underline
+   
+Relative path
+=============
+../fullrmc/Examples/rotations/
+
+Description
+===========
+Here a single molecule is used to demonstrate how to use certain rotation  
+move generators. This example was used to generate the `rotation video example 
+<https://youtu.be/-clLvYiaC8w?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
+as seen in the online documentation. When running this example several files
+will be generated where all moved are saved. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+   
+Files
+=====
+#. molecule.pdb: The single molecule structure
+#. run.py: The script file used to run the simulation
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and set the only molecule as a rigid body. This is done
+automatically because set_groups_as_molecules will only find one molecule. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+   #. about_axis_0: Used to rotate the molecule about its principal axis
+   #. about_axis_1: Used to rotate the molecule about its secondary axis
+   #. about_axis_2: Used to rotate the molecule about its tertiary axis
+   #. about_111_axis: Used to rotate the molecule about [x=1, y=1, z=1] axis
+   #. random: Used to rotate the molecule randomly
+
+
+:underline:`RUN SIMULATION:` 
+
+All five functions are called consecutively.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with all saved 
+four trajectories "about0.xyz", "about1.xyz", "about2.xyz", "about111.xyz", "random.xyz".
+
+
+
+
+
+
+
+
+
+
+

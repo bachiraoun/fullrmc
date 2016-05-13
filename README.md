@@ -92,8 +92,7 @@ http://bachiraoun.github.io/fullrmc/
 
 Authors and developers
 ======================
-[Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
-
-[Jonathan Barnes](https://www.linkedin.com/in/johnathan-barnes-a558b230) (Developer, consulting) 
+* [Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
+* [Jonathan Barnes](https://www.linkedin.com/in/johnathan-barnes-a558b230) (Developer, consulting) 
 
 

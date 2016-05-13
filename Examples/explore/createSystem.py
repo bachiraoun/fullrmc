@@ -34,4 +34,4 @@ reset_records_serial_number(thfNAGMA)
 
 # export and visualize
 thfNAGMA.export_pdb("nagma_in_water.pdb")
-#thfNAGMA.visualize()
+thfNAGMA.visualize()

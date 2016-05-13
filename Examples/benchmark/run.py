@@ -1,6 +1,7 @@
+##########################################################################################
+##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
-import os
-import time
+import os, sys, time
 
 # external libraries imports
 import numpy as np
@@ -15,16 +16,18 @@ from fullrmc.Constraints.BondConstraints import BondConstraint
 from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
 from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
 
-# set all log to false
-LOGGER.set_log_type_flags("move accepted",  False, False)
-LOGGER.set_log_type_flags("move rejected",  False, False)
-LOGGER.set_log_type_flags("move not tried", False, False)
 
+##########################################################################################
+##################################  SHUT DOWN LOGGING  ###################################
+LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+
+
+##########################################################################################
+#####################################  CREATE ENGINE  ####################################
 # parameters
-NSTEPS  = 100000
+NSTEPS  = 10000
 pdbPath = 'system.pdb'
 expData = 'experimental.gr'
-
 # initialize engine
 ENGINE = Engine(pdb=pdbPath, constraints=None)
 # create constraints
@@ -77,6 +80,8 @@ IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O',
                                                                       ('C3','O','C1','C4', -15, 15) ] })
 
 
+##########################################################################################
+####################################  DIFFERENT RUNS  ####################################
 def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, improper=False, message=""):                                                                   
     # reset pdb
     ENGINE.set_pdb(pdbPath)
@@ -109,42 +114,104 @@ def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, impr
     LOGGER.info(message)
     return float(spentTime)/float(nsteps), ENGINE.tried , ENGINE.accepted
 
-
-
-def load_and_plot_steps_benchmark(constraint="all", groupSize=13):
-    benchmark = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize) )
-    tried     = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize) )
-    accepted  = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize) )
-    # plot benchmark
-    plt.plot(benchmark[:,0], benchmark[:,1])
-    minY = min(benchmark[:,1]) 
-    maxY = max(benchmark[:,1]) 
-    # annotate tried(accepted) 
-    for i, txt in enumerate( accepted[:,-1] ):
-        T = 100*float(tried[i,-1])/float(benchmark[i,0])
-        A = 100*float(accepted[i,-1])/float(benchmark[i,0])
-        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #str(int(tried[i,-1]))+" ("+str(int(txt))+")", 
-                            xy = (benchmark[i,0],benchmark[i,-1]),
-                            rotation=90,
-                            horizontalalignment='center',
-                            verticalalignment='bottom')     
-    # show plot
-    plt.legend(frameon=False, loc='upper left')
-    plt.xlabel("Number of steps")
-    plt.ylabel("Time per step (s)")
-    plt.gcf().patch.set_facecolor('white')
-    # set fig size
-    #figSize = plt.gcf().get_size_inches()
-    #figSize[1] = figSize[1]+figSize[1]/2.
-    #plt.gcf().set_size_inches(figSize, forward=True)
-    plt.ylim((None, maxY+0.3*(maxY-minY)))
-    # save
-    plt.savefig("benchmark_steps.png")
-    # plot
-    plt.show()
+def benchmark_constraints(groupsList):
+    print "================ Benchmark constraints ================"   
+    # run benchmark
+    benchmark = {}
+    accepted  = {}
+    tried     = {}
+    for GN in groupsList:
+        print "++++++++ %i atoms per group"%GN   
+        groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,GN) for idx in range(GN)] )]
+        benchmark[GN] = {}
+        tried[GN]     = {}
+        accepted[GN]  = {}
+        print "---- No constraints"
+        benchmark[GN]['0001_none'],     tried[GN]['0001_none'] ,     accepted[GN]['0001_none']     = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
+        print "---- PairDistributionConstraint"
+        benchmark[GN]['0002_pdf'],      tried[GN]['0002_pdf'] ,      accepted[GN]['0002_pdf']      = run(nsteps=NSTEPS, groups=groups, pdf=True,  vdw=False, bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
+        print "---- InterMolecularDistanceConstraint"
+        benchmark[GN]['0003_vdw'],      tried[GN]['0003_vdw'] ,      accepted[GN]['0003_vdw']      = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=True,  bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
+        print "---- BondConstraint"
+        benchmark[GN]['0004_bond'],     tried[GN]['0004_bond'] ,     accepted[GN]['0004_bond']     = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=True,  angle=False, improper=False, message="atoms (%i) "%GN)
+        print "---- BondsAngleConstraint"
+        benchmark[GN]['0005_angle'],    tried[GN]['0005_angle'] ,    accepted[GN]['0005_angle']    = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=True,  improper=False, message="atoms (%i) "%GN)
+        print "---- ImproperAngleConstraint"
+        benchmark[GN]['0006_improper'], tried[GN]['0006_improper'] , accepted[GN]['0006_improper'] = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=True,  message="atoms (%i) "%GN)
+        print "---- All constraints"
+        benchmark[GN]['0007_all'],      tried[GN]['0007_all'] ,      accepted[GN]['0007_all']      = run(nsteps=NSTEPS, groups=groups, pdf=True,  vdw=True,  bond=True,  angle=True,  improper=True,  message="atoms (%i) "%GN)
     
+    # plot
+    plt.figure()
+    atoms = sorted(benchmark.keys())
+    bench = [np.array(atoms)]
+    accep = [np.array(atoms)]
+    tri   = [np.array(atoms)]
+    header = "groups "
+    for key in sorted(benchmark[atoms[0]].keys()):
+        times = np.array( [ benchmark[n][key] for n in atoms] )
+        header += " %s"%key.split("_")[1]
+        bench.append(times)
+        tri.append( np.array( [ tried[n][key] for n in atoms] ) )
+        accep.append( np.array( [ accepted[n][key] for n in atoms] ) )
+        plt.plot(atoms, times, label=key.split("_")[1])
+    # annotate tried(accepted)
+    for i, txt in enumerate( accep[-1] ):
+        plt.gca().annotate(str(tri[-1][i])+"("+str(txt)+")", (bench[0][i],bench[-1][i]))
+    # show plot
+    plt.legend()
+    plt.title("Constraints Benchmark")
+    plt.xlabel("number of atoms")
+    plt.ylabel("time per step (s)")
+    # save
+    np.savetxt(fname="benchmark_constraints_time.dat",     X=np.transpose(bench), fmt='%.10f', delimiter='    ', newline='\n', header=header)
+    np.savetxt(fname="benchmark_constraints_tried.dat",    X=np.transpose(tri),   fmt='%.10f', delimiter='    ', newline='\n', header=header)
+    np.savetxt(fname="benchmark_constraints_accepted.dat", X=np.transpose(accep), fmt='%.10f', delimiter='    ', newline='\n', header=header)
 
 
+def benchmark_nsteps(constraint, groupSize=13, stepsList=range(5000,105000,5000)):
+    print "================ Benchmark number of steps ================"   
+    CS = {'pdf':False, 'vdw':False, 'bond':False, 'angle':False, 'improper':False}
+    if not constraint in CS.keys():
+        if constraint == "all":
+            for k in CS.keys():
+                CS[k]=True
+        else:
+            assert constraint == "none"
+    print  "++++++++ Used constraints are %s"%CS  
+    # set groups
+    groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,groupSize) for idx in range(groupSize)] )]
+    # run benchmark
+    benchmark = []
+    accepted  = []
+    tried     = []
+    stepsList = sorted(stepsList)
+    for ns in stepsList:
+        print "---- %i steps"%ns
+        bench, tri, accep = run(nsteps=ns, groups=groups, pdf=CS['pdf'], vdw=CS['vdw'], bond=CS['bond'], angle=CS['angle'], improper=CS['improper'], message="atoms (%i) "%groupSize)
+        benchmark.append( bench )
+        tried.append( tri )
+        accepted.append( accep )
+    
+    # create data
+    benchmark = [np.array(stepsList), np.array(benchmark)]
+    tried     = [np.array(stepsList), np.array(tried)]
+    accepted  = [np.array(stepsList), np.array(accepted)]
+    # plot
+    plt.figure()
+    plt.plot(benchmark[0], benchmark[1])
+    # annotate tried(accepted)
+    for i, txt in enumerate( accepted[-1] ):
+        plt.gca().annotate(str(tried[-1][i])+"("+str(txt)+")", (benchmark[0][i],benchmark[-1][i]))
+    # show plot
+    plt.title("Number of steps Benchmark")
+    plt.xlabel("number of steps")
+    plt.ylabel("time per step (s)")
+    # save
+    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize),     X=np.transpose(benchmark), fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
+    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize),    X=np.transpose(tried),     fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
+    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize), X=np.transpose(accepted),  fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
+    
 def load_and_plot_constraints_benchmark():
     benchmark = np.loadtxt(fname='benchmark_constraints_time.dat')
     tried     = np.loadtxt(fname='benchmark_constraints_tried.dat')
@@ -186,102 +253,59 @@ def load_and_plot_constraints_benchmark():
     # plot
     plt.show()
     
-def benchmark_constraints(groupsList):
-    # run benchmark
-    benchmark = {}
-    accepted  = {}
-    tried     = {}
-    for GN in groupsList:
-        groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,GN) for idx in range(GN)] )]
-        benchmark[GN] = {}
-        tried[GN]     = {}
-        accepted[GN]  = {}
-        benchmark[GN]['0001_none'], tried[GN]['0001_none'] , accepted[GN]['0001_none']             = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
-        benchmark[GN]['0002_pdf'], tried[GN]['0002_pdf'] , accepted[GN]['0002_pdf']                = run(nsteps=NSTEPS, groups=groups, pdf=True, vdw=False, bond=False, angle=False, improper=False,  message="atoms (%i) "%GN)
-        benchmark[GN]['0003_vdw'], tried[GN]['0003_vdw'] , accepted[GN]['0003_vdw']                = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=True, bond=False, angle=False, improper=False,  message="atoms (%i) "%GN)
-        benchmark[GN]['0004_bond'], tried[GN]['0004_bond'] , accepted[GN]['0004_bond']             = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=True, angle=False, improper=False,  message="atoms (%i) "%GN)
-        benchmark[GN]['0005_angle'], tried[GN]['0005_angle'] , accepted[GN]['0005_angle']          = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=True, improper=False,  message="atoms (%i) "%GN)
-        benchmark[GN]['0006_improper'], tried[GN]['0006_improper'] , accepted[GN]['0006_improper'] = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=True,  message="atoms (%i) "%GN)
-        benchmark[GN]['0007_all'], tried[GN]['0007_all'] , accepted[GN]['0007_all']                = run(nsteps=NSTEPS, groups=groups, pdf=True, vdw=True, bond=True, angle=True, improper=True,      message="atoms (%i) "%GN)
-    
-    # plot
-    atoms = sorted(benchmark.keys())
-    bench = [np.array(atoms)]
-    accep = [np.array(atoms)]
-    tri   = [np.array(atoms)]
-    header = "groups "
-    for key in sorted(benchmark[atoms[0]].keys()):
-        times = np.array( [ benchmark[n][key] for n in atoms] )
-        header += " %s"%key.split("_")[1]
-        bench.append(times)
-        tri.append( np.array( [ tried[n][key] for n in atoms] ) )
-        accep.append( np.array( [ accepted[n][key] for n in atoms] ) )
-        plt.plot(atoms, times, label=key.split("_")[1])
-    # annotate tried(accepted)
-    for i, txt in enumerate( accep[-1] ):
-        plt.gca().annotate(str(tri[-1][i])+"("+str(txt)+")", (bench[0][i],bench[-1][i]))
+def load_and_plot_steps_benchmark(constraint="all", groupSize=13):
+    benchmark = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize) )
+    tried     = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize) )
+    accepted  = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize) )
+    # plot benchmark
+    plt.plot(benchmark[:,0], benchmark[:,1])
+    minY = min(benchmark[:,1]) 
+    maxY = max(benchmark[:,1]) 
+    # annotate tried(accepted) 
+    for i, txt in enumerate( accepted[:,-1] ):
+        T = 100*float(tried[i,-1])/float(benchmark[i,0])
+        A = 100*float(accepted[i,-1])/float(benchmark[i,0])
+        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #str(int(tried[i,-1]))+" ("+str(int(txt))+")", 
+                            xy = (benchmark[i,0],benchmark[i,-1]),
+                            rotation=90,
+                            horizontalalignment='center',
+                            verticalalignment='bottom')     
     # show plot
-    plt.legend()
-    plt.xlabel("number of atoms")
-    plt.ylabel("time per step (s)")
-    plt.show()
+    plt.legend(frameon=False, loc='upper left')
+    plt.xlabel("Number of steps")
+    plt.ylabel("Time per step (s)")
+    plt.gcf().patch.set_facecolor('white')
+    # set fig size
+    #figSize = plt.gcf().get_size_inches()
+    #figSize[1] = figSize[1]+figSize[1]/2.
+    #plt.gcf().set_size_inches(figSize, forward=True)
+    plt.ylim((None, maxY+0.3*(maxY-minY)))
     # save
-    np.savetxt(fname="benchmark_constraints_time.dat", X=np.transpose(bench), fmt='%.10f', delimiter='    ', newline='\n', header=header)
-    np.savetxt(fname="benchmark_constraints_tried.dat", X=np.transpose(tri), fmt='%.10f', delimiter='    ', newline='\n', header=header)
-    np.savetxt(fname="benchmark_constraints_accepted.dat", X=np.transpose(accep), fmt='%.10f', delimiter='    ', newline='\n', header=header)
-
-
-def benchmark_nsteps(constraint, groupSize=13, stepsList=range(5000,105000,5000)):
-    CS = {'pdf':False, 'vdw':False, 'bond':False, 'angle':False, 'improper':False}
-    if not constraint in CS.keys():
-        if constraint == "all":
-            for k in CS.keys():
-                CS[k]=True
-        else:
-            assert constraint == "none"
-    # set groups
-    groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,groupSize) for idx in range(groupSize)] )]
-    # run benchmark
-    benchmark = []
-    accepted  = []
-    tried     = []
-    stepsList = sorted(stepsList)
-    for ns in stepsList:
-        bench, tri, accep = run(nsteps=ns, groups=groups, pdf=CS['pdf'], vdw=CS['vdw'], bond=CS['bond'], angle=CS['angle'], improper=CS['improper'], message="atoms (%i) "%groupSize)
-        benchmark.append( bench )
-        tried.append( tri )
-        accepted.append( accep )
-    
-    # create data
-    benchmark = [np.array(stepsList), np.array(benchmark)]
-    tried     = [np.array(stepsList), np.array(tried)]
-    accepted  = [np.array(stepsList), np.array(accepted)]
+    plt.savefig("benchmark_steps.png")
     # plot
-    plt.plot(benchmark[0], benchmark[1])
-    # annotate tried(accepted)
-    for i, txt in enumerate( accepted[-1] ):
-        plt.gca().annotate(str(tried[-1][i])+"("+str(txt)+")", (benchmark[0][i],benchmark[-1][i]))
-    # show plot
-    plt.xlabel("number of steps")
-    plt.ylabel("time per step (s)")
     plt.show()
-    # save
-    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize), X=np.transpose(benchmark), fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
-    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize), X=np.transpose(tried), fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
-    np.savetxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize), X=np.transpose(accepted), fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
-
     
-#benchmark_constraints( range(1,30,1) )
-#benchmark_nsteps(constraint = 'all', groupSize=13, stepsList=range(5000,105000,5000))
+    
+
+##########################################################################################
+#####################################  RUN BENCHMARKS  ################################### 
+benchmark_constraints( range(1,30,1) )
+benchmark_nsteps(constraint = 'all', groupSize=13, stepsList=range(5000,105000,5000))
+# show benchmark plots
+plt.show()
+
+##########################################################################################
+####################################  PLOT BENCHMARKS  ###################################  
+#load_and_plot_steps_benchmark()
+#load_and_plot_constraints_benchmark()
 
 
 
-load_and_plot_steps_benchmark()
-load_and_plot_constraints_benchmark()
 
 
 
 
+        
 
 
 

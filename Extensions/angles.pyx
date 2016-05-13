@@ -55,6 +55,7 @@ cdef C_FLOAT32 FLOAT_ONE       = 1.0
 cdef C_FLOAT32 FLOAT_TWO       = 2.0
 cdef C_FLOAT32 BOX_LENGTH      = 1.0
 cdef C_FLOAT32 HALF_BOX_LENGTH = 0.5
+cdef C_INT32   INT_ZERO        = 0
 
 
 cdef extern from "math.h":
@@ -99,7 +100,7 @@ def single_angles( C_INT32 centralAtomIndex,
     atomBox_y = boxCoords[centralAtomIndex,1]
     atomBox_z = boxCoords[centralAtomIndex,2]
     # loop
-    for i from 0 <= i < numberOfIndexes:
+    for i from INT_ZERO <= i < numberOfIndexes:
         # get inLoopAtomIndex
         inLoopLeftAtomIndex  = leftIndexes[i]
         inLoopRightAtomIndex = rightIndexes[i]
@@ -107,15 +108,13 @@ def single_angles( C_INT32 centralAtomIndex,
         box_dx = boxCoords[inLoopLeftAtomIndex,0]-atomBox_x
         box_dy = boxCoords[inLoopLeftAtomIndex,1]-atomBox_y
         box_dz = boxCoords[inLoopLeftAtomIndex,2]-atomBox_z
-        sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
-        sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
-        sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
         box_dx -= round(box_dx)
         box_dy -= round(box_dy)
         box_dz -= round(box_dz)
-        leftVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
-        leftVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
-        leftVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
+        # get real difference
+        leftVector_x = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+        leftVector_y = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+        leftVector_z = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
         # normalize left vector
         vectorNorm = sqrt(leftVector_x*leftVector_x + leftVector_y*leftVector_y + leftVector_z*leftVector_z)
         if vectorNorm==0:
@@ -127,15 +126,13 @@ def single_angles( C_INT32 centralAtomIndex,
         box_dx = boxCoords[inLoopRightAtomIndex,0]-atomBox_x
         box_dy = boxCoords[inLoopRightAtomIndex,1]-atomBox_y
         box_dz = boxCoords[inLoopRightAtomIndex,2]-atomBox_z
-        sign_x = FLOAT_ONE if box_dx>=0 else FLOAT_NEG_ONE
-        sign_y = FLOAT_ONE if box_dy>=0 else FLOAT_NEG_ONE
-        sign_z = FLOAT_ONE if box_dz>=0 else FLOAT_NEG_ONE
         box_dx -= round(box_dx)
         box_dy -= round(box_dy)
         box_dz -= round(box_dz)
-        rightVector_x = sign_x * (box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0])
-        rightVector_y = sign_y * (box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1])
-        rightVector_z = sign_z * (box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2])
+        # get real difference
+        rightVector_x = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+        rightVector_y = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+        rightVector_z = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
         # normalize left vector
         vectorNorm = sqrt(leftVector_x*leftVector_x + leftVector_y*leftVector_y + leftVector_z*leftVector_z)
         if vectorNorm==0:

@@ -30,9 +30,9 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                #. Second item the second atom index forming the bond, 
                #. Third item: The lower limit or the minimum bond length allowed.
                #. Fourth item: The upper limit or the maximum bond length allowed.
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
     
     .. code-block:: python
     
@@ -77,12 +77,12 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         return self.__bonds
         
     @property
-    def squaredDeviations(self):
-        """Get constraint's current squared deviation."""
+    def standardError(self):
+        """Get constraint's current standard error."""
         if self.data is None:
             return None
         else: 
-            return self.compute_squared_deviations(data = self.data)
+            return self.compute_standard_error(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -95,14 +95,14 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         if message in("engine changed","update boundary conditions",):
             self.reset_constraint()        
         
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
         Overloads 'RigidConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+        It computes whether to accept or reject a move based on before and after move calculation and not standardError.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. squaredDeviations (number): not used in this case
+            #. standardError (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -160,29 +160,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         if self.engine is not None:
             # parse bondsMap
             for bond in self.__bondsMap:
-                idx1, idx2, lower, upper = bond
-                assert idx1<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
-                assert idx2<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
-                # create bonds
-                if not self.__bonds.has_key(idx1):
-                    self.__bonds[idx1] = {"indexes":[],"lower":[],"upper":[]}
-                if not self.__bonds.has_key(idx2):
-                    self.__bonds[idx2] = {"indexes":[],"lower":[],"upper":[]}
-                # check for redundancy and append
-                if idx2 in self.__bonds[idx1]["indexes"]:
-                    index = self.__bonds[idx1]["indexes"].index(idx2)
-                    log.LocalLogger("fullrmc").logger.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx2, idx1, lower, upper, self.__bonds[idx1]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
-                else:
-                    self.__bonds[idx1]["indexes"].append(idx2)
-                    self.__bonds[idx1]["lower"].append(lower)
-                    self.__bonds[idx1]["upper"].append(upper)
-                if idx1 in self.__bonds[idx2]["indexes"]:
-                    index = self.__bonds[idx2]["indexes"].index(idx1)
-                    log.LocalLogger("fullrmc").logger.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] ignored and old bond limits [%.3f,%.3f] kept. "%(idx1, idx2, lower, upper, self.__bonds[idx2]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
-                else:
-                    self.__bonds[idx2]["indexes"].append(idx1)
-                    self.__bonds[idx2]["lower"].append(lower)
-                    self.__bonds[idx2]["upper"].append(upper)
+                self.add_bond(bond)
             # finalize bonds
             for idx in self.engine.pdb.xindexes:
                 bonds = self.__bonds.get(idx, {"indexes":[],"lower":[],"upper":[]} )
@@ -192,6 +170,66 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         # reset constraint
         self.reset_constraint()
     
+    def add_bond(self, bond):
+        """
+        Add a single bond to the list of constraint bonds.
+        
+        :Parameters:
+            #. bond (list): The bond list of four items.\n
+               #. First item is the first atom index.
+               #. Second item the second atom index forming the bond, 
+               #. Third item: The lower limit or the minimum bond length allowed.
+               #. Fourth item: The upper limit or the maximum bond length allowed.
+        """
+        idx1, idx2, lower, upper = bond
+        assert idx1<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
+        assert idx2<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
+        idx1 = INT_TYPE(idx1)
+        idx2 = INT_TYPE(idx2)
+        # create bonds
+        if not self.__bonds.has_key(idx1):
+            idx1ToArray = False
+            self.__bonds[idx1] = {"indexes":[],"lower":[],"upper":[]}
+        else:
+            idx1ToArray = not isinstance(self.__bonds[idx1]["indexes"], list)
+            self.__bonds[idx1] = {"indexes":list(self.__bonds[idx1]["indexes"]),
+                                  "lower"  :list(self.__bonds[idx1]["lower"]),
+                                  "upper"  :list(self.__bonds[idx1]["upper"]) }
+        if not self.__bonds.has_key(idx2):
+            idx2ToArray = False
+            self.__bonds[idx2] = {"indexes":[],"lower":[],"upper":[]}
+        else:
+            idx2ToArray = not isinstance(self.__bonds[idx2]["indexes"], list)
+            self.__bonds[idx2] = {"indexes":list(self.__bonds[idx2]["indexes"]),
+                                  "lower"  :list(self.__bonds[idx2]["lower"]),
+                                  "upper"  :list(self.__bonds[idx2]["upper"]) }
+        # check for redundancy and append
+        if idx2 in self.__bonds[idx1]["indexes"]:
+            index = self.__bonds[idx1]["indexes"].index(idx2)
+            LOGGER.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] are ignored and old bond limits [%.3f,%.3f] are kept. "%(idx2, idx1, lower, upper, self.__bonds[idx1]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
+        else:
+            self.__bonds[idx1]["indexes"].append(idx2)
+            self.__bonds[idx1]["lower"].append(lower)
+            self.__bonds[idx1]["upper"].append(upper)
+        if idx1 in self.__bonds[idx2]["indexes"]:
+            index = self.__bonds[idx2]["indexes"].index(idx1)
+            LOGGER.warn("Atom index '%i' is already defined in atom '%i' bonds list. New bond limits [%.3f,%.3f] are ignored and old bond limits [%.3f,%.3f] are kept. "%(idx1, idx2, lower, upper, self.__bonds[idx2]["lower"][indexes], self.__bonds[idx1]["upper"][indexes]))
+        else:
+            self.__bonds[idx2]["indexes"].append(idx1)
+            self.__bonds[idx2]["lower"].append(lower)
+            self.__bonds[idx2]["upper"].append(upper)
+        # make array
+        if idx1ToArray:
+            bonds = self.__bonds.get(idx1, {"indexes":[],"lower":[],"upper":[]} )
+            self.__bonds[idx1] =  {"indexes": np.array(bonds["indexes"], dtype = INT_TYPE)  ,
+                                    "lower"  : np.array(bonds["lower"]  , dtype = FLOAT_TYPE),
+                                    "upper"  : np.array(bonds["upper"]  , dtype = FLOAT_TYPE) }
+        if idx2ToArray:
+            bonds = self.__bonds.get(idx2, {"indexes":[],"lower":[],"upper":[]} )
+            self.__bonds[idx2] =  {"indexes": np.array(bonds["indexes"], dtype = INT_TYPE)  ,
+                                    "lower"  : np.array(bonds["lower"]  , dtype = FLOAT_TYPE),
+                                    "upper"  : np.array(bonds["upper"]  , dtype = FLOAT_TYPE) }
+                                                         
     def create_bonds_by_definition(self, bondsDefinition):
         """ 
         Creates bondsMap using bonds definition.
@@ -224,7 +262,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         bondsDef = {}
         for mol, bonds in bondsDefinition.items():
             if mol not in existingMoleculesNames:
-                log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
+                LOGGER.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
                 continue
             assert isinstance(bonds, (list, set, tuple)), LOGGER.error("mapDefinition molecule bonds must be a list")
             bonds = list(bonds)
@@ -244,7 +282,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                 append = True
                 for b in molBondsMap:
                     if (b[0]==at1 and b[1]==at2) or (b[1]==at1 and b[0]==at2):
-                        log.LocalLogger("fullrmc").logger.warn("Redundant definition for bondsDefinition found. The later '%s' is ignored"%str(b))
+                        LOGGER.warn("Redundant definition for bondsDefinition found. The later '%s' is ignored"%str(b))
                         append = False
                         break
                 if append:
@@ -278,12 +316,12 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         # create bonds
         self.set_bonds(bondsMap=bondsMap)
     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
-        Compute the squared deviation of data not satisfying constraint conditions. 
+        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{C} 
+            StdErr = \\sum \\limits_{i}^{C} 
             ( \\beta_{i} - \\beta_{i}^{min} ) ^{2} 
             \\int_{0}^{\\beta_{i}^{min}} \\delta(\\beta-\\beta_{i}) d \\beta
             +
@@ -302,15 +340,15 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         is equal to 1 if :math:`\\beta_{i}^{max} \\leqslant \\beta_{i} \\leqslant \\infty` and 0 elsewhere.\n
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        squaredDeviations = 0
+        standardError = 0
         for idx, bond in data.items():
-            squaredDeviations +=  np.sum(bond["reducedDistances"]**2)
-        FLOAT_TYPE( squaredDeviations )
+            standardError +=  np.sum(bond["reducedDistances"]**2)
+        return FLOAT_TYPE( standardError )
 
     def get_constraint_value(self):
         """
@@ -331,8 +369,8 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
+        # set standardError
+        #self.set_standard_error( self.compute_standard_error(data = self.__data) )
         
     def compute_before_move(self, indexes):
         """ 
@@ -380,8 +418,8 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move( dataDict )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute squaredDeviations after move
-        #self.set_after_move_squared_deviations( self.compute_squared_deviations(data = dataDict ) )
+        # compute standardError after move
+        #self.set_after_move_standard_error( self.compute_standard_error(data = dataDict ) )
   
     def accept_move(self, indexes):
         """ 

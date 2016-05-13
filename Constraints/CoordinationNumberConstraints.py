@@ -24,7 +24,7 @@ from fullrmc.Core.atomic_coordination_number import single_atomic_coordination_n
 class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstraint):
     """
     It's a quasi-rigid constraint that controls the inter-molecular coordination number between atoms. 
-    The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
+    The maximum standard error is defined as the sum of minimum number of neighbours of all atoms
     in the system.
     
     :Parameters:
@@ -39,9 +39,9 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
                #. the upper limit of the coordination shell.
                #. the minimum number of neighbours in the shell.
                #. the maximum number of neighbours in the shell.
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
         #. thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
            It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
            behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
@@ -240,18 +240,18 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
                 data['neighbours'] = {}
                 data['deviations'] = -np.array(self.__typesCoordNumDef[typeIdx]['minNumOfNeig'], dtype=INT_TYPE)
             data['neighbouring']      = {}
-            data['squaredDeviations'] = np.sum(data['deviations']**2)
-            maxSquaredDev += data['squaredDeviations']
+            data['standardError'] = np.sum(data['deviations']**2)
+            maxSquaredDev += data['standardError']
             self.__coordNumData.append(data)
         # set maximum squared deviation as the sum of all atoms atomDeviations
-        self._set_maximum_squared_deviations(maxSquaredDev)
+        self._set_maximum_standard_error(maxSquaredDev)
                     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
-        Compute the squared deviations (SD) of data not satisfying constraint conditions. 
+        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{A} \\sum \\limits_{s}^{S} 
+            StdErr = \\sum \\limits_{i}^{A} \\sum \\limits_{s}^{S} 
             (D_{i,s})^{2}  \n
 
             D_{i,s}=\\begin{cases}
@@ -270,15 +270,15 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
          
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        SD = 0
+        StdErr = 0
         for cn in data:
-            SD += cn['squaredDeviations']
-        return SD
+            StdErr += cn['standardError']
+        return StdErr
         
     def get_constraint_value(self):
         """
@@ -323,9 +323,9 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         self.set_data( self.__coordNumData )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        SD = self.compute_squared_deviations(data = self.__coordNumData)
-        self.set_squared_deviations(SD)
+        # set standardError
+        stdErr = self.compute_standard_error(data = self.__coordNumData)
+        self.set_standard_error(stdErr)
 
     def compute_before_move(self, indexes):
         """ 
@@ -394,13 +394,13 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
             neigIdx  = neighbours[idx]
             self.__coordNumData[atIdx]['neighbours'][neigIdx]   = shellIdx
             self.__coordNumData[neigIdx]['neighbouring'][atIdx] = shellIdx
-        # update squared deviations
+        # update standard error
         for atIdx in affectedAtomsIndexes:
             atomTypeIndex  = self.__typesIndexes[atIdx]
             atomCnDef      = self.__typesCoordNumDef[atomTypeIndex]
             atomShellsType = atomCnDef['neigTypeIdx']
             atomNeighbours = self.__coordNumData[atIdx]['neighbours']
-            # compute squared deviations
+            # compute standard error
             deviations = np.zeros(len(atomCnDef['minNumOfNeig']), dtype=INT_TYPE)
             for shellIdx in atomNeighbours.values():
                 deviations[shellIdx] += 1
@@ -412,14 +412,14 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
                 else:
                     deviations[shellIdx] = 0
             self.__coordNumData[atIdx]['deviations']  = deviations      
-            self.__coordNumData[atIdx]['squaredDeviations'] = np.sum(self.__coordNumData[atIdx]['deviations']**2)   
+            self.__coordNumData[atIdx]['standardError'] = np.sum(self.__coordNumData[atIdx]['deviations']**2)   
         # set active atoms after move data
         self.set_active_atoms_data_after_move( {'affectedIndexes':affectedAtomsIndexes, 'data':affectedCoordNumData} )
-        # set before move squared deviations
-        BM = self.compute_squared_deviations(data = self.activeAtomsDataBeforeMove['data'])
-        AM = self.compute_squared_deviations(data = affectedCoordNumData)
-        SD = self.squaredDeviations-BM+AM
-        self.set_after_move_squared_deviations( SD )
+        # set before move standard error
+        BM = self.compute_standard_error(data = self.activeAtomsDataBeforeMove['data'])
+        AM = self.compute_standard_error(data = affectedCoordNumData)
+        SD = self.standardError-BM+AM
+        self.set_after_move_standard_error( SD )
 
     def accept_move(self, indexes):
         """ 
@@ -431,9 +431,9 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_squared_deviations(self.afterMoveSquaredDeviations)
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_standard_error(self.afterMoveStandardError)
+        self.set_after_move_standard_error( None )
         
     def reject_move(self, indexes):
         """ 
@@ -453,8 +453,8 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_after_move_standard_error( None )
 
 
     

@@ -97,29 +97,31 @@ class Engine(object):
                        groups=None, groupSelector=None, 
                        constraints=None, tolerance=0.):
         # initialize
-        self.__broadcaster = Broadcaster()
-        self.__constraints = []
-        self.__state = None
+        self.__broadcaster   = Broadcaster()
+        self.__constraints   = []
+        self.__state         = None
+        self.__groups        = []
+        self.__groupSelector = None
         # initialize engine flags and arguments
-        self.__initialize_engine__()
+        #self._initialize_engine()
         # set pdb
         self.set_pdb(pdb=pdb, boundaryConditions=boundaryConditions, elements=elements, moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
         # set set groups
-        self.set_groups(groups)
-        # set set groups
-        self.__groupSelector = None
-        self.set_group_selector(groupSelector)
-        # set tolerance
-        self.set_tolerance(tolerance)
+        if groups is not None:
+            self.set_groups(groups)
+        # set group selector
+        if groupSelector is not None:
+            self.set_group_selector(groupSelector)
         # set constraints
         if constraints is not None:
             self.add_constraints(constraints)
-        
+        # set tolerance
+        self.set_tolerance(tolerance)
         # set LOGGER file path to saveEngine path
         #logFile = os.path.join( os.path.dirname(os.path.realpath(_savePath)), LOGGER.logFileBasename)
         #LOGGER.set_log_file_basename(logFile)
         
-    def __initialize_engine__(self):
+    def _initialize_engine(self):
         """ Initialize all engine arguments and flags. """
         # engine last moved group index
         self.__lastSelectedGroupIndex = None
@@ -131,11 +133,13 @@ class Engine(object):
         self.__accepted = 0
         # engine tolerated steps number
         self.__tolerated = 0
-        # current model total chiSquare from constraints
-        self.__chiSquare = None
-        # grouping atoms into list of indexes arrays. All atoms of same group evolve together upon engine run time
-        self.__groups = []
-    
+        # current model totalStandardError from constraints
+        self.__totalStandardError = None
+        # set groups as atoms
+        self.set_groups(None)
+        # set group selector as random
+        self.set_group_selector(None)
+        
     def _set_generated(self, generated):
         """ Set generated flag. """
         assert is_integer(generated), LOGGER.error("generated must be an integer")
@@ -210,7 +214,7 @@ class Engine(object):
     
     @property
     def tolerated(self):
-        """ Get the number of tolerated steps in spite of increasing total chiSquare"""
+        """ Get the number of tolerated steps in spite of increasing total totalStandardError"""
         return self.__tolerated
         
     @property
@@ -329,6 +333,14 @@ class Engine(object):
         return self.__numberOfAtomsPerElement
     
     @property
+    def numberDensity(self):
+        """ 
+        get system's number density computed as :math:`\\rho_{0}=\\frac{N}{V}`
+        where N is the total number of atoms and V the volume of the system.
+        """
+        return self.__numberDensity
+        
+    @property
     def constraints(self):
         """ Get a list copy of all constraints instances. """
         return [c for c in self.__constraints]
@@ -339,9 +351,9 @@ class Engine(object):
         return self.__groupSelector
         
     @property
-    def chiSquare(self):
-        """ Get the last recorded chiSquare of the current configuration. """
-        return self.__chiSquare
+    def totalStandardError(self):
+        """ Get the last recorded totalStandardError of the current configuration. """
+        return self.__totalStandardError
     
     def save(self, path):
         """
@@ -350,7 +362,7 @@ class Engine(object):
         :Parameters:
             #. path (string): the file path to save the engine
         """
-        LOGGER.log("save engine","Saving Engine... DON'T INTERRUPT")
+        LOGGER.saved("Saving Engine... DON'T INTERRUPT")
         dirPath  = os.path.os.path.dirname(path)
         fileName = os.path.basename(path)
         fileName = fileName.split(".")[0]
@@ -370,7 +382,7 @@ class Engine(object):
             raise Exception( LOGGER.error("Unable to save engine instance. (%s)"%e) )
         finally:
             fd.close()
-        LOGGER.log("save engine","Engine saved '%s'"%path)
+        LOGGER.saved("Engine saved '%s'"%path)
     
     def load(self, path):
         """
@@ -608,7 +620,6 @@ class Engine(object):
         
         # get coordinates
         self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE) 
-        
         # reset configuration state
         self.__state = time.time()
         # set boundary conditions
@@ -639,7 +650,8 @@ class Engine(object):
         """
         if boundaryConditions is None:
             boundaryConditions = InfiniteBoundaries()
-        if is_number(boundaryConditions) or isinstance(boundaryConditions, np.ndarray):
+        if is_number(boundaryConditions) or isinstance(boundaryConditions, (list, tuple, np.ndarray)):
+            self.__canSetNumberDensity = False
             try:   
                 bc = PeriodicBoundaries()
                 bc.set_vectors(boundaryConditions)
@@ -648,17 +660,34 @@ class Engine(object):
                 self.__reciprocalBasisVectors = np.array(bc.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
                 self.__volume = FLOAT_TYPE(bc.get_box_volume())
             except: 
-                raise Exception( LOGGER.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy array or a positive number") )
-        elif not isinstance(boundaryConditions, PeriodicBoundaries):
-            self.__boundaryConditions = boundaryConditions
-            self.__basisVectors = None
-            self.__reciprocalBasisVectors = None
-            self.__volume = None
+                raise Exception( LOGGER.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy.array or a positive number") )
+        elif isinstance(boundaryConditions, InfiniteBoundaries) and not isinstance(boundaryConditions, PeriodicBoundaries):
+            self.__canSetNumberDensity = True
+            coordsCenter = np.sum(self.__realCoordinates, axis=0)/self.__realCoordinates.shape[0]
+            coordinates  = self.__realCoordinates-coordsCenter
+            distances    = np.sqrt( np.sum(coordinates**2, axis=1) )
+            maxDistance  = 2.*np.max(distances) 
+            cubixBoxLength = np.ceil( 3.*maxDistance )
+            bc = PeriodicBoundaries()
+            bc.set_vectors(cubixBoxLength)
+            self.__boundaryConditions = bc
+            self.__basisVectors = np.array(bc.get_vectors(), dtype=FLOAT_TYPE)
+            self.__reciprocalBasisVectors = np.array(bc.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
+            #self.__volume = FLOAT_TYPE(bc.get_box_volume()) 
+            self.__volume = FLOAT_TYPE( 1./.0333679 * self.numberOfAtoms )      
+            LOGGER.warn("Not periodic but InfiniteBoundaries boundary conditions is not directly implemented yet. \
+Therefore cubic PeriodicBoundaries is automatically created with size '%s Angstroms' equal to 3 times the system size. \
+System's number density is set to '.0333679' which is the same as water. The system's volume is then computed \
+equal to %.6f. If this is incorrect, use set_number_density method to set the system's correct number density \
+and therefore the volume."%(cubixBoxLength,self.__volume,))
         elif isinstance(boundaryConditions, PeriodicBoundaries):
+            self.__canSetNumberDensity = False
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = np.array(boundaryConditions.get_vectors(), dtype=FLOAT_TYPE)
             self.__reciprocalBasisVectors = np.array(boundaryConditions.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
             self.__volume = FLOAT_TYPE(boundaryConditions.get_box_volume())
+        else:
+            raise Exception( LOGGER.error("Unkown boundary conditions. boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy.array or a positive number") )
         # get box coordinates
         if isinstance(self.__boundaryConditions, PeriodicBoundaries):
             self.__boxCoordinates = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=self.__realCoordinates)
@@ -667,8 +696,32 @@ class Engine(object):
         # check box coordinates for none periodic boundary conditions
         if self.__boxCoordinates is None:
             raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
+        # set number density
+        self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
+    
+    def set_number_density(self, numberDensity):
+        """   
+        Sets system's number density. This is used to correct system's
+        volume. It can be used only with InfiniteBoundaries. 
+        
+        :Parameters:
+            #. numberDensity (number): The number density value. 
+        """
+        if isinstance(self.__boundaryConditions, InfiniteBoundaries) and not isinstance(self.__boundaryConditions, PeriodicBoundaries):
+            LOGGER.warn("Setting number density is not when boundary conditions are periodic.") 
+            return
+        if not self.__canSetNumberDensity:
+            LOGGER.warn("Setting number density is not when boundary conditions are periodic.") 
+            return
+        assert is_number(numberDensity), LOGGER.error("numberDensity must be a number.")
+        numberDensity = FLOAT_TYPE(numberDensity)
+        assert numberDensity>0, LOGGER.error("numberDensity must be bigger than 0.")
+        if numberDensity>1: 
+            LOGGER.warn("numberDensity value is %.6f value isn't it too big?"%numberDensity)
+        self.__numberDensity = numberDensity
+        self.__volume = FLOAT_TYPE( 1./numberDensity * self.numberOfAtoms )      
         
     def set_molecules_indexes(self, moleculesIndexes=None, moleculesNames=None):
         """
@@ -797,29 +850,41 @@ class Engine(object):
         # broadcast to constraints
         self.__broadcaster.broadcast("update names indexes")
     
-    def visualize(self, foldIntoBox=False, boxAtOrigin=False, 
-                        boxWidth=2, boxColor="yellow", representation="Lines", 
-                        params=""):
-        """ Visualize the last configuration using pdbParser visualize method.
+    def visualize(self, commands=None, foldIntoBox=False, boxAtOrigin=False, 
+                        boxWidth=2, boxColor="black", 
+                        representationParams="Lines", displayParams=None, otherParams=None):
+        """
+        Visualize the last configuration using pdbParser visualize method.
         
         :Parameters:
+            #. commands (None, list, tuple): List of commands to pass upon calling vmd.
+               commands can be a .dcd file to load a trajectory for instance.
             #. foldIntoBox (boolean): Whether to fold all atoms into simulation box before visualization.
-            #. boxAtOrigin (boolean): Whether to center simulation box at origin.
+            #. boxAtOrigin (boolean): Whether to centre simulation box at origin.
             #. boxWidth (number): Visualize the simulation box by giving the lines width.
                If 0 then the simulation box is not visualized.
-            #. boxColor (str): Choose the simulation box color among the following:\n
+            #. boxColor (str): Choose the simulation box colour among the following:\n
                blue, red, gray, orange, yellow, tan, silver, green,
                white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
                black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
                blue3, violet, violet2, magenta, magenta2, red2, red3, 
                orange2, orange3.
-            #. representation(str): Choose representation method among the following:\n
-               Lines, Bonds, DynamicBonds, HBonds, Points, 
-               VDW, CPK, Licorice, Beads, Dotted, Solvent.
-            #. params(str): Set the representation parameters.
-                  * Points representation accept only size parameter e.g. '5'
-                  * CPK representation accept respectively 4 parameters as the following 'Sphere Scale',
-                     'Sphere Resolution', 'Bond Radius', 'Bond Resolution' e.g. '0.5 20 0.1 20'
+            #. representationParams(str): Set representation method among the following:\n
+               Lines, Bonds, DynamicBonds, HBonds, Points, VDW, CPK, Licorice, Beads, Dotted, Solvent.
+               And add parameters accordingly if needed. e.g.\n
+               * Points representation accept only size parameter e.g. 'Points 5'
+               * CPK representation can accept respectively 4 parameters as the following 'Sphere Scale',
+                 'Bond Radius', 'Sphere Resolution', 'Bond Resolution' e.g. 'CPK 1.0 0.2 50 50'
+               * VDW representation can accept respectively 2 parameters as the following 'Sphere Scale',
+                 'Sphere Resolution' e.g. 'VDW 0.7 100'
+            #. displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
+               If dictionary the following keys can be used.\n
+               * 'background colour' (default 'white'): Set the background colour
+               * 'depth cueing' (default True): Set the depth cueing flag.
+               * 'cue density' (default 0.1): Set the depth density.
+               * 'cue mode' (default 'Exp'): Set the depth mode among 'linear', 'Exp' and 'Exp2'.
+            #. otherParams(None, list, set, tuple): Any other parameters in a form of a list of strings.\n
+               e.g. ['display resize 700 700', 'rotate x to 45', 'scale to 0.02', 'axes location off']
         """
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
@@ -831,11 +896,16 @@ class Engine(object):
                   'black', 'yellow2', 'yellow3', 'green2', 'green3', 'cyan2', 'cyan3', 'blue2',
                   'blue3', 'violet', 'violet2', 'magenta', 'magenta2', 'red2', 'red3', 
                   'orange2','orange3']
-        assert boxColor in colors, LOGGER.error("boxColor is not a recognized color name among %s"%str(colors))
+        assert boxColor in colors, LOGGER.error("boxColor is not a recognized colour name among %s"%str(colors))
         # check representation argument
         reps = ["Lines","Bonds","DynamicBonds","HBonds","Points","VDW","CPK",
                 "Licorice","Beads","Dotted","Solvent"]
-        assert representation in reps, LOGGER.error("representation is not a recognized among allowed ones %s"%str(reps))
+        assert len(representationParams), "representation parameters must at least contain a method of representation"
+        reprParams = representationParams.split()
+        reprMethod = reprParams[0]
+        reprParams.pop(0)
+        reprParams = " ".join(reprParams)
+        assert reprMethod in reps, LOGGER.error("representation method is not a recognized among allowed ones %s"%str(reps))
         # create .tcl file
         (vmdfd, tclFile) = tempfile.mkstemp()
         # write tclFile
@@ -859,16 +929,39 @@ class Engine(object):
                 LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
         # representation
         fd.write("mol delrep 0 top\n")
-        fd.write("mol representation %s %s\n"%(representation, params) )
+        fd.write("mol representation %s %s\n"%(reprMethod, reprParams) )
         fd.write("mol delrep 0 top\n")
         fd.write('mol addrep top\n')
-        #fd.write("sel default style VDW\n")
+        # display parameters
+        if displayParams is None:
+            displayParams = {}
+        bckColor    = displayParams.get("background color", 'white')
+        depthCueing = displayParams.get("depth cueing", True)
+        cueDensity  = displayParams.get("cue density",  0.1)
+        cueMode     = displayParams.get("cue mode",  'Exp')
+        assert bckColor in colors, LOGGER.error("display background color is not a recognized color name among %s"%str(colors))
+        assert depthCueing in [True, False], LOGGER.error("depth cueing must be boolean")
+        assert is_number(cueDensity), LOGGER.error("cue density must be a number") 
+        assert cueMode in ['linear','Exp','Exp2'], LOGGER.error("cue mode must be either 'linear','Exp' or 'Exp2'")
+        fd.write('color Display Background %s \n'%bckColor)
+        if depthCueing is True:
+            depthCueing = 'on'
+        else:
+            depthCueing = 'off'
+        fd.write('display depthcue %s \n'%depthCueing)
+        fd.write('display cuedensity  %s \n'%cueDensity)
+        fd.write('display cuemode  %s \n'%cueMode)
+        # other parameters
+        if otherParams is None:
+            otherParams = []
+        for op in otherParams:
+            fd.write('%s \n'%op)
         fd.close()
         coords = self.__realCoordinates
         # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
         if foldIntoBox:
             coords = self.__boundaryConditions.fold_real_array(self.__realCoordinates)
-        self.__pdb.visualize(coordinates=coords, startupScript=tclFile)
+        self.__pdb.visualize(commands=commands, coordinates=coords, startupScript=tclFile)
         # remove .tcl file
         os.remove(tclFile)
         
@@ -926,33 +1019,33 @@ class Engine(object):
     
     def reset_engine(self):
         """ Re-initialize engine and resets constraints flags and data. """
-        self.__initialize_engine__()
+        self._initialize_engine()
         # reset constraints flags
         self.reset_constraints()
     
-    def compute_chi_square(self, constraints, current=True):
+    def compute_total_standard_error(self, constraints, current=True):
         """
-        Computes the total chiSquare of the given the squared deviations of the constraints.
+        Computes the total standard error as the sum of all constraints' standard error.
         
         .. math::
-            \\chi^{2} = \\sum \\limits_{i}^{N} (\\frac{SD_{i}}{variance_{i}})^{2}
+            \\chi^{2} = \\sum \\limits_{i}^{N} (\\frac{stdErr_{i}}{variance_{i}})^{2}
           
         Where:\n    
         :math:`variance_{i}` is the variance value of the constraint i. \n
-        :math:`SD_{i}` the squared deviations of the constraint i defined as :math:`\\sum \\limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}` \n
+        :math:`stdErr_{i}` the standard error of the constraint i defined as :math:`\\sum \\limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}` \n
              
         :Parameters:
-            #. constraints (list): All constraints used to calculate total chiSquare.
-            #. current (bool): If True it uses constraints squaredDeviations argument, 
-               False it uses constraint's afterMoveSquaredDeviations argument.
+            #. constraints (list): All constraints used to calculate total totalStandardError.
+            #. current (bool): If True it uses constraints standardError argument, 
+               False it uses constraint's afterMoveStandardError argument.
         
         :Returns:
-            #. totalChiSquare (list): The computed total chiSquare.
+            #. totalStandardError (list): The computed total total standard error.
         """
         if current:
-            attr = "squaredDeviations"
+            attr = "standardError"
         else:
-            attr = "afterMoveSquaredDeviations"
+            attr = "afterMoveStandardError"
         chis = []
         for c in constraints:
             SD = getattr(c, attr)
@@ -960,14 +1053,14 @@ class Engine(object):
             chis.append(SD/c.varianceSquared)
         return np.sum(chis)
     
-    def set_chi_square(self):
+    def set_total_standard_error(self):
         """
-        Computes and sets the total chiSquare of active constraints.
+        Computes and sets the total totalStandardError of active constraints.
         """
         # get and initialize used constraints
         _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
-        # compute chiSquare
-        self.__chiSquare = self.compute_chi_square(_constraints, current=True)
+        # compute totalStandardError
+        self.__totalStandardError = self.compute_total_standard_error(_constraints, current=True)
         
     def get_used_constraints(self):
         """
@@ -975,8 +1068,8 @@ class Engine(object):
         
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
-            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total totalStandardError
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total totalStandardError
         """
         usedConstraints = []
         for c in self.__constraints:
@@ -1002,8 +1095,8 @@ class Engine(object):
 
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
-            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total chiSquare
-            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total chiSquare
+            #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total totalStandardError
+            #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total totalStandardError
         """
         assert isinstance(force, bool), LOGGER.error("force must be boolean")
         # get used constraints
@@ -1064,10 +1157,10 @@ class Engine(object):
         :Parameters:
             #. numberOfSteps (integer): The number of steps to run.
             #. saveFrequency (integer): Save engine every saveFrequency steps.
-               Save will be omitted if chiSquare has not decreased. 
+               Save will be omitted if totalStandardError has not decreased. 
             #. savePath (string): Save engine file path.
             #. xyzFrequency (None, integer): Save coordinates to .xyz file every xyzFrequency steps 
-               regardless chiSquare has decreased or not.
+               regardless totalStandardError has decreased or not.
                If None, no .xyz file will be generated.
             #. xyzPath (string): Save coordinates to .xyz file.
         """
@@ -1081,21 +1174,25 @@ class Engine(object):
         # get and initialize used constraints
         _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
         if not len(_usedConstraints):
-            LOGGER.warn("No constraints are used. Configuration will be randomize")
-        # compute chiSquare
-        self.__chiSquare = self.compute_chi_square(_constraints, current=True)
+            LOGGER.warn("No constraints are used. Configuration will be randomized")
+        # runtime initialize group selector
+        self.__groupSelector._runtime_initialize()
+        # runtime initialize constraints
+        [c._runtime_initialize() for c in _usedConstraints]
+        # compute totalStandardError
+        self.__totalStandardError = self.compute_total_standard_error(_constraints, current=True)
         # initialize useful arguments
         _engineStartTime    = time.time()
-        _lastSavedChiSquare = self.__chiSquare
+        _lastSavedTotalStandardError = self.__totalStandardError
         _coordsBeforeMove   = None
         _moveTried          = False
-        # initialize group selector
-        self.__groupSelector._runtime_initialize()
         
         #   #####################################################################################   #
         #   #################################### RUN ENGINE #####################################   #
-        LOGGER.info("Engine started %i steps, chiSquare is: %.6f"%(_numberOfSteps, self.__chiSquare) )
+        LOGGER.info("Engine started %i steps, total standard error is: %.6f"%(_numberOfSteps, self.__totalStandardError) )
         for step in xrange(_numberOfSteps):
+            # constraint runtime_on_step
+            [c._runtime_on_step() for c in _usedConstraints]
             # increment generated
             self.__generated += 1
             # get group
@@ -1121,6 +1218,7 @@ class Engine(object):
             # compute moved coordinates
             movedRealCoordinates = groupMoveGenerator.move(_coordsBeforeMove)
             movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
+
             ########################### compute rigidConstraints ############################
             rejectMove = False
             for c in _rigidConstraints:
@@ -1129,8 +1227,8 @@ class Engine(object):
                 # compute after move
                 c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
                 # get rejectMove
-                rejectMove = c.should_step_get_rejected(c.afterMoveSquaredDeviations)
-                #print c.__class__.__name__, c.squaredDeviations, c.afterMoveSquaredDeviations, rejectMove
+                rejectMove = c.should_step_get_rejected(c.afterMoveStandardError)
+                #print c.__class__.__name__, c.standardError, c.afterMoveStandardError, rejectMove
                 if rejectMove:
                     break
             _moveTried = not rejectMove
@@ -1140,7 +1238,7 @@ class Engine(object):
                 for c in _rigidConstraints:
                     c.reject_move(indexes=groupAtomsIndexes)
                 # log generated move rejected before getting tried
-                LOGGER.log("move not tried","Generated move %i is not tried"%self.__tried)
+                LOGGER.untried("Generated move %i is not tried"%self.__tried)
             ###################################### try move #######################################
             else:
                 self.__tried += 1
@@ -1149,17 +1247,17 @@ class Engine(object):
                     c.compute_before_move(indexes = groupAtomsIndexes)
                     # compute after move
                     c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
-            ################################ compute new chiSquare ################################
-                newChiSquare = self.compute_chi_square(_constraints, current=False)
-                #if len(_constraints) and (newChiSquare >= self.__chiSquare):
-                if newChiSquare > self.__chiSquare:
+            ################################ compute new totalStandardError ################################
+                newTotalStandardError = self.compute_total_standard_error(_constraints, current=False)
+                #if len(_constraints) and (newTotalStandardError >= self.__totalStandardError):
+                if newTotalStandardError > self.__totalStandardError:
                     if generate_random_float() > self.__tolerance:
                         rejectMove = True
                     else:
                         self.__tolerated += 1
-                        self.__chiSquare  = newChiSquare
+                        self.__totalStandardError  = newTotalStandardError
                 else:
-                    self.__chiSquare = newChiSquare
+                    self.__totalStandardError = newTotalStandardError
             ################################## reject tried move ##################################
             if rejectMove:
                 # set selector move rejected
@@ -1169,7 +1267,7 @@ class Engine(object):
                     for c in _constraints:
                         c.reject_move(indexes=groupAtomsIndexes)
                     # log tried move rejected
-                    LOGGER.log("move rejected","Tried move %i is rejected"%self.__generated)
+                    LOGGER.rejected("Tried move %i is rejected"%self.__generated)
             ##################################### accept move #####################################
             else:
                 self.__accepted  += 1
@@ -1184,12 +1282,12 @@ class Engine(object):
                 # log new successful move
                 triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
                 acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
-                LOGGER.log("move accepted","Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
+                LOGGER.accepted("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - totStdErr:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__totalStandardError))
             ##################################### save engine #####################################
             if _saveFrequency is not None:
                 if not(step+1)%_saveFrequency:
-                    if _lastSavedChiSquare==self.__chiSquare:
-                        LOGGER.info("Save engine omitted because no improvement made since last save.")
+                    if _lastSavedTotalStandardError==self.__totalStandardError:
+                        LOGGER.saved("Save engine omitted because no improvement made since last save.")
                     else:
                         # update state
                         self.__state  = time.time()
@@ -1197,7 +1295,7 @@ class Engine(object):
                            #c.increment_tried()
                            c.set_state(self.__state)
                         # save engine
-                        _lastSavedChiSquare = self.__chiSquare
+                        _lastSavedTotalStandardError = self.__totalStandardError
                         self.save(_savePath)
             ############################### dump coords to xyz file ###############################
             if _xyzFrequency is not None:
@@ -1205,7 +1303,7 @@ class Engine(object):
                     _xyzfd.write("%s\n"%self.__pdb.numberOfAtoms)
                     triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
                     acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
-                    _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - ChiSquare:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__chiSquare))
+                    _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - totStdErr:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__totalStandardError))
                     frame = [self.__allNames[idx]+ " " + "%10.5f"%self.__realCoordinates[idx][0] + " %10.5f"%self.__realCoordinates[idx][1] + " %10.5f"%self.__realCoordinates[idx][2] + "\n" for idx in self.__pdb.xindexes]
                     _xyzfd.write("".join(frame)) 
                     

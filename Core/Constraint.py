@@ -43,9 +43,9 @@ class Constraint(object):
         self.__data                      = None
         self.__activeAtomsDataBeforeMove = None
         self.__activeAtomsDataAfterMove  = None
-        # initialize squaredDeviations
-        self.__squaredDeviations           = None
-        self.__afterMoveSquaredDeviations  = None
+        # initialize standard error
+        self.__standardError           = None
+        self.__afterMoveStandardError  = None
     
     @property
     def engine(self):
@@ -78,9 +78,9 @@ class Constraint(object):
         return self.__varianceSquared
     
     @property
-    def squaredDeviations(self):
-        """ Get constraint's current squared deviations."""
-        return self.__squaredDeviations
+    def standardError(self):
+        """ Get constraint's current standard error."""
+        return self.__standardError
     
     @property
     def originalData(self):
@@ -103,9 +103,9 @@ class Constraint(object):
         return self.__activeAtomsDataAfterMove
     
     @property
-    def afterMoveSquaredDeviations(self):
-        """ Get constraint's current calculated SquaredDeviations after last move."""
-        return self.__afterMoveSquaredDeviations
+    def afterMoveStandardError(self):
+        """ Get constraint's current calculated StandardError after last move."""
+        return self.__afterMoveStandardError
         
     def _set_original_data(self, data):
         """ Used only by the engine to set constraint's data as initialized for the first time."""
@@ -118,6 +118,19 @@ class Constraint(object):
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
             #. arguments (object): Any type of argument to pass to the listeners.
+        """
+        pass
+        
+    def _runtime_initialize(self):
+        """   
+        This is called once everytime engine.run method is executed.
+        It is meant to be used as a final setup call for all constraints.
+        """
+        pass
+    
+    def _runtime_on_step(self):
+        """   
+        This is called at everytime engine.run method main loop step.
         """
         pass
         
@@ -192,21 +205,21 @@ class Constraint(object):
         """ Increment engine accepted moves. """
         self.__accepted += 1
         
-    def set_squared_deviations(self, value):
+    def set_standard_error(self, value):
         """
-        Sets constraint's squaredDeviations value.
+        Sets constraint's standardError value.
         
         :Parameters:
-            #. value (number): squaredDeviations value
+            #. value (number): standardError value
         """
-        self.__squaredDeviations = value
+        self.__standardError = value
         
     def set_data(self, value):
         """
         Sets constraint's data value
         
         :Parameters:
-            #. value (number): squaredDeviations value.
+            #. value (number): standardError value.
         """
         self.__data = value
     
@@ -228,14 +241,14 @@ class Constraint(object):
         """
         self.__activeAtomsDataAfterMove = value
     
-    def set_after_move_squared_deviations(self, value):
+    def set_after_move_standard_error(self, value):
         """
-        Sets constraint's squaredDeviations value after move happens.
+        Sets constraint's standardError value after move happens.
         
         :Parameters:
-            #. value (number): squaredDeviations value.
+            #. value (number): standardError value.
         """
-        self.__afterMoveSquaredDeviations = value
+        self.__afterMoveStandardError = value
         
     def reset_constraint(self, reinitialize=True, flags=False, data=False):
         """ 
@@ -263,11 +276,10 @@ class Constraint(object):
             self.__data                      = None
             self.__activeAtomsDataBeforeMove = None
             self.__activeAtomsDataAfterMove  = None
-        # initialize squaredDeviations
-        self.__squaredDeviations           = None
-        self.__afterMoveSquaredDeviations  = None
-        
-            
+        # initialize standard error
+        self.__standardError           = None
+        self.__afterMoveStandardError  = None
+   
     def set_engine(self, engine):
         """
         Sets the constraints fullrmc engine instance.
@@ -286,9 +298,9 @@ class Constraint(object):
         #self.set_tried(0)
         #self.set_accepted(0)
     
-    def compute_and_set_squared_deviations(self):
-        """ Computes and sets the constraint's squaredDeviations by calling compute_squared_deviations and passing the constraint's data."""
-        self.set_squared_deviations(self.compute_squared_deviations(data = self.data))
+    def compute_and_set_standard_error(self):
+        """ Computes and sets the constraint's standardError by calling compute_standard_error and passing the constraint's data."""
+        self.set_standard_error(self.compute_standard_error(data = self.data))
         
     def get_constraint_value(self):
         raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
@@ -296,7 +308,7 @@ class Constraint(object):
     def get_constraint_original_value(self):
         raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def compute_squared_deviations(self):
+    def compute_standard_error(self):
         raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
     def compute_data(self, indexes):
@@ -325,12 +337,12 @@ class ExperimentalConstraint(Constraint):
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
            If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
            array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         #. scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.
         #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
@@ -473,12 +485,12 @@ class ExperimentalConstraint(Constraint):
         
         :Parameters: 
         
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
            If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
            array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         """
         if dataWeights is not None:
@@ -559,7 +571,7 @@ class ExperimentalConstraint(Constraint):
         return SF
     
     
-    def compute_squared_deviations(self, experimentalData, modelData):
+    def compute_standard_error(self, experimentalData, modelData):
         """ 
         Compute the squared deviation between modal computed data and the experimental ones. 
         
@@ -577,7 +589,7 @@ class ExperimentalConstraint(Constraint):
             #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
         # compute difference
         diff = experimentalData-modelData
@@ -614,15 +626,15 @@ class SingularConstraint(Constraint):
         
 class RigidConstraint(Constraint):
     """
-    A rigid constraint is a constraint that doesn't count into the total squaredDeviations of the Engine.
-    But it's internal squaredDeviations must monotonously decrease or remain the same from one engine step to another.
-    If squaredDeviations of an RigidConstraint increases the step will be rejected even before engine's new squaredDeviations get computed.
+    A rigid constraint is a constraint that doesn't count into the total standardError of the Engine.
+    But it's internal standardError must monotonously decrease or remain the same from one engine step to another.
+    If standardError of an RigidConstraint increases the step will be rejected even before engine's new standardError get computed.
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
-        #. rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): Rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
     """
     def __init__(self, engine, rejectProbability):
         # initialize constraint
@@ -640,58 +652,58 @@ class RigidConstraint(Constraint):
         Set the rejection probability.
         
         :Parameters:
-            #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-               It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-               and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+            #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+               It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+               and 0 means accepting all steps regardless whether standardError increases or not.
         """
         assert is_number(rejectProbability), LOGGER.error("rejectProbability must be a number")
         rejectProbability = FLOAT_TYPE(rejectProbability)
         assert rejectProbability>=0 and rejectProbability<=1, LOGGER.error("rejectProbability must be between 0 and 1")
         self.__rejectProbability = rejectProbability
     
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
-        Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.
+        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.
         
         :Parameters:
-            #. squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations
+            #. standardError (number): The standardError to compare with the Constraint standardError
         
         :Return:
             #. result (boolean): True to reject step, False to accept
         """
-        if squaredDeviations<=self.squaredDeviations:
+        if standardError<=self.standardError:
             return False
         return randfloat() < self.__rejectProbability
         
-    def should_step_get_accepted(self, squaredDeviations):
+    def should_step_get_accepted(self, standardError):
         """
-        Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.
+        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.
         
         :Parameters:
-            #. squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations
+            #. standardError (number): The standardError to compare with the Constraint standardError
         
         :Return:
             #. result (boolean): True to accept step, False to reject
         """
-        return not self.should_step_get_reject(squaredDeviations)
+        return not self.should_step_get_reject(standardError)
 
 
 class QuasiRigidConstraint(RigidConstraint):
     """
     A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
-    ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum squared 
-    deviations. The ratio is computed as between current squared deviations and maximum squared deviations.
+    ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum standard 
+    error. The ratio is computed as between current standard error and maximum standard error.
     
      .. math::
         
-        ratio = 1-\\frac{current\ squared\ deviations}{maximum\ squared\ deviations} 
+        ratio = 1-\\frac{current\ standard\ error}{maximum\ standard\ error} 
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
-        #. rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases
+        #. rejectProbability (Number): Rejecting probability of all steps where standardError increases
            only before threshold ratio is reached. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
         #. thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
            It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
            behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
@@ -702,18 +714,18 @@ class QuasiRigidConstraint(RigidConstraint):
         super(QuasiRigidConstraint, self).__init__(engine=engine, rejectProbability=rejectProbability)
         # set probability
         self.set_threshold_ratio(thresholdRatio)
-        # initialize maximum squared deviations
-        self.__maximumSquaredDeviations = None
+        # initialize maximum standard error
+        self.__maximumStandardError = None
         
-    def _set_maximum_squared_deviations(self, maximumSquaredDeviations):
-        """ Sets the maximum squared deviations. Use carefully, it's not meant to be used externally.
+    def _set_maximum_standard_error(self, maximumStandardError):
+        """ Sets the maximum standard error. Use carefully, it's not meant to be used externally.
         maximum squared deviation is what is used to compute the ratio and compare to thresholdRatio.
         """
-        if (maximumSquaredDeviations is not None) and maximumSquaredDeviations:
-            assert is_number(maximumSquaredDeviations), LOGGER.error("maximumSquaredDeviations must be a number.")
-            maximumSquaredDeviations = FLOAT_TYPE(maximumSquaredDeviations)
-            assert maximumSquaredDeviations>0, LOGGER.error("maximumSquaredDeviations must be a positive.")
-        self.__maximumSquaredDeviations = maximumSquaredDeviations
+        if (maximumStandardError is not None) and maximumStandardError:
+            assert is_number(maximumStandardError), LOGGER.error("maximumStandardError must be a number.")
+            maximumStandardError = FLOAT_TYPE(maximumStandardError)
+            assert maximumStandardError>0, LOGGER.error("maximumStandardError must be a positive.")
+        self.__maximumStandardError = maximumStandardError
         
     @property
     def thresholdRatio(self):
@@ -722,7 +734,7 @@ class QuasiRigidConstraint(RigidConstraint):
     
     @property
     def currentRatio(self):
-        return 1-(self.squaredDeviations/self.__maximumSquaredDeviations)        
+        return 1-(self.standardError/self.__maximumStandardError)        
         
     def set_threshold_ratio(self, thresholdRatio):
         """
@@ -739,23 +751,23 @@ class QuasiRigidConstraint(RigidConstraint):
         assert thresholdRatio>=0 and thresholdRatio<=1, LOGGER.error("thresholdRatio must be between 0 and 1")
         self.__thresholdRatio = thresholdRatio
         
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
-        Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.
+        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability function.
         
         :Parameters:
-            #. squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations
+            #. standardError (number): The standardError to compare with the Constraint standardError
         
         :Return:
             #. result (boolean): True to reject step, False to accept
         """
-        previousRatio = 1-(self.squaredDeviations/self.__maximumSquaredDeviations)
-        currentRatio  = 1-(squaredDeviations/self.__maximumSquaredDeviations)
+        previousRatio = 1-(self.standardError/self.__maximumStandardError)
+        currentRatio  = 1-(standardError/self.__maximumStandardError)
         if currentRatio>=self.__thresholdRatio: # must be accepted
             return False 
         elif previousRatio>=self.__thresholdRatio: # it must be rejected
             return randfloat() < self.rejectProbability
-        elif squaredDeviations<=self.squaredDeviations: # must be accepted
+        elif standardError<=self.standardError: # must be accepted
             return False
         else: # must be rejected
             return randfloat() < self.rejectProbability

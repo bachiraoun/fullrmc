@@ -30,8 +30,8 @@ PACKAGE_NAME    = 'fullrmc'
 EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
 
 # check python version
-if sys.version_info[:2] < (2, 6) or sys.version_info[:2] >= (3,):
-    raise RuntimeError("Python version 2.6, 2.7 required.")
+if sys.version_info[:2] < (2, 7) or sys.version_info[:2] >= (3,):
+    raise RuntimeError("Python version 2.7 required.")
 
 # automatically create MANIFEST.in
 commands = [# include MANIFEST.in
@@ -60,6 +60,8 @@ commands = [# include MANIFEST.in
             'global-exclude .svn/*',
             'global-exclude *.git*',
             'global-exclude .git/*',
+            # exclude all
+            'global-exclude %s/Examples/*.dat'%PACKAGE_NAME, 
             # include all Example files
             '\n# include all Example files',
             'global-include %s/Examples/*.py'%PACKAGE_NAME,
@@ -72,7 +74,13 @@ commands = [# include MANIFEST.in
             # include all README files
             '\n# include all readme files found',
             'global-include %s/*README.*'%PACKAGE_NAME,
-            'global-include %s/*readme.*'%PACKAGE_NAME
+            'global-include %s/*readme.*'%PACKAGE_NAME,
+            # exclude unnecessary files
+            'global-exclude %s/Examples/*/*.dat'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/visualizeTrajectory.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/plotFigures.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/extractTrajectory.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME, 
             ]         
 with open('MANIFEST.in','w') as fd:
     for l in commands:
@@ -267,7 +275,7 @@ metadata = dict(# package
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.1.7",
-                                    "pdbParser>=0.1.3",
+                                    "pdbParser>=0.1.4",
                                     "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

@@ -207,7 +207,7 @@ class DistanceAgitationGenerator(MoveGenerator):
         else:
             dir0 = FLOAT_TYPE( 1)
             dir1 = FLOAT_TYPE(-1) 
-        # create translation vectors
+        # create translation vectors 
         translationVectors      = np.empty((2,3), dtype=FLOAT_TYPE)
         translationVectors[0,:] = self.__agitate[0]*dir0*amp0*vector
         translationVectors[1,:] = self.__agitate[1]*dir1*amp1*vector

@@ -70,12 +70,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
            If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
            array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         #. weighting (string): The elements weighting.
         #. rmin (None, number): The minimum distance value to compute G(r) histogram.
@@ -140,6 +140,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         super(StructureFactorConstraint, self).__init__(engine=engine, experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
         # set elements weighting
         self.set_weighting(weighting)
+        self.__set_weighting_scheme()
         # set window function
         self.set_window_function(windowFunction)
         # set r parameters
@@ -168,7 +169,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             Qs = self.__experimentalQValues
             Rs = self.__shellCenters
             dr = self.__shellCenters[1]-self.__shellCenters[0]
-            qr = Rs.reshape((-1,1))*(np.ones((len(Rs),1))*Qs)
+            qr = Rs.reshape((-1,1))*(np.ones((len(Rs),1), dtype=FLOAT_TYPE)*Qs)
             sinqr = np.sin(qr)
             sinqr_q = sinqr/Qs
             self.__Gr2SqMatrix = dr*sinqr_q
@@ -186,6 +187,17 @@ class StructureFactorConstraint(ExperimentalConstraint):
             assert np.sum(self._usedDataWeights), LOGGER.error("used points dataWeights are all zero.")
             self._usedDataWeights /= FLOAT_TYPE( np.sum(self._usedDataWeights) )
             self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
+            
+    def __set_weighting_scheme(self):
+        if self.engine is not None:
+            self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
+            elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
+            self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=elementsWeights)
+            for k, v in self.__weightingScheme.items():
+                self.__weightingScheme[k] = FLOAT_TYPE(v)
+        else:
+            self.__elementsPairs   = None
+            self.__weightingScheme = None
             
     def __set_histogram(self):
         if self.__minimumDistance is None or self.__maximumDistance is None or self.__bin is None:
@@ -245,23 +257,28 @@ class StructureFactorConstraint(ExperimentalConstraint):
         
     @property
     def qmin(self):
-        """ Gets the experimental data reciprocal distances minimum. """
+        """ Get the experimental data reciprocal distances minimum. """
         return self.__qmin
           
     @property
     def qmax(self):
-        """ Gets the experimental data reciprocal distances maximum. """
+        """ Get the experimental data reciprocal distances maximum. """
         return self.__qmax
-          
+    
+    @property
+    def dq(self):
+        """ Get the experimental data reciprocal distances bin size. """
+        return self.__experimentalQValues[1]-self.__experimentalQValues[0]
+        
+    @property
+    def experimentalQValues(self):
+        """ Gets the experimental data used q values. """
+        return self.__experimentalQValues
+        
     @property
     def histogramSize(self):
         """ Get the histogram size"""
         return self.__histogramSize
-    
-    @property
-    def experimentalRecDist(self):
-        """ Get the experimental reciprocal distances array"""
-        return self.__experimentalRecDist
         
     @property
     def shellCenters(self):
@@ -302,7 +319,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
     def Gr2SqMatrix(self):
         """ Get G(r) to S(q) transformation matrix."""
         return self.__Gr2SqMatrix
-
+                
     def listen(self, message, argument=None):
         """   
         Listens to any message sent from the Broadcaster.
@@ -312,17 +329,10 @@ class StructureFactorConstraint(ExperimentalConstraint):
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine changed", "update molecules indexes"):
+            self.__set_weighting_scheme()
+            # reset histogram
             if self.engine is not None:
-                self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
-                elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
-                self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=elementsWeights)
-                for k, v in self.__weightingScheme.items():
-                    self.__weightingScheme[k] = FLOAT_TYPE(v)
-                # reset histogram
                 self.__set_histogram()
-            else:
-                self.__elementsPairs   = None
-                self.__weightingScheme = None
         elif message in("update boundary conditions",):
             self.reset_constraint()
             
@@ -488,22 +498,22 @@ class StructureFactorConstraint(ExperimentalConstraint):
         
         :Parameters: 
         
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's squared deviations computation.
+        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's squared deviations.\n
+           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
            If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's squared deviations. At least a single weight point is required to be non-zeros and the weights 
+           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
            array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         """
         super(StructureFactorConstraint, self).set_data_weights(dataWeights=dataWeights)
         self.__set_used_data_weights()
         
-    def compute_and_set_squared_deviations(self):
-        """ Computes and sets the constraint's squaredDeviations."""
-        # set squaredDeviations
+    def compute_and_set_standard_error(self):
+        """ Computes and sets the constraint's standardError."""
+        # set standardError
         totalSQ = self.get_constraint_value()["sf_total"]
-        self.set_squared_deviations(self.compute_squared_deviations(modelData = totalSQ))
+        self.set_standard_error(self.compute_standard_error(modelData = totalSQ))
  
     def check_experimental_data(self, experimentalData):
         """
@@ -533,12 +543,13 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # data format is correct
         return True, ""
         
-    def compute_squared_deviations(self, modelData):
+    def compute_standard_error(self, modelData):
         """ 
-        Compute the squared deviation between modal computed data and the experimental ones. 
+        Compute the standard error (StdErr) as squared deviations
+        between model computed data and the experimental ones. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}
+            StdErr = \\sum \\limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}
          
         Where:\n
         :math:`N` is the total number of experimental data points. \n
@@ -547,14 +558,14 @@ class StructureFactorConstraint(ExperimentalConstraint):
         :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
 
         :Parameters:
-            #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.
+            #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the standard error.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
         # compute difference
         diff = self.__experimentalSF-modelData
-        # return squared deviation
+        # return standard error
         if self._usedDataWeights is None:
             return np.add.reduce((diff)**2)
         else:
@@ -658,7 +669,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         output["sf_total"] = self.scaleFactor * Sq
         # convolve total with window function
         if self.__windowFunction is not None:
-            output["sf"] = np.convolve(output["sf_total"], self.__windowFunction, 'same')
+            output["sf"] = np.convolve(output["sf_total"], self.__windowFunction, 'same').astype(FLOAT_TYPE)
         else:
             output["sf"] = output["sf_total"]
         return output
@@ -702,9 +713,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
+        # set standardError
         totalPDF = self.__get_total_Sq(self.data)
-        self.set_squared_deviations(self.compute_squared_deviations(modelData = totalPDF))
+        self.set_standard_error(self.compute_standard_error(modelData = totalPDF))
     
     def compute_before_move(self, indexes):
         """ 
@@ -771,11 +782,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute squaredDeviations after move
+        # compute standardError after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalPDF = self.__get_total_Sq({"intra":dataIntra, "inter":dataInter})
-        self.set_after_move_squared_deviations( self.compute_squared_deviations(modelData = totalPDF) )
+        self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPDF) )
     
     def accept_move(self, indexes):
         """ 
@@ -791,9 +802,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveSquaredDeviations )
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_standard_error( self.afterMoveStandardError )
+        self.set_after_move_standard_error( None )
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
     
@@ -807,14 +818,14 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_after_move_standard_error( None )
    
     def plot(self, ax=None, intra=True, inter=True, 
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleChiSquare=True, titleScaleFactor=True):
+                   title=True, titleStdErr=True, titleScaleFactor=True):
         """ 
         Plot structure factor constraint.
         
@@ -835,7 +846,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
             #. title (boolean): Whether to create the title or not
-            #. titleChiSquare (boolean): Whether to show contraint's chi square value in title.
+            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
         :Returns:
@@ -884,8 +895,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set title
         if title:
             t = ''
-            if titleChiSquare and self.squaredDeviations is not None:
-                t += "$\chi^2=%.6f$ "%(self.squaredDeviations)
+            if titleStdErr and self.standardError is not None:
+                t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:
                 t += " - "*(len(t)>0) + "$scale$ $factor=%.6f$"%(self.scaleFactor)
             if len(t):

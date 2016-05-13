@@ -43,14 +43,14 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                e.g. [('h','h',1.5), ('h','c',2.015), ...] 
            
         #. flexible (boolean): Whether to allow atoms to break constraints definition 
-           under the condition of decreasing total squaredDeviations. If flexible is set 
+           under the condition of decreasing total standardError. If flexible is set 
            to False, atoms will never be allowed to cross from above to below minimum 
            allowed distance. Even if the later will decrease some other unsatisfying 
-           atoms distances, and therefore the total squaredDeviations of the constraint. 
+           atoms distances, and therefore the total standardError of the constraint. 
         #. rejectProbability (Number): rejecting probability of all steps where 
-           squaredDeviations increases. It must be between 0 and 1 where 1 means 
-           rejecting all steps where squaredDeviations increases and 0 means accepting 
-           all steps regardless whether squaredDeviations increases or not.
+           standardError increases. It must be between 0 and 1 where 1 means 
+           rejecting all steps where standardError increases and 0 means accepting 
+           all steps regardless whether standardError increases or not.
     """
     def __init__(self, engine, defaultDistance=1.5, typeDefinition='element', pairsDistanceDefinition=None, 
                        flexible=True, rejectProbability=1):
@@ -160,10 +160,10 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         
         :Parameters:
             #. flexible (boolean): Whether to allow atoms to break constraints definition 
-               under the condition of decreasing total squaredDeviations. If flexible is 
+               under the condition of decreasing total standardError. If flexible is 
                set to False, atoms will never be allowed to cross from above to below 
                minimum allowed distance. Even if the later will decrease some other 
-               unsatisfying atoms distances, and therefore the total squaredDeviations 
+               unsatisfying atoms distances, and therefore the total standardError 
                of the constraint. 
         """
         assert isinstance(flexible, bool), LOGGER.error("flexible must be boolean")
@@ -324,15 +324,15 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             self.__upperLimitArray = None          
   
     
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
-        Given a squaredDeviations, return whether to keep or reject new squaredDeviations 
+        Given a standardError, return whether to keep or reject new standardError 
         according to the constraint rejectProbability.
         In addition, if flexible flag is set to True, total number of atoms not satisfying 
         constraints definition must be decreasing or at least remain the same.
         
         :Parameters:
-            #. squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations
+            #. standardError (number): The standardError to compare with the Constraint standardError
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -342,15 +342,15 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             if np.any(cond):
                 return True
         # compute if step should get rejected normally
-        return super(InterMolecularDistanceConstraint, self).should_step_get_rejected(squaredDeviations)
+        return super(InterMolecularDistanceConstraint, self).should_step_get_rejected(standardError)
         
     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
-        Compute the squared deviations (SD) of data not satisfying constraint conditions. 
+        Compute the standard error (stdErr) of data not satisfying constraint conditions. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} 
+            stdErr = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} 
             \\left| d_{ij}-D_{ij}) \\right| 
             \\int_{0}^{D_{ij}} \\delta(x-d_{ij}) dx 
                   
@@ -363,13 +363,13 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         is equal to 1 if :math:`0 \\leqslant d_{ij} \\leqslant D_{ij}` and 0 elsewhere.\n 
     
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        squaredDeviations = np.sum(data.values())
-        return FLOAT_TYPE(squaredDeviations)
+        standardError = np.sum(data.values())
+        return FLOAT_TYPE(standardError)
         
     def get_constraint_value(self):
         """
@@ -415,8 +415,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        self.set_squared_deviations( self.compute_squared_deviations(data = self.get_constraint_value()) )
+        # set standardError
+        self.set_standard_error( self.compute_standard_error(data = self.get_constraint_value()) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -499,13 +499,13 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute squaredDeviations after move
+        # compute standardError after move
         number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
         distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = self.get_constraint_value()) )
+        self.set_after_move_standard_error( self.compute_standard_error(data = self.get_constraint_value()) )
         # change back data attribute
         self.set_data( data )
     
@@ -523,9 +523,9 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveSquaredDeviations )
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_standard_error( self.afterMoveStandardError )
+        self.set_after_move_standard_error( None )
     
     def reject_move(self, indexes):
         """ 
@@ -537,8 +537,8 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_after_move_standard_error( None )
 
 
 class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
@@ -557,23 +557,23 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
            
                e.g. [('c','h',0.9, 1.2), ...] 
            
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
-        #. mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
+        #. mode (string): Defines the way standardError is calculated. In such constraints the definition of standardError
            can be confusing because many parameters play different roles in this type of calculation. The number of
            unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
            Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:
             
-            #. distance (Default): squaredDeviations is simply calculated as the square summation of the reduced out of limits distances.
+            #. distance (Default): standardError is simply calculated as the square summation of the reduced out of limits distances.
                This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.
-            #. number: squaredDeviations is calculated such as the number of non-satisfied constraints must decrease 
+            #. number: standardError is calculated such as the number of non-satisfied constraints must decrease 
                from one step to another while the square summation of the reduced out of limits distances might increase.             
     """
     def __init__(self, engine, defaultMinDistance=0.67, typeDefinition="name", pairsLimitsDefinition=None, rejectProbability=1, mode="distance"):
         # create modes
-        self.__squaredDeviationsModes = {"distance":"__distance_squared_deviations__",
-                                         "number"  :"__number_squared_deviations__"}
+        self.__standardErrorModes = {"distance":"__distance_standard_error__",
+                                         "number"  :"__number_standard_error__"}
         # initialize constraint
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set defaultDistance
@@ -589,13 +589,13 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         return self.__typeDefinition
         
     @property
-    def existingSquaredDeviationsModes(self):
-        """ Get list of defined squaredDeviations modes of calculation"""
-        return self.__squaredDeviationsModes.keys()
+    def existingStandardErrorModes(self):
+        """ Get list of defined standardError modes of calculation"""
+        return self.__standardErrorModes.keys()
         
     @property
     def mode(self):
-        """ Get the mode of squaredDeviations calculation. """
+        """ Get the mode of standardError calculation. """
         return self.__mode
         
     @property
@@ -672,12 +672,12 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                 
     def set_mode(self, mode):
         """ 
-        Sets the squaredDeviations mode of calculation. 
+        Sets the standardError mode of calculation. 
         
         :Parameters:
             #. mode (object): The mode of calculation
         """
-        assert mode in self.__squaredDeviationsModes.keys(), LOGGER.error("allowed modes are %s"%self.__squaredDeviationsModes.keys())
+        assert mode in self.__standardErrorModes.keys(), LOGGER.error("allowed modes are %s"%self.__standardErrorModes.keys())
         self.__mode = mode
         # reinitialize constraint
         self.reset_constraint()
@@ -824,18 +824,18 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             self.__lowerLimitArray = None  
             self.__upperLimitArray = None            
             
-    def __distance_squared_deviations__(self, data):
+    def __distance_standard_error__(self, data):
         """
         calculates the squared total distanceSum
         """
         return FLOAT_TYPE( np.sum(data["distanceSum"]**2) )
     
-    def __number_squared_deviations__(self, data):
+    def __number_standard_error__(self, data):
         """
-        squaredDeviations = SUM_j(SUM_i( meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2 ))
+        standardError = SUM_j(SUM_i( meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2 ))
         where meanDistance = SUM_ji( reducedDistance )**2 / Ni_total
         """
-        squaredDeviations = 0
+        standardError = 0
         for idx1 in range(len(self.__types)):
             Nj_total = FLOAT_TYPE(self.__numberOfAtomsPerType[self.__types[idx1]])
             if Nj_total == 0: continue
@@ -845,10 +845,10 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                 Ni_unsatisfied = FLOAT_TYPE(data["number"][idx1][idx2][0])
                 if Ni_unsatisfied == 0: continue
                 meanDistance   = FLOAT_TYPE(data["distanceSum"][idx1][idx2][0]**2)/Ni_unsatisfied
-                squaredDeviations     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
-        return FLOAT_TYPE(squaredDeviations)
+                standardError     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
+        return FLOAT_TYPE(standardError)
     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
         Compute the squared deviation of data not satisfying constraint conditions. 
         
@@ -863,12 +863,12 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :math:`\\int_{0}^{d_{ij}}\\delta(x-D_{ij})dx` is equal to 0 if :math:`d_{ij}<D_{ij}` and 1 when :math:`d_{ij} \\geqslant D_{ij}`.
  
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        return getattr(self, self.__squaredDeviationsModes[self.__mode])(data)
+        return getattr(self, self.__standardErrorModes[self.__mode])(data)
 
     def get_constraint_value(self):
         """
@@ -913,8 +913,8 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        self.set_squared_deviations( self.compute_squared_deviations(data = self.data) )
+        # set standardError
+        self.set_standard_error( self.compute_standard_error(data = self.data) )
     
     def compute_before_move(self, indexes):
         """ 
@@ -997,13 +997,13 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData
-        # compute squaredDeviations after move
+        # compute standardError after move
         number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
         distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_squared_deviations( self.compute_squared_deviations(data = {"number":number, "distanceSum":distanceSum}) )
+        self.set_after_move_standard_error( self.compute_standard_error(data = {"number":number, "distanceSum":distanceSum}) )
         # change back data attribute
         self.set_data( data )
     
@@ -1021,9 +1021,9 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_squared_deviations( self.afterMoveSquaredDeviations )
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_standard_error( self.afterMoveStandardError )
+        self.set_after_move_standard_error( None )
     
     def reject_move(self, indexes):
         """ 
@@ -1035,8 +1035,8 @@ class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # update squaredDeviations
-        self.set_after_move_squared_deviations( None )
+        # update standardError
+        self.set_after_move_standard_error( None )
 
 
     

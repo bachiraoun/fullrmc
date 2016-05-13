@@ -250,7 +250,7 @@ Tetrahydrofuran simple example yet complete and straight to the point
     totalGR = ENGINE.constraints[0].get_constraint_value()["pdf_total"]
     expData = ENGINE.constraints[0].experimentalPDF
     plt.plot(ENGINE.constraints[0].experimentalDistances, expData, 'ro', label="experimental", markersize=7.5, markevery=1 )
-    plt.plot(ENGINE.constraints[0].shellsCenter, totalGR, 'k', linewidth=2.0,  markevery=5, label="total" )
+    plt.plot(ENGINE.constraints[0].shellCenters, totalGR, 'k', linewidth=2.0,  markevery=5, label="total" )
     plt.legend()
     plt.show()  
 

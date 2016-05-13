@@ -83,7 +83,7 @@ cdef C_FLOAT32 HALF_BOX_LENGTH = 0.5
 cdef C_FLOAT32 FLOAT32_ZERO    = 0.0
 cdef C_FLOAT32 FLOAT32_ONE     = 1.0
 cdef C_INT32   INT32_ONE       = 1
-
+cdef C_INT32   INT32_ZERO      = 0
 
 cdef extern from "math.h":
     C_FLOAT32 floor(C_FLOAT32 x)

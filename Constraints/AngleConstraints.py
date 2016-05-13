@@ -34,9 +34,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
             #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
             #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
     
     .. code-block:: python
     
@@ -92,12 +92,12 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         return self.__atomsLUAD
         
     @property
-    def squaredDeviations(self):
-        """ Get constraint's current deviations square."""
+    def standardError(self):
+        """ Get constraint's current standard error."""
         if self.data is None:
             return None
         else: 
-            return self.compute_squared_deviations(data = self.data)
+            return self.compute_standard_error(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -110,14 +110,14 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if message in("engine changed","update boundary conditions",):
             self.reset_constraint()        
         
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
         Overloads 'RigidConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+        It computes whether to accept or reject a move based on before and after move calculation and not standardError.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. squaredDeviations (number): not used in this case
+            #. standardError (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -185,39 +185,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if self.engine is not None:
             # parse bondsMap
             for angle in self.__anglesMap:
-                centralIdx, leftIdx, rightIdx, lower, upper = angle
-                assert centralIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                assert leftIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                assert rightIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                # create atoms look up angles dictionary
-                if not self.__atomsLUAD.has_key(centralIdx):
-                    self.__atomsLUAD[centralIdx] = []
-                if not self.__atomsLUAD.has_key(leftIdx):
-                    self.__atomsLUAD[leftIdx] = []
-                if not self.__atomsLUAD.has_key(rightIdx):
-                    self.__atomsLUAD[rightIdx] = []
-                # create angles
-                if not self.__angles.has_key(centralIdx):
-                    self.__angles[centralIdx] = {"leftIndexes":[],"rightIndexes":[],"lower":[],"upper":[]}
-                # check for redundancy and append
-                elif leftIdx in self.__angles[centralIdx]["leftIndexes"]:
-                    index = self.__angles[centralIdx]["leftIndexes"].index(leftIdx)
-                    if rightIdx == self.__angles[centralIdx]["rightIndexes"][index]:
-                        LOGGER.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
-                        continue
-                elif leftIdx in self.__angles[centralIdx]["rightIndexes"]:
-                    index = self.__angles[centralIdx]["rightIndexes"].index(leftIdx)
-                    if rightIdx == self.__angles[centralIdx]["leftIndexes"][index]:
-                        LOGGER.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
-                        continue
-                # add angle definition
-                self.__angles[centralIdx]["leftIndexes"].append(leftIdx)
-                self.__angles[centralIdx]["rightIndexes"].append(rightIdx)
-                self.__angles[centralIdx]["lower"].append(lower)
-                self.__angles[centralIdx]["upper"].append(upper)
-                self.__atomsLUAD[centralIdx].append(centralIdx)
-                self.__atomsLUAD[leftIdx].append(centralIdx)
-                self.__atomsLUAD[rightIdx].append(centralIdx)
+                self.add_angle(angle)
             # finalize angles
             for idx in self.engine.pdb.xindexes:
                 angles = self.__angles.get(idx, {"leftIndexes":[],"rightIndexes":[],"lower":[],"upper":[]} )
@@ -230,6 +198,77 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         # reset constraint
         self.reset_constraint()
     
+    def add_angle(self, angle):
+        """
+        Add a single angle to the list of constraint angles.
+        
+        :Parameters:
+            #. angle (list): The bond list of five items.\n
+               #. First item: The central atom index.
+               #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
+               #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
+               #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
+               #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
+        """
+        centralIdx, leftIdx, rightIdx, lower, upper = angle
+        assert centralIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+        assert leftIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+        assert rightIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+        centralIdx = INT_TYPE(centralIdx)
+        leftIdx    = INT_TYPE(leftIdx)
+        rightIdx   = INT_TYPE(rightIdx)
+        # create atoms look up angles dictionary
+        if not self.__atomsLUAD.has_key(centralIdx):
+            self.__atomsLUAD[centralIdx] = []
+        if not self.__atomsLUAD.has_key(leftIdx):
+            self.__atomsLUAD[leftIdx] = []
+        if not self.__atomsLUAD.has_key(rightIdx):
+            self.__atomsLUAD[rightIdx] = []
+        # create angles
+        if not self.__angles.has_key(centralIdx):
+            centralIdxToArray = False
+            self.__angles[centralIdx] = {"leftIndexes":[],"rightIndexes":[],"lower":[],"upper":[]}
+        else:
+            centralIdxToArray = not isinstance(self.__angles[centralIdx]["leftIndexes"], list)
+            self.__angles[centralIdx] = {"leftIndexes"  :list(self.__angles[centralIdx]["leftIndexes"]),
+                                         "rightIndexes" :list(self.__angles[centralIdx]["rightIndexes"]),
+                                         "lower"        :list(self.__angles[centralIdx]["lower"]),
+                                         "upper"        :list(self.__angles[centralIdx]["upper"]) }
+        # check for redundancy and append
+        ignoreFlag=False
+        if leftIdx in self.__angles[centralIdx]["leftIndexes"]:
+            index = self.__angles[centralIdx]["leftIndexes"].index(leftIdx)
+            if rightIdx == self.__angles[centralIdx]["rightIndexes"][index]:
+                LOGGER.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] are ignored and old angle limits [%.3f,%.3f] are kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
+                ignoreFlag=True
+        elif leftIdx in self.__angles[centralIdx]["rightIndexes"]:
+            index = self.__angles[centralIdx]["rightIndexes"].index(leftIdx)
+            if rightIdx == self.__angles[centralIdx]["leftIndexes"][index]:
+                LOGGER.warn("Angle definition for central atom index '%i' and interchangeable left an right '%i' and '%i' is  already defined. New angle limits [%.3f,%.3f] are ignored and old angle limits [%.3f,%.3f] are kept."%(centralIdx, leftIdx, rightIdx, lower, upper, self.__angles[centralIdx]["lower"][index], self.__angles[centralIdx]["upper"][index]))
+                ignoreFlag=True
+        # add angle definition
+        if not ignoreFlag:
+            self.__angles[centralIdx]["leftIndexes"].append(leftIdx)
+            self.__angles[centralIdx]["rightIndexes"].append(rightIdx)
+            self.__angles[centralIdx]["lower"].append(lower)
+            self.__angles[centralIdx]["upper"].append(upper)
+            self.__atomsLUAD[centralIdx].append(centralIdx)
+            self.__atomsLUAD[leftIdx].append(centralIdx)
+            self.__atomsLUAD[rightIdx].append(centralIdx)
+        if centralIdxToArray:
+            angles = self.__angles.get(centralIdxToArray, {"leftIndexes":[],"rightIndexes":[],"lower":[],"upper":[]} )
+            self.__angles[centralIdxToArray] =  {"leftIndexes"  : np.array(angles["leftIndexes"], dtype = INT_TYPE), 
+                                                 "rightIndexes" : np.array(angles["rightIndexes"], dtype = INT_TYPE),
+                                                 "lower"        : np.array(angles["lower"]  , dtype = FLOAT_TYPE),
+                                                 "upper"        : np.array(angles["upper"]  , dtype = FLOAT_TYPE) }    
+        # sort lookup tables
+        lut = self.__atomsLUAD.get(centralIdx, [] )
+        self.__atomsLUAD[centralIdx] = sorted(set(lut))
+        lut = self.__atomsLUAD.get(leftIdx, [] )
+        self.__atomsLUAD[leftIdx] = sorted(set(lut))
+        lut = self.__atomsLUAD.get(rightIdx, [] )
+        self.__atomsLUAD[rightIdx] = sorted(set(lut))
+
     def create_angles_by_definition(self, anglesDefinition):
         """ 
         Creates anglesMap using angles definition.
@@ -321,12 +360,12 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         # create angles
         self.set_angles(anglesMap=anglesMap)
     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
-        Compute the squared deviation of data not satisfying constraint conditions. 
+        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{C} 
+            StdErr = \\sum \\limits_{i}^{C} 
             ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
             \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
             +
@@ -345,15 +384,15 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        squaredDeviations = 0
+        standardError = 0
         for idx, angle in data.items():
-            squaredDeviations +=  np.sum(angle["reducedAngles"]**2)
-        FLOAT_TYPE( squaredDeviations )
+            standardError +=  np.sum(angle["reducedAngles"]**2)
+        return FLOAT_TYPE( standardError )
 
     def get_constraint_value(self):
         """
@@ -382,8 +421,8 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
+        # set standardError
+        #self.set_standard_error( self.compute_standard_error(data = dataDict) )
         
     def compute_before_move(self, indexes):
         """ 
@@ -474,7 +513,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
 class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
     """
     It's a quasi-rigid constraint that controls the inter-molecular coordination angle between atoms. 
-    The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
+    The maximum standard error is defined as the sum of minimum number of neighbours of all atoms
     in the system.
     
     :Parameters:
@@ -488,9 +527,9 @@ class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
                #. tuple of 3 items (first neighbour atom type, lower limit coordination distance, upper limit coordination distance)
                #. tuple of 3 items (second neighbour atom type, lower limit coordination distance, upper limit coordination distance) 
                #. tuple of 2 items (lower limit coordination angle, upper limit coordination angle)
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
     """
     def __init__(self, engine, typeDefinition="element", coordAngleDef=None, rejectProbability=1):
         # initialize constraint
@@ -707,11 +746,11 @@ class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
                 data['secondNeighs'] = {}
                 data['deviations']   = np.zeros((numberOfEntries,), dtype=INT_TYPE)
             data['neighbouring']      = {}
-            data['squaredDeviations'] = np.sum(data['deviations']**2)
-            #maxSquaredDev += data['squaredDeviations']
+            data['standardError'] = np.sum(data['deviations']**2)
+            #maxSquaredDev += data['standardError']
             self.__coordAngData.append(data)
         # set maximum squared deviation as the sum of all atoms atomDeviations
-        #self._set_maximum_squared_deviations(maxSquaredDev)
+        #self._set_maximum_standard_error(maxSquaredDev)
         
      
     def compute_data(self):
@@ -727,9 +766,9 @@ class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
         #self.set_data( self.__coordAngData )
         #self.set_active_atoms_data_before_move(None)
         #self.set_active_atoms_data_after_move(None)
-        ## set squaredDeviations
-        #SD = self.compute_squared_deviations(data = self.__coordAngData)
-        #self.set_squared_deviations(SD) 
+        ## set standardError
+        #SD = self.compute_standard_error(data = self.__coordAngData)
+        #self.set_standard_error(SD) 
 
 
 

@@ -122,17 +122,27 @@ def get_path(key=None):
         return paths[key]
 
         
-def rebin(data, bin=0.05):
+def rebin(data, bin=0.05, check=False):
     """
     Re-bin 2D data of shape (N,2).
     
     :Parameters:
         #. data (numpy.ndarray): the (N,2) shape data.
+        #. bin (number): the new bin size.
+        #. check (boolean): whether to check arguments before rebining.
         
     :Returns:
         #. X (numpy.ndarray): the first column re-binned.
         #. Y (numpy.ndarray): the second column re-binned.
     """
+    if check:
+        assert isinstance(data, np.ndarray), Logger.error("data must be numpy.ndarray instance")
+        assert len(data.shape)==2, Logger.error("data must be of 2 dimensions")
+        assert data.shape[1] ==2, Logger.error("data must have 2 columns")
+        assert is_number(bin), LOGGER.error("bin must be a number")
+        bin = float(bin)
+        assert bin>0, LOGGER.error("bin must be a positive")
+    # rebin
     x = data[:,0].astype(float)
     y = data[:,1].astype(float)
     rx = []
@@ -150,7 +160,40 @@ def rebin(data, bin=0.05):
     # return
     return (E[1:]+E[:-1])/2., S/W
     
+def smooth(data, winLen=11, window='hanning', check=False):
+    """
+    Smooth 1D data using window function and length.
     
+    :Parameters:
+        #. data (numpy.ndarray): the 1D numpy data.
+        #. winLen (integer): the smoothing window length.
+        #. window (str): The smoothing window type. Can be anything among
+           'flat', 'hanning', 'hamming', 'bartlett' and 'blackman'.
+        #. check (boolean): whether to check arguments before smoothing data.
+        
+    :Returns:
+        #. smoothed (numpy.ndarray): the smoothed 1D data array.
+    """
+    if check:
+        assert isinstance(data, np.ndarray), Logger.error("data must be numpy.ndarray instance")
+        assert len(data.shape)==1, Logger.error("data must be of 1 dimensions")
+        assert is_integer(winLen), LOGGER.error("winLen must be an integer")
+        winLen = int(bin)
+        assert winLen>=3, LOGGER.error("winLen must be bigger than 3")
+        assert data.size < winLen, LOGGER.error("data needs to be bigger than window size.")
+        assert window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman'], LOGGER.error("window must be any of ('flat', 'hanning', 'hamming', 'bartlett', 'blackman')")
+    # compute smoothed data
+    s=np.r_[data[winLen-1:0:-1],data,data[-1:-winLen:-1]]
+    if window == 'flat': #moving average
+        w=np.ones(winLen,'d')
+    else:
+        w=eval('np.'+window+'(winLen)')
+    S=np.convolve(w/w.sum(),s, mode='valid')
+    # get data and return
+    f = winLen/2
+    t = f-winLen+1
+    return S[f:t]
+ 
 def get_random_perpendicular_vector(vector):
     """
     Get random normalized perpendicular vector to a given vector.
@@ -584,6 +627,26 @@ def convert_Gr_to_gr(Gr, minIndex):
        #. slope (float): The computed slope from the minimas.
        #. rho0 (float): The number density of the material.
        #. g(r) (numpy.ndarray): the computed g(r).
+       
+    
+    **To visualize convertion**
+       
+    .. code-block:: python
+        
+        # peak indexes can be different, adjust according to your data
+        minPeaksIndex = [1,3,4]
+        minimas, slope, rho0, gr =  convert_Gr_to_gr(Gr, minIndex=minPeaksIndex)
+        print 'slope: %s --> rho0: %s'%(slope,rho0)
+        import matplotlib.pyplot as plt
+        line = np.transpose( [[0, Gr[-1,0]], [0, slope*Gr[-1,0]]] )
+        plt.plot(Gr[:,0],Gr[:,1], label='G(r)')
+        plt.plot(minimas[:,0], minimas[:,1], 'o', label='minimas')
+        plt.plot(line[:,0], line[:,1], label='density')
+        plt.plot(gr[:,0],gr[:,1], label='g(r)')
+        plt.legend()
+        plt.show()
+    
+    
     """
     # check G(r)
     assert isinstance(Gr, np.ndarray), "Gr must be a numpy.ndarray"

@@ -34,9 +34,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
                #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
                #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
-        #. rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-           and 0 means accepting all steps regardless whether squaredDeviations increases or not.
+        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standardError increases or not.
     
     .. code-block:: python
         
@@ -92,12 +92,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         return self.__atomsLUAD
         
     @property
-    def squaredDeviations(self):
+    def standardError(self):
         """ Get constraint's current squared deviation."""
         if self.data is None:
             return None
         else: 
-            return self.compute_squared_deviations(data = self.data)
+            return self.compute_standard_error(data = self.data)
             
     def listen(self, message, argument=None):
         """   
@@ -110,14 +110,14 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         if message in("engine changed","update boundary conditions",):
             self.reset_constraint()        
         
-    def should_step_get_rejected(self, squaredDeviations):
+    def should_step_get_rejected(self, standardError):
         """
         Overloads 'RigidConstraint' should_step_get_rejected method.
-        It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+        It computes whether to accept or reject a move based on before and after move calculation and not standardError.
         If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.
         
         :Parameters:
-            #. squaredDeviations (number): not used in this case
+            #. standardError (number): not used in this case
         
         :Return:
             #. result (boolean): True to reject step, False to accept
@@ -329,12 +329,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # create angles
         self.set_angles(anglesMap=anglesMap)
     
-    def compute_squared_deviations(self, data):
+    def compute_standard_error(self, data):
         """ 
-        Compute the squared deviation of data not satisfying constraint conditions. 
+        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
         
         .. math::
-            SD = \\sum \\limits_{i}^{C} 
+            StdErr = \\sum \\limits_{i}^{C} 
             ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
             \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
             +
@@ -353,15 +353,15 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute squaredDeviations.
+            #. data (numpy.array): The constraint value data to compute standardError.
             
         :Returns:
-            #. squaredDeviations (number): The calculated squaredDeviations of the constraint.
+            #. standardError (number): The calculated standardError of the constraint.
         """
-        squaredDeviations = 0
+        standardError = 0
         for idx, angle in data.items():
-            squaredDeviations +=  np.sum(angle["reducedAngles"]**2)
-        FLOAT_TYPE( squaredDeviations )
+            standardError +=  np.sum(angle["reducedAngles"]**2)
+        return FLOAT_TYPE( standardError )
 
     def get_constraint_value(self):
         """
@@ -390,8 +390,8 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        # set squaredDeviations
-        #self.set_squared_deviations( self.compute_squared_deviations(data = self.__data) )
+        # set standardError
+        self.set_standard_error( self.compute_standard_error(data = dataDict) )
         
     def compute_before_move(self, indexes):
         """ 

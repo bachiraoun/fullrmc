@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>History &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>History &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,15 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="#" />
-            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />  
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
     </head>
   
     <body>
@@ -88,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -104,14 +112,15 @@
 <h1>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
 <p>FUndamental Library Language for Reverse Monte Carlo or fullrmc
 project has started in 2015 as a consequence of the incapability
-of modelling complex atomic systems&#8217; structure. Since fullrmc was official
-published a first official release 0.2.0 was made. Later, successive releases
-were made as needed.</p>
+of modelling complex atomic systems&#8217; structure. Since fullrmc was
+published a first official release 0.2.0 was made. Later, successive
+releases were made as needed.</p>
 </div>
-<div class="section" id="author">
-<h1>Author<a class="headerlink" href="#author" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="authors-and-developers">
+<h1>Authors and developers<a class="headerlink" href="#authors-and-developers" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>Bachir Aoun</li>
+<li><a class="reference external" href="https://www.linkedin.com/in/bachiraoun">Bachir Aoun</a> (Author, Developer)</li>
+<li><a class="reference external" href="https://www.linkedin.com/in/johnathan-barnes-a558b230">Jonathan Barnes</a> (Developer, consulting)</li>
 </ul>
 </div>
 <div class="section" id="citing-fullrmc">
@@ -121,17 +130,19 @@ we would appreciate citations to the following paper:</p>
 <p><span class="underline">Text entry:</span></p>
 <p>Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled
 with Machine Learning and Artificial Intelligence;
-<em>J. Comput. Chem.</em> (2016)</p>
+<em>J. Comput. Chem.</em> 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304</p>
 <p><span class="underline">Bibtex entry:</span></p>
 <div class="highlight-latex"><div class="highlight"><pre>@article <span class="nb">{</span>JCC:JCC24304,
 author = <span class="nb">{</span>Aoun, Bachir<span class="nb">}</span>,
 title = <span class="nb">{</span>Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence<span class="nb">}</span>,
 journal = <span class="nb">{</span>Journal of Computational Chemistry<span class="nb">}</span>,
+volume = <span class="nb">{</span>37<span class="nb">}</span>,
+number = <span class="nb">{</span>12<span class="nb">}</span>,
 issn = <span class="nb">{</span>1096-987X<span class="nb">}</span>,
 url = <span class="nb">{</span>http://dx.doi.org/10.1002/jcc.24304<span class="nb">}</span>,
 doi = <span class="nb">{</span>10.1002/jcc.24304<span class="nb">}</span>,
-pages = <span class="nb">{</span>n/a--n/a<span class="nb">}</span>,
-keywords = <span class="nb">{</span>reverse Monte Carlo, rigid body, machine learning, pair distribution function, modeling<span class="nb">}</span>,
+pages = <span class="nb">{</span>1102--1111<span class="nb">}</span>,
+keywords = <span class="nb">{</span>reverse monte carlo, rigid body, machine learning, pair distribution function, modeling<span class="nb">}</span>,
 year = <span class="nb">{</span>2016<span class="nb">}</span>,
 <span class="nb">}</span>
 </pre></div>
@@ -145,11 +156,13 @@ AU  - Aoun, Bachir
 TI  - Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence
 JO  - Journal of Computational Chemistry
 JA  - J. Comput. Chem.
+VL  - 37
+IS  - 12
 SN  - 1096-987X
 UR  - http://dx.doi.org/10.1002/jcc.24304
 DO  - 10.1002/jcc.24304
-SP  - n/a
-EP  - n/a
+SP  - 1102
+EP  - 1111
 KW  - reverse Monte Carlo
 KW  - rigid body
 KW  - machine learning
@@ -177,7 +190,7 @@ frameborder="0" allowfullscreen>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">History</a></li>
-<li><a class="reference internal" href="#author">Author</a></li>
+<li><a class="reference internal" href="#authors-and-developers">Authors and developers</a></li>
 <li><a class="reference internal" href="#citing-fullrmc">Citing fullrmc</a></li>
 <li><a class="reference internal" href="#youtube-channel">Youtube channel</a></li>
 </ul>
@@ -213,7 +226,7 @@ frameborder="0" allowfullscreen>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

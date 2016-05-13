@@ -1,5 +1,61 @@
-.. automodule:: fullrmc.Examples
+.. automodule:: fullrmc.Examples 
 
+Available examples
+==================
+**It is not allowed to use any of the examples materials' outside of 
+the scope of this tutorial. Experimental data and models distributed
+in the examples are even wrong or tricked to serve the purpose of 
+learning fullrmc.**
 
-.. include :: ../../Examples/thfSimulation/README.rst
+Herein is a list of all available examples in the standard distribution.
+A short description of each example is shown in the list below. It is 
+recommended not to run any example from within fullrmc. But copy the
+example folder to any safe place such your home directory and run it from 
+there. To locate an example and copy it, one can do the following:
 
+.. code-block:: python  
+       
+         # import find_example
+         from fullrmc.Examples import find_example
+         # search for an examples. e.g. atomicNiTi
+         print find_example('atomicNiTi')
+         
+         >>> '../site-packages/fullrmc/Examples/atomicNiTi'
+
+         
+In all examples, run.py is the name of the file that muse be  
+executed from the command line as the following:
+
+.. code-block:: bash  
+       
+          python run.py
+
+          
+Examples folder name is used as the click-able items in the following list.
+
+#. `translations <fullrmc.Examples.translations.html>`__: Used show how to 
+   use translation generators.
+#. `rotations <fullrmc.Examples.rotations.html>`__: Used to show how to 
+   use rotation generators.
+#. `agitations <fullrmc.Examples.agitations.html>`__: Used to show how to 
+   use agitation generators.
+#. `docking <fullrmc.Examples.docking.html>`__: To show how to move one group
+   of atoms towards another.
+#. `explore <fullrmc.Examples.explore.html>`__: This is a simulation of a molecule
+   exploring a cavity. 
+#. `refine <fullrmc.Examples.refine.html>`__: This is a simulation of a molecule
+   refining its position in a cavity.
+#. `benchmark <fullrmc.Examples.benchmark.html>`__: This example can be used to 
+   benchmark fullrmc.
+#. `MLSelection <fullrmc.Examples.MLSelection.html>`__: In this example we show
+   that reinforcement machine learning can help increasing accepted moves ratio.
+#. `ExploreCO2 <fullrmc.Examples.exploreCO2.html>`__: This is a fit of CO2 gas
+   in critical condition.  
+#. `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__: Fitting a Ni-Ti memory   
+   shape binary compound.
+#. `molecularTHF <fullrmc.Examples.molecularTHF.html>`__: This is a tetrahydrofuran 
+   electrolyte system fitting.
+#. `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon 
+   oxide nanosphere fitting. 
+   
+   

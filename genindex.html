@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Index &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Index &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,15 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />  
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
     </head>
   
     <body>
@@ -89,7 +97,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -182,6 +190,14 @@
   </dt>
 
       
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle">add_angle() (fullrmc.Constraints.AngleConstraints.BondsAngleConstraint method)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint.add_bond">add_bond() (fullrmc.Constraints.BondConstraints.BondConstraint method)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.Broadcaster.add_listener">add_listener() (fullrmc.Core.Collection.Broadcaster method)</a>
   </dt>
 
@@ -206,9 +222,11 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.afterMoveSquaredDeviations">afterMoveSquaredDeviations (fullrmc.Core.Constraint.Constraint attribute)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.afterMoveStandardError">afterMoveStandardError (fullrmc.Core.Constraint.Constraint attribute)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator.agitate">agitate (fullrmc.Generators.Agitations.AngleAgitationGenerator attribute)</a>
   </dt>
@@ -219,8 +237,6 @@
   </dt>
 
       </dl></dd>
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.allTypes">allTypes (fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint attribute)</a>
   </dt>
@@ -604,16 +620,16 @@
 
       </dl></dd>
       
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_squared_deviations">compute_and_set_squared_deviations() (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_standard_error">compute_and_set_standard_error() (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_squared_deviations">(fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_standard_error">(fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.compute_and_set_squared_deviations">(fullrmc.Core.Constraint.Constraint method)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error">(fullrmc.Core.Constraint.Constraint method)</a>
   </dt>
 
       </dl></dd>
@@ -708,44 +724,44 @@
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
       
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations">compute_squared_deviations() (fullrmc.Constraints.AngleConstraints.BondsAngleConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_standard_error">compute_standard_error() (fullrmc.Constraints.AngleConstraints.BondsAngleConstraint method)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations">(fullrmc.Constraints.BondConstraints.BondConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint.compute_standard_error">(fullrmc.Constraints.BondConstraints.BondConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations">(fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_standard_error">(fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations">(fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_standard_error">(fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations">(fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error">(fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations">(fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_standard_error">(fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations">(fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_standard_error">(fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_squared_deviations">(fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint method)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_standard_error">(fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.compute_squared_deviations">(fullrmc.Core.Constraint.Constraint method)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.compute_standard_error">(fullrmc.Core.Constraint.Constraint method)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint.compute_squared_deviations">(fullrmc.Core.Constraint.ExperimentalConstraint method)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint.compute_standard_error">(fullrmc.Core.Constraint.ExperimentalConstraint method)</a>
   </dt>
 
       </dl></dd>
@@ -838,6 +854,10 @@
   </dt>
 
       
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dq">dq (fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint attribute)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dr">dr (fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint attribute)</a>
   </dt>
 
@@ -872,7 +892,7 @@
 
       </dl></dd>
       
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingSquaredDeviationsModes">existingSquaredDeviationsModes (fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint attribute)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingStandardErrorModes">existingStandardErrorModes (fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint attribute)</a>
   </dt>
 
       
@@ -898,7 +918,7 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalRecDist">experimentalRecDist (fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint attribute)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalQValues">experimentalQValues (fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint attribute)</a>
   </dt>
 
       
@@ -922,6 +942,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
+  <dt><a href="examples.html#fullrmc.Examples.find_example">find_example() (in module fullrmc.Examples)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.find_extrema">find_extrema() (in module fullrmc.Core.Collection)</a>
   </dt>
 
@@ -938,10 +962,6 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.angles.full_angles">full_angles() (in module fullrmc.Core.angles)</a>
-  </dt>
-
-      
   <dt><a href="index.html#module-fullrmc">fullrmc (module)</a>
   </dt>
 
@@ -955,6 +975,10 @@
 
       
   <dt><a href="fullrmc.Constraints.html#module-fullrmc.Constraints.BondConstraints">fullrmc.Constraints.BondConstraints (module)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#module-fullrmc.Constraints.Collection">fullrmc.Constraints.Collection (module)</a>
   </dt>
 
       
@@ -1198,11 +1222,23 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.get_orientation_matrix">get_orientation_matrix() (in module fullrmc.Core.Collection)</a>
+  <dt><a href="examples.html#fullrmc.Examples.get_examples_path">get_examples_path() (in module fullrmc.Examples)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction.get_gr_shape_function">get_gr_shape_function() (fullrmc.Constraints.Collection.ShapeFunction method)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction.get_Gr_shape_function">get_Gr_shape_function() (fullrmc.Constraints.Collection.ShapeFunction method)</a>
   </dt>
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.get_orientation_matrix">get_orientation_matrix() (in module fullrmc.Core.Collection)</a>
+  </dt>
+
       
   <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.get_path">get_path() (in module fullrmc.Core.Collection)</a>
   </dt>
@@ -1691,6 +1727,10 @@
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.powerLaw">powerLaw (fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint attribute)</a>
   </dt>
 
+      
+  <dt><a href="examples.html#fullrmc.Examples.print_available_examples">print_available_examples() (in module fullrmc.Examples)</a>
+  </dt>
+
   </dl></td>
 </tr></table>
 
@@ -1956,7 +1996,7 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.set_after_move_squared_deviations">set_after_move_squared_deviations() (fullrmc.Core.Constraint.Constraint method)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.set_after_move_standard_error">set_after_move_standard_error() (fullrmc.Core.Constraint.Constraint method)</a>
   </dt>
 
       
@@ -2257,8 +2297,6 @@
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_pairs_limits">set_pairs_limits() (fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator.set_path">set_path() (fullrmc.Core.MoveGenerator.PathGenerator method)</a>
   </dt>
@@ -2273,6 +2311,8 @@
   </dt>
 
       </dl></dd>
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector.set_recur">set_recur() (fullrmc.Core.GroupSelector.RecursiveGroupSelector method)</a>
   </dt>
@@ -2308,6 +2348,10 @@
   </dt>
 
       
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_shape_function_parameters">set_shape_function_parameters() (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint method)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator.set_shrink">set_shrink() (fullrmc.Generators.Agitations.AngleAgitationGenerator method)</a>
   </dt>
 
@@ -2322,7 +2366,7 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.set_squared_deviations">set_squared_deviations() (fullrmc.Core.Constraint.Constraint method)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.set_standard_error">set_standard_error() (fullrmc.Core.Constraint.Constraint method)</a>
   </dt>
 
       
@@ -2462,6 +2506,18 @@
 
       </dl></dd>
       
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeArray">shapeArray (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint attribute)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction">ShapeFunction (class in fullrmc.Constraints.Collection)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeUpdateFreq">shapeUpdateFreq (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint attribute)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellCenters">shellCenters (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint attribute)</a>
   </dt>
 
@@ -2526,10 +2582,6 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.angles.single_angles">single_angles() (in module fullrmc.Core.angles)</a>
-  </dt>
-
-      
   <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.SingletonDecorator">SingletonDecorator() (in module fullrmc.Core.Collection)</a>
   </dt>
 
@@ -2542,20 +2594,24 @@
   </dt>
 
       
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.squaredDeviations">squaredDeviations (fullrmc.Constraints.AngleConstraints.BondsAngleConstraint attribute)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Collection.smooth">smooth() (in module fullrmc.Core.Collection)</a>
+  </dt>
+
+      
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.standardError">standardError (fullrmc.Constraints.AngleConstraints.BondsAngleConstraint attribute)</a>
   </dt>
 
       <dd><dl>
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint.squaredDeviations">(fullrmc.Constraints.BondConstraints.BondConstraint attribute)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint.standardError">(fullrmc.Constraints.BondConstraints.BondConstraint attribute)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.squaredDeviations">(fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint attribute)</a>
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.standardError">(fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint attribute)</a>
   </dt>
 
         
-  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.squaredDeviations">(fullrmc.Core.Constraint.Constraint attribute)</a>
+  <dt><a href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint.standardError">(fullrmc.Core.Constraint.Constraint attribute)</a>
   </dt>
 
       </dl></dd>
@@ -2888,6 +2944,10 @@
   </dt>
 
       
+  <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weighting">weighting (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint attribute)</a>
+  </dt>
+
+      
   <dt><a href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weightingScheme">weightingScheme (fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint attribute)</a>
   </dt>
 
@@ -3005,7 +3065,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

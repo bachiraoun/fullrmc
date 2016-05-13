@@ -7,7 +7,14 @@
 
 fullrmc.Constraints package
 ===========================
- 
+
+Collection
+----------
+.. automodule:: fullrmc.Constraints.Collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 AngleConstraints
 ----------------
 .. automodule:: fullrmc.Constraints.AngleConstraints

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,15 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />  
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
     </head>
   
     <body>
@@ -88,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -123,26 +131,49 @@ the same three later attributes value.</li>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt>fullrmc requires:</dt>
+<dt>Here we describe two methods to installing fullrmc. </dt>
+<dd><ol class="first last arabic">
+<li><p class="first">The first method is by using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>. 
+If you don&#8217;t know what pip is and you are lazy enough not to read through 
+the documentation, pip supports installing from PyPI, version control, 
+local projects, and directly from distribution files. To install pip 
+download <a class="reference external" href="https://bootstrap.pypa.io/get-pip.py">get_pip.py</a> file 
+and run the following from the command line.</p>
+<div class="highlight-bash"><div class="highlight"><pre>python get_pip.py
+</pre></div>
+</div>
+</li>
+<li><p class="first">The second method is by fullrmc&#8217;s cloning the source code and  
+repository from <a class="reference external" href="https://github.com/bachiraoun/fullrmc">github</a> 
+and then compiling the extension files in place.</p>
+</li>
+</ol>
+</dd>
+<dt>For your general understanding, fullrmc requires the following:</dt>
 <dd><ol class="first last arabic simple">
-<li>Python (&gt;= 2.6 and &lt; 3),</li>
+<li>Python (&gt;= 2.7 and &lt; 3),</li>
 <li>NumPy (lowest version tested is 1.7.1)</li>
 <li>cython (lowest version tested is 0.21.1)</li>
 <li>matplotlib (lowest version tested is 1.4)</li>
-<li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0)</li>
+<li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
+from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0)</li>
 <li>pysimplelog (lowest version tested is 0.1.7)</li>
 </ol>
 </dd>
 </dl>
 <p><strong>Installation using pip:</strong></p>
-<p>numpy and cython must be installed and updated manually.</p>
+<p>Installing fullrmc with pip is done in two steps.
+Firstly install numpy and cython manually and ensure that 
+they meet with fullrmc&#8217;s version requirement.</p>
 <blockquote>
 <div><div class="highlight-bash"><div class="highlight"><pre>pip install -U <span class="s2">&quot;numpy&gt;=1.7.1&quot;</span>
 pip install -U <span class="s2">&quot;cython&gt;=0.21.1&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
-<p>When you already have a working installation of numpy and cython.</p>
+<p>When you already have a working up-do-date installation of numpy and cython,
+you can proceed to installing fullrmc. The rest of the dependencies will be 
+automatically installed and updated while fullrmc is being installed.</p>
 <blockquote>
 <div><div class="highlight-bash"><div class="highlight"><pre>pip install fullrmc
 </pre></div>
@@ -151,7 +182,7 @@ pip install -U <span class="s2">&quot;cython&gt;=0.21.1&quot;</span>
 <p><strong>Installation by cloning github repository:</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>Ensure all fullrmc required packages are installed and up to data by executing the
+<li>Ensure all fullrmc required packages are installed and up-do-date by executing the
 following python script:</li>
 </ul>
 <blockquote>
@@ -159,7 +190,7 @@ following python script:</li>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s">&#39;cython&#39;</span>     <span class="p">,</span><span class="s">&#39;0.21.1&#39;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s">&#39;0.1.3&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s">&#39;0.1.4&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s">&#39;0.1.7&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s">&#39;1.4&#39;</span>  <span class="p">)]:</span>
     <span class="k">try</span><span class="p">:</span>
@@ -191,8 +222,8 @@ git clone https://github.com/bachiraoun/fullrmc.git
 </div>
 </div></blockquote>
 <ul class="simple">
-<li>Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions
-from command line as the following:</li>
+<li>Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc 
+extensions from command line as the following:</li>
 </ul>
 <blockquote>
 <div><div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> .../site_packages/fullrmc/Extensions
@@ -337,7 +368,8 @@ distances computation fixed for multiple box separation.</li>
 <blockquote>
 <div><ol class="arabic simple">
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">StructureFactorConstraint</span></tt></a> added computing Static Structure Factor</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></tt></a> added computing Reduced Static Structure Factor</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></tt></a> added computing Reduced Static 
+Structure Factor</li>
 </ol>
 </div></blockquote>
 </div>
@@ -345,10 +377,62 @@ distances computation fixed for multiple box separation.</li>
 <h4>Fixes and improvements:<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> plot Y axis
-label units added.</li>
-<li>swap example changed to atomicSimulation and S(q) added to the fitting along with G(r)</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></tt></a> 
+plot Y axis label units added.</li>
+<li>swap example changed to atomicSimulation and S(q) added to the fitting 
+along with G(r)</li>
 <li>thfSimulation example change to molecularSimulation</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id12">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.4.1">Version 0.4.1</a>:<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id13">
+<h4>Fixes and improvements:<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>rebin core method check argument added</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">StructureFactorConstraint</span></tt></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><tt class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></tt></a> 
+experimentalQValues set as property</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id14">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.0.0">Version 1.0.0</a>:<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p>This is a main version change from 0.x.y to 1.x.y and that&#8217;s because non-periodic 
+boundary conditions are now implemented. Starting from this version shape function 
+correction can be used. For non-periodic boundary conditions, very big box with periodic 
+boundaries is automatically set and system shape function is estimated to correct for 
+the fixed <span class="math">\(\rho_{0}\)</span> global density approximation.</p>
+<p>Some testing were done prior to publishing this version and it was found out that 
+computing angles for <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></tt></a> can in some cases be wrong.
+We recommend updating to this version if <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></tt></a> is needed
+for fitting molecular systems.</p>
+<p>Starting from this version, pdbParser (&gt;=0.1.4) is used.</p>
+<div class="section" id="id15">
+<h4>New Modules and definitions:<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>fullrmc.Constraints.Collection package added along with <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction" title="fullrmc.Constraints.Collection.ShapeFunction"><tt class="xref py py-class docutils literal"><span class="pre">ShapeFunction</span></tt></a></li>
+<li>Engine numberDensity added. Used to set correct volume and density when 
+InfiniteBoundaries are used</li>
+<li>fullrmc.Core.Collection.smooth function added. It can be used to smooth
+out any 1D data. This is useful for noise experimental data</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id16">
+<h4>Fixes and improvements:<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>BondAngles calculation bug fixed</li>
+<li>Constraints all squared deviations attributes and methods changed to 
+standard error to conserve the generality</li>
+<li>Engine chiSquare attributes and methods changed to total standard error 
+to conserve the generality</li>
+<li>Logger levels added</li>
 </ol>
 </div></blockquote>
 </div>
@@ -399,6 +483,15 @@ label units added.</li>
 <li><a class="reference internal" href="#id11">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id12">Version 0.4.1:</a><ul>
+<li><a class="reference internal" href="#id13">Fixes and improvements:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id14">Version 1.0.0:</a><ul>
+<li><a class="reference internal" href="#id15">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id16">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -436,7 +529,7 @@ label units added.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

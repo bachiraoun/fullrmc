@@ -14,10 +14,11 @@
 /* -- special fullrmc ----------------------------------------------------------- */
 
 .underline {
-  text-decoration: underline;
+    text-decoration: underline;
 }
+
 .overline {
-  text-decoration: overline;
+    text-decoration: overline;
 }
    
 /* -- page layout ----------------------------------------------------------- */ 

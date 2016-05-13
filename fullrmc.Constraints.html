@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,16 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-            <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />  
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
     </head>
   
     <body>
@@ -95,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -111,11 +119,11 @@
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
 <p class="graphviz">
-<img src="_images/inheritance-bac39f6c6eddabe96008cc584fcf4cf13f308c9f.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-77d07379c71b456730adc1e5c63740a8a91c9947.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,87,80"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="158,55,269,80"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="158,55,269,80"/>
 <area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="149,104,277,129"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="340,55,484,80"/>
 </map>
@@ -174,8 +182,8 @@ Therefore it has become possible to fully customize and set any possibly imagina
 
 <dl class="attribute">
 <dt>
-<tt class="descname">squaredDeviations</tt></dt>
-<dd><p>Get constraint&#8217;s current squared deviations.</p>
+<tt class="descname">standardError</tt></dt>
+<dd><p>Get constraint&#8217;s current standard error.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -204,8 +212,8 @@ Therefore it has become possible to fully customize and set any possibly imagina
 
 <dl class="attribute">
 <dt>
-<tt class="descname">afterMoveSquaredDeviations</tt></dt>
-<dd><p>Get constraint&#8217;s current calculated SquaredDeviations after last move.</p>
+<tt class="descname">afterMoveStandardError</tt></dt>
+<dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
 </dd></dl>
 
 <dl class="method">
@@ -326,14 +334,14 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 
 <dl class="method">
 <dt>
-<tt class="descname">set_squared_deviations</tt><big>(</big><em>value</em><big>)</big></dt>
-<dd><p>Sets constraint&#8217;s squaredDeviations value.</p>
+<tt class="descname">set_standard_error</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s standardError value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value</li>
+<li>value (number): standardError value</li>
 </ol>
 </td>
 </tr>
@@ -350,7 +358,7 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value.</li>
+<li>value (number): standardError value.</li>
 </ol>
 </td>
 </tr>
@@ -394,14 +402,14 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 
 <dl class="method">
 <dt>
-<tt class="descname">set_after_move_squared_deviations</tt><big>(</big><em>value</em><big>)</big></dt>
-<dd><p>Sets constraint&#8217;s squaredDeviations value after move happens.</p>
+<tt class="descname">set_after_move_standard_error</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s standardError value after move happens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value.</li>
+<li>value (number): standardError value.</li>
 </ol>
 </td>
 </tr>
@@ -449,8 +457,8 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big></dt>
-<dd><p>Computes and sets the constraint&#8217;s squaredDeviations by calling compute_squared_deviations and passing the constraint&#8217;s data.</p>
+<tt class="descname">compute_and_set_standard_error</tt><big>(</big><big>)</big></dt>
+<dd><p>Computes and sets the constraint&#8217;s standardError by calling compute_standard_error and passing the constraint&#8217;s data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -465,7 +473,7 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">compute_squared_deviations</tt><big>(</big><big>)</big></dt>
+<tt class="descname">compute_standard_error</tt><big>(</big><big>)</big></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -514,12 +522,12 @@ and will completely reinitialize the constraint.</li>
 </li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.</p>
@@ -652,12 +660,12 @@ If 0 frequency is given, it means that the scale factor is fixed.</li>
 </tbody>
 </table>
 <ol class="arabic">
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 </ol>
@@ -747,7 +755,7 @@ If None, all data points will be considered as having the same weight.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>experimentalData</em>, <em>modelData</em><big>)</big></dt>
+<tt class="descname">compute_standard_error</tt><big>(</big><em>experimentalData</em>, <em>modelData</em><big>)</big></dt>
 <dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
 <div class="math">
 \[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
@@ -767,7 +775,7 @@ If None, all data points will be considered as having the same weight.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -802,18 +810,18 @@ Raises Exception if multiple instances are present.</p>
 <dt>
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">RigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em><big>)</big></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
-<p>A rigid constraint is a constraint that doesn&#8217;t count into the total squaredDeviations of the Engine.
-But it&#8217;s internal squaredDeviations must monotonously decrease or remain the same from one engine step to another.
-If squaredDeviations of an RigidConstraint increases the step will be rejected even before engine&#8217;s new squaredDeviations get computed.</p>
+<p>A rigid constraint is a constraint that doesn&#8217;t count into the total standardError of the Engine.
+But it&#8217;s internal standardError must monotonously decrease or remain the same from one engine step to another.
+If standardError of an RigidConstraint increases the step will be rejected even before engine&#8217;s new standardError get computed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>rejectProbability (Number): Rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -834,9 +842,9 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -846,14 +854,14 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt>
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -868,14 +876,14 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt>
-<tt class="descname">should_step_get_accepted</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<tt class="descname">should_step_get_accepted</tt><big>(</big><em>standardError</em><big>)</big></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -895,11 +903,11 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">QuasiRigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em>, <em>thresholdRatio</em><big>)</big></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a></p>
 <p>A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
-ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum squared 
-deviations. The ratio is computed as between current squared deviations and maximum squared deviations.</p>
+ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum standard 
+error. The ratio is computed as between current standard error and maximum standard error.</p>
 <blockquote>
 <div><div class="math">
-\[ratio = 1-\frac{current\ squared\ deviations}{maximum\ squared\ deviations} \]</div>
+\[ratio = 1-\frac{current\ standard\ error}{maximum\ standard\ error} \]</div>
 </div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -907,10 +915,10 @@ deviations. The ratio is computed as between current squared deviations and maxi
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases
+<li>rejectProbability (Number): Rejecting probability of all steps where standardError increases
 only before threshold ratio is reached. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 <li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
 It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
 behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
@@ -953,14 +961,14 @@ constraint becomes always free and useless.</li>
 
 <dl class="method">
 <dt>
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -983,14 +991,102 @@ constraint becomes always free and useless.</li>
 
 <div class="section" id="fullrmc-constraints-package">
 <h1>fullrmc.Constraints package<a class="headerlink" href="#fullrmc-constraints-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-fullrmc.Constraints.Collection">
+<span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Constraints.Collection" title="Permalink to this headline">¶</a></h2>
+<p>Collection of methods and classes definition useful for constraints computation</p>
+<dl class="class">
+<dt id="fullrmc.Constraints.Collection.ShapeFunction">
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.Collection.</tt><tt class="descname">ShapeFunction</tt><big>(</big><em>engine</em>, <em>weighting='atomicNumber'</em>, <em>qmin=0.001</em>, <em>qmax=1</em>, <em>dq=0.005</em>, <em>rmin=0.0</em>, <em>rmax=100</em>, <em>dr=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.Collection.ShapeFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Shape function used to correct for particle shape. The shape 
+function is subtracted from the total G(r) of g(r). It must 
+be used when non-periodic boundary conditions are used to take 
+into account the atomic density drop and to correct for the 
+<span class="math">\(\rho_{0}\)</span> approximation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>engine (Engine): The fitting engine.</li>
+<li>weighting (string): The elements weighting.</li>
+<li>qmin (number): The minimum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li>qmax (number): The maximum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li>dq (number): The reciprocal distance bin size in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li>rmin (number): The minimum distance in <span class="math">\(\AA\)</span> considered 
+upon building the histogram prior to computing the shape function.</li>
+<li>rmax (number): The maximum distance in <span class="math">\(\AA\)</span> 
+considered upon building the histogram prior to computing the shape function.</li>
+<li>dr (number): The bin size in <span class="math">\(\AA\)</span> considered upon 
+building the histogram prior to computing the shape function.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>N.B: tweak qmax as small as possible to reduce the wriggles ...</strong></p>
+<dl class="method">
+<dt id="fullrmc.Constraints.Collection.ShapeFunction.get_Gr_shape_function">
+<tt class="descname">get_Gr_shape_function</tt><big>(</big><em>rValues</em>, <em>compute=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.Collection.ShapeFunction.get_Gr_shape_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get shape function of G(r) used in a PairDistributionConstraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>rValues (numpy.ndarray): The r values array.</li>
+<li>compute (boolean): whether to recompute shape 
+function reciprocal data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>shapeFunction (numpy.ndarray): The compute shape function.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.Collection.ShapeFunction.get_gr_shape_function">
+<tt class="descname">get_gr_shape_function</tt><big>(</big><em>rValues</em>, <em>compute=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.Collection.ShapeFunction.get_gr_shape_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get shape function of g(r) used in a PairCorrelationConstraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>rValues (numpy.ndarray): The r values array.</li>
+<li>compute (boolean): whether to recompute shape 
+function reciprocal data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>shapeFunction (numpy.ndarray): The compute shape function.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-393302f957cc90a1de076d21a0eaf6542e719600.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-d782076d671baa48354736ebaa631524f0313176.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.AtomicCoordinationAngleConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination angle between atoms. " alt="" coords="311,5,537,31"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node4" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="349,55,499,80"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
@@ -1020,9 +1116,9 @@ Every item must be a list of five items.</p>
 </ol>
 </div></blockquote>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
 </ol>
 </td>
@@ -1076,9 +1172,9 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.squaredDeviations">
-<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current deviations square.</p>
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.standardError">
+<tt class="descname">standardError</tt><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.standardError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current standard error.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1101,16 +1197,16 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+It computes whether to accept or reject a move based on before and after move calculation and not standardError.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): not used in this case</li>
+<li>standardError (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -1134,6 +1230,30 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>anglesMap (list): The angles map definition.
 Every item must be a list of five items.<ol class="arabic">
+<li>First item: The central atom index.</li>
+<li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
+<li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed in rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle">
+<tt class="descname">add_angle</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a single angle to the list of constraint angles.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>angle (list): The bond list of five items.<ol class="arabic">
 <li>First item: The central atom index.</li>
 <li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
@@ -1183,11 +1303,11 @@ Every angle definition is a list of five items where:<ol class="arabic">
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) of data not satisfying constraint conditions.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{C} 
+\[StdErr = \sum \limits_{i}^{C} 
 ( \theta_{i} - \theta_{i}^{min} ) ^{2} 
 \int_{0}^{\theta_{i}^{min}} \delta(\theta-\theta_{i}) d \theta
 +
@@ -1208,12 +1328,12 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -1320,7 +1440,7 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">AtomicCoordinationAngleConstraint</tt><big>(</big><em>engine</em>, <em>typeDefinition='element'</em>, <em>coordAngleDef=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.AtomicCoordinationAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>It&#8217;s a quasi-rigid constraint that controls the inter-molecular coordination angle between atoms. 
-The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
+The maximum standard error is defined as the sum of minimum number of neighbours of all atoms
 in the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1346,9 +1466,9 @@ Every definition is a tuple or list of 3 items.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
 </ol>
 </td>
@@ -1456,10 +1576,10 @@ Every definition is a tuple or list of 3 items.</p>
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-5355870e0a3746e3c0e38b625c01e53a444f3c75.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-65ebe551b447948b9dd5fc9aa122f469c4fa5981.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="311,31,421,56"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
@@ -1488,9 +1608,9 @@ Every definition is a tuple or list of 3 items.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
 </ol>
 </td>
@@ -1533,9 +1653,9 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.squaredDeviations">
-<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current squared deviation.</p>
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.standardError">
+<tt class="descname">standardError</tt><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.standardError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current standard error.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1558,16 +1678,16 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+It computes whether to accept or reject a move based on before and after move calculation and not standardError.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): not used in this case</li>
+<li>standardError (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -1591,6 +1711,29 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>bondsMap (list): The bonds map definition.
 Every item must be a list of four items.<ol class="arabic">
+<li>First item is the first atom index.</li>
+<li>Second item the second atom index forming the bond,</li>
+<li>Third item: The lower limit or the minimum bond length allowed.</li>
+<li>Fourth item: The upper limit or the maximum bond length allowed.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.add_bond">
+<tt class="descname">add_bond</tt><big>(</big><em>bond</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.add_bond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a single bond to the list of constraint bonds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>bond (list): The bond list of four items.<ol class="arabic">
 <li>First item is the first atom index.</li>
 <li>Second item the second atom index forming the bond,</li>
 <li>Third item: The lower limit or the minimum bond length allowed.</li>
@@ -1640,11 +1783,11 @@ Every bond definition is a list of four items where:<ol class="arabic">
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) of data not satisfying constraint conditions.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{C} 
+\[StdErr = \sum \limits_{i}^{C} 
 ( \beta_{i} - \beta_{i}^{min} ) ^{2} 
 \int_{0}^{\beta_{i}^{min}} \delta(\beta-\beta_{i}) d \beta
 +
@@ -1665,12 +1808,12 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -1777,10 +1920,10 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-c89eab3c4ad1a9034598dd6526d57d559ca4d987.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-a7df65171c07fa486a24692e69749641d6d0c049.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="311,5,524,31"/>
 <area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="311,55,524,80"/>
@@ -1816,15 +1959,15 @@ given defaultMinimumDistance value .</p>
 </div>
 </li>
 <li><p class="first">flexible (boolean): Whether to allow atoms to break constraints definition 
-under the condition of decreasing total squaredDeviations. If flexible is set 
+under the condition of decreasing total standardError. If flexible is set 
 to False, atoms will never be allowed to cross from above to below minimum 
 allowed distance. Even if the later will decrease some other unsatisfying 
-atoms distances, and therefore the total squaredDeviations of the constraint.</p>
+atoms distances, and therefore the total standardError of the constraint.</p>
 </li>
 <li><p class="first">rejectProbability (Number): rejecting probability of all steps where 
-squaredDeviations increases. It must be between 0 and 1 where 1 means 
-rejecting all steps where squaredDeviations increases and 0 means accepting 
-all steps regardless whether squaredDeviations increases or not.</p>
+standardError increases. It must be between 0 and 1 where 1 means 
+rejecting all steps where standardError increases and 0 means accepting 
+all steps regardless whether standardError increases or not.</p>
 </li>
 </ol>
 </td>
@@ -1945,10 +2088,10 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>flexible (boolean): Whether to allow atoms to break constraints definition 
-under the condition of decreasing total squaredDeviations. If flexible is 
+under the condition of decreasing total standardError. If flexible is 
 set to False, atoms will never be allowed to cross from above to below 
 minimum allowed distance. Even if the later will decrease some other 
-unsatisfying atoms distances, and therefore the total squaredDeviations 
+unsatisfying atoms distances, and therefore the total standardError 
 of the constraint.</li>
 </ol>
 </td>
@@ -2019,8 +2162,8 @@ If None is given all pairs will be automatically generated and assigned the give
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations 
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError 
 according to the constraint rejectProbability.
 In addition, if flexible flag is set to True, total number of atoms not satisfying 
 constraints definition must be decreasing or at least remain the same.</p>
@@ -2029,7 +2172,7 @@ constraints definition must be decreasing or at least remain the same.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -2043,11 +2186,11 @@ constraints definition must be decreasing or at least remain the same.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (stdErr) of data not satisfying constraint conditions.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} 
+\[stdErr = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} 
 \left| d_{ij}-D_{ij}) \right| 
 \int_{0}^{D_{ij}} \delta(x-d_{ij}) dx \]</div>
 <p>Where:</p>
@@ -2062,12 +2205,12 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -2193,19 +2336,19 @@ If None is given all pairs will be automatically generated and assigned the give
 </pre></div>
 </div>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
-<li><p class="first">mode (string): Defines the way squaredDeviations is calculated. In such constraints the definition of squaredDeviations
+<li><p class="first">mode (string): Defines the way standardError is calculated. In such constraints the definition of standardError
 can be confusing because many parameters play different roles in this type of calculation. The number of
 unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
 Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>distance (Default): squaredDeviations is simply calculated as the square summation of the reduced out of limits distances.
+<li>distance (Default): standardError is simply calculated as the square summation of the reduced out of limits distances.
 This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.</li>
-<li>number: squaredDeviations is calculated such as the number of non-satisfied constraints must decrease 
+<li>number: standardError is calculated such as the number of non-satisfied constraints must decrease 
 from one step to another while the square summation of the reduced out of limits distances might increase.</li>
 </ol>
 </div></blockquote>
@@ -2222,15 +2365,15 @@ from one step to another while the square summation of the reduced out of limits
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingSquaredDeviationsModes">
-<tt class="descname">existingSquaredDeviationsModes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingSquaredDeviationsModes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get list of defined squaredDeviations modes of calculation</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingStandardErrorModes">
+<tt class="descname">existingStandardErrorModes</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingStandardErrorModes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of defined standardError modes of calculation</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode">
 <tt class="descname">mode</tt><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the mode of squaredDeviations calculation.</p>
+<dd><p>Get the mode of standardError calculation.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2320,7 +2463,7 @@ from one step to another while the square summation of the reduced out of limits
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode">
 <tt class="descname">set_mode</tt><big>(</big><em>mode</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the squaredDeviations mode of calculation.</p>
+<dd><p>Sets the standardError mode of calculation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2382,8 +2525,8 @@ If None is given all pairs will be automatically generated and assigned the give
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
 <div class="math">
 \[SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} (d_{ij}-D_{ij})^{2} \bigg( 1-\int_{0}^{d_{ij}} \delta(x-D_{ij}) dx \bigg) \]</div>
@@ -2398,12 +2541,12 @@ If None is given all pairs will be automatically generated and assigned the give
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -2510,10 +2653,10 @@ If None is given all pairs will be automatically generated and assigned the give
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-b4f47bf87fb4293214ead7940df32dfbbc4e2a60.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-94b95d4467f2e72418e5b9cfe295a4d6a60ef451.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="143,5,254,31"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="311,31,475,56"/>
 </map>
@@ -2545,9 +2688,9 @@ The improper angle is the defined between a first improper atom and the plane fo
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
 </ol>
 </td>
@@ -2602,8 +2745,8 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.squaredDeviations">
-<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.standardError">
+<tt class="descname">standardError</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.standardError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get constraint&#8217;s current squared deviation.</p>
 </dd></dl>
 
@@ -2627,16 +2770,16 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not squaredDeviations.
+It computes whether to accept or reject a move based on before and after move calculation and not standardError.
 If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): not used in this case</li>
+<li>standardError (number): not used in this case</li>
 </ol>
 </td>
 </tr>
@@ -2710,11 +2853,11 @@ Every angle definition is a list of five items where:<ol class="arabic">
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) of data not satisfying constraint conditions.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{C} 
+\[StdErr = \sum \limits_{i}^{C} 
 ( \theta_{i} - \theta_{i}^{min} ) ^{2} 
 \int_{0}^{\theta_{i}^{min}} \delta(\theta-\theta_{i}) d \theta
 +
@@ -2735,12 +2878,12 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -2847,13 +2990,13 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <span id="coordinationnumberconstraints"></span><h2>CoordinationNumberConstraints<a class="headerlink" href="#module-fullrmc.Constraints.CoordinationNumberConstraints" title="Permalink to this headline">¶</a></h2>
 <p>CoordinationNumberConstraints contains classes for all constraints related to coordination numbers in shells around atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-ca1a239d5966f492c3ee41e12330b064358fced5.png" alt="Inheritance diagram of fullrmc.Constraints.CoordinationNumberConstraints" usemap="#inheritanceba4df3afec" class="inheritance"/>
+<img src="_images/inheritance-5dcf72357558f07df44e0badb56e89a08af9b493.png" alt="Inheritance diagram of fullrmc.Constraints.CoordinationNumberConstraints" usemap="#inheritanceba4df3afec" class="inheritance"/>
 <map id="inheritanceba4df3afec" name="inheritanceba4df3afec">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination number between atoms. " alt="" coords="485,31,724,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="293,55,437,80"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="301,5,429,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,55"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="135,55,245,80"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="135,55,245,80"/>
 </map>
 </p>
 <dl class="class">
@@ -2861,7 +3004,7 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.CoordinationNumberConstraints.</tt><tt class="descname">AtomicCoordinationNumberConstraint</tt><big>(</big><em>engine</em>, <em>typeDefinition='element'</em>, <em>coordNumDef=None</em>, <em>rejectProbability=1</em>, <em>thresholdRatio=0.8</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" title="fullrmc.Core.Constraint.QuasiRigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.QuasiRigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
 <p>It&#8217;s a quasi-rigid constraint that controls the inter-molecular coordination number between atoms. 
-The maximum squared deviations is defined as the sum of minimum number of neighbours of all atoms
+The maximum standard error is defined as the sum of minimum number of neighbours of all atoms
 in the system.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2888,9 +3031,9 @@ in the system.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</p>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</p>
 </li>
 <li><p class="first">thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
 It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
@@ -2993,11 +3136,11 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviations (SD) of data not satisfying constraint conditions.</p>
+<dt id="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) of data not satisfying constraint conditions.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{A} \sum \limits_{s}^{S} 
+\[StdErr = \sum \limits_{i}^{A} \sum \limits_{s}^{S} 
 (D_{i,s})^{2}  \]\[\begin{split}D_{i,s}=\begin{cases}
   n_{i,s}-N_{min,i,s}, &amp; \text{if $n_{i,s}&lt;N_{min,i,s}$}.\\
   n_{i,s}-N_{max,i,s}, &amp; \text{if $n_{i,s}&gt;N_{max,i,s}$}.\\
@@ -3015,12 +3158,12 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute squaredDeviations.</li>
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -3136,7 +3279,7 @@ atoms type. Atoms type can be &#8216;element&#8217; or &#8216;name&#8217; as set
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</tt><tt class="descname">PairDistributionConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></tt></a></p>
 <p>It controls the total reduced pair distribution function (pdf) of the system noted as G(r). 
 The pair distribution function is directly calculated from powder diffraction experimental
@@ -3188,12 +3331,12 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 </li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">weighting (string): The elements weighting.</p>
@@ -3208,6 +3351,32 @@ If 0 frequency is given, it means that the scale factor is fixed.</li>
 <li>The minimum allowed scale factor value.</li>
 <li>The maximum allowed scale factor value.</li>
 </ol>
+</li>
+<li><p class="first">shapeFuncParams (None, numpy.ndarray, dict): The shape function is subtracted from the total G(r). 
+It must be used when non-periodic boundary conditions are used to take into account the atomic 
+density drop and to correct for the <span class="math">\(\rho_{0}\)</span> approximation. The shape function can be 
+set to None which means unsused, or set as a constant shape given by a numpy.ndarray or computed 
+from all atoms and updated every &#8216;updateFreq&#8217; accepted moves. 
+If dict is given the following keywords can be given, otherwise default 
+values will be automatically set.</p>
+<ul class="simple">
+<li><strong>rmin (number) default (0.00) :</strong> The minimum distance in <span class="math">\(\AA\)</span> considered 
+upon building the histogram prior to computing the shape function.</li>
+<li><strong>rmax (None, number) default (None) :</strong> The maximum distance in <span class="math">\(\AA\)</span> 
+considered upon building the histogram prior to computing the shape function.
+If None is  given, rmax will be set at automatically to
+<span class="math">\(maximum\ box\ length + 10\AA\)</span> at engine runtime.</li>
+<li><strong>dr (number) default (0.5) :</strong> The bin size in <span class="math">\(\AA\)</span> considered upon 
+building the histogram prior to computing the shape function.</li>
+<li><strong>qmin (number) default (0.001) :</strong> The minimum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>qmax (number) default (0.75) :</strong> The maximum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>dq (number) default (0.005) :</strong> The reciprocal distance bin size in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>updateFreq (integer) default (1000) :</strong> The frequency of recomputing
+the shape function in number of accpeted moves.</li>
+</ul>
 </li>
 <li><p class="first">windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
 of the system prior to comparing it with the experimental data. In general, the experimental pair
@@ -3260,37 +3429,43 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.histogramSize">
 <tt class="descname">histogramSize</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.histogramSize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the histogram size</p>
+<dd><p>Get the histogram size.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.experimentalDistances">
 <tt class="descname">experimentalDistances</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.experimentalDistances" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the experimental distances array</p>
+<dd><p>Get the experimental distances array.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellCenters">
 <tt class="descname">shellCenters</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellCenters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the shells center array</p>
+<dd><p>Get the shells center array.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellVolumes">
 <tt class="descname">shellVolumes</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shellVolumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the shells volume array</p>
+<dd><p>Get the shells volume array.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.experimentalPDF">
 <tt class="descname">experimentalPDF</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.experimentalPDF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the experimental pdf</p>
+<dd><p>Get the experimental pdf.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.elementsPairs">
 <tt class="descname">elementsPairs</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.elementsPairs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get elements pairs</p>
+<dd><p>Get elements pairs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weighting">
+<tt class="descname">weighting</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weighting" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elements weighting definition.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -3311,6 +3486,18 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <dd><p>The histogram computation limits.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeArray">
+<tt class="descname">shapeArray</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>The shape array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeUpdateFreq">
+<tt class="descname">shapeUpdateFreq</tt><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.shapeUpdateFreq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get shape function update frequency.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen">
 <tt class="descname">listen</tt><big>(</big><em>message</em>, <em>argument=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.listen" title="Permalink to this definition">¶</a></dt>
@@ -3322,6 +3509,54 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
 <li>argument (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_shape_function_parameters">
+<tt class="descname">set_shape_function_parameters</tt><big>(</big><em>shapeFuncParams</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_shape_function_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the shape function. The shape function can be set to None which means
+unsused, or set as a constant shape given by a numpy.ndarray or computed 
+from all atoms and updated every &#8216;updateFreq&#8217; accepted moves. The 
+shape function is subtracted from the total G(r). It must be used
+when non-periodic boundary conditions are used to take into account
+the atomic density drop and to correct for the <span class="math">\(\rho_{0}\)</span> 
+approximation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">shapeFuncParams (None, numpy.ndarray, dict): The shape function parameters.</p>
+<p>In case None is given, no shape function is given nor will be calculated .</p>
+<p>If numpy.ndarray is given, shape function will be set as fixed. 
+Normally this can be the case when the model shape is known beforehand 
+(e.g. small angle experimental data).</p>
+<p>If dict is given the following keywords can be given, otherwise default 
+values will be automatically set.</p>
+<ul class="simple">
+<li><strong>rmin (number) default (0.00) :</strong> The minimum distance in <span class="math">\(\AA\)</span> considered 
+upon building the histogram prior to computing the shape function.</li>
+<li><strong>rmax (None, number) default (None) :</strong> The maximum distance in <span class="math">\(\AA\)</span> 
+considered upon building the histogram prior to computing the shape function.
+If None is  given, rmax will be set at automatically to
+<span class="math">\(maximum\ box\ length + 10\AA\)</span> at engine runtime.</li>
+<li><strong>dr (number) default (0.5) :</strong> The bin size in <span class="math">\(\AA\)</span> considered upon 
+building the histogram prior to computing the shape function.</li>
+<li><strong>qmin (number) default (0.001) :</strong> The minimum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>qmax (number) default (0.75) :</strong> The maximum reciprocal distance q in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>dq (number) default (0.005) :</strong> The reciprocal distance bin size in 
+<span class="math">\(\AA^{-1}\)</span> considered to compute the shape function.</li>
+<li><strong>updateFreq (integer) default (1000) :</strong> The frequency of recomputing
+the shape function in number of accpeted moves.</li>
+</ul>
+</li>
 </ol>
 </td>
 </tr>
@@ -3397,21 +3632,21 @@ used to best imitate the numerical artefacts in the experimental data.</li>
 </tbody>
 </table>
 <ol class="arabic">
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 </ol>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_squared_deviations">
-<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and sets the constraint&#8217;s squaredDeviations.</p>
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_standard_error">
+<tt class="descname">compute_and_set_standard_error</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_and_set_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s standardError.</p>
 </dd></dl>
 
 <dl class="method">
@@ -3457,11 +3692,12 @@ If not None, a tuple of minimum distance or None and maximum distance or None sh
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) as squared deviations 
+between model computed data and the experimental ones.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
+\[StdErr = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
 <p>Where:</p>
 <p><span class="math">\(N\)</span> is the total number of experimental data points.</p>
 <p><span class="math">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1 when dataWeights is set to None.</p>
@@ -3477,7 +3713,7 @@ If not None, a tuple of minimum distance or None and maximum distance or None sh
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -3596,7 +3832,7 @@ If not None, a tuple of minimum distance or None and maximum distance or None sh
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair distribution constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3608,6 +3844,7 @@ If ax is given, the figure won&#8217;t be rendered and drawn.
 If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
 <li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>shapeFunc (boolean): Whether to add shape function to the plot only when exists.</li>
 <li>xlabel (boolean): Whether to create x label.</li>
 <li>xlabelSize (number): The x label font size.</li>
 <li>ylabel (boolean): Whether to create y label.</li>
@@ -3619,7 +3856,7 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not</li>
-<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
 </td>
@@ -3650,7 +3887,7 @@ is accepted.</li>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
-<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</tt><tt class="descname">PairCorrelationConstraint</tt><big>(</big><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></tt></a></p>
 <p>It controls the total pair correlation function (pcf) of the system noted as g(r).
 pcf tells the probability of finding atomic pairs separated by the real space distance r.
@@ -3678,50 +3915,10 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
-<li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
-</li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
-Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
-<p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
-array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
-</li>
-<li><p class="first">weighting (string): The elements weighting.</p>
-</li>
-<li><p class="first">scaleFactor (string): A normalization scale factor used to normalize the computed data to the experimental ones.</p>
-</li>
-<li><p class="first">adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
-It must be a list of exactly three entries.</p>
-<ol class="arabic simple">
-<li>The frequency in number of generated moves of finding the best scale factor. 
-If 0 frequency is given, it means that the scale factor is fixed.</li>
-<li>The minimum allowed scale factor value.</li>
-<li>The maximum allowed scale factor value.</li>
-</ol>
-</li>
-<li><p class="first">windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
-of the system prior to comparing it with the experimental data. In general, the experimental pair
-distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
-by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
-used to best imitate the numerical artefacts in the experimental data.</p>
-</li>
-<li><p class="first">limits (None, tuple, list): The distance limits to compute the histograms.
-If None, the limits will be automatically set the the min and max distance recorded in the experimental data.
-If not None, a tuple of exactly two items where the first is of minimum distance or None 
-and the second is the maximum distance or None.</p>
-</li>
-</ol>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body">Refer to <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a></td>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
-untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairCorrelationConstraints</span> <span class="kn">import</span> <span class="n">PairCorrelationConstraint</span>
@@ -3794,7 +3991,7 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair correlation constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3806,6 +4003,7 @@ If ax is given, the figure won&#8217;t be rendered and drawn.
 If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
 <li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
+<li>shapeFunc (boolean): Whether to add shape function to the plot only when exists.</li>
 <li>legend (boolean): Whether to create the legend or not</li>
 <li>legendCols (integer): Legend number of columns.</li>
 <li>legendLoc (string): The legend location. Anything among
@@ -3813,7 +4011,7 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not</li>
-<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
 </td>
@@ -3888,12 +4086,12 @@ weighted histograms as the following:</p>
 </li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">weighting (string): The elements weighting.</p>
@@ -3987,25 +4185,31 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <dl class="attribute">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmin">
 <tt class="descname">qmin</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the experimental data reciprocal distances minimum.</p>
+<dd><p>Get the experimental data reciprocal distances minimum.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmax">
 <tt class="descname">qmax</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.qmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the experimental data reciprocal distances maximum.</p>
+<dd><p>Get the experimental data reciprocal distances maximum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dq">
+<tt class="descname">dq</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.dq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the experimental data reciprocal distances bin size.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalQValues">
+<tt class="descname">experimentalQValues</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalQValues" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the experimental data used q values.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.histogramSize">
 <tt class="descname">histogramSize</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.histogramSize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the histogram size</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalRecDist">
-<tt class="descname">experimentalRecDist</tt><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.experimentalRecDist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the experimental reciprocal distances array</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -4215,21 +4419,21 @@ If not None, a tuple of minimum reciprocal distance (qmin) or None and maximum r
 </tbody>
 </table>
 <ol class="arabic">
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 </ol>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_squared_deviations">
-<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and sets the constraint&#8217;s squaredDeviations.</p>
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_standard_error">
+<tt class="descname">compute_and_set_standard_error</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_and_set_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s standardError.</p>
 </dd></dl>
 
 <dl class="method">
@@ -4256,11 +4460,12 @@ array will be automatically scaled upon setting such as the the sum of all the w
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) as squared deviations
+between model computed data and the experimental ones.</p>
 <div class="math">
-\[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
+\[StdErr = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
 <p>Where:</p>
 <p><span class="math">\(N\)</span> is the total number of experimental data points.</p>
 <p><span class="math">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1 when dataWeights is set to None.</p>
@@ -4271,12 +4476,12 @@ array will be automatically scaled upon setting such as the the sum of all the w
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.</li>
+<li>modelData (numpy.ndarray): The data to compare with the experimental one and compute the standard error.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -4395,7 +4600,7 @@ array will be automatically scaled upon setting such as the the sum of all the w
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot">
-<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleChiSquare=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot</tt><big>(</big><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot structure factor constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4418,7 +4623,7 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not</li>
-<li>titleChiSquare (boolean): Whether to show contraint&#8217;s chi square value in title.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
 </td>
@@ -4464,6 +4669,7 @@ to manipulate the experimental data every time.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc.Constraints package</a><ul>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.Collection">Collection</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.AngleConstraints">AngleConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.DistanceConstraints">DistanceConstraints</a></li>
@@ -4516,7 +4722,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

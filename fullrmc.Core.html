@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.0',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,17 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
-            <link rel="prev" title="fullrmc package" href="index.html" />  
+            <link rel="prev" title="fullrmc package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
     </head>
   
     <body>
@@ -102,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -225,7 +233,7 @@ Otherwise all the dictionary is returned.</li>
 
 <dl class="function">
 <dt id="fullrmc.Core.Collection.rebin">
-<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">rebin</tt><big>(</big><em>data</em>, <em>bin=0.05</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.rebin" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">rebin</tt><big>(</big><em>data</em>, <em>bin=0.05</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.rebin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-bin 2D data of shape (N,2).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -233,12 +241,40 @@ Otherwise all the dictionary is returned.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>data (numpy.ndarray): the (N,2) shape data.</li>
+<li>bin (number): the new bin size.</li>
+<li>check (boolean): whether to check arguments before rebining.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>X (numpy.ndarray): the first column re-binned.</li>
 <li>Y (numpy.ndarray): the second column re-binned.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.smooth">
+<tt class="descclassname">fullrmc.Core.Collection.</tt><tt class="descname">smooth</tt><big>(</big><em>data</em>, <em>winLen=11</em>, <em>window='hanning'</em>, <em>check=False</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Collection.smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Smooth 1D data using window function and length.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>data (numpy.ndarray): the 1D numpy data.</li>
+<li>winLen (integer): the smoothing window length.</li>
+<li>window (str): The smoothing window type. Can be anything among
+&#8216;flat&#8217;, &#8216;hanning&#8217;, &#8216;hamming&#8217;, &#8216;bartlett&#8217; and &#8216;blackman&#8217;.</li>
+<li>check (boolean): whether to check arguments before smoothing data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>smoothed (numpy.ndarray): the smoothed 1D data array.</li>
 </ol>
 </td>
 </tr>
@@ -528,6 +564,21 @@ It can be a single peak or a list of peaks to compute the mean slope instead.</l
 </tr>
 </tbody>
 </table>
+<p><strong>To visualize convertion</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># peak indexes can be different, adjust according to your data</span>
+<span class="n">minPeaksIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="n">minimas</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">gr</span> <span class="o">=</span>  <span class="n">convert_Gr_to_gr</span><span class="p">(</span><span class="n">Gr</span><span class="p">,</span> <span class="n">minIndex</span><span class="o">=</span><span class="n">minPeaksIndex</span><span class="p">)</span>
+<span class="k">print</span> <span class="s">&#39;slope: </span><span class="si">%s</span><span class="s"> --&gt; rho0: </span><span class="si">%s</span><span class="s">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span><span class="n">rho0</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">line</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">Gr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">slope</span><span class="o">*</span><span class="n">Gr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]]</span> <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Gr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Gr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;G(r)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">minimas</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">minimas</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;minimas&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">line</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">line</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;density&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">gr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">gr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;g(r)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -1363,11 +1414,11 @@ If None, unbias gaussian is used as defined.</li>
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
 <p class="graphviz">
-<img src="_images/inheritance-a883325709a17cc4c15a3d81d7f0fb414785abb0.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-420f916ba37e1c665b81ba2188761a332befb52f.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,55,87,80"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,292,31"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total squaredDeviations of the Engine." alt="" coords="158,55,269,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="158,55,269,80"/>
 <area shape="rect" id="node5" href="#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="149,104,277,129"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="340,55,484,80"/>
 </map>
@@ -1425,9 +1476,9 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.squaredDeviations">
-<tt class="descname">squaredDeviations</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.squaredDeviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current squared deviations.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.standardError">
+<tt class="descname">standardError</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.standardError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current standard error.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1455,9 +1506,9 @@ Therefore it has become possible to fully customize and set any possibly imagina
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Core.Constraint.Constraint.afterMoveSquaredDeviations">
-<tt class="descname">afterMoveSquaredDeviations</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveSquaredDeviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current calculated SquaredDeviations after last move.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.afterMoveStandardError">
+<tt class="descname">afterMoveStandardError</tt><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveStandardError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1577,15 +1628,15 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_squared_deviations">
-<tt class="descname">set_squared_deviations</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s squaredDeviations value.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.set_standard_error">
+<tt class="descname">set_standard_error</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s standardError value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value</li>
+<li>value (number): standardError value</li>
 </ol>
 </td>
 </tr>
@@ -1602,7 +1653,7 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value.</li>
+<li>value (number): standardError value.</li>
 </ol>
 </td>
 </tr>
@@ -1645,15 +1696,15 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_after_move_squared_deviations">
-<tt class="descname">set_after_move_squared_deviations</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets constraint&#8217;s squaredDeviations value after move happens.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.set_after_move_standard_error">
+<tt class="descname">set_after_move_standard_error</tt><big>(</big><em>value</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s standardError value after move happens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): squaredDeviations value.</li>
+<li>value (number): standardError value.</li>
 </ol>
 </td>
 </tr>
@@ -1700,9 +1751,9 @@ and will completely reinitialize the constraint.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_squared_deviations">
-<tt class="descname">compute_and_set_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_squared_deviations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes and sets the constraint&#8217;s squaredDeviations by calling compute_squared_deviations and passing the constraint&#8217;s data.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error">
+<tt class="descname">compute_and_set_standard_error</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and sets the constraint&#8217;s standardError by calling compute_standard_error and passing the constraint&#8217;s data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1716,8 +1767,8 @@ and will completely reinitialize the constraint.</li>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Constraint.Constraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1766,12 +1817,12 @@ and will completely reinitialize the constraint.</li>
 </li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.</p>
@@ -1904,12 +1955,12 @@ If 0 frequency is given, it means that the scale factor is fixed.</li>
 </tbody>
 </table>
 <ol class="arabic">
-<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s squared deviations computation.
+<li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
-<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s squared deviations.</p>
+<p>If None is given, all data points are considered of the same importance in the computation of the constraint&#8217;s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won&#8217;t contribute to the 
-total constraint&#8217;s squared deviations. At least a single weight point is required to be non-zeros and the weights 
+total constraint&#8217;s standard error. At least a single weight point is required to be non-zeros and the weights 
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 </ol>
@@ -1998,8 +2049,8 @@ If None, all data points will be considered as having the same weight.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.compute_squared_deviations">
-<tt class="descname">compute_squared_deviations</tt><big>(</big><em>experimentalData</em>, <em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.compute_squared_deviations" title="Permalink to this definition">¶</a></dt>
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.compute_standard_error">
+<tt class="descname">compute_standard_error</tt><big>(</big><em>experimentalData</em>, <em>modelData</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation between modal computed data and the experimental ones.</p>
 <div class="math">
 \[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
@@ -2019,7 +2070,7 @@ If None, all data points will be considered as having the same weight.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>squaredDeviations (number): The calculated squaredDeviations of the constraint.</li>
+<li>standardError (number): The calculated standardError of the constraint.</li>
 </ol>
 </td>
 </tr>
@@ -2054,18 +2105,18 @@ Raises Exception if multiple instances are present.</p>
 <dt id="fullrmc.Core.Constraint.RigidConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">RigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></tt></a></p>
-<p>A rigid constraint is a constraint that doesn&#8217;t count into the total squaredDeviations of the Engine.
-But it&#8217;s internal squaredDeviations must monotonously decrease or remain the same from one engine step to another.
-If squaredDeviations of an RigidConstraint increases the step will be rejected even before engine&#8217;s new squaredDeviations get computed.</p>
+<p>A rigid constraint is a constraint that doesn&#8217;t count into the total standardError of the Engine.
+But it&#8217;s internal standardError must monotonously decrease or remain the same from one engine step to another.
+If standardError of an RigidConstraint increases the step will be rejected even before engine&#8217;s new standardError get computed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>rejectProbability (Number): Rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -2086,9 +2137,9 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>rejectProbability (Number): rejecting probability of all steps where squaredDeviations increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -2098,14 +2149,14 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -2120,14 +2171,14 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.should_step_get_accepted">
-<tt class="descname">should_step_get_accepted</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability.</p>
+<tt class="descname">should_step_get_accepted</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.should_step_get_accepted" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -2147,11 +2198,11 @@ and 0 means accepting all steps regardless whether squaredDeviations increases o
 <em class="property">class </em><tt class="descclassname">fullrmc.Core.Constraint.</tt><tt class="descname">QuasiRigidConstraint</tt><big>(</big><em>engine</em>, <em>rejectProbability</em>, <em>thresholdRatio</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a></p>
 <p>A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
-ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum squared 
-deviations. The ratio is computed as between current squared deviations and maximum squared deviations.</p>
+ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum standard 
+error. The ratio is computed as between current standard error and maximum standard error.</p>
 <blockquote>
 <div><div class="math">
-\[ratio = 1-\frac{current\ squared\ deviations}{maximum\ squared\ deviations} \]</div>
+\[ratio = 1-\frac{current\ standard\ error}{maximum\ standard\ error} \]</div>
 </div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2159,10 +2210,10 @@ deviations. The ratio is computed as between current squared deviations and maxi
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-<li>rejectProbability (Number): Rejecting probability of all steps where squaredDeviations increases
+<li>rejectProbability (Number): Rejecting probability of all steps where standardError increases
 only before threshold ratio is reached. 
-It must be between 0 and 1 where 1 means rejecting all steps where squaredDeviations increases
-and 0 means accepting all steps regardless whether squaredDeviations increases or not.</li>
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 <li>thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
 It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
 behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
@@ -2205,14 +2256,14 @@ constraint becomes always free and useless.</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected">
-<tt class="descname">should_step_get_rejected</tt><big>(</big><em>squaredDeviations</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a squaredDeviations, return whether to keep or reject new squaredDeviations according to the constraint rejectProbability function.</p>
+<tt class="descname">should_step_get_rejected</tt><big>(</big><em>standardError</em><big>)</big><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability function.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>squaredDeviations (number): The squaredDeviations to compare with the Constraint squaredDeviations</li>
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
 </ol>
 </td>
 </tr>
@@ -3715,16 +3766,6 @@ It contains the following methods.</p>
 </table>
 </dd>
 </dl>
-<dl class="function">
-<dt id="fullrmc.Core.angles.full_angles">
-<tt class="descclassname">fullrmc.Core.angles.</tt><tt class="descname">full_angles</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.angles.full_angles" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="fullrmc.Core.angles.single_angles">
-<tt class="descclassname">fullrmc.Core.angles.</tt><tt class="descname">single_angles</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Core.angles.single_angles" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </div>
 <div class="section" id="module-fullrmc.Core.bonds">
 <span id="bonds"></span><h2>bonds<a class="headerlink" href="#module-fullrmc.Core.bonds" title="Permalink to this headline">¶</a></h2>
@@ -4347,7 +4388,7 @@ It contains the following methods.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 0.4.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -5,13 +5,14 @@ History
 =======
 FUndamental Library Language for Reverse Monte Carlo or fullrmc  
 project has started in 2015 as a consequence of the incapability 
-of modelling complex atomic systems' structure. Since fullrmc was official
-published a first official release 0.2.0 was made. Later, successive releases 
-were made as needed.
+of modelling complex atomic systems' structure. Since fullrmc was 
+published a first official release 0.2.0 was made. Later, successive  
+releases were made as needed.
 
-Author
-======
-* Bachir Aoun
+Authors and developers
+======================
+* `Bachir Aoun <https://www.linkedin.com/in/bachiraoun>`_ (Author, Developer) 
+* `Jonathan Barnes <https://www.linkedin.com/in/johnathan-barnes-a558b230>`_ (Developer, consulting) 
 
 Citing fullrmc
 ==============
@@ -23,7 +24,8 @@ we would appreciate citations to the following paper:
 
 Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
 with Machine Learning and Artificial Intelligence; 
-*J. Comput. Chem.* (2016)
+*J. Comput. Chem.* 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304
+
 
 :underline:`Bibtex entry:`  
 
@@ -33,13 +35,16 @@ with Machine Learning and Artificial Intelligence;
     author = {Aoun, Bachir},
     title = {Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence},
     journal = {Journal of Computational Chemistry},
+    volume = {37},
+    number = {12},
     issn = {1096-987X},
     url = {http://dx.doi.org/10.1002/jcc.24304},
     doi = {10.1002/jcc.24304},
-    pages = {n/a--n/a},
-    keywords = {reverse Monte Carlo, rigid body, machine learning, pair distribution function, modeling},
+    pages = {1102--1111},
+    keywords = {reverse monte carlo, rigid body, machine learning, pair distribution function, modeling},
     year = {2016},
     }
+
 
 
 :underline:`EndNote entry:` 
@@ -54,11 +59,13 @@ with Machine Learning and Artificial Intelligence;
     TI  - Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence
     JO  - Journal of Computational Chemistry
     JA  - J. Comput. Chem.
+    VL  - 37
+    IS  - 12
     SN  - 1096-987X
     UR  - http://dx.doi.org/10.1002/jcc.24304
     DO  - 10.1002/jcc.24304
-    SP  - n/a
-    EP  - n/a
+    SP  - 1102
+    EP  - 1111
     KW  - reverse Monte Carlo
     KW  - rigid body
     KW  - machine learning
@@ -66,6 +73,7 @@ with Machine Learning and Artificial Intelligence;
     KW  - modeling
     PY  - 2016
     ER  - 
+
 
 
 Youtube channel
@@ -77,4 +85,9 @@ Youtube channel
     src="https://www.youtube.com/embed/videoseries?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco" 
     frameborder="0" allowfullscreen>
     </iframe>
+    
+    
+    
+    
+    
     

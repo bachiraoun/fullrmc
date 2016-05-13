@@ -57,7 +57,7 @@ following python script:
 from pkg_resources import parse_version as PV
 for name, ver in [('numpy'      ,'1.7.1') ,
                   ('cython'     ,'0.21.1'),
-                  ('pdbParser'  ,'0.1.3') ,
+                  ('pdbParser'  ,'0.1.4') ,
                   ('pysimplelog','0.1.7') ,
                   ('matplotlib' ,'1.4'  )]:
     try:
@@ -90,7 +90,9 @@ Online documentation
 ====================
 http://bachiraoun.github.io/fullrmc/
 
-Author
-======
-Bachir Aoun
+Authors and developers
+======================
+[Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
+[Jonathan Barnes](https://www.linkedin.com/in/johnathan-barnes-a558b230) (Developer, consulting) 
+
 

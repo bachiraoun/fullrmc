@@ -22,9 +22,8 @@ Next on the list
 
 News
 ====
-* Coordination number constraint added.
-* Groups swap and atoms position exchange added to generators.
-* Machine learning is added to group selection. First tests are very promising show great improvements.
+* None periodic boundary conditions added
+* ShapeFunction added to correct for fixed density approximation
 
 Ask your questions
 ==================
@@ -33,11 +32,12 @@ https://groups.google.com/forum/#!forum/fullrmc
 Installation
 ============
 ##### fullrmc requires:
-* Python (>= 2.6 and < 3),
+* Python (>= 2.7 and < 3),
 * NumPy (lowest version tested is 1.7.1)
 * cython (lowest version tested is 0.21.1)
 * matplotlib (lowest version tested is 1.4)
-* pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0)
+* pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
+  0.1.4 is used starting from fullrmc 1.0.0)
 * pysimplelog (lowest version tested is 0.1.7)
 
 ##### Installation using pip:

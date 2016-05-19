@@ -80,6 +80,7 @@ commands = [# include MANIFEST.in
             'global-exclude %s/Examples/*/visualizeTrajectory.py'%PACKAGE_NAME, 
             'global-exclude %s/Examples/*/plotFigures.py'%PACKAGE_NAME, 
             'global-exclude %s/Examples/*/extractTrajectory.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/exportTrajectoryFigures.py'%PACKAGE_NAME, 
             'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME, 
             ]         
 with open('MANIFEST.in','w') as fd:
@@ -95,9 +96,6 @@ Intended Audience :: Education
 Intended Audience :: Developers
 Natural Language :: English
 License :: OSI Approved :: GNU Affero General Public License v3
-Programming Language :: Python
-Programming Language :: Python :: 2
-Programming Language :: Python :: 2.6
 Programming Language :: Python :: 2.7
 Programming Language :: Cython
 Topic :: Software Development
@@ -275,7 +273,7 @@ metadata = dict(# package
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.1.7",
-                                    "pdbParser>=0.1.4",
+                                    "pdbParser>=0.1.5",
                                     "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

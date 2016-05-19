@@ -41,7 +41,8 @@ For your general understanding, fullrmc requires the following:
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
    #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
-      from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0)
+      from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
+      - 0.1.5 is used starting from fullrmc 1.0.1)
    #. pysimplelog (lowest version tested is 0.1.7)
 
 **Installation using pip:**\n
@@ -72,7 +73,7 @@ automatically installed and updated while fullrmc is being installed.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
-                          ('pdbParser'  ,'0.1.4') ,
+                          ('pdbParser'  ,'0.1.5') ,
                           ('pysimplelog','0.1.7') ,
                           ('matplotlib' ,'1.4'  )]:
             try:
@@ -229,10 +230,10 @@ Fixes and improvements:
 New Modules and definitions:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    #. :class:`.SwapCentersGenerator`
-   
-   
-   
-   
+  
+  
+  
+ 
 `Version 0.4.0 <https://pypi.python.org/pypi/fullrmc/0.4.0>`_:
 --------------------------------------------------------------
 
@@ -249,22 +250,10 @@ Fixes and improvements:
    #. swap example changed to atomicSimulation and S(q) added to the fitting 
       along with G(r)
    #. thfSimulation example change to molecularSimulation
-   
-   
-   
-   
-`Version 0.4.1 <https://pypi.python.org/pypi/fullrmc/0.4.1>`_:
---------------------------------------------------------------
-
-Fixes and improvements:
-~~~~~~~~~~~~~~~~~~~~~~~  
-   #. rebin core method check argument added
-   #. :class:`.StructureFactorConstraint` and :class:`.ReducedStructureFactorConstraint` 
-      experimentalQValues set as property
-   
-   
-   
-   
+  
+  
+  
+ 
 `Version 1.0.0 <https://pypi.python.org/pypi/fullrmc/1.0.0>`_:
 --------------------------------------------------------------
 
@@ -297,10 +286,33 @@ Fixes and improvements:
    #. Engine chiSquare attributes and methods changed to total standard error 
       to conserve the generality
    #. Logger levels added
-  
+   #. rebin core method check argument added
+   #. :class:`.StructureFactorConstraint` and :class:`.ReducedStructureFactorConstraint` 
+      experimentalQValues set as property
+    
+   
+   
+ 
+`Version 1.0.1 <https://pypi.python.org/pypi/fullrmc/1.0.1>`_:
+--------------------------------------------------------------
+
+Starting from this version, pdbParser (>=0.1.5) is used. There is no bugs
+fixed in this version comparably to version 1.0.0. 
+This version corrects for cell visualization compatibility between fullrmc 
+and `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. 
+VMD `cell plugin <http://www.ks.uiuc.edu/Research/vmd/plugins/pbctools/>`_
+uses a, b, c, unitcell parameters (the lengths of vectors A, B and C the 
+3D-vectors of the unitcell sides with the convention that A is parallel to 
+the x-axis) and alpha, beta, gamma (the angles of the unit cell) for 
+non-orthorhombic unitcells. This version uses cell plugin no more but
+draw the boundary conditions vectors directly. Also visualization method 
+'boxToCenter' flag is added to correct for box visualization shifts by 
+translating boundary conditions vectors' centre to atom coordinates one.
+
+
 """
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 __author__  = "Bachir Aoun"
 

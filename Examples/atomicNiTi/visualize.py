@@ -16,11 +16,7 @@ else:
     ENGINE = Engine(pdb=None).load(enginePath)
 
 # visualize    
-<<<<<<< .mine
-ENGINE.visualize(boxAtOrigin=True, representationParams="VDW 0.5 20")     
-=======
-ENGINE.visualize(representationParams='VDW 0.1 20')     
->>>>>>> .r269
+ENGINE.visualize(foldIntoBox=True, representationParams='VDW 0.1 20')     
     
     
     

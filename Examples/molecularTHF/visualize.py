@@ -15,7 +15,7 @@ if engineSavePath not in os.listdir("."):
 else:
     ENGINE = Engine(pdb=None).load(engineSavePath)
     # visualize    
-    ENGINE.visualize( boxAtOrigin=True)     
+    ENGINE.visualize( boxToCenter=True)     
     
     
     

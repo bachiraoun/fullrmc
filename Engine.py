@@ -850,25 +850,33 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # broadcast to constraints
         self.__broadcaster.broadcast("update names indexes")
     
-    def visualize(self, commands=None, foldIntoBox=False, boxAtOrigin=False, 
-                        boxWidth=2, boxColor="black", 
-                        representationParams="Lines", displayParams=None, otherParams=None):
+    def visualize(self, commands=None, foldIntoBox=False, boxToCenter=False,
+                        boxWidth=2, boxStyle="solid", boxColor="yellow", 
+                        bckColor="black", displayParams=None, 
+                        representationParams="Lines", otherParams=None):
         """
-        Visualize the last configuration using pdbParser visualize method.
+        Visualize the last configuration using pdbParser visualize_vmd method.
         
         :Parameters:
             #. commands (None, list, tuple): List of commands to pass upon calling vmd.
                commands can be a .dcd file to load a trajectory for instance.
             #. foldIntoBox (boolean): Whether to fold all atoms into simulation box before visualization.
-            #. boxAtOrigin (boolean): Whether to centre simulation box at origin.
+            #. boxToCenter (boolean): Translate box center to atom coordinates center.
             #. boxWidth (number): Visualize the simulation box by giving the lines width.
                If 0 then the simulation box is not visualized.
-            #. boxColor (str): Choose the simulation box colour among the following:\n
+            #. boxStyle (str): The box line style, it can be either solid or dashed.
+            #. boxColor (str): Choose the simulation box color among the following:\n
                blue, red, gray, orange, yellow, tan, silver, green,
                white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
                black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
                blue3, violet, violet2, magenta, magenta2, red2, red3, 
                orange2, orange3.
+            #. bckColor (str): Set the background color.
+            #. displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
+               If dictionary the following keys can be used.\n
+               * 'depth cueing' (default True): Set the depth cueing flag.
+               * 'cue density' (default 0.1): Set the depth density.
+               * 'cue mode' (default 'Exp'): Set the depth mode among 'linear', 'Exp' and 'Exp2'.
             #. representationParams(str): Set representation method among the following:\n
                Lines, Bonds, DynamicBonds, HBonds, Points, VDW, CPK, Licorice, Beads, Dotted, Solvent.
                And add parameters accordingly if needed. e.g.\n
@@ -877,12 +885,6 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                  'Bond Radius', 'Sphere Resolution', 'Bond Resolution' e.g. 'CPK 1.0 0.2 50 50'
                * VDW representation can accept respectively 2 parameters as the following 'Sphere Scale',
                  'Sphere Resolution' e.g. 'VDW 0.7 100'
-            #. displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
-               If dictionary the following keys can be used.\n
-               * 'background colour' (default 'white'): Set the background colour
-               * 'depth cueing' (default True): Set the depth cueing flag.
-               * 'cue density' (default 0.1): Set the depth density.
-               * 'cue mode' (default 'Exp'): Set the depth mode among 'linear', 'Exp' and 'Exp2'.
             #. otherParams(None, list, set, tuple): Any other parameters in a form of a list of strings.\n
                e.g. ['display resize 700 700', 'rotate x to 45', 'scale to 0.02', 'axes location off']
         """
@@ -896,7 +898,8 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                   'black', 'yellow2', 'yellow3', 'green2', 'green3', 'cyan2', 'cyan3', 'blue2',
                   'blue3', 'violet', 'violet2', 'magenta', 'magenta2', 'red2', 'red3', 
                   'orange2','orange3']
-        assert boxColor in colors, LOGGER.error("boxColor is not a recognized colour name among %s"%str(colors))
+        assert boxColor in colors, LOGGER.error("boxColor is not a recognized color name among %s"%str(colors))
+        assert boxStyle in ('solid', 'dashed'), LOGGER.error("boxStyle must be either 'solid' or 'dashed'")
         # check representation argument
         reps = ["Lines","Bonds","DynamicBonds","HBonds","Points","VDW","CPK",
                 "Licorice","Beads","Dotted","Solvent"]
@@ -913,18 +916,50 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         fd = open(tclFile, "w")
         # visualize box
         if boxWidth>0 and isinstance(self.__boundaryConditions, PeriodicBoundaries):
+            if foldIntoBox and boxToCenter:
+                foldIntoBox = False
+                LOGGER.fixed("foldIntoBox and boxToCenter cannot both be set to True. foldIntoBox is reset to False.")
             try:
-                a = self.__boundaryConditions.get_a()
-                b = self.__boundaryConditions.get_b()
-                c = self.__boundaryConditions.get_c()
-                alpha = self.__boundaryConditions.get_alpha()*180./np.pi
-                beta = self.__boundaryConditions.get_beta()*180./np.pi
-                gamma = self.__boundaryConditions.get_gamma()*180./np.pi
-                fd.write("set cell [pbc set {%.3f %.3f %.3f %.3f %.3f %.3f} -all]\n"%(a,b,c,alpha,beta,gamma))
-                if boxAtOrigin:
-                    fd.write("pbc box -center origin -color %s -width %.2f\n"%(boxColor,boxWidth))
-                else:
-                    fd.write("pbc box -color %s -width %.2f\n"%(boxColor,boxWidth))
+                X,Y,Z = self.__boundaryConditions.get_vectors()
+                lines = []
+                ### Z=0 plane
+                # 000 -> 100
+                lines.append( [0.,0.,0.,  X[0],X[1],X[2]] )
+                # 000 -> 010
+                lines.append( [0.,0.,0.,  Y[0],Y[1],Y[2]] )
+                # 100 -> 110
+                lines.append( [X[0],X[1],X[2],  X[0]+Y[0],X[1]+Y[1],X[2]+Y[2]] )
+                # 110 -> 010
+                lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  Y[0],Y[1],Y[2]] )
+                ### Z=1 plane
+                # 001 -> 101
+                lines.append( [Z[0],Z[1],Z[2],  Z[0]+X[0],Z[1]+X[1],Z[2]+X[2]] )
+                # 001 -> 011
+                lines.append( [Z[0],Z[1],Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
+                # 101 -> 111
+                lines.append( [Z[0]+X[0],Z[1]+X[1],Z[2]+X[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )
+                # 111 -> 011
+                lines.append( [X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
+                ### Z=1 verticals
+                # 000 -> 001
+                lines.append( [0.,0.,0.,  Z[0],Z[1],Z[2]] )
+                # 100 -> 101
+                lines.append( [X[0],X[1],X[2],  X[0]+Z[0],X[1]+Z[1],X[2]+Z[2]] )
+                # 010 -> 011
+                lines.append( [Y[0],Y[1],Y[2],  Y[0]+Z[0],Y[1]+Z[1],Y[2]+Z[2]] )                
+                # 110 -> 111
+                lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )       
+                # translate box
+                if boxToCenter:
+                    bc = (X+Y+Z)/2.
+                    cc = np.sum(self.__realCoordinates, axis=0)/self.__realCoordinates.shape[0]
+                    tv = cc-bc
+                    for idx, line in enumerate(lines):
+                        lines[idx] = [item+tv[i%3] for i,item in enumerate(line)]
+                # write box
+                fd.write("draw color %s\n"%(boxColor,))
+                for l in lines:
+                    fd.write( "draw line {%s %s %s} {%s %s %s} width %s style %s\n"%(l[0],l[1],l[2],l[3],l[4],l[5],boxWidth,boxStyle,) )
             except:
                 LOGGER.warn("Unable to write simulation box .tcl script for visualization.") 
         # representation
@@ -935,7 +970,6 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # display parameters
         if displayParams is None:
             displayParams = {}
-        bckColor    = displayParams.get("background color", 'white')
         depthCueing = displayParams.get("depth cueing", True)
         cueDensity  = displayParams.get("cue density",  0.1)
         cueMode     = displayParams.get("cue mode",  'Exp')
@@ -959,7 +993,7 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         fd.close()
         coords = self.__realCoordinates
         # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
-        if foldIntoBox:
+        if foldIntoBox and isinstance(self.__boundaryConditions, PeriodicBoundaries):
             coords = self.__boundaryConditions.fold_real_array(self.__realCoordinates)
         self.__pdb.visualize(commands=commands, coordinates=coords, startupScript=tclFile)
         # remove .tcl file

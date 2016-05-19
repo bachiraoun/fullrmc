@@ -37,7 +37,7 @@ Installation
 * cython (lowest version tested is 0.21.1)
 * matplotlib (lowest version tested is 1.4)
 * pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
-  0.1.4 is used starting from fullrmc 1.0.0)
+  0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
 * pysimplelog (lowest version tested is 0.1.7)
 
 ##### Installation using pip:
@@ -57,7 +57,7 @@ following python script:
 from pkg_resources import parse_version as PV
 for name, ver in [('numpy'      ,'1.7.1') ,
                   ('cython'     ,'0.21.1'),
-                  ('pdbParser'  ,'0.1.4') ,
+                  ('pdbParser'  ,'0.1.5') ,
                   ('pysimplelog','0.1.7') ,
                   ('matplotlib' ,'1.4'  )]:
     try:

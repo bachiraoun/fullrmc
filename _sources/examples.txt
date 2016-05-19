@@ -10,8 +10,8 @@ learning fullrmc.**
 Herein is a list of all available examples in the standard distribution.
 A short description of each example is shown in the list below. It is 
 recommended not to run any example from within fullrmc. But copy the
-example folder to any safe place such your home directory and run it from 
-there. To locate an example and copy it, one can do the following:
+example folder to any safe place such as one's home directory and run it  
+from there. To locate an example and copy it, one can do the following:
 
 .. code-block:: python  
        
@@ -23,7 +23,7 @@ there. To locate an example and copy it, one can do the following:
          >>> '../site-packages/fullrmc/Examples/atomicNiTi'
 
          
-In all examples, run.py is the name of the file that muse be  
+In all examples, run.py is the name of the file that must be  
 executed from the command line as the following:
 
 .. code-block:: bash  

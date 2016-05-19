@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc package &mdash; fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package" href="#" />
+            <link rel="top" title="fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package" href="#" />
             <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="#">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -267,9 +267,10 @@ in accepting all the generated moves.</li>
 <span class="c">##     H32            H22 </span>
 <span class="c">##</span>
 
-<span class="c">## imports</span>
+<span class="c">#   #####################################################################################   #</span>
+<span class="c">#   ############################### IMPORT WHAT IS NEEDED ###############################   #</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.DistanceConstraints</span> <span class="kn">import</span> <span class="n">InterMolecularDistanceConstraint</span>
@@ -282,101 +283,105 @@ in accepting all the generated moves.</li>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ############################# DECLARE USEFUL VARIABLES ##############################   #</span>
-<span class="n">experimentalDataPath</span> <span class="o">=</span> <span class="s">&quot;thf_pdf.exp&quot;</span>
-<span class="n">structurePdbPath</span>     <span class="o">=</span> <span class="s">&quot;thf.pdb&quot;</span>
-<span class="n">engineSavePath</span>       <span class="o">=</span> <span class="s">&quot;thf_engine.rmc&quot;</span>
+<span class="n">pdfData</span>      <span class="o">=</span> <span class="s">&quot;thf_pdf.exp&quot;</span>
+<span class="n">pdbStructure</span> <span class="o">=</span> <span class="s">&quot;thf.pdb&quot;</span>
+<span class="n">enginePath</span>   <span class="o">=</span> <span class="s">&quot;thf_engine.rmc&quot;</span>
+<span class="n">thisFilePath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)</span> <span class="p">)</span>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ################################# CREATE RMC SYSTEM #################################   #</span>
-<span class="c">## create and initialize engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="n">structurePdbFile</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="c">## set structure boundary conditions</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_boundary_conditions</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">]))</span>
-<span class="c">## create and add pair distribution constraint to the engine</span>
-<span class="n">PDF_CONSTRAINT</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="n">experimentalDataPath</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF_CONSTRAINT</span><span class="p">])</span>
-<span class="c">## create and add intermolecular distances constraint to the engine</span>
-<span class="n">EMD_CONSTRAINT</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">EMD_CONSTRAINT</span><span class="p">])</span>
-<span class="c">## create and add bonds constraint to the engine</span>
-<span class="n">B_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">B_CONSTRAINT</span><span class="p">])</span>
-<span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">create_bonds_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;O&#39;</span> <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;O&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
-                                                                  <span class="p">(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">)]</span> <span class="p">})</span>
-<span class="c">## create and add angles constraint to the engine</span>
-<span class="n">BA_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">BA_CONSTRAINT</span><span class="p">])</span>
-<span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">125</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">95</span> <span class="p">,</span> <span class="mi">115</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">95</span> <span class="p">,</span> <span class="mi">115</span><span class="p">),</span>
-                                                                      <span class="c"># H-C-H angle</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
-                                                                      <span class="c"># H-C-O angle</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>                                                                           
-                                                                      <span class="c"># H-C-C</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-<span class="c">## create and add improper angles constraint to the engine keeping THF molecules&#39; atoms in the plane</span>
-<span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">IA_CONSTRAINT</span><span class="p">])</span>
-<span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
-                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-<span class="c">## initialize constraints data</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
-<span class="c">## Uncomment in order not to use a constraint in the next engine run</span>
-<span class="c">#PDF_CONSTRAINT.set_used(False)</span>
-<span class="c">#EMD_CONSTRAINT.set_used(False)</span>
-<span class="c">#B_CONSTRAINT.set_used(False)</span>
-<span class="c">#BA_CONSTRAINT.set_used(False)</span>
-<span class="c">#IA_CONSTRAINT.set_used(False)</span>
-<span class="c">## initialize constraints data</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
+<span class="c"># if engine is not created and saved</span>
+<span class="k">if</span> <span class="n">enginePath</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">thisFilePath</span><span class="p">):</span>
+    <span class="c">## create and initialize engine</span>
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="n">pdbStructure</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="c">## set structure boundary conditions</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_boundary_conditions</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">]))</span>
+    <span class="c">## create and add pair distribution constraint to the engine</span>
+    <span class="n">PDF_CONSTRAINT</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="n">pdfData</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s">&quot;atomicNumber&quot;</span><span class="p">)</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF_CONSTRAINT</span><span class="p">])</span>
+    <span class="c">## create and add intermolecular distances constraint to the engine</span>
+    <span class="n">EMD_CONSTRAINT</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">EMD_CONSTRAINT</span><span class="p">])</span>
+    <span class="c">## create and add bonds constraint to the engine</span>
+    <span class="n">B_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">B_CONSTRAINT</span><span class="p">])</span>
+    <span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">create_bonds_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s">&#39;O&#39;</span> <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;O&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mf">1.20</span><span class="p">,</span> <span class="mf">1.70</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mf">1.25</span><span class="p">,</span> <span class="mf">1.90</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
+                                                                      <span class="p">(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s">&#39;C4&#39;</span><span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">)]</span> <span class="p">})</span>
+    <span class="c">## create and add angles constraint to the engine</span>
+    <span class="n">BA_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">BA_CONSTRAINT</span><span class="p">])</span>
+    <span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">125</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">95</span> <span class="p">,</span> <span class="mi">115</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">95</span> <span class="p">,</span> <span class="mi">115</span><span class="p">),</span>
+                                                                          <span class="c"># H-C-H angle</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span> <span class="mi">98</span> <span class="p">,</span> <span class="mi">118</span><span class="p">),</span>
+                                                                          <span class="c"># H-C-O angle</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>                                                                           
+                                                                          <span class="c"># H-C-C</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H11&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span><span class="s">&#39;H12&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H21&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span><span class="s">&#39;H22&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H31&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span><span class="s">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span><span class="s">&#39;H32&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H41&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C4&#39;</span> <span class="p">,</span><span class="s">&#39;H42&#39;</span><span class="p">,</span><span class="s">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
+    <span class="c">## create and add improper angles constraint to the engine keeping THF molecules&#39; atoms in the plane</span>
+    <span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">IA_CONSTRAINT</span><span class="p">])</span>
+    <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s">&#39;C2&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
+                                                                          <span class="p">(</span><span class="s">&#39;C3&#39;</span><span class="p">,</span><span class="s">&#39;O&#39;</span><span class="p">,</span><span class="s">&#39;C1&#39;</span><span class="p">,</span><span class="s">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
+    <span class="c">## initialize constraints data</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
+    <span class="c"># save engine</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">enginePath</span><span class="p">)</span>
+<span class="c"># if engine is created and saved, it can be simply loaded.</span>
+<span class="k">else</span><span class="p">:</span> 
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">enginePath</span><span class="p">)</span>
+    <span class="c"># unpack constraints</span>
+    <span class="n">PDF_CONSTRAINT</span><span class="p">,</span> <span class="n">EMD_CONSTRAINT</span><span class="p">,</span> <span class="n">B_CONSTRAINT</span><span class="p">,</span> <span class="n">BA_CONSTRAINT</span><span class="p">,</span> <span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ################################# RUN RMC ON ATOMS ##################################   #</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="n">engineSavePath</span><span class="p">)</span>
+<span class="c"># set groups as atoms. By default when the engine is constructed, all groups are single atoms.</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="n">enginePath</span><span class="p">)</span>
 
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ############################### RUN RMC ON MOLECULES ################################   #</span>
 <span class="c">## set groups as molecules instead of atoms</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">reset_groups_as_molecules</span><span class="p">()</span>  
-<span class="c"># set moves generators to all groups to a collection of random translations and rotations</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_molecules</span><span class="p">()</span>  
+<span class="c"># set moves generators to all groups as a collection of random translation and rotation</span>
 <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
     <span class="n">mg</span> <span class="o">=</span> <span class="n">MoveGeneratorCollector</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TranslationGenerator</span><span class="p">(),</span><span class="n">RotationGenerator</span><span class="p">()],</span> <span class="n">randomize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">mg</span> <span class="p">)</span>
-<span class="c">## Uncomment to use any of the following moves generators</span>
+<span class="c">## Uncomment to use any of the following moves generators instead of the earlier collector</span>
 <span class="c">## Also other moves generators can be used to achieve a better fit for instance:</span>
 <span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]</span>
 <span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]</span>
 <span class="c">#[g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]</span>
-<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0)) for g in ENGINE.groups]</span>
-<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1)) for g in ENGINE.groups]</span>
-<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2)) for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0))    for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1))    for g in ENGINE.groups]</span>
+<span class="c">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2))    for g in ENGINE.groups]</span>
 <span class="c">## Molecular constraints are not necessary any more because groups are set to molecules.</span>
 <span class="c">## At every engine step a whole molecule is rotate or translated therefore its internal</span>
 <span class="c">## distances and properties are safe from any changes. At any time constraints can be </span>
@@ -385,17 +390,11 @@ in accepting all the generated moves.</li>
 <span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="c">## run engine and perform RMC on molecules</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="n">engineSavePath</span><span class="p">)</span>
-
-
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="n">enginePath</span><span class="p">)</span>
+    
 <span class="c">#   #####################################################################################   #</span>
 <span class="c">#   ################################### PLOT TOTAL GR ###################################   #</span>
-<span class="n">totalGR</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_constraint_value</span><span class="p">()[</span><span class="s">&quot;pdf_total&quot;</span><span class="p">]</span>
-<span class="n">expData</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">experimentalPDF</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">experimentalDistances</span><span class="p">,</span> <span class="n">expData</span><span class="p">,</span> <span class="s">&#39;ro&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;experimental&quot;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">markevery</span><span class="o">=</span><span class="mi">1</span> <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shellCenters</span><span class="p">,</span> <span class="n">totalGR</span><span class="p">,</span> <span class="s">&#39;k&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>  <span class="n">markevery</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&quot;total&quot;</span> <span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>  
+<span class="n">PDF_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
@@ -1071,8 +1070,8 @@ If None names will be generated automatically by parsing pdbParser instance.</li
 
 <dl class="method">
 <dt>
-<tt class="descname">visualize</tt><big>(</big><em>commands=None</em>, <em>foldIntoBox=False</em>, <em>boxAtOrigin=False</em>, <em>boxWidth=2</em>, <em>boxColor='black'</em>, <em>representationParams='Lines'</em>, <em>displayParams=None</em>, <em>otherParams=None</em><big>)</big></dt>
-<dd><p>Visualize the last configuration using pdbParser visualize method.</p>
+<tt class="descname">visualize</tt><big>(</big><em>commands=None</em>, <em>foldIntoBox=False</em>, <em>boxToCenter=False</em>, <em>boxWidth=2</em>, <em>boxStyle='solid'</em>, <em>boxColor='yellow'</em>, <em>bckColor='black'</em>, <em>displayParams=None</em>, <em>representationParams='Lines'</em>, <em>otherParams=None</em><big>)</big></dt>
+<dd><p>Visualize the last configuration using pdbParser visualize_vmd method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1083,17 +1082,29 @@ commands can be a .dcd file to load a trajectory for instance.</p>
 </li>
 <li><p class="first">foldIntoBox (boolean): Whether to fold all atoms into simulation box before visualization.</p>
 </li>
-<li><p class="first">boxAtOrigin (boolean): Whether to centre simulation box at origin.</p>
+<li><p class="first">boxToCenter (boolean): Translate box center to atom coordinates center.</p>
 </li>
 <li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
 If 0 then the simulation box is not visualized.</p>
 </li>
-<li><p class="first">boxColor (str): Choose the simulation box colour among the following:</p>
+<li><p class="first">boxStyle (str): The box line style, it can be either solid or dashed.</p>
+</li>
+<li><p class="first">boxColor (str): Choose the simulation box color among the following:</p>
 <p>blue, red, gray, orange, yellow, tan, silver, green,
 white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
 black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
 blue3, violet, violet2, magenta, magenta2, red2, red3, 
 orange2, orange3.</p>
+</li>
+<li><p class="first">bckColor (str): Set the background color.</p>
+</li>
+<li><p class="first">displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
+If dictionary the following keys can be used.</p>
+<ul class="simple">
+<li>&#8216;depth cueing&#8217; (default True): Set the depth cueing flag.</li>
+<li>&#8216;cue density&#8217; (default 0.1): Set the depth density.</li>
+<li>&#8216;cue mode&#8217; (default &#8216;Exp&#8217;): Set the depth mode among &#8216;linear&#8217;, &#8216;Exp&#8217; and &#8216;Exp2&#8217;.</li>
+</ul>
 </li>
 <li><p class="first">representationParams(str): Set representation method among the following:</p>
 <p>Lines, Bonds, DynamicBonds, HBonds, Points, VDW, CPK, Licorice, Beads, Dotted, Solvent.
@@ -1104,15 +1115,6 @@ And add parameters accordingly if needed. e.g.</p>
 &#8216;Bond Radius&#8217;, &#8216;Sphere Resolution&#8217;, &#8216;Bond Resolution&#8217; e.g. &#8216;CPK 1.0 0.2 50 50&#8217;</li>
 <li>VDW representation can accept respectively 2 parameters as the following &#8216;Sphere Scale&#8217;,
 &#8216;Sphere Resolution&#8217; e.g. &#8216;VDW 0.7 100&#8217;</li>
-</ul>
-</li>
-<li><p class="first">displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
-If dictionary the following keys can be used.</p>
-<ul class="simple">
-<li>&#8216;background colour&#8217; (default &#8216;white&#8217;): Set the background colour</li>
-<li>&#8216;depth cueing&#8217; (default True): Set the depth cueing flag.</li>
-<li>&#8216;cue density&#8217; (default 0.1): Set the depth density.</li>
-<li>&#8216;cue mode&#8217; (default &#8216;Exp&#8217;): Set the depth mode among &#8216;linear&#8217;, &#8216;Exp&#8217; and &#8216;Exp2&#8217;.</li>
 </ul>
 </li>
 <li><p class="first">otherParams(None, list, set, tuple): Any other parameters in a form of a list of strings.</p>
@@ -1403,7 +1405,7 @@ If None, no .xyz file will be generated.</li>
              |
         
         </li>
-        <li><a href="#">fullrmc 1.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

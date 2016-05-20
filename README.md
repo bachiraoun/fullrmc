@@ -1,3 +1,5 @@
+**This git repository is only updated with new releases of fullrmc. A private repository is used for development.**
+
 fullrmc
 =======
 It's a Reverse Monte Carlo (RMC) python/Cython/C package, especially designed to solve an inverse 

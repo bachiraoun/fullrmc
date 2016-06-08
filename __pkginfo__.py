@@ -1,6 +1,8 @@
 """
 Must know
 =========
+- fullrmc supported version is always the newest one. Older version are
+  never supported as updating is very simple.
 - fullrmc uses pdbParser library to parse input pdb files and to visualize
   system's atomic structure using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_.  
   VMD which stands for Visual Molecular Dynamics is a free software for 
@@ -308,15 +310,46 @@ non-orthorhombic unitcells. This version uses cell plugin no more but
 draw the boundary conditions vectors directly. Also visualization method 
 'boxToCenter' flag is added to correct for box visualization shifts by 
 translating boundary conditions vectors' centre to atom coordinates one.
+   
+   
+   
+ 
+`Version 1.1.0 <https://pypi.python.org/pypi/fullrmc/1.1.0>`_:
+--------------------------------------------------------------
+Several levels of abstractions are made allowing multiple core computations
+using openmp. Nevertheless more testing is needed and therefore the current
+version is published as single core still.
+:class:`.AtomicCoordinationNumberConstraint` uses python objects which 
+makes it very slow, it must be revisited. 
+          
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. :class:`.Constraint` computation cost property added. This is used at engine 
+      runtime to minimize computations and enhance performance by computing less
+      costly constraints first. 
 
-
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+    #. :class:`.BondsAngleConstraint` computing angle right vector normalization bug fixed.
+    #. :class:`.ImproperAngleConstraint` computing improper vector bug fixed.
+  
 """
 
-__version__ = '1.0.1'
+__version__    = '1.1.0'
+               
+__author__     = "Bachir Aoun"
+               
+__email__      = "fullrmc@gmail.com"
+               
+__forum__      = "https://groups.google.com/forum/#!forum/fullrmc"
+               
+__onlinedoc__  = "http://bachiraoun.github.io/fullrmc/"
 
-__author__  = "Bachir Aoun"
+__repository__ = "https://github.com/bachiraoun/fullrmc"
 
-__email__   = "fullrmc@gmail.com"
+__pypi__       = "https://pypi.python.org/pypi/fullrmc"
 
-__forum__   = "https://groups.google.com/forum/#!forum/fullrmc"
+
+
+
 

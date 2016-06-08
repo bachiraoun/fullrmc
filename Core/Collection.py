@@ -66,11 +66,14 @@ def is_integer(number, precision=10e-10):
     
 def get_elapsed_time(start, format="%d days, %d hours, %d minutes, %d seconds"):
     """
-    Gets formated time elapsed.
+    Gets formatted time elapsed.
         
     :Parameters:
         #. start (time.time): A time instance.
         #. format (string): The format string. must contain exactly four '%d'.
+    
+    :Returns:
+        #. time (string): The formatted elapsed time.  
     """
     # get all time info
     days    = divmod(time.time()-start,86400)
@@ -79,7 +82,26 @@ def get_elapsed_time(start, format="%d days, %d hours, %d minutes, %d seconds"):
     seconds = minutes[1]
     return format % (days[0],hours[0],minutes[0],seconds)
 
-   
+
+def get_memory_usage():
+    """
+    Gets current process memory usage. This is method requires
+    psutils to be installed.
+        
+    :Returns:
+        #. memory (float, None): The memory usage in Megabytes.
+           When psutils is not installed, None is returned.
+    """
+    try:
+        import psutil
+        process = psutil.Process(os.getpid())
+        memory  = float( process.memory_info()[0] ) / float(2 ** 20)
+    except:
+        LOGGER.warn("memory usage cannot be profiled. psutil is not installed. pip install psutil")
+        memory = None
+    return memory
+    
+    
 def get_path(key=None):
     """
     get all information needed about the script, the current, and the python executable path.

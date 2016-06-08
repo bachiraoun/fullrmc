@@ -53,6 +53,8 @@ class AtomicCoordinationNumberConstraint(QuasiRigidConstraint, SingularConstrain
         # set type definition
         self.__coordNumDefinition = coordNumDef
         self.set_type_definition(typeDefinition)
+        # set computation cost
+        self.set_computation_cost(5.0)
 
     @property
     def typeDefinition(self):

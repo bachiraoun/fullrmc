@@ -31,6 +31,8 @@ class Constraint(object):
         self.set_engine(engine)
         # initialize data
         self.__initialize_constraint()
+        # computation cost 
+        self.__computationCost = 0
     
     def __initialize_constraint(self):
         # initialize flags
@@ -51,6 +53,11 @@ class Constraint(object):
     def engine(self):
         """ Get the engine fullrmc instance."""
         return self.__engine 
+        
+    @property
+    def computationCost(self):
+        """Get computation cost number."""
+        return self.__computationCost
         
     @property
     def state(self):
@@ -145,7 +152,23 @@ class Constraint(object):
         value = float(value)
         assert value>0 , LOGGER.error("Variance must be positive non zero number.")
         self.__varianceSquared = value
-        
+    
+    def set_computation_cost(self, value):
+        """
+        Sets constraint's computation cost value. This is used at engine runtime 
+        to minimize computations and enhance performance by computing less costly
+        constraints first. At every step, constraints will be computed in order 
+        starting from the less to the most computationally costly. Therefore
+        upon rejection of a step because of an unsatisfactory rigid constraint, 
+        the left un-computed constraints at this step are guaranteed to be the        
+        most costly ones. 
+                
+        :Parameters:
+            #. value (number): Any number.
+        """
+        assert is_number(value), LOGGER.error("computation cost value must be convertible to a number")
+        self.__computationCost  = FLOAT_TYPE(value)
+   
     def set_used(self, value):
         """
         Sets used flag.

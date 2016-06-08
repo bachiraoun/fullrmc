@@ -41,7 +41,7 @@ pdbPath        = os.path.join(DIR_PATH, pdbFileName)
 engineFilePath = os.path.join(DIR_PATH, engineFileName)
     
 # check Engine exists, if not build it otherwise load it.
-if engineFileName not in os.listdir(DIR_PATH):
+if engineFileName not in os.listdir(DIR_PATH) or True:
     # initialize engine
     ENGINE = Engine(pdb=pdbPath, constraints=None)
     # create experimental constraints
@@ -51,7 +51,7 @@ if engineFileName not in os.listdir(DIR_PATH):
     dataWeights[:np.nonzero(gr[:,1]>0)[0][0]] = 0  
     PDF_CONSTRAINT = PairCorrelationConstraint(engine=None, experimentalData=gr.astype(FLOAT_TYPE), weighting="atomicNumber", dataWeights=dataWeights)
     # create and define molecular constraints
-    EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
+    EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None, defaultDistance=1.5)
     B_CONSTRAINT   = BondConstraint(engine=None)
     BA_CONSTRAINT  = BondsAngleConstraint(engine=None)
     IA_CONSTRAINT  = ImproperAngleConstraint(engine=None)

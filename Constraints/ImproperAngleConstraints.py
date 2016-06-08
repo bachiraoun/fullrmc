@@ -10,19 +10,30 @@ import itertools
 
 # external libraries imports
 import numpy as np
-from timeit import default_timer as timer
+from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.improper_angles import full_improper_angles
+from fullrmc.Core.improper_angles import full_improper_angles_coords
 
 class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     """
-    Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
-    The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.
+    Controls the improper angle formed with 4 defined atoms. It's mainly used to 
+    keep the improper atom in the plane defined with three other atoms. 
+    The improper vector is defined as the vector from the first atom of the plane to
+    the improper atom. Therefore the improper angle is defined between the improper
+    vector and the plane.
     
+     .. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/qVATE-9cIBg" 
+        frameborder="0" allowfullscreen>
+        </iframe> 
+        
+        
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. anglesMap (list): The angles map definition.
@@ -32,8 +43,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                #. Second item: The index of the atom 'O' considered the origin of the plane.
                #. Third item: The index of the atom 'x' used to calculated 'Ox' vector.
                #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
+               #. Fifth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
            and 0 means accepting all steps regardless whether standardError increases or not.
@@ -67,7 +80,8 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # define intra-molecular improper angles 
         IAC.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
                                                                     ('C3','O','C1','C4', -15, 15) ] })
-                                                                  
+           
+                                                            
     """
     
     def __init__(self, engine, anglesMap=None, rejectProbability=1):
@@ -75,6 +89,8 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_angles(anglesMap)
+        # set computation cost
+        self.set_computation_cost(3.0)
         
     @property
     def anglesMap(self):
@@ -86,9 +102,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         """ Get angles dictionary."""
         return self.__angles
     
-    @property    
+    @property
     def atomsLUAD(self):
-        """ Get look up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
+        """ 
+        Get look up angles dictionary, connecting every atom's index to a central 
+        atom angles definition of angles attribute.
+        """
         return self.__atomsLUAD
         
     @property
@@ -144,8 +163,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                #. Second item: The index of the atom 'O' considered the origin of the plane.
                #. Third item: The index of the atom 'x' used to calculated 'Ox' vector.
                #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: The minimum lower limit or the minimum angle allowed in rad.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed in rad.
+               #. Fifth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         """
         map = []
         if self.engine is not None:
@@ -178,9 +199,11 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                     lower = FLOAT_TYPE(lower)
                     assert is_number(upper), LOGGER.error("anglesMap items lists of sixth item must be a number")
                     upper = FLOAT_TYPE(upper)
-                    assert lower>=FLOAT_TYPE(-PI/2), LOGGER.error("anglesMap items lists fifth item must be bigger than %10f"%FLOAT_TYPE(-PI/2))
+                    assert lower>=-90, LOGGER.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
                     assert upper>lower, LOGGER.error("anglesMap items lists fifth item must be smaller than the sixth item")
-                    assert upper<=FLOAT_TYPE(PI/2), LOGGER.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%FLOAT_TYPE(PI/2))
+                    assert upper<=90, LOGGER.error("anglesMap items lists sixth item must be smaller or equal to 90")
+                    lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
+                    upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                     map.append((improperIdx, oIdx, xIdx, yIdx, lower, upper))  
         # set anglesMap definition
         self.__anglesMap = map      
@@ -229,8 +252,8 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 self.__angles[INT_TYPE(idx)] =  {"oIndexes": np.array(angles["oIndexes"], dtype = INT_TYPE), 
                                                  "xIndexes": np.array(angles["xIndexes"], dtype = INT_TYPE),
                                                  "yIndexes": np.array(angles["yIndexes"], dtype = INT_TYPE),
-                                                 "lower"  : np.array(angles["lower"]  , dtype = FLOAT_TYPE),
-                                                 "upper"  : np.array(angles["upper"]  , dtype = FLOAT_TYPE) }
+                                                 "lower"  : np.array(angles["lower"],     dtype = FLOAT_TYPE),
+                                                 "upper"  : np.array(angles["upper"],     dtype = FLOAT_TYPE) }
                 lut = self.__atomsLUAD.get(idx, [] )
                 self.__atomsLUAD[INT_TYPE(idx)] = sorted(set(lut))
         # reset constraint
@@ -251,8 +274,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                #. Second item: The name of the atom 'O' considered the origin of the plane.
                #. Third item: The name of the atom 'x' used to calculated 'Ox' vector.
                #. Fourth item: The name of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: The minimum lower limit or the minimum angle allowed in degrees.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed in degrees.
+               #. Fifth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         
         ::
         
@@ -279,20 +304,11 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 angle = list(angle)
                 assert len(angle)==6
                 improperAt, oAt, xAt, yAt, lower, upper = angle
-                assert is_number(lower)
-                lower = FLOAT_TYPE(lower)
-                assert is_number(upper)
-                upper = FLOAT_TYPE(upper)
-                assert lower>=-90, LOGGER.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
-                assert upper>lower, LOGGER.error("anglesMap items lists fifth item must be smaller than the sixth item")
-                assert upper<=90, LOGGER.error("anglesMap items lists sixth item must be smaller or equal to 90")
-                lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-                upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # check for redundancy
                 append = True
                 for b in molAnglesMap:
                     if (b[0]==improperAt):
-                        if sorted(oAt,xAt,yAt) == sorted(b[1],b[2],b[3]):
+                        if sorted([oAt,xAt,yAt]) == sorted([b[1],b[2],b[3]]):
                             log.LocalLogger("fullrmc").logger.warn("Improper angle definition for improper atom index '%i' and (O,x,y) atoms indexes (%i,%i,%i)  already defined. New angle limits [%.3f,%.3f] ignored and old angle limits [%.3f,%.3f] kept."%(improperIdx, oIdx, xIdx, yIdx, lower, upper, self.__angles[improperIdx]["lower"][index], self.__angles[improperIdx]["upper"][index]))
                             append = False
                             break
@@ -382,11 +398,18 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_improper_angles( anglesDict         = anglesDict ,
-                                         boxCoords          = self.engine.boxCoordinates,
-                                         basis              = self.engine.basisVectors ,
-                                         reduceAngleToUpper = False,
-                                         reduceAngleToLower = False)
+        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
+        #                                 boxCoords          = self.engine.boxCoordinates,
+        #                                 basis              = self.engine.basisVectors ,
+        #                                 reduceAngleToUpper = False,
+        #                                 reduceAngleToLower = False)
+        dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
+                                                boxCoords          = self.engine.boxCoordinates,
+                                                basis              = self.engine.basisVectors ,
+                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                reduceAngleToUpper = False,
+                                                reduceAngleToLower = False,
+                                                ncores             = INT_TYPE(1) )                 
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
@@ -408,11 +431,18 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_improper_angles( anglesDict         = anglesDict ,
-                                         boxCoords          = self.engine.boxCoordinates,
-                                         basis              = self.engine.basisVectors ,
-                                         reduceAngleToUpper = False,
-                                         reduceAngleToLower = False)
+        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
+        #                                 boxCoords          = self.engine.boxCoordinates,
+        #                                 basis              = self.engine.basisVectors ,
+        #                                 reduceAngleToUpper = False,
+        #                                 reduceAngleToLower = False)
+        dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
+                                                boxCoords          = self.engine.boxCoordinates,
+                                                basis              = self.engine.basisVectors ,
+                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                reduceAngleToUpper = False,
+                                                reduceAngleToLower = False,
+                                                ncores             = INT_TYPE(1) )
         # set data before move
         self.set_active_atoms_data_before_move( dataDict )
         self.set_active_atoms_data_after_move(None)
@@ -436,11 +466,18 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data before move
-        dataDict = full_improper_angles( anglesDict         = anglesDict ,
-                                         boxCoords          = self.engine.boxCoordinates,
-                                         basis              = self.engine.basisVectors ,
-                                         reduceAngleToUpper = False,
-                                         reduceAngleToLower = False)
+        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
+        #                                 boxCoords          = self.engine.boxCoordinates,
+        #                                 basis              = self.engine.basisVectors ,
+        #                                 reduceAngleToUpper = False,
+        #                                 reduceAngleToLower = False)
+        dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
+                                                boxCoords          = self.engine.boxCoordinates,
+                                                basis              = self.engine.basisVectors ,
+                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                reduceAngleToUpper = False,
+                                                reduceAngleToLower = False,
+                                                ncores             = INT_TYPE(1) )
         # set data after move
         self.set_active_atoms_data_after_move( dataDict )
         # reset coordinates

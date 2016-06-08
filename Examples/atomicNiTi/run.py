@@ -35,7 +35,7 @@ engineFilePath = os.path.join(DIR_PATH, engineFileName)
 EXPORT_PDB = False    
 
 # check Engine exists, if not build it otherwise load it.
-if engineFileName not in os.listdir(DIR_PATH):
+if engineFileName not in os.listdir(DIR_PATH) or True:
     # create engine
     ENGINE = Engine(pdb=pdbPath, constraints=None)
     # add G(r) constraint

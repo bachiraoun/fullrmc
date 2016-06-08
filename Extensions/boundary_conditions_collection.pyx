@@ -1,33 +1,6 @@
 """
-This is a C compiled Cython generated module to transform coordinates. It contains the following methods.
-                   
-                                    
-**get_reciprocal_basis**: Computes reciprocal box matrix.
-    :Arguments:
-       #. basis (float32 array): The (3,3) box matrix
-                                         
-    :Returns:
-       #. rbasis (float32 array): The (3,3) reciprocal box matrix.
-
-  
-**transform_coordinates**: Transforms coordinates array using a transformation matrix.
-    :Arguments:
-       #. transMatrix (float32 array): The (3,3) transformation matrix
-       #. coords (float32 array): The (N,3) coordinates array.
-                                         
-    :Returns:
-       #. transCoords (float32 array): The (N,3) transformed coordinates array.
-       
-                                                    
-**box_coordinates_real_distances**: Computes atomic real distances given box coordinates.
-    :Arguments:
-       #. atomIndex (int32): The index of atom to compute the distance from.
-       #. indexes (int32 array): The list of atom indexes to compute the distance to
-       #. boxCoords (float32 array): The (N,3) box coordinates array.
-       #. basis (float32 array): The (3,3) box matrix
-       
-    :Returns:
-       #. distances (float32 array): The (N,) distances array.
+This is a C compiled module to compute 
+boundary conditions related calculations
 """
 
 from libc.math cimport sqrt, abs
@@ -70,6 +43,15 @@ cdef inline C_FLOAT32 round(C_FLOAT32 num):
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
 def get_reciprocal_basis( np.ndarray[C_FLOAT32, ndim=2] basis not None):
+    """
+    Computes reciprocal box matrix.
+    
+    :Arguments:
+       #. basis (float32 array): The (3,3) box matrix
+                                         
+    :Returns:
+       #. rbasis (float32 array): The (3,3) reciprocal box matrix.
+    """
     # declare rbasis
     cdef ndarray[C_FLOAT32,  mode="c", ndim=2] rbasis = np.empty((3,3), dtype=NUMPY_FLOAT32)
     # get reciprocal basis
@@ -105,6 +87,16 @@ def get_reciprocal_basis( np.ndarray[C_FLOAT32, ndim=2] basis not None):
 @cython.always_allow_keywords(False)
 def transform_coordinates( np.ndarray[C_FLOAT32, ndim=2] transMatrix not None,
                            np.ndarray[C_FLOAT32, ndim=2] coords not None):
+    """
+    Transforms coordinates array using a transformation matrix.
+    
+    :Arguments:
+       #. transMatrix (float32 array): The (3,3) transformation matrix
+       #. coords (float32 array): The (N,3) coordinates array.
+                                         
+    :Returns:
+       #. transCoords (float32 array): The (N,3) transformed coordinates array.
+    """
     # declare variables
     cdef C_INT32 i
     # declare transCoords
@@ -124,11 +116,23 @@ def transform_coordinates( np.ndarray[C_FLOAT32, ndim=2] transMatrix not None,
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def box_coordinates_real_distances( C_INT32 atomIndex, 
-                                    ndarray[C_INT32, ndim=1] indexes not None,
+def box_coordinates_real_distances( C_INT32                       atomIndex, 
+                                    ndarray[C_INT32, ndim=1]      indexes not None,
                                     np.ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                     np.ndarray[C_FLOAT32, ndim=2] basis not None):
                            
+    """
+    Computes atomic real distances given box coordinates.
+    
+    :Arguments:
+       #. atomIndex (int32): The index of atom to compute the distance from.
+       #. indexes (int32 array): The list of atom indexes to compute the distance to
+       #. boxCoords (float32 array): The (N,3) box coordinates array.
+       #. basis (float32 array): The (3,3) box matrix
+       
+    :Returns:
+       #. distances (float32 array): The (N,) distances array.
+    """
     # declare variables
     cdef C_INT32 i, ii
     cdef C_FLOAT32 box_dx, box_dy, box_dz

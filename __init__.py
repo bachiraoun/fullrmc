@@ -1,4 +1,4 @@
-""" 
+"""
 .. inheritance-diagram:: fullrmc.Engine.Engine
 
 .. inheritance-diagram:: fullrmc.Core.Group.Group 
@@ -19,7 +19,7 @@
                          fullrmc.Constraints.StructureFactorConstraints
     :parts: 1
     
-
+    
 Welcoming videos
 ================    
 +---------------------------------------------------------------------------------------+
@@ -273,7 +273,7 @@ the Engine is run for additional several hours to refine atoms positions separat
 
 """
 # import package info
-from __pkginfo__ import __version__, __author__, __email__
+from __pkginfo__ import __version__, __author__, __email__, __onlinedoc__, __repository__, __pypi__
 
 def get_version():
     """Get fullrmc's version number."""
@@ -287,5 +287,15 @@ def get_email():
     """Get fullrmc's official email."""
     return __email__   
     
+def get_doc():
+    """Get fullrmc's official online documentation link."""
+    return __onlinedoc__       
     
+def get_repository():
+    """Get fullrmc's official online repository link."""
+    return __repository__        
+    
+def get_pypi():
+    """Get fullrmc's official online repository link."""
+    return __pypi__        
     

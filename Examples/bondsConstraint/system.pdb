@@ -1,0 +1,5 @@
+REMARK    this file is generated using 'pdbParser' package
+REMARK    Boundary Conditions: 15.0  0.0  0.0  0.0  15.0  0.0  0.0  0.0  15.0 
+ATOM      1 OH2  TIP     1       2.540   4.331   2.920  1.00  0.00           O  
+ATOM      2 H1   TIP     1       2.676   5.270   2.793  1.00  0.00           H  
+ATOM      3 H2   TIP     1       3.381   4.008   3.245  1.00  0.00           H  

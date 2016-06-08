@@ -2,38 +2,49 @@
 In order to work properly, this script must be put one layer or directory
 outside of fullrmc package directory.
 """ 
+##########################################################################################
+########################################  IMPORTS  ####################################### 
 # standard distribution imports
 import os, sys, subprocess
+import fnmatch
+
 # setup and distutils imports
 try:
     from setuptools import setup
 except:
     from distutils.core import setup
-import fnmatch
 from distutils.util import convert_path
 from distutils.core import Extension
+
 # import cython
 try:
     from Cython.Distutils import build_ext
 except:
     raise Exception("must install cython first. Try pip install cython")
+    
 # import numpy
 try:
     import numpy as np
 except:
     raise Exception("must install numpy first. Try pip install numpy")
 
-    
-# set package path and name
-PACKAGE_PATH    = '.'
-PACKAGE_NAME    = 'fullrmc'
-EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
 
 # check python version
 if sys.version_info[:2] < (2, 7) or sys.version_info[:2] >= (3,):
     raise RuntimeError("Python version 2.7 required.")
 
-# automatically create MANIFEST.in
+    
+    
+##########################################################################################
+#################################  PACKAGE PATH AND NAME  ################################   
+PACKAGE_PATH    = '.'
+PACKAGE_NAME    = 'fullrmc'
+EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
+
+
+
+##########################################################################################
+######################################  MANIFEST.in  ##################################### 
 commands = [# include MANIFEST.in
             '# include this file, to ensure we can recreate source distributions',
             'include MANIFEST.in'
@@ -47,9 +58,7 @@ commands = [# include MANIFEST.in
             'global-exclude *.so',
             'global-exclude *.rmc',
             # exclude specific files
-            'global-exclude %s/Extensions/debye_scattering.pyx'%PACKAGE_NAME,
-            'global-exclude %s/Extensions/atomic_distances.pyx'%PACKAGE_NAME,
-            'global-exclude %s/Extensions/reciprocal_space.pyx'%PACKAGE_NAME,
+            'global-exclude %s/Extensions/atomic_coordination_angle.pyx'%PACKAGE_NAME,
             # exclude all other non necessary files 
             '\n# exclude all other non necessary files ',
             'global-exclude .project',
@@ -88,7 +97,10 @@ with open('MANIFEST.in','w') as fd:
         fd.write(l)
         fd.write('\n')
 
-# declare classifiers
+
+        
+##########################################################################################
+######################################  CLASSIFIERS  ##################################### 
 CLASSIFIERS = """\
 Development Status :: 4 - Beta
 Intended Audience :: Science/Research
@@ -112,6 +124,10 @@ Operating System :: Unix
 Operating System :: MacOS
 """
 
+
+
+##########################################################################################
+######################################  DESCRIPION  ###################################### 
 # create descriptions
 LONG_DESCRIPTION = ["fullrmc is a Reverse Monte Carlo (RMC) modelling package.",
                     "RMC is probably best known for its applications in condensed matter physics and solid state chemistry.",
@@ -126,9 +142,10 @@ DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 PACKAGE_INFO={}
 execfile(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') ), PACKAGE_INFO)
  
-##############################################################################################
-##################################### USEFUL DEFINITIONS #####################################
-                            
+ 
+ 
+##########################################################################################
+################################### USEFUL DEFINITIONS ###################################                         
 def is_package(path):
     return (os.path.isdir(path) and os.path.isfile(os.path.join(path, '__init__.py')))
 
@@ -198,56 +215,69 @@ def find_package_data(where='.', package='', relativePath='',
                 else:
                     out.setdefault(package, []).append(prefix+name)
     return out
-   
-################################## END OF USEFUL DEFINITIONS #################################
-##############################################################################################
 
-# get extensions
-EXTENSIONS = [# boundary_conditions_collection
+    
+    
+##########################################################################################
+######################################  EXTENSIONS  ###################################### 
+EXTENSIONS = [# boundary conditions collection
               Extension('fullrmc.Core.boundary_conditions_collection',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"boundary_conditions_collection.pyx")]),
-              # pair_distribution_histogram
-              Extension('fullrmc.Core.pair_distribution_histogram',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"pair_distribution_histogram.pyx")]),
-              # distances
-              Extension('fullrmc.Core.distances',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"distances.pyx")]),
+                        include_dirs=[np.get_include()],
+                        sources = [os.path.join(EXTENSIONS_PATH,"boundary_conditions_collection.pyx")]),
+              # reciprocal space
+              Extension('fullrmc.Core.reciprocal_space',
+                        include_dirs=[np.get_include()],
+                        sources = [os.path.join(EXTENSIONS_PATH,"reciprocal_space.pyx")]),
+              # pairs distances
+              Extension('fullrmc.Core.pairs_distances',
+                        include_dirs=[np.get_include()],
+                        language="c",
+                        sources = [os.path.join(EXTENSIONS_PATH,"pairs_distances.pyx")]),
+              # pairs histograms
+              Extension('fullrmc.Core.pairs_histograms',
+                        include_dirs=[np.get_include()],
+                        language="c",
+                        sources = [os.path.join(EXTENSIONS_PATH,"pairs_histograms.pyx")]),
+              # vdw
+              Extension('fullrmc.Core.vdw',
+                        include_dirs=[np.get_include()],
+                        language="c",
+                        sources = [os.path.join(EXTENSIONS_PATH,"vdw.pyx")]),
               # bonds
               Extension('fullrmc.Core.bonds',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"bonds.pyx")]),
+                        include_dirs=[np.get_include()],
+                        sources = [os.path.join(EXTENSIONS_PATH,"bonds.pyx")]),
               # angles
               Extension('fullrmc.Core.angles',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"angles.pyx")]),
-              # improper_angles
+                        include_dirs=[np.get_include()],
+                        sources = [os.path.join(EXTENSIONS_PATH,"angles.pyx")]),
+              # improper angles
               Extension('fullrmc.Core.improper_angles',
-              include_dirs=[np.get_include()],
-              sources = [os.path.join(EXTENSIONS_PATH,"improper_angles.pyx")]),
-              # atomic_coordination_number
+                        include_dirs=[np.get_include()],
+                        sources = [os.path.join(EXTENSIONS_PATH,"improper_angles.pyx")]),
+              # atomic coordination number
               Extension('fullrmc.Core.atomic_coordination_number',
-              include_dirs=[np.get_include()],
-              language="c++",
-              sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination_number.pyx")]),
+                        include_dirs=[np.get_include()],
+                        language="c++",
+                        sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination_number.pyx")]),
               ]
 CMDCLASS = {'build_ext' : build_ext}
-            
+       
+       
+       
+##########################################################################################
+#####################################  PACKAGE DATA  #####################################        
 # get packages and remove everything that is not fullrmc
 PACKAGES = get_packages(path=PACKAGE_PATH, exclude=(os.path.join(PACKAGE_NAME,"docs"),))
 for package in PACKAGES.keys():
     if PACKAGE_NAME not in package:
         PACKAGES.pop(package)
-
 # get package data
 PACKAGE_DATA = find_package_data(where=os.path.join(PACKAGE_NAME, "Examples"), 
                                  relativePath="Examples",
                                  package='fullrmc', 
                                  showIgnored=False)
-                               
-# create meta data
+# metadata
 metadata = dict(# package
                 name             = PACKAGE_NAME,
                 packages         = PACKAGES.keys(),
@@ -274,11 +304,14 @@ metadata = dict(# package
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.1.7",
                                     "pdbParser>=0.1.5",
-                                    "matplotlib>=1.4" ], # it also needs numpy and cython, but this is left out for the user to install.
+                                    "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )
 
-# setup
+
+                
+##########################################################################################
+#####################################  LAUNCH SETUP  #####################################  
 setup(**metadata)
 
 

@@ -1,82 +1,6 @@
 """
-This is a C++ compiled Cython generated module to calculate atomic coordination number constraints. 
-It contains the following methods.
-
-**single_shell_coordination_number**: It computes the neighbours indexes around a certain atom 
-  within a lower and upper shell limits.   
-    :Arguments:
-       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
-       #. boxCoords (float32 array): The whole system box coordinates.
-       #. basis (float32 array): The box vectors.
-       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
-       #. indexes (int32 array): The indexes of atoms to find neighbours from.
-       #. lowerLimit (float32 array): The coordination number shell lower limit or minimum distance.
-       #. upperLimit (float32 array): The coordination number shell upper limit or maximum distance.
-                                      
-    :Returns:
-       #. neighbours (python List): List of neighbours indexes.
-       
-           
-**single_atomic_coordination_number**: It computes the coordination number around a certain atom
-  in all defined shells.
-    :Arguments:
-       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
-       #. boxCoords (float32 array): The whole system box coordinates.
-       #. basis (float32 array): The box vectors.
-       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
-       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
-       #. typesDefinition (python dictionary): The coordination number definition per atom type.
-       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
-       #. coordNumData (python List): The coordination number data.
-
-    :Returns:
-       #. coordNumData (python List): The coordination number data updated.
-       
-**multiple_atomic_coordination_number**: It computes the coordination number of multiple atoms.
-    :Arguments:
-       #. indexes (int32): The list of atoms to compute their coordination number.
-       #. boxCoords (float32 array): The whole system box coordinates.
-       #. basis (float32 array): The box vectors.
-       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
-       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
-       #. typesDefinition (python dictionary): The coordination number definition per atom type.
-       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
-       #. coordNumData (python List): The coordination number data.
-
-    :Returns:
-       #. coordNumData (python List): The coordination number data updated.
-
-       
-**full_atomic_coordination_number**: It computes the coordination number of all system's atoms.
-    :Arguments:
-       #. boxCoords (float32 array): The whole system box coordinates.
-       #. basis (float32 array): The box vectors.
-       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
-       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
-       #. typesDefinition (python dictionary): The coordination number definition per atom type.
-       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
-       #. coordNumData (python List): The coordination number data.
-
-    :Returns:
-       #. coordNumData (python List): The coordination number data updated.
- 
- 
-**atom_coordination_number_data**: It cocd mputes all coordination number informations and atoms
-  involved in a given atom coordination number calculation.
-    :Arguments:
-       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
-       #. boxCoords (float32 array): The whole system box coordinates.
-       #. basis (float32 array): The box vectors.
-       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
-       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
-       #. typesDefinition (python dictionary): The coordination number definition per atom type.
-       
-    :Returns:
-       #. atoms (python List): The List of atoms involved in a way or another with the coordination number of atomIndex.
-       #. shells (python List): The List of shells indexes corresponding to the list of atoms.
-       #. neighbours (python List): The List of atoms found neighbouring atoms in corresponding shells.          
+This is a C++ compiled module to compute atomic coordination numbers.
 """
-
 from libc.math cimport sqrt, abs
 from libcpp.vector cimport vector
 import cython
@@ -84,7 +8,6 @@ cimport cython
 import numpy as np
 cimport numpy as np
 from numpy cimport ndarray
-from cython.parallel import prange
 
 # declare types
 NUMPY_FLOAT32 = np.float32
@@ -102,11 +25,12 @@ cdef C_INT32   INT32_ZERO      = 0
 
 
 cdef extern from "math.h":
-    C_FLOAT32 floor(C_FLOAT32 x)
-    C_FLOAT32 ceil(C_FLOAT32 x)
-    C_FLOAT32 sqrt(C_FLOAT32 x)
+    C_FLOAT32 floor(C_FLOAT32 x) nogil
+    C_FLOAT32 ceil(C_FLOAT32 x)  nogil
+    C_FLOAT32 sqrt(C_FLOAT32 x)  nogil
 
-cdef inline C_FLOAT32 round(C_FLOAT32 num):
+    
+cdef inline C_FLOAT32 round(C_FLOAT32 num) nogil:
     return floor(num + HALF_BOX_LENGTH) if (num > FLOAT32_ZERO) else ceil(num - HALF_BOX_LENGTH)
   
     
@@ -115,13 +39,28 @@ cdef inline C_FLOAT32 round(C_FLOAT32 num):
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def single_shell_coordination_number( C_INT32 atomIndex, 
+def single_shell_coordination_number( C_INT32                    atomIndex, 
                                       ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                       ndarray[C_FLOAT32, ndim=2] basis not None,
-                                      ndarray[C_INT32, ndim=1] moleculeIndex not None,
-                                      ndarray[C_INT32, ndim=1] indexes not None,
-                                      C_FLOAT32 lowerLimit,
-                                      C_FLOAT32 upperLimit):         
+                                      ndarray[C_INT32, ndim=1]   moleculeIndex not None,
+                                      ndarray[C_INT32, ndim=1]   indexes not None,
+                                      C_FLOAT32                  lowerLimit,
+                                      C_FLOAT32                  upperLimit):         
+    """
+    within a lower and upper shell limits.  
+  
+    :Arguments:
+       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
+       #. boxCoords (float32 array): The whole system box coordinates.
+       #. basis (float32 array): The box vectors.
+       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
+       #. indexes (int32 array): The indexes of atoms to find neighbours from.
+       #. lowerLimit (float32 array): The coordination number shell lower limit or minimum distance.
+       #. upperLimit (float32 array): The coordination number shell upper limit or maximum distance.
+                                      
+    :Returns:
+       #. neighbours (python List): List of neighbours indexes.
+    """
     # declare variables
     cdef C_INT32 loopIdx, startIndex, endIndex
     cdef C_INT32 int32Var
@@ -176,14 +115,30 @@ def single_shell_coordination_number( C_INT32 atomIndex,
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def single_atomic_coordination_number( C_INT32 atomIndex, 
+def single_atomic_coordination_number( C_INT32                    atomIndex, 
                                        ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                        ndarray[C_FLOAT32, ndim=2] basis not None,
-                                       ndarray[C_INT32, ndim=1] moleculeIndex not None,
-                                       ndarray[C_INT32, ndim=1] typesIndex not None,
-                                       dict typesDefinition,
-                                       dict typeIndexesLUT,
-                                       list coordNumData):    
+                                       ndarray[C_INT32, ndim=1]   moleculeIndex not None,
+                                       ndarray[C_INT32, ndim=1]   typesIndex not None,
+                                       dict                       typesDefinition,
+                                       dict                       typeIndexesLUT,
+                                       list                       coordNumData):    
+    """
+    It computes the coordination number around a certain atom in all defined shells.
+    
+    :Arguments:
+       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
+       #. boxCoords (float32 array): The whole system box coordinates.
+       #. basis (float32 array): The box vectors.
+       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
+       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
+       #. typesDefinition (python dictionary): The coordination number definition per atom type.
+       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
+       #. coordNumData (python List): The coordination number data.
+
+    :Returns:
+       #. coordNumData (python List): The coordination number data updated.
+    """
     cdef C_INT32 shellIdx,
     cdef C_INT32 int32Var
     # get atom molecule and types and atom data
@@ -209,7 +164,6 @@ def single_atomic_coordination_number( C_INT32 atomIndex,
             atomNeighbours[int32Var] = shellIdx
             # update neighbouring
             coordNumData[int32Var]['neighbouring'][atomIndex] = shellIdx
-                
     # compute squared deviations
     cdef ndarray[C_INT32,  mode="c", ndim=1] deviations = np.zeros(len(atomCnDef['minNumOfNeig']), dtype=NUMPY_INT32)
     for shellIdx in atomNeighbours.values():
@@ -225,57 +179,105 @@ def single_atomic_coordination_number( C_INT32 atomIndex,
     coordNumData[atomIndex]['squaredDeviations'] = np.sum(coordNumData[atomIndex]['deviations']**2)    
     return coordNumData
    
-def multiple_atomic_coordination_number( ndarray[C_INT32, ndim=1] indexes not None,
+   
+   
+def multiple_atomic_coordination_number( ndarray[C_INT32, ndim=1]   indexes not None,
                                          ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                          ndarray[C_FLOAT32, ndim=2] basis not None,
-                                         ndarray[C_INT32, ndim=1] moleculeIndex not None,
-                                         ndarray[C_INT32, ndim=1] typesIndex not None,
-                                         dict typesDefinition,
-                                         dict typeIndexesLUT,
-                                         list coordNumData): 
+                                         ndarray[C_INT32, ndim=1]   moleculeIndex not None,
+                                         ndarray[C_INT32, ndim=1]   typesIndex not None,
+                                         dict                       typesDefinition,
+                                         dict                       typeIndexesLUT,
+                                         list                       coordNumData): 
+    """
+    It computes the coordination number of multiple atoms.
+    
+    :Arguments:
+       #. indexes (int32): The list of atoms to compute their coordination number.
+       #. boxCoords (float32 array): The whole system box coordinates.
+       #. basis (float32 array): The box vectors.
+       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
+       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
+       #. typesDefinition (python dictionary): The coordination number definition per atom type.
+       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
+       #. coordNumData (python List): The coordination number data.
+
+    :Returns:
+       #. coordNumData (python List): The coordination number data updated.
+    """
     for i in indexes:
-    #for idx in prange(len(indexes)):
-        coordNumData = single_atomic_coordination_number( atomIndex = i, 
-                                                          boxCoords = boxCoords,
-                                                          basis = basis,
-                                                          moleculeIndex = moleculeIndex,
-                                                          typesIndex = typesIndex,
+        coordNumData = single_atomic_coordination_number( atomIndex       = i, 
+                                                          boxCoords       = boxCoords,
+                                                          basis           = basis,
+                                                          moleculeIndex   = moleculeIndex,
+                                                          typesIndex      = typesIndex,
                                                           typesDefinition = typesDefinition,
-                                                          typeIndexesLUT = typeIndexesLUT,
-                                                          coordNumData = coordNumData)
+                                                          typeIndexesLUT  = typeIndexesLUT,
+                                                          coordNumData    = coordNumData)
     return coordNumData                                                     
                                                           
                                                           
                                                           
 def full_atomic_coordination_number( ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                      ndarray[C_FLOAT32, ndim=2] basis not None,
-                                     ndarray[C_INT32, ndim=1] moleculeIndex not None,
-                                     ndarray[C_INT32, ndim=1] typesIndex not None,
-                                     dict typesDefinition,
-                                     dict typeIndexesLUT,
-                                     list coordNumData): 
+                                     ndarray[C_INT32, ndim=1]   moleculeIndex not None,
+                                     ndarray[C_INT32, ndim=1]   typesIndex not None,
+                                     dict                       typesDefinition,
+                                     dict                       typeIndexesLUT,
+                                     list                       coordNumData): 
+    """
+    It computes the coordination number of all system's atoms.
     
+    :Arguments:
+       #. boxCoords (float32 array): The whole system box coordinates.
+       #. basis (float32 array): The box vectors.
+       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
+       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
+       #. typesDefinition (python dictionary): The coordination number definition per atom type.
+       #. typeIndexesLUT (python dictionary): The dictionary of all types grouped in key: list of atoms indexes.
+       #. coordNumData (python List): The coordination number data.
+
+    :Returns:
+       #. coordNumData (python List): The coordination number data updated.
+    """
     # get number of atoms
     cdef numberOfAtoms = <C_INT32>boxCoords.shape[0]
     # get indexes
     cdef ndarray[C_INT32,  mode="c", ndim=1] indexes = np.arange(numberOfAtoms, dtype=NUMPY_INT32)
-    return multiple_atomic_coordination_number(indexes=indexes,
-                                               boxCoords = boxCoords,
-                                               basis = basis,
-                                               moleculeIndex = moleculeIndex,
-                                               typesIndex = typesIndex,
+    return multiple_atomic_coordination_number(indexes         = indexes,
+                                               boxCoords       = boxCoords,
+                                               basis           = basis,
+                                               moleculeIndex   = moleculeIndex,
+                                               typesIndex      = typesIndex,
                                                typesDefinition = typesDefinition,
-                                               typeIndexesLUT=typeIndexesLUT,
-                                               coordNumData = coordNumData)
+                                               typeIndexesLUT  = typeIndexesLUT,
+                                               coordNumData    = coordNumData)
                                                                                     
                                                           
 
-def atom_coordination_number_data( C_INT32 atomIndex, 
+def atom_coordination_number_data( C_INT32                    atomIndex, 
                                    ndarray[C_FLOAT32, ndim=2] boxCoords not None,
                                    ndarray[C_FLOAT32, ndim=2] basis not None,
-                                   ndarray[C_INT32, ndim=1] moleculeIndex not None,
-                                   ndarray[C_INT32, ndim=1] typesIndex not None,
-                                   dict typesDefinition):
+                                   ndarray[C_INT32, ndim=1]   moleculeIndex not None,
+                                   ndarray[C_INT32, ndim=1]   typesIndex not None,
+                                   dict                       typesDefinition):
+    """
+    Computes all coordination number informations and atoms
+    involved in a given atom coordination number calculation.
+    
+    :Arguments:
+       #. atomIndex (int32): The atom index to compute the neighbour atom indexes around.
+       #. boxCoords (float32 array): The whole system box coordinates.
+       #. basis (float32 array): The box vectors.
+       #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
+       #. typesIndex (int32 array): The atoms's types array, assigning a type for every atom.
+       #. typesDefinition (python dictionary): The coordination number definition per atom type.
+       
+    :Returns:
+       #. atoms (python List): The List of atoms involved in a way or another with the coordination number of atomIndex.
+       #. shells (python List): The List of shells indexes corresponding to the list of atoms.
+       #. neighbours (python List): The List of atoms found neighbouring atoms in corresponding shells. 
+    """
     # declare variables
     cdef C_INT32 loopIdx, startIndex, endIndex
     cdef C_INT32 shellIdx
@@ -321,12 +323,9 @@ def atom_coordination_number_data( C_INT32 atomIndex,
         box_dx = (boxCoords[loopIdx,0]-atomBox_x)%1
         box_dy = (boxCoords[loopIdx,1]-atomBox_y)%1
         box_dz = (boxCoords[loopIdx,2]-atomBox_z)%1
-        box_dx = abs(box_dx)
-        box_dy = abs(box_dy)
-        box_dz = abs(box_dz)
-        if box_dx > HALF_BOX_LENGTH: box_dx = BOX_LENGTH-box_dx
-        if box_dy > HALF_BOX_LENGTH: box_dy = BOX_LENGTH-box_dy
-        if box_dz > HALF_BOX_LENGTH: box_dz = BOX_LENGTH-box_dz
+        box_dx -= round(box_dx)
+        box_dy -= round(box_dy)
+        box_dz -= round(box_dz)
         real_dx = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         real_dy = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
         real_dz = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]        
@@ -344,7 +343,6 @@ def atom_coordination_number_data( C_INT32 atomIndex,
                 neighboursOfAtom.push_back(atomIndex)
                 neighboursShellIdx.push_back(shellIdx)
                 neighbours.push_back(loopIdx)
-                
         # find shells of loop atoms
         if computeLoopAtom:
             for shellIdx from <C_INT32>np.searchsorted(loopAtomMinShells, distance) > shellIdx >= INT32_ZERO:

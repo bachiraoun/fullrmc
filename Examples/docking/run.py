@@ -61,7 +61,7 @@ move_towards()
 ##################################  VISUALIZE SIMULATION  ################################
 ENGINE.set_pdb(pdbPath)
 ENGINE.visualize( commands = ["trajectory.xyz"], 
-                  boxWidth=0, 
+                  boxWidth=0, bgColor='white',
                   representationParams='CPK 1.0 0.2 50 50')    
     
  

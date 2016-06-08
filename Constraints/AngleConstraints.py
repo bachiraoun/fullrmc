@@ -11,18 +11,26 @@ import copy
 
 # external libraries imports
 import numpy as np
-from timeit import default_timer as timer
+from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.angles import full_angles
+from fullrmc.Core.angles import full_angles_coords
 
 
 class BondsAngleConstraint(RigidConstraint, SingularConstraint):
     """
-    Its controls the angle between 3 defined atoms.
+    Controls the angle defined between 3 defined 'bonded' atoms.
+    
+    .. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/ezBbbO9IVig" 
+        frameborder="0" allowfullscreen>
+        </iframe>
+        
     
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
@@ -32,8 +40,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             #. First item: The central atom index.
             #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
             #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-            #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
-            #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
+            #. Fourth item: The minimum lower limit or the minimum angle allowed 
+               in degrees which later will be converted to rad.
+            #. Fifth item: The maximum upper limit or the maximum angle allowed 
+               in degrees which later will be converted to rad.
         #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
            and 0 means accepting all steps regardless whether standardError increases or not.
@@ -67,14 +77,14 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                                                     ('C','H3','H4', 100, 120),
                                                                     ('C','H4','H1', 100, 120) ]} )
                                                                           
-        
-        
+            
     """
     def __init__(self, engine, anglesMap=None, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
-        self.set_angles(anglesMap)
+        self.set_angles(anglesMap)# set computation cost
+        self.set_computation_cost(2.0)
         
     @property
     def anglesMap(self):
@@ -145,8 +155,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                #. First item: The central atom index.
                #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
                #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
+               #. Fourth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Fifth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         """
         map = []
         if self.engine is not None:
@@ -169,13 +181,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                     assert centralIdx!=leftIdx, LOGGER.error("bondsMap items lists first and second items can't be the same")
                     assert centralIdx!=rightIdx, LOGGER.error("bondsMap items lists first and third items can't be the same")
                     assert leftIdx!=rightIdx, LOGGER.error("bondsMap items lists second and third items can't be the same")
-                    assert is_number(lower), LOGGER.error("anglesMap items lists of third item must be a number")
-                    lower = FLOAT_TYPE(lower)
-                    assert is_number(upper), LOGGER.error("anglesMap items lists of fourth item must be a number")
-                    upper = FLOAT_TYPE(upper)
-                    assert lower>=0, LOGGER.error("anglesMap items lists fourth item must be positive")
-                    assert upper>lower, LOGGER.error("anglesMap items lists fourth item must be smaller than the fifth item")
-                    assert upper<=PI, LOGGER.error("anglesMap items lists fifth item must be smaller or equal to %.10f"%PI)
                     map.append((centralIdx, leftIdx, rightIdx, lower, upper))  
         # set anglesMap definition
         self.__anglesMap = map     
@@ -183,7 +188,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         self.__angles = {}
         self.__atomsLUAD = {}
         if self.engine is not None:
-            # parse bondsMap
+            # parse anglesMap
             for angle in self.__anglesMap:
                 self.add_angle(angle)
             # finalize angles
@@ -207,8 +212,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                #. First item: The central atom index.
                #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
                #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed in rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed in rad.
+               #. Fourth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Fifth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         """
         centralIdx, leftIdx, rightIdx, lower, upper = angle
         assert centralIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
@@ -217,6 +224,15 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         centralIdx = INT_TYPE(centralIdx)
         leftIdx    = INT_TYPE(leftIdx)
         rightIdx   = INT_TYPE(rightIdx)
+        assert is_number(lower)
+        lower = FLOAT_TYPE(lower)
+        assert is_number(upper)
+        upper = FLOAT_TYPE(upper)
+        assert lower>=0, LOGGER.error("angle items lists fourth item must be positive")
+        assert upper>lower, LOGGER.error("angle items lists fourth item must be smaller than the fifth item")
+        assert upper<=180, LOGGER.error("angle items lists fifth item must be smaller or equal to 180")
+        lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
+        upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create atoms look up angles dictionary
         if not self.__atomsLUAD.has_key(centralIdx):
             self.__atomsLUAD[centralIdx] = []
@@ -283,8 +299,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                #. First item: The name of the central atom forming the angle.
                #. Second item: The name of the left atom forming the angle (interchangeable with the right atom).
                #. Third item: The name of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed in degrees.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed in degrees.
+               #. Fourth item: The minimum lower limit or the minimum angle allowed 
+                  in degrees which later will be converted to rad.
+               #. Fifth item: The maximum upper limit or the maximum angle allowed 
+                  in degrees which later will be converted to rad.
         
         ::
         
@@ -312,15 +330,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 angle = list(angle)
                 assert len(angle)==5
                 centralAt, leftAt, rightAt, lower, upper = angle
-                assert is_number(lower)
-                lower = FLOAT_TYPE(lower)
-                assert is_number(upper)
-                upper = FLOAT_TYPE(upper)
-                assert lower>=0, LOGGER.error("anglesMap items lists fourth item must be positive")
-                assert upper>lower, LOGGER.error("anglesMap items lists fourth item must be smaller than the fifth item")
-                assert upper<=180, LOGGER.error("anglesMap items lists fifth item must be smaller or equal to 180")
-                lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-                upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # check for redundancy
                 append = True
                 for b in molAnglesMap:
@@ -413,11 +422,13 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.__angles[idx] 
         # compute data before move
-        dataDict = full_angles( anglesDict         = anglesDict ,
-                                boxCoords          = self.engine.boxCoordinates,
-                                basis              = self.engine.basisVectors ,
-                                reduceAngleToUpper = False,
-                                reduceAngleToLower = False)
+        dataDict = full_angles_coords( anglesDict         = anglesDict ,
+                                       boxCoords          = self.engine.boxCoordinates,
+                                       basis              = self.engine.basisVectors ,
+                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       reduceAngleToUpper = False,
+                                       reduceAngleToLower = False,
+                                       ncores             = INT_TYPE(1))
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
@@ -439,11 +450,13 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        dataDict = full_angles( anglesDict         = anglesDict ,
-                                boxCoords          = self.engine.boxCoordinates,
-                                basis              = self.engine.basisVectors ,
-                                reduceAngleToUpper = False,
-                                reduceAngleToLower = False)
+        dataDict = full_angles_coords( anglesDict         = anglesDict ,
+                                       boxCoords          = self.engine.boxCoordinates,
+                                       basis              = self.engine.basisVectors ,
+                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       reduceAngleToUpper = False,
+                                       reduceAngleToLower = False,
+                                       ncores             = INT_TYPE(1))
         # set data before move
         self.set_active_atoms_data_before_move( dataDict )
         self.set_active_atoms_data_after_move(None)
@@ -467,11 +480,13 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data before move
-        dataDict = full_angles( anglesDict         = anglesDict ,
-                                boxCoords          = self.engine.boxCoordinates,
-                                basis              = self.engine.basisVectors ,
-                                reduceAngleToUpper = False,
-                                reduceAngleToLower = False)
+        dataDict = full_angles_coords( anglesDict         = anglesDict ,
+                                       boxCoords          = self.engine.boxCoordinates,
+                                       basis              = self.engine.basisVectors ,
+                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       reduceAngleToUpper = False,
+                                       reduceAngleToLower = False,
+                                       ncores             = INT_TYPE(1))
         # set data after move
         self.set_active_atoms_data_after_move( dataDict )
         # reset coordinates

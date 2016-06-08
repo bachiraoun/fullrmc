@@ -108,7 +108,7 @@ agitate_both()
 #################################  VISUALIZE SIMULATION  #################################
 ENGINE.set_pdb(pdbPath)
 ENGINE.visualize( commands = ["bonds.xyz", "angles.xyz", "both.xyz"],
-                  boxAtOrigin=True, boxWidth=1, 
+                  boxToCenter=True, boxWidth=1, 
                   representationParams='CPK 1.0 0.2 50 50')    
     
  

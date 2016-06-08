@@ -609,15 +609,7 @@ class Engine(object):
             except:
                 raise Exception( LOGGER.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
         # set pdb
-        self.__pdb = pdb        
-        
-        #### CONVERT PDB COORDINATES TO CARTESIAN CAN BE ADDED HERE ####
-        ##### transform coords into cartesian orthonormal system
-        ####self.__pdbBasis    = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
-        ####self.__pdbRecBasis = get_reciprocal_basis(self.__pdbBasis)[0]
-        ####RC = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE)  
-        ####cartesianCoords = transform_coordinates(self.__pdbRecBasis, RC).astype(FLOAT_TYPE)
-        
+        self.__pdb = pdb 
         # get coordinates
         self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE) 
         # reset configuration state
@@ -852,7 +844,7 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
     
     def visualize(self, commands=None, foldIntoBox=False, boxToCenter=False,
                         boxWidth=2, boxStyle="solid", boxColor="yellow", 
-                        bckColor="black", displayParams=None, 
+                        bgColor="black", displayParams=None, 
                         representationParams="Lines", otherParams=None):
         """
         Visualize the last configuration using pdbParser visualize_vmd method.
@@ -871,7 +863,7 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
                blue3, violet, violet2, magenta, magenta2, red2, red3, 
                orange2, orange3.
-            #. bckColor (str): Set the background color.
+            #. bgColor (str): Set the background color.
             #. displayParams(None, dict): Set the display parameters. If None, default parameters will be applied.
                If dictionary the following keys can be used.\n
                * 'depth cueing' (default True): Set the depth cueing flag.
@@ -973,11 +965,11 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         depthCueing = displayParams.get("depth cueing", True)
         cueDensity  = displayParams.get("cue density",  0.1)
         cueMode     = displayParams.get("cue mode",  'Exp')
-        assert bckColor in colors, LOGGER.error("display background color is not a recognized color name among %s"%str(colors))
+        assert bgColor in colors, LOGGER.error("display background color is not a recognized color name among %s"%str(colors))
         assert depthCueing in [True, False], LOGGER.error("depth cueing must be boolean")
         assert is_number(cueDensity), LOGGER.error("cue density must be a number") 
         assert cueMode in ['linear','Exp','Exp2'], LOGGER.error("cue mode must be either 'linear','Exp' or 'Exp2'")
-        fd.write('color Display Background %s \n'%bckColor)
+        fd.write('color Display Background %s \n'%bgColor)
         if depthCueing is True:
             depthCueing = 'on'
         else:
@@ -1096,20 +1088,33 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # compute totalStandardError
         self.__totalStandardError = self.compute_total_standard_error(_constraints, current=True)
         
-    def get_used_constraints(self):
+    def get_used_constraints(self, sortConstraints=False):
         """
         Parses all engine constraints and returns different lists of the active ones.
         
+        :parameters:
+            #. sortConstraints (boolean): Whether to sort used constraints according 
+               to their computation cost property. This is can minimize computations
+               and enhance performance by computing less costly constraints first.
+               
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total totalStandardError
             #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total totalStandardError
         """
+        assert isinstance(sortConstraints, bool), LOGGER.error("sortConstraints must be boolean")
+        # sort constraints
+        if sortConstraints:
+            indexes = np.argsort( [c.computationCost for c in self.__constraints] )
+            allEngineConstraints = [self.__constraints[idx] for idx in indexes]
+        else:
+            allEngineConstraints = self.__constraints
+        # get used constraints
         usedConstraints = []
-        for c in self.__constraints:
+        for c in allEngineConstraints:
             if c.used:
                 usedConstraints.append(c)
-        # get EnhanceOnlyConstraints list
+        # get rigidConstraints list
         rigidConstraints = []
         constraints = []
         for c in usedConstraints:
@@ -1120,21 +1125,24 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # return constraints
         return usedConstraints, constraints, rigidConstraints
         
-    def initialize_used_constraints(self, force=False):
+    def initialize_used_constraints(self, force=False, sortConstraints=False):
         """
         Calls get_used_constraints method, re-initializes constraints when needed and return them all.
         
         :parameters:
-            #. force (bool): Whether to force initializing constraints regardless of their state.
-
+            #. force (boolean): Whether to force initializing constraints regardless of their state.
+            #. sortConstraints (boolean): Whether to sort used constraints according 
+               to their computation cost property. This is can minimize computations
+               and enhance performance by computing less costly constraints first.
+               
         :Returns:
             #. usedConstraints (list): All types of active constraints that will be used in engine runtime.
             #. constraints (list): All active constraints instances among usedConstraints list that will contribute to the engine total totalStandardError
             #. RigidConstraint (list): All active RigidConstraint constraints instances among usedConstraints list that won't contribute to the engine total totalStandardError
-        """
+        """    
         assert isinstance(force, bool), LOGGER.error("force must be boolean")
         # get used constraints
-        usedConstraints, constraints, rigidConstraints = self.get_used_constraints()
+        usedConstraints, constraints, rigidConstraints = self.get_used_constraints(sortConstraints=sortConstraints)
         # initialize out-of-dates constraints
         for c in usedConstraints:
             if c.state != self.__state or force:
@@ -1183,13 +1191,17 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # return
         return xyzFrequency, xyzPath
         
-    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart", 
+    def run(self, numberOfSteps=100000, sortConstraints=True,
+                  saveFrequency=1000, savePath="restart", 
                   xyzFrequency=None, xyzPath="trajectory.xyz"):
         """
         Run the Reverse Monte Carlo engine by performing random moves on engine groups.
         
         :Parameters:
             #. numberOfSteps (integer): The number of steps to run.
+            #. sortConstraints (boolean): Whether to sort used constraints according 
+               to their computation cost property. This is can minimize computations
+               and enhance performance by computing less costly constraints first.
             #. saveFrequency (integer): Save engine every saveFrequency steps.
                Save will be omitted if totalStandardError has not decreased. 
             #. savePath (string): Save engine file path.
@@ -1206,7 +1218,7 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         if _xyzFrequency is not None:
             _xyzfd = open(_xyzPath, 'a')
         # get and initialize used constraints
-        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
+        _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints(sortConstraints=sortConstraints)
         if not len(_usedConstraints):
             LOGGER.warn("No constraints are used. Configuration will be randomized")
         # runtime initialize group selector

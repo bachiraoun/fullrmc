@@ -6,22 +6,29 @@ BondConstraints contains classes for all constraints related bonds between atoms
 """
 
 # standard libraries imports
-import itertools
 
 # external libraries imports
 import numpy as np
-from timeit import default_timer as timer
+from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.bonds import full_bonds
+from fullrmc.Core.bonds import full_bonds_coords
 
 class BondConstraint(RigidConstraint, SingularConstraint):
     """
-    Its controls the bond between 2 defined atoms.
+    Controls the bond length defined between 2 defined atoms.
     
+    .. raw:: html
+
+        <iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/GxmJae9h78E" 
+        frameborder="0" allowfullscreen>
+        </iframe>
+        
+        
     :Parameters:
         #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. bondsMap (list): The bonds map definition.
@@ -58,6 +65,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         BC.create_angles_by_definition( bondsDefinition={"H2O": [ ('O','H1', 0.88, 1.02),
                                                                   ('O','H2', 0.88, 1.02) ]} )
     
+        
     """
     
     def __init__(self, engine, bondsMap=None, rejectProbability=1):
@@ -65,6 +73,8 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
         # set bonds map
         self.set_bonds(bondsMap)
+        # set computation cost
+        self.set_computation_cost(1.0)
         
     @property
     def bondsMap(self):
@@ -361,17 +371,19 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        dataDict = full_bonds(bonds                 = self.__bonds, 
-                              boxCoords             = self.engine.boxCoordinates,
-                              basis                 = self.engine.basisVectors,
-                              reduceDistanceToUpper = False,
-                              reduceDistanceToLower = False)
+        dataDict = full_bonds_coords(bonds                 = self.__bonds, 
+                                     boxCoords             = self.engine.boxCoordinates,
+                                     basis                 = self.engine.basisVectors,
+                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     reduceDistanceToUpper = False,
+                                     reduceDistanceToLower = False,
+                                     ncores                = INT_TYPE(1))
         self.set_data( dataDict )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set standardError
         #self.set_standard_error( self.compute_standard_error(data = self.__data) )
-        
+
     def compute_before_move(self, indexes):
         """ 
         Compute constraint before move is executed
@@ -384,11 +396,13 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         for idx in indexes:
             bondsDict[idx] = self.__bonds[idx]
         # compute data before move
-        dataDict = full_bonds(bonds                 = bondsDict, 
-                              boxCoords             = self.engine.boxCoordinates,
-                              basis                 = self.engine.basisVectors,
-                              reduceDistanceToUpper = False,
-                              reduceDistanceToLower = False)
+        dataDict = full_bonds_coords(bonds                 = bondsDict, 
+                                     boxCoords             = self.engine.boxCoordinates,
+                                     basis                 = self.engine.basisVectors,
+                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     reduceDistanceToUpper = False,
+                                     reduceDistanceToLower = False,
+                                     ncores                = INT_TYPE(1))
         # set data before move
         self.set_active_atoms_data_before_move( dataDict )
         self.set_active_atoms_data_after_move(None)
@@ -410,11 +424,13 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data after move
-        dataDict = full_bonds(bonds                 = bondsDict, 
-                              boxCoords             = self.engine.boxCoordinates,
-                              basis                 = self.engine.basisVectors,
-                              reduceDistanceToUpper = False,
-                              reduceDistanceToLower = False)
+        dataDict = full_bonds_coords(bonds                 = bondsDict, 
+                                     boxCoords             = self.engine.boxCoordinates,
+                                     basis                 = self.engine.basisVectors,
+                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     reduceDistanceToUpper = False,
+                                     reduceDistanceToLower = False,
+                                     ncores                = INT_TYPE(1))
         self.set_active_atoms_data_after_move( dataDict )
         # reset coordinates
         self.engine.boxCoordinates[indexes] = boxData

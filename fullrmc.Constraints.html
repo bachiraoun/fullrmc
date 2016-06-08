@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -42,7 +42,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
-                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
                 <li><a href="fullrmc.Selectors.html">Selectors</a></li>
                 <li><a href="fullrmc.Generators.html">Generators</a></li>
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -148,6 +148,12 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dt>
 <tt class="descname">engine</tt></dt>
 <dd><p>Get the engine fullrmc instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">computationCost</tt></dt>
+<dd><p>Get computation cost number.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -244,6 +250,29 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>value (number): Any positive non zero number.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<tt class="descname">set_computation_cost</tt><big>(</big><em>value</em><big>)</big></dt>
+<dd><p>Sets constraint&#8217;s computation cost value. This is used at engine runtime 
+to minimize computations and enhance performance by computing less costly
+constraints first. At every step, constraints will be computed in order 
+starting from the less to the most computationally costly. Therefore
+upon rejection of a step because of an unsatisfactory rigid constraint, 
+the left un-computed constraints at this step are guaranteed to be the        
+most costly ones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): Any number.</li>
 </ol>
 </td>
 </tr>
@@ -1083,11 +1112,11 @@ function reciprocal data.</li>
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-d782076d671baa48354736ebaa631524f0313176.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-4cf99a2758df2156fc791f751367c164955ed089.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.AtomicCoordinationAngleConstraint" title="It&#39;s a quasi&#45;rigid constraint that controls the inter&#45;molecular coordination angle between atoms. " alt="" coords="311,5,537,31"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Its controls the angle between 3 defined atoms." alt="" coords="349,55,499,80"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Controls the angle defined between 3 defined &#39;bonded&#39; atoms." alt="" coords="349,55,499,80"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 </map>
@@ -1096,8 +1125,11 @@ function reciprocal data.</li>
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.AngleConstraints.</tt><tt class="descname">BondsAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
-<p>Its controls the angle between 3 defined atoms.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<p>Controls the angle defined between 3 defined &#8216;bonded&#8217; atoms.</p>
+<iframe width="560" height="315" 
+src="https://www.youtube.com/embed/ezBbbO9IVig" 
+frameborder="0" allowfullscreen>
+</iframe><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -1111,8 +1143,10 @@ Every item must be a list of five items.</p>
 <li>First item: The central atom index.</li>
 <li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
-<li>Fourth item: The minimum lower limit or the minimum angle allowed in rad.</li>
-<li>Fifth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </div></blockquote>
 </li>
@@ -1233,8 +1267,10 @@ Every item must be a list of five items.<ol class="arabic">
 <li>First item: The central atom index.</li>
 <li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
-<li>Fourth item: The minimum lower limit or the minimum angle allowed in rad.</li>
-<li>Fifth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </li>
 </ol>
@@ -1257,8 +1293,10 @@ Every item must be a list of five items.<ol class="arabic">
 <li>First item: The central atom index.</li>
 <li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
-<li>Fourth item: The minimum lower limit or the minimum angle allowed in rad.</li>
-<li>Fifth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </li>
 </ol>
@@ -1285,8 +1323,10 @@ Every angle definition is a list of five items where:<ol class="arabic">
 <li>First item: The name of the central atom forming the angle.</li>
 <li>Second item: The name of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The name of the right atom forming the angle (interchangeable with the left atom).</li>
-<li>Fourth item: The minimum lower limit or the minimum angle allowed in degrees.</li>
-<li>Fifth item: The maximum upper limit or the maximum angle allowed in degrees.</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </li>
 </ol>
@@ -1576,9 +1616,9 @@ Every definition is a tuple or list of 3 items.</p>
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-65ebe551b447948b9dd5fc9aa122f469c4fa5981.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-cb57ab0874d9b780aa39160ffb127faee4af99f1.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Its controls the bond between 2 defined atoms." alt="" coords="311,31,421,56"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Controls the bond length defined between 2 defined atoms." alt="" coords="311,31,421,56"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
@@ -1588,8 +1628,11 @@ Every definition is a tuple or list of 3 items.</p>
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.BondConstraints.</tt><tt class="descname">BondConstraint</tt><big>(</big><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
-<p>Its controls the bond between 2 defined atoms.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<p>Controls the bond length defined between 2 defined atoms.</p>
+<iframe width="560" height="315" 
+src="https://www.youtube.com/embed/GxmJae9h78E" 
+frameborder="0" allowfullscreen>
+</iframe><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -2653,20 +2696,28 @@ If None is given all pairs will be automatically generated and assigned the give
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
 <p class="graphviz">
-<img src="_images/inheritance-94b95d4467f2e72418e5b9cfe295a4d6a60ef451.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-bce549c0939b425544c19831dc5c02d00cd9e2b6.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
-<area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane." alt="" coords="311,31,475,56"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="311,31,475,56"/>
 </map>
 </p>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
 <em class="property">class </em><tt class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</tt><tt class="descname">ImproperAngleConstraint</tt><big>(</big><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><big>)</big><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></tt></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><tt class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></tt></a></p>
-<p>Its controls the improper angle between 4 defined atoms. It is mainly used to keep atoms in the plane.
-The improper angle is the defined between a first improper atom and the plane formed of the three other atoms.</p>
+<p>Controls the improper angle formed with 4 defined atoms. It&#8217;s mainly used to 
+keep the improper atom in the plane defined with three other atoms. 
+The improper vector is defined as the vector from the first atom of the plane to
+the improper atom. Therefore the improper angle is defined between the improper
+vector and the plane.</p>
+<blockquote>
+<div><iframe width="560" height="315" 
+src="https://www.youtube.com/embed/qVATE-9cIBg" 
+frameborder="0" allowfullscreen>
+</iframe> </div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2682,8 +2733,10 @@ The improper angle is the defined between a first improper atom and the plane fo
 <li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
 <li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
 <li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
-<li>Fifth item: The minimum lower limit or the minimum angle allowed in rad.</li>
-<li>Sixth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+<li>Fifth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Sixth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </dd>
 </dl>
@@ -2741,7 +2794,8 @@ and 0 means accepting all steps regardless whether standardError increases or no
 <dl class="attribute">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD">
 <tt class="descname">atomsLUAD</tt><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
+<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central 
+atom angles definition of angles attribute.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2807,8 +2861,10 @@ Every item must be a list of five items.<ol class="arabic">
 <li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
 <li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
 <li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
-<li>Fifth item: The minimum lower limit or the minimum angle allowed in rad.</li>
-<li>Sixth item: The maximum upper limit or the maximum angle allowed in rad.</li>
+<li>Fifth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Sixth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </li>
 </ol>
@@ -2836,8 +2892,10 @@ Every angle definition is a list of five items where:<ol class="arabic">
 <li>Second item: The name of the atom &#8216;O&#8217; considered the origin of the plane.</li>
 <li>Third item: The name of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
 <li>Fourth item: The name of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
-<li>Fifth item: The minimum lower limit or the minimum angle allowed in degrees.</li>
-<li>Sixth item: The maximum upper limit or the maximum angle allowed in degrees.</li>
+<li>Fifth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Sixth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
 </li>
 </ol>
@@ -4722,7 +4780,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

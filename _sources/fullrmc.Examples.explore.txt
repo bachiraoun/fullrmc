@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
    
+ 
 Relative path
 =============
 ../fullrmc/Examples/explore/
+
 
 Description
 ===========
@@ -15,8 +19,10 @@ file will be generated where all moved are saved. If
 `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_ is installed, the trajectory
 of all moves will be automatically visualized. 
 
+
 Files
 =====
+
 #. createSystem.py: The script used to create a box of water of :math:`40 \AA^{3}` 
    in size, hollow in the middle with a molecule trapped inside
 #. system.pdb: The initial configuration input file
@@ -47,15 +53,16 @@ Create the engine and the needed inter-molecular distance constraint.
 Define explore to run the fitting engine. This function finishs running
 the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.
-   #. explore: Groups are using engine set_groups_as_molecules method.
-      Then only first group is kept in the engine keeping all water 
-      molecules fixed. A collection :class:`.MoveGeneratorCollector` 
-      of move generators is created and set to the remaining group. 
-      :class:`.RotationGenerator`  and :class:`.TranslationGenerator` 
-      are added to this collection. In order to perform any none
-      traditional fitting mode, :class:`RecursiveGroupSelector` must be 
-      used. In this case :class:`RandomSelector` is passed to the 
-      recursive selector with explore flag set to True.      
+
+#. explore: Groups are using engine set_groups_as_molecules method.
+   Then only first group is kept in the engine keeping all water 
+   molecules fixed. A collection :class:`.MoveGeneratorCollector` 
+   of move generators is created and set to the remaining group. 
+   :class:`.RotationGenerator`  and :class:`.TranslationGenerator` 
+   are added to this collection. In order to perform any none
+   traditional fitting mode, :class:`RecursiveGroupSelector` must be 
+   used. In this case :class:`RandomSelector` is passed to the 
+   recursive selector with explore flag set to True.      
 
 
 :underline:`RUN SIMULATION:` 

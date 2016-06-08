@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -41,7 +41,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
-                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
                 <li><a href="fullrmc.Selectors.html">Selectors</a></li>
                 <li><a href="fullrmc.Generators.html">Generators</a></li>
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -149,8 +149,7 @@ the fitting process.</p>
 <p>Define functions to run the fitting engine. All of the following functions finish
 running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.</p>
-<blockquote>
-<div><ol class="arabic simple">
+<ol class="arabic simple">
 <li>run_atoms: used set_groups(None) which is equivalent to creating
 a group per atom. Here the engine runs traditional RMC with
 random selection of groups using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt></a> and random
@@ -167,7 +166,6 @@ to creating a group per atom. But <a class="reference internal" href="fullrmc.Se
 <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt></a> to allow recurring selection and therefore
 enabling fitting modes such as &#8216;recur&#8217;, &#8216;refine&#8217; and &#8216;explore&#8217;</li>
 </ol>
-</div></blockquote>
 <p><span class="underline">RUN SIMULATION:</span></p>
 <p>run_atoms and run_molecules functions are called first but this is not enough
 to achieve decent fit and model. Therefore run_recurring_atoms is called twice
@@ -222,7 +220,7 @@ with explore flag set to True in the first time and refine in the second.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

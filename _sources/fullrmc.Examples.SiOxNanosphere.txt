@@ -1,9 +1,14 @@
+:orphan:
+
 .. role:: underline
    :class: underline
+
+
    
 Relative path
 =============
 ../fullrmc/Examples/SiOxNanosphere/
+
 
 Description
 ===========
@@ -11,8 +16,10 @@ Isolated Silicon oxide spherical nano-particle is create using 2315 silicon atom
 and 1094 oxygen atom dispersed in the outer layers at different concentration 
 ratios that decreases with the depth of the nano-particle.
 
+
 Files
 =====
+
 #. SiOx.pdb: The initial configuration input file.
 #. SiOx.gr: The x-rays experimental pair distribution function data.
 #. run.py: The script file used to run the simulation.
@@ -44,17 +51,18 @@ experimental constraint :class:`.PairDistributionConstraint`.
 
 Define functions to run the fitting engine. All of the following functions finish 
 running the engine using Engine.run method.
-   #. run_normal_rmc: Runs a normal traditional RMC fit.
-   #. run_explore: Sets :class:`.RecursiveGroupSelector` group selector and runs
-      explore mode.
-   #. expand_nanoparticule: Sets :class:`.DirectionalOrderSelector` group selector
-      and wraps it with :class:`.RecursiveGroupSelector` to allow different fitting
-      modes. :class:`.DirectionalOrderSelector` is initialized with both expand and 
-      adjustMoveGenerators set to True. This means that it will automatically select
-      groups starting from outer layers to the deapest ones and will automatically 
-      set and adjust groups move generators to a collection of :class:`.randomRotation` 
-      and :class:`.TranslationTowardsCenterGenerator` using 
-      :class:`.MoveGeneratorCollector`.
+
+#. run_normal_rmc: Runs a normal traditional RMC fit.
+#. run_explore: Sets :class:`.RecursiveGroupSelector` group selector and runs
+   explore mode.
+#. expand_nanoparticule: Sets :class:`.DirectionalOrderSelector` group selector
+   and wraps it with :class:`.RecursiveGroupSelector` to allow different fitting
+   modes. :class:`.DirectionalOrderSelector` is initialized with both expand and 
+   adjustMoveGenerators set to True. This means that it will automatically select
+   groups starting from outer layers to the deapest ones and will automatically 
+   set and adjust groups move generators to a collection of :class:`.randomRotation` 
+   and :class:`.TranslationTowardsCenterGenerator` using 
+   :class:`.MoveGeneratorCollector`.
  
  
 :underline:`RUN SIMULATION:` 

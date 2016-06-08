@@ -1,0 +1,28 @@
+:orphan:
+
+FAQ
+===
+Herein is a list of some of the Frequently Asked Questions (FAQ).
+Click on title to get directed to the answer and detailed explanation page.
+
+* `PDB file <fullrmc.FAQ.pdbFile.html>`__: What is a .pdb file and how it is used in fullrmc?
+
+
+Q&A Forum
+=========
+.. raw:: html 
+                
+   <iframe id="forum_embed"
+     src="javascript:void(0)"
+     scrolling="no"
+     frameborder="0"
+     width="100%"
+     height="700">
+   </iframe>
+   
+   <script type="text/javascript">
+     document.getElementById('forum_embed').src =
+        'https://groups.google.com/forum/embed/?place=forum/fullrmc'
+        + '&showsearch=true&showpopout=true&showtabs=false'
+        + '&parenturl=' + encodeURIComponent(window.location.href);
+   </script>

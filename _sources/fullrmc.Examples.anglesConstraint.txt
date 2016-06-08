@@ -1,0 +1,68 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+ 
+Relative path
+=============
+../fullrmc/Examples/anglesConstraint/
+
+
+Description
+===========
+A water molecule is used to demonstrate how an angle constraint can be used to constraint
+bonded atoms angles. This example was used to generate the `angle constraint video example 
+<https://youtu.be/ezBbbO9IVig>`_ as seen in the online documentation.  When running this 
+example a trajectory file will be generated. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+
+
+Files
+=====
+
+#. system.pdb: The water molecule pdb file
+#. run.py: The script file used to run the simulation
+
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed bonds and bond-angles constraints. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+
+#. run_normal: Constraint H-O-H bond angle to be between 80 and 120 degrees.
+#. run_squeezed: Constraint H-O-H bond angle to be between 30 and 40 degrees.
+#. run_streched: Constraint H-O-H bond angle to be between 160 and 170 degrees.
+   
+
+:underline:`RUN SIMULATION:` 
+
+Run in order all of 'run_normal', 'run_squeezed' and finally 'run_streched'.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+"trajectory.xyz".
+

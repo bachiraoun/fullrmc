@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
    
+ 
 Relative path
 =============
 ../fullrmc/Examples/agitations/
+
 
 Description
 ===========
@@ -15,11 +19,14 @@ will be generated where all moved are saved. If
 `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
 of all moves will be automatically visualized. 
 
+
 Files
 =====
+
 #. createWaterBox.py: The script used to create a box of :math:`10 \AA^{3}` in size
 #. waterBox.pdb: The water box system
 #. run.py: The script file used to run the simulation
+
 
 run.py explained
 ================
@@ -45,23 +52,24 @@ Create the engine and the needed bonds and bond-angles constraints.
 Define functions to run fitting engine. All of the following functions finish 
 running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.
-   #. agitate_bonds: Groups are created by O-H pair of atoms using their indexes.
-      :class:`.DistanceAgitationGenerator` is assigned to each group. A
-      :class:`.DefinedOrderSelector` is used to make sure selecting every group.
-      Number of engine steps is set to 250 * number of groups so each O-H group 
-      will be agitated 250 times.
-   #. agitate_angles: Groups are created by O-H-H triplets of atoms using
-      engine set_groups_as_molecules method. :class:`.AngleAgitationGenerator` 
-      is assigned to each group. A :class:`.DefinedOrderSelector` is used to make 
-      sure selecting every group. Number of engine steps is set to 250 * number 
-      of groups so each O-H-H group will be agitated 250 times.
-   #. agitate_both: Groups are created by O-H-H triplets of atoms using
-      engine set_groups_as_molecules method, then groups of O-H pair of 
-      atoms are also created and added to the engine. 
-      :class:`.AngleAgitationGenerator` is assigned to each group. 
-      A :class:`.DefinedOrderSelector` is used to make sure selecting every group. 
-      Number of engine steps is set to 250 * number of groups so each 
-      O-H-H and O-H group will be agitated 250 times.
+
+#. agitate_bonds: Groups are created by O-H pair of atoms using their indexes.
+   :class:`.DistanceAgitationGenerator` is assigned to each group. A
+   :class:`.DefinedOrderSelector` is used to make sure selecting every group.
+   Number of engine steps is set to 250 * number of groups so each O-H group 
+   will be agitated 250 times.
+#. agitate_angles: Groups are created by O-H-H triplets of atoms using
+   engine set_groups_as_molecules method. :class:`.AngleAgitationGenerator` 
+   is assigned to each group. A :class:`.DefinedOrderSelector` is used to make 
+   sure selecting every group. Number of engine steps is set to 250 * number 
+   of groups so each O-H-H group will be agitated 250 times.
+#. agitate_both: Groups are created by O-H-H triplets of atoms using
+   engine set_groups_as_molecules method, then groups of O-H pair of 
+   atoms are also created and added to the engine. 
+   :class:`.AngleAgitationGenerator` is assigned to each group. 
+   A :class:`.DefinedOrderSelector` is used to make sure selecting every group. 
+   Number of engine steps is set to 250 * number of groups so each 
+   O-H-H and O-H group will be agitated 250 times.
 
 
 :underline:`RUN SIMULATION:` 

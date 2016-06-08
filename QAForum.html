@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>FAQ &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -108,61 +108,30 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="relative-path">
-<h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
-<p>../fullrmc/Examples/explore/</p>
+  <div class="section" id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+<p>Herein is a list of some of the Frequently Asked Questions (FAQ).
+Click on title to get directed to the answer and detailed explanation page.</p>
+<ul class="simple">
+<li><a class="reference external" href="fullrmc.FAQ.pdbFile.html">PDB file</a>: What is a .pdb file and how it is used in fullrmc?</li>
+</ul>
 </div>
-<div class="section" id="description">
-<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
-<p>A box of water molecules is used to demonstrate how to use fitting explore
-mode. This example was used to generate the <a class="reference external" href="https://youtu.be/wafgTfHNpvs?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco">explore video example</a>
-as seen in the online documentation. When running this example a trajectory
-file will be generated where all moved are saved. If
-<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> is installed, the trajectory
-of all moves will be automatically visualized.</p>
-</div>
-<div class="section" id="files">
-<h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
-<ol class="arabic simple">
-<li>createSystem.py: The script used to create a box of water of <span class="math">\(40 \AA^{3}\)</span>
-in size, hollow in the middle with a molecule trapped inside</li>
-<li>system.pdb: The initial configuration input file</li>
-<li>run.py: The script file used to run the simulation</li>
-</ol>
-</div>
-<div class="section" id="run-py-explained">
-<h1>run.py explained<a class="headerlink" href="#run-py-explained" title="Permalink to this headline">¶</a></h1>
-<p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
-<p>All useful packages, modules and definitions are imported.</p>
-<p><span class="underline">BIASED ENGINE DEFINTION:</span></p>
-<p>fullrmc Engine class is overloaded. This is an advanced new engine
-run method definition. It&#8217;s defined especially for this example. It
-must not be used in any other real scientific fitting.</p>
-<p><span class="underline">CREATE ENGINE:</span></p>
-<p>Create the engine and the needed inter-molecular distance constraint.</p>
-<p><span class="underline">DIFFERENT RUNS:</span></p>
-<p>Define explore to run the fitting engine. This function finishs running
-the engine using Engine.run method. A trajectory of all moves is saved
-to the disk by setting XYZPath argument not to None.</p>
-<ol class="arabic simple">
-<li>explore: Groups are using engine set_groups_as_molecules method.
-Then only first group is kept in the engine keeping all water
-molecules fixed. A collection <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="fullrmc.Core.MoveGenerator.MoveGeneratorCollector"><tt class="xref py py-class docutils literal"><span class="pre">MoveGeneratorCollector</span></tt></a>
-of move generators is created and set to the remaining group.
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">RotationGenerator</span></tt></a>  and <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a>
-are added to this collection. In order to perform any none
-traditional fitting mode, <tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt> must be
-used. In this case <tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt> is passed to the
-recursive selector with explore flag set to True.</li>
-</ol>
-<p><span class="underline">RUN SIMULATION:</span></p>
-<p>explore function is called.</p>
-<p><span class="underline">VISUALIZE SIMULATION:</span></p>
-<p>Reset initial pdb to engine instance. Visualize engine along with otherParams
-argument set to [&#8216;mol new trajectory.xyz&#8217;, &#8216;mol modstyle 0 1 VDW&#8217;] because
-only the exploring trajectory is saved and it needs to be loaded as new mol
-in VMD.</p>
-</div>
+<div class="section" id="q-a-forum">
+<h1>Q&amp;A Forum<a class="headerlink" href="#q-a-forum" title="Permalink to this headline">¶</a></h1>
+<iframe id="forum_embed"
+  src="javascript:void(0)"
+  scrolling="no"
+  frameborder="0"
+  width="100%"
+  height="700">
+</iframe>
+
+<script type="text/javascript">
+  document.getElementById('forum_embed').src =
+     'https://groups.google.com/forum/embed/?place=forum/fullrmc'
+     + '&showsearch=true&showpopout=true&showtabs=false'
+     + '&parenturl=' + encodeURIComponent(window.location.href);
+</script></div>
 
 
         </div>
@@ -173,10 +142,8 @@ in VMD.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Relative path</a></li>
-<li><a class="reference internal" href="#description">Description</a></li>
-<li><a class="reference internal" href="#files">Files</a></li>
-<li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
+<li><a class="reference internal" href="#">FAQ</a></li>
+<li><a class="reference internal" href="#q-a-forum">Q&amp;A Forum</a></li>
 </ul>
 
 <div id="searchbox" style="display: none">

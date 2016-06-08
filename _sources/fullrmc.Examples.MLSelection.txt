@@ -1,6 +1,9 @@
+:orphan:
+
 .. role:: underline
    :class: underline
    
+ 
 Relative path
 =============
 ../fullrmc/Examples/MLSelection/
@@ -52,10 +55,11 @@ while the remaining 25% are given an unrealistic maximum amplitude of
 
 Define functions to run the normal and machine learning enabled selection tests. 
 All of the following functions finish running the engine using Engine.run method.
-   #. normal_run: Running engine with a normal and traditional random selector 
-      :class:`.RandomSelector`.
-   #. ML_run: Running engine with a reinforcement machine learning enabled
-      random selector :class:`.SmartRandomSelector`.  
+
+#. normal_run: Running engine with a normal and traditional random selector 
+   :class:`.RandomSelector`.
+#. ML_run: Running engine with a reinforcement machine learning enabled
+   random selector :class:`.SmartRandomSelector`.  
 
 
 :underline:`RUN SIMULATION:` 

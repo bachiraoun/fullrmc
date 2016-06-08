@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
+   
    
 Relative path
 =============
 ../fullrmc/Examples/molecularTHF/
+
 
 Description
 ===========
@@ -22,6 +26,7 @@ fitting modes (recur, refine and explore). This example was used to generate the
 
 Files
 =====
+
 #. create_pdb.py: Script used to create initial configuration.
 #. thf.pdb: The initial configuration input file.
 #. thf_pdf.exp: The x-rays experimental pair distribution function data.
@@ -60,69 +65,70 @@ elements.
 
 Define functions to run the fitting engine. All of the following functions finish 
 running the engine using Engine.run method.
-   #. bonds_CH: Groups are created by C-H pair of atoms using their indexes.
-      :class:`.DistanceAgitationGenerator` is assigned to each group. A
-      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
-      are set to True.
-   #. angles_HCH: Groups are created by C-H-H triplets of atoms using their indexes.
-      class:`.AngleAgitationGenerator` is assigned to each group. A
-      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
-      are set to True.
-   #. atoms_type: Groups of single atoms are created using atom type. A
-      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
-      are set to True.
-   #. atoms: set_groups_as_atoms method is used to creating a group per atom. A
-      :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
-      are set to True. 
-   #. about0: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.RotationAboutSymmetryAxisGenerator` with axis=0 is assigned to each group. 
-      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
-      with the order of selection being the sorted groups indexes list computed in a such  
-      a way ordering groups from the further to the closest to the center of the 
-      simulation box. 
-   #. about1: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.RotationAboutSymmetryAxisGenerator` with axis=1 is assigned to each group. 
-      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
-      with the order of selection being the sorted groups indexes list computed in a such  
-      a way ordering groups from the further to the closest to the center of the 
-      simulation box. 
-   #. about2: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.RotationAboutSymmetryAxisGenerator` with axis=2 is assigned to each group. 
-      :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
-      with the order of selection being the sorted groups indexes list computed in a such  
-      a way ordering groups from the further to the closest to the center of the 
-      simulation box. 
-   #. along0: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=0 is assigned to each 
-      group. :class:`.DefinedOrderSelector` wrapped with a 
-      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
-      indexes list computed in a such a way ordering groups from the further to the 
-      closest to the center of the simulation box. 
-   #. along1: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=1 is assigned to each 
-      group. :class:`.DefinedOrderSelector` wrapped with a 
-      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
-      indexes list computed in a such a way ordering groups from the further to the 
-      closest to the center of the simulation box. 
-   #. along2: set_groups_as_molecules method is used to create molecular groups.
-      :class:`.TranslationAlongSymmetryAxisGenerator` with axis=2 is assigned to each 
-      group. :class:`.DefinedOrderSelector` wrapped with a 
-      :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
-      indexes list computed in a such a way ordering groups from the further to the 
-      closest to the center of the simulation box. 
-   #. molecules: set_groups_as_molecules method is used to create molecular groups. A 
-      collection :class:`.MoveGeneratorCollector` of move generators is created and set 
-      to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
-      added to this collection. :class:`.RecursiveGroupSelector` is used allowing to 
-      refine or explore fitting.
-   #. shrink: set_groups_as_molecules method is used to create molecular groups. A 
-      collection :class:`.MoveGeneratorCollector` of move generators is created and set 
-      to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
-      added to this collection. :class:`.DefinedOrderSelector` wrapped with a 
-      :class:`.RecursiveGroupSelector` with the order of selection being the sorted 
-      groups indexes list computed in a such a way ordering groups from the further to 
-      the closest to the center of the simulation box. New boundary condition is set
-      using set_boundary_conditions method.
+
+#. bonds_CH: Groups are created by C-H pair of atoms using their indexes.
+   :class:`.DistanceAgitationGenerator` is assigned to each group. A
+   :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+   are set to True.
+#. angles_HCH: Groups are created by C-H-H triplets of atoms using their indexes.
+   class:`.AngleAgitationGenerator` is assigned to each group. A
+   :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+   are set to True.
+#. atoms_type: Groups of single atoms are created using atom type. A
+   :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+   are set to True.
+#. atoms: set_groups_as_atoms method is used to creating a group per atom. A
+   :class:`.RecursiveGroupSelector` is used if any of refine or explore flags
+   are set to True. 
+#. about0: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.RotationAboutSymmetryAxisGenerator` with axis=0 is assigned to each group. 
+   :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+   with the order of selection being the sorted groups indexes list computed in a such  
+   a way ordering groups from the further to the closest to the center of the 
+   simulation box. 
+#. about1: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.RotationAboutSymmetryAxisGenerator` with axis=1 is assigned to each group. 
+   :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+   with the order of selection being the sorted groups indexes list computed in a such  
+   a way ordering groups from the further to the closest to the center of the 
+   simulation box. 
+#. about2: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.RotationAboutSymmetryAxisGenerator` with axis=2 is assigned to each group. 
+   :class:`.DefinedOrderSelector` wrapped with a :class:`.RecursiveGroupSelector` 
+   with the order of selection being the sorted groups indexes list computed in a such  
+   a way ordering groups from the further to the closest to the center of the 
+   simulation box. 
+#. along0: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.TranslationAlongSymmetryAxisGenerator` with axis=0 is assigned to each 
+   group. :class:`.DefinedOrderSelector` wrapped with a 
+   :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+   indexes list computed in a such a way ordering groups from the further to the 
+   closest to the center of the simulation box. 
+#. along1: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.TranslationAlongSymmetryAxisGenerator` with axis=1 is assigned to each 
+   group. :class:`.DefinedOrderSelector` wrapped with a 
+   :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+   indexes list computed in a such a way ordering groups from the further to the 
+   closest to the center of the simulation box. 
+#. along2: set_groups_as_molecules method is used to create molecular groups.
+   :class:`.TranslationAlongSymmetryAxisGenerator` with axis=2 is assigned to each 
+   group. :class:`.DefinedOrderSelector` wrapped with a 
+   :class:`.RecursiveGroupSelector` with the order of selection being the sorted groups 
+   indexes list computed in a such a way ordering groups from the further to the 
+   closest to the center of the simulation box. 
+#. molecules: set_groups_as_molecules method is used to create molecular groups. A 
+   collection :class:`.MoveGeneratorCollector` of move generators is created and set 
+   to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
+   added to this collection. :class:`.RecursiveGroupSelector` is used allowing to 
+   refine or explore fitting.
+#. shrink: set_groups_as_molecules method is used to create molecular groups. A 
+   collection :class:`.MoveGeneratorCollector` of move generators is created and set 
+   to every group. :class:`.RotationGenerator` and :class:`.TranslationGenerator` are 
+   added to this collection. :class:`.DefinedOrderSelector` wrapped with a 
+   :class:`.RecursiveGroupSelector` with the order of selection being the sorted 
+   groups indexes list computed in a such a way ordering groups from the further to 
+   the closest to the center of the simulation box. New boundary condition is set
+   using set_boundary_conditions method.
 
 
 :underline:`RUN SIMULATION:` 

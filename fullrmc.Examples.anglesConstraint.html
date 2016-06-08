@@ -110,58 +110,46 @@
         
   <div class="section" id="relative-path">
 <h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
-<p>../fullrmc/Examples/SiOxNanosphere/</p>
+<p>../fullrmc/Examples/anglesConstraint/</p>
 </div>
 <div class="section" id="description">
 <h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
-<p>Isolated Silicon oxide spherical nano-particle is create using 2315 silicon atom
-and 1094 oxygen atom dispersed in the outer layers at different concentration
-ratios that decreases with the depth of the nano-particle.</p>
+<p>A water molecule is used to demonstrate how an angle constraint can be used to constraint
+bonded atoms angles. This example was used to generate the <a class="reference external" href="https://youtu.be/ezBbbO9IVig">angle constraint video example</a> as seen in the online documentation.  When running this
+example a trajectory file will be generated. If
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. is installed, the trajectory
+of all moves will be automatically visualized.</p>
 </div>
 <div class="section" id="files">
 <h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
 <ol class="arabic simple">
-<li>SiOx.pdb: The initial configuration input file.</li>
-<li>SiOx.gr: The x-rays experimental pair distribution function data.</li>
-<li>run.py: The script file used to run the simulation.</li>
-<li>plot.py: The script file to plot the last saved engine state of
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> constraint data.</li>
-<li>visualize.py: The script file to visualize the last save configuration
-using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. if installed.</li>
+<li>system.pdb: The water molecule pdb file</li>
+<li>run.py: The script file used to run the simulation</li>
 </ol>
 </div>
 <div class="section" id="run-py-explained">
 <h1>run.py explained<a class="headerlink" href="#run-py-explained" title="Permalink to this headline">¶</a></h1>
 <p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
 <p>All useful packages, modules and definitions are imported.</p>
+<p><span class="underline">SHUT DOWN LOGGING:</span></p>
+<p>Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging.</p>
 <p><span class="underline">CREATE ENGINE:</span></p>
-<p>Check if engine already saved on disk. In the affirmative load it to continue
-fitting from last saved configuration. Otherwise, build the engine and the needed
-constraints. Starting from fullrmc version 1.0.0, fitting non-periodic boundary
-conditions is possible. This is done by computing a shape function that corrects
-for density fluctuation and void at large distances. Here, set_shape_function_parameters
-method is used to fit a shape function <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction" title="fullrmc.Constraints.Collection.ShapeFunction"><tt class="xref py py-class docutils literal"><span class="pre">ShapeFunction</span></tt></a> upon computing the
-experimental constraint <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a>.</p>
+<p>Create the engine and the needed bonds and bond-angles constraints.</p>
 <p><span class="underline">DIFFERENT RUNS:</span></p>
-<p>Define functions to run the fitting engine. All of the following functions finish
-running the engine using Engine.run method.</p>
+<p>Define functions to run fitting engine. All of the following functions finish
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.</p>
 <ol class="arabic simple">
-<li>run_normal_rmc: Runs a normal traditional RMC fit.</li>
-<li>run_explore: Sets <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt></a> group selector and runs
-explore mode.</li>
-<li>expand_nanoparticule: Sets <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DirectionalOrderSelector</span></tt></a> group selector
-and wraps it with <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt></a> to allow different fitting
-modes. <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DirectionalOrderSelector</span></tt></a> is initialized with both expand and
-adjustMoveGenerators set to True. This means that it will automatically select
-groups starting from outer layers to the deapest ones and will automatically
-set and adjust groups move generators to a collection of <tt class="xref py py-class docutils literal"><span class="pre">randomRotation</span></tt>
-and <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationTowardsCenterGenerator</span></tt></a> using
-<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="fullrmc.Core.MoveGenerator.MoveGeneratorCollector"><tt class="xref py py-class docutils literal"><span class="pre">MoveGeneratorCollector</span></tt></a>.</li>
+<li>run_normal: Constraint H-O-H bond angle to be between 80 and 120 degrees.</li>
+<li>run_squeezed: Constraint H-O-H bond angle to be between 30 and 40 degrees.</li>
+<li>run_streched: Constraint H-O-H bond angle to be between 160 and 170 degrees.</li>
 </ol>
 <p><span class="underline">RUN SIMULATION:</span></p>
-<p>run the different functions to fit the system.</p>
-<p><span class="underline">PLOT PDF CONSTRAINT:</span></p>
-<p>Plotting <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> data after fitting.</p>
+<p>Run in order all of &#8216;run_normal&#8217;, &#8216;run_squeezed&#8217; and finally &#8216;run_streched&#8217;.</p>
+<p><span class="underline">VISUALIZE SIMULATION:</span></p>
+<p>Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+&#8220;trajectory.xyz&#8221;.</p>
 </div>
 
 

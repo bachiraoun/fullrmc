@@ -1,0 +1,80 @@
+:orphan:
+
+PDB file 
+========
+A full description of a Protein Data Bank (pdb) file can be found in 
+`here <http://deposit.rcsb.org/adit/docs/pdb_atom_format.html>`_.
+Herein is a snapshot of a pdb file. The first two yellow highlighted lines are 
+not in the file but only to show the column position of each character and number. 
+fullrmc uses pdb configuration file because it is a flexible format and rich 
+in information. The most important inputs are highlighted below.
+
+
+.. raw:: html
+    
+    <style>
+    hy  {background-color: yellow;}
+    hb  {background-color: rgb(0, 140, 255);}
+    hc  {background-color: cyan;}
+    ho  {background-color: 	rgb(255,165,0);}
+    hp  {background-color: pink;}
+    hg  {background-color: rgb(0, 255, 0);}
+    hm  {background-color: rgb(255, 142, 255);}
+    </style>
+    
+    <pre>
+    <hy>    
+    0        1         2         3         4         5         6         7         8              
+    12345678901234567890123456789012345678901234567890123456789012345678901234567890
+    </hy>                                                                                   
+    REMARK    this file is generated using 'pdbParser' package                       
+    <hb>REMARK    Boundary Conditions: 54.0  0.0  0.0  0.0  54.0  0.0  0.0  0.0  54.0 </hb> 
+    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   1</hc>     -19.317   2.636  -9.568  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   1</hc>     -20.330   3.198  -9.506  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   1</hc>     -18.304   2.075  -9.630  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.556  16.509  -9.132  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.275  17.063 -10.112  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.837  15.956  -8.152  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.969 -23.431   3.920  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.989 -24.310   3.163  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.949 -22.552   4.676  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   4</hc>      16.999 -19.836   8.272  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   4</hc>      17.957 -20.165   7.706  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    </pre>  
+
+
+In order to use all the automatic capabilities of fullrmc, one should understand the different
+sections of the pdb and spend time defining the initial configuration. The following table 
+explains the different useful inputs in the pdb file.
+
++--------------------+----------+-------------+------------+
+| Name               | Column   |  Colour     | Type       |
++====================+==========+=============+============+
+| Atom name          | 13 - 16  | Orange      | Characters |
++--------------------+----------+-------------+------------+
+| Residue name       | 18 - 20  | Pink        | Characters |
++--------------------+----------+-------------+------------+
+| Sequence number    | 23 - 26  | Cyan        | Integer    |
++--------------------+----------+-------------+------------+
+| Segment identifier | 73 - 76  | Green       | Characters |
++--------------------+----------+-------------+------------+
+| Element symbol     | 77 - 78  | Magenta     | Characters |
++--------------------+----------+-------------+------------+
+
+* **Boundary Conditions:** The first thing to know is that the structure boundary 
+  conditions can be given as a REMARK in the beginning of the pdb file just like the 
+  highlighted in blue line. If boundary conditions REMARK is not specified, one should 
+  set the boundary conditions using Engine.set_boundary_conditions method. 
+  Otherwise Infinite boundary conditions are set automatically.
+* **Elements:** The column "Element symbol" is very important as it is the only way 
+  fullrmc uses to identify atoms type. 
+* **Molecules:** In fullrmc a molecule is the consecutive collection of atoms sharing 
+  the same "Residue name", "Sequence number" and  "Segment identifier". 
+  This is very important in order to be able to build automatically groups as molecules 
+  using Engine.set_groups_as_molecules method. Otherwise, one will have no other choice 
+  than using atoms indexes to create groups. 
+* **Atoms Name:** It is recommended to give unique atom names in a single molecule because 
+  atom names can be used to define constraints. It is therefore misleading to have names 
+  duplication in the same molecule.
+
+ 

@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
    
+ 
 Relative path
 =============
 ../fullrmc/Examples/exploreCO2/
+
 
 Description
 ===========
@@ -14,8 +18,10 @@ especially because of the peak at :math:`0.67 \AA`. This example was used to gen
 the `explore CO2 video <https://youtu.be/xnG0wnEfbJ8?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
 as seen in the online documentation. 
 
+
 Files
 =====
+
 #. CO2.pdb: The initial configuration input file.
 #. Xrays.gr: The x-rays experimental pair distribution function data.
 #. run.py: The script file used to run the simulation.
@@ -25,6 +31,7 @@ Files
    :class:`.PairDistributionConstraint` constraint data in three different
    axes just like in the video. 
 
+   
 run.py explained
 ================
 
@@ -48,21 +55,22 @@ the fitting process.
 Define functions to run the fitting engine. All of the following functions finish 
 running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.
-   #. run_atoms: used set_groups(None) which is equivalent to creating
-      a group per atom. Here the engine runs traditional RMC with 
-      random selection of groups using :class:`.RandomSelector` and random
-      atomic translations using :class:`.TranslationGenerator` move
-      generator.
-   #. run_molecules: Groups are created by molecules using engine
-      set_groups_as_molecules method. :class:`.TranslationGenerator` 
-      and :class:`.RotationGenerator` are collected and passed to a 
-      :class:`.MoveGeneratorCollector` and set to every and each group.
-      :class:`.RecursiveGroupSelector` to allow recurring selection and 
-      therefore enabling fitting modes such as 'recur', 'refine' and 'explore'  
-   #. run_recurring_atoms: Here also set_groups(None) is used which is equivalent 
-      to creating a group per atom. But :class:`.RandomSelector` is wrapped with
-      :class:`.RecursiveGroupSelector` to allow recurring selection and therefore
-      enabling fitting modes such as 'recur', 'refine' and 'explore'
+
+#. run_atoms: used set_groups(None) which is equivalent to creating
+   a group per atom. Here the engine runs traditional RMC with 
+   random selection of groups using :class:`.RandomSelector` and random
+   atomic translations using :class:`.TranslationGenerator` move
+   generator.
+#. run_molecules: Groups are created by molecules using engine
+   set_groups_as_molecules method. :class:`.TranslationGenerator` 
+   and :class:`.RotationGenerator` are collected and passed to a 
+   :class:`.MoveGeneratorCollector` and set to every and each group.
+   :class:`.RecursiveGroupSelector` to allow recurring selection and 
+   therefore enabling fitting modes such as 'recur', 'refine' and 'explore'  
+#. run_recurring_atoms: Here also set_groups(None) is used which is equivalent 
+   to creating a group per atom. But :class:`.RandomSelector` is wrapped with
+   :class:`.RecursiveGroupSelector` to allow recurring selection and therefore
+   enabling fitting modes such as 'recur', 'refine' and 'explore'
 
       
 :underline:`RUN SIMULATION:` 

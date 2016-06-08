@@ -1,6 +1,13 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+ 
 Relative path
 =============
 ../fullrmc/Examples/benchmark/
+
 
 Description
 ===========
@@ -12,6 +19,7 @@ be saved and two matplotlib figures will be plotted.
 
 Files
 =====
+
 #. experimental.gr: x-rays pair distribution function data of tetrahydrofuran liquid
 #. system.pdb: The initial configuration input file
 #. run.py: The script file used to run the simulation
@@ -40,14 +48,15 @@ Create the engine and all of :class:`PairDistributionConstraint`,
 :underline:`DIFFERENT RUNS:` 
 
 Define functions to run the fitting engine or to visualize saved benchmarks. 
-   #. run: Allows multiple arguments and sets the engine to run a specific 
-      benchmark.
-   #. benchmark_constraints: run and save benchmarks on constraints using 
-      different group sizes.
-   #. benchmark_nsteps: run and save benchmarks on number of steps using a  
-      fixed group size and set of constraints.
-   #. load_and_plot_constraints_benchmark: load and plot saved constraints benchmarks.
-   #. load_and_plot_steps_benchmark: load and plot saved number of steps benchmarks.
+
+#. run: Allows multiple arguments and sets the engine to run a specific 
+   benchmark.
+#. benchmark_constraints: run and save benchmarks on constraints using 
+   different group sizes.
+#. benchmark_nsteps: run and save benchmarks on number of steps using a  
+   fixed group size and set of constraints.
+#. load_and_plot_constraints_benchmark: load and plot saved constraints benchmarks.
+#. load_and_plot_steps_benchmark: load and plot saved number of steps benchmarks.
 
    
 :underline:`RUN SIMULATION:` 

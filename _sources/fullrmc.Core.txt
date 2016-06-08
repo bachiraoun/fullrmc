@@ -1,6 +1,7 @@
 fullrmc.Core package
 ====================
 
+   
 Collection
 ----------
 
@@ -18,6 +19,7 @@ Constraint
     :undoc-members:
     :show-inheritance:
 
+
 Group
 -----
 
@@ -25,6 +27,7 @@ Group
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 GroupSelector
 -------------
@@ -34,6 +37,7 @@ GroupSelector
     :undoc-members:
     :show-inheritance:
 
+
 MoveGenerator
 -------------
 
@@ -42,60 +46,110 @@ MoveGenerator
     :undoc-members:
     :show-inheritance:
 
-angles
-------
 
-.. automodule:: fullrmc.Core.angles
-    :members:
-    :undoc-members:
-    :show-inheritance:
+boundary conditions collection
+------------------------------
 
+.. automodule::   fullrmc.Core.boundary_conditions_collection
+
+.. autofunction:: fullrmc.Core.boundary_conditions_collection.get_reciprocal_basis
+.. autofunction:: fullrmc.Core.boundary_conditions_collection.transform_coordinates
+.. autofunction:: fullrmc.Core.boundary_conditions_collection.box_coordinates_real_distances    
+
+
+reciprocal space
+----------------
+
+.. automodule:: fullrmc.Core.reciprocal_space
+
+.. autofunction:: fullrmc.Core.reciprocal_space.gr_to_sq
+.. autofunction:: fullrmc.Core.reciprocal_space.Gr_to_sq
+.. autofunction:: fullrmc.Core.reciprocal_space.sq_to_Gr  
+
+
+pairs distances
+---------------
+
+.. automodule::   fullrmc.Core.pairs_distances
+
+.. autofunction:: fullrmc.Core.pairs_distances.from_to_points_differences
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_point
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_indexcoords    
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_multi_points
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_multi_indexcoords
+
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_point
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_indexcoords
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_multi_points
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_multi_indexcoords
+
+ 
+atomic coordination number
+--------------------------
+
+.. automodule::   fullrmc.Core.atomic_coordination_number
+
+.. autofunction:: fullrmc.Core.atomic_coordination_number.single_shell_coordination_number
+.. autofunction:: fullrmc.Core.atomic_coordination_number.single_atomic_coordination_number
+.. autofunction:: fullrmc.Core.atomic_coordination_number.multiple_atomic_coordination_number    
+.. autofunction:: fullrmc.Core.atomic_coordination_number.full_atomic_coordination_number
+.. autofunction:: fullrmc.Core.atomic_coordination_number.atom_coordination_number_data
+    
+    
+van der waals
+-------------
+
+.. automodule::   fullrmc.Core.vdw
+
+.. autofunction:: fullrmc.Core.vdw.single_vdw_dists
+.. autofunction:: fullrmc.Core.vdw.multiple_vdw_coords
+.. autofunction:: fullrmc.Core.vdw.multiple_vdw_dists
+.. autofunction:: fullrmc.Core.vdw.full_vdw_coords
+.. autofunction:: fullrmc.Core.vdw.full_vdw_dists
+    
+    
 bonds
 -----
 
-.. automodule:: fullrmc.Core.bonds
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. automodule::   fullrmc.Core.bonds
 
-distances
----------
+.. autofunction:: fullrmc.Core.bonds.single_bonds_dists
+.. autofunction:: fullrmc.Core.bonds.full_bonds_coords
+.. autofunction:: fullrmc.Core.bonds.full_bonds_dists
 
-.. automodule:: fullrmc.Core.distances
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
-improper_angles
+angles
+------
+
+.. automodule::   fullrmc.Core.angles
+
+.. autofunction:: fullrmc.Core.angles.single_angles_diffs
+.. autofunction:: fullrmc.Core.angles.full_angles_coords
+
+
+improper angles
 ---------------
 
-.. automodule:: fullrmc.Core.improper_angles
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. automodule::   fullrmc.Core.improper_angles
 
-pair_distribution_histogram
----------------------------
+.. autofunction:: fullrmc.Core.improper_angles.single_improper_angles_diffs
+.. autofunction:: fullrmc.Core.improper_angles.full_improper_angles_coords
 
-.. automodule:: fullrmc.Core.pair_distribution_histogram
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
-atomic_coordination_number
---------------------------
+pairs histogram
+---------------
 
-.. automodule:: fullrmc.Core.atomic_coordination_number
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. automodule::   fullrmc.Core.pairs_histograms
 
-boundary_conditions_collection
-------------------------------
+.. autofunction:: fullrmc.Core.pairs_histograms.single_pairs_histograms
+.. autofunction:: fullrmc.Core.pairs_histograms.multiple_pairs_histograms_coords
+.. autofunction:: fullrmc.Core.pairs_histograms.multiple_pairs_histograms_dists
+.. autofunction:: fullrmc.Core.pairs_histograms.full_pairs_histograms_coords
+.. autofunction:: fullrmc.Core.pairs_histograms.full_pairs_histograms_dists
 
-.. automodule:: fullrmc.Core.boundary_conditions_collection
-    :members:
-    :undoc-members:
-    :show-inheritance:
+
+
+
+
 
 

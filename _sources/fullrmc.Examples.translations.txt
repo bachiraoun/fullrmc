@@ -1,9 +1,14 @@
+:orphan:
+
 .. role:: underline
    :class: underline
+
+
    
 Relative path
 =============
 ../fullrmc/Examples/translations/
+
 
 Description
 ===========
@@ -15,10 +20,13 @@ will be generated where all moved are saved. If
 `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
 of all moves will be automatically visualized. 
    
+   
 Files
 =====
+
 #. molecule.pdb: The single molecule structure
 #. run.py: The script file used to run the simulation
+
 
 run.py explained
 ================
@@ -45,10 +53,11 @@ automatically because set_groups_as_molecules will only find one molecule.
 Define functions to run fitting engine. All of the following functions finish 
 running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.
-   #. along_axis_0: Used to translate the molecule along its principal axis
-   #. along_axis_1: Used to translate the molecule along its secondary axis
-   #. along_axis_2: Used to translate the molecule along its tertiary axis
-   #. random: Used to translate the molecule randomly
+
+#. along_axis_0: Used to translate the molecule along its principal axis
+#. along_axis_1: Used to translate the molecule along its secondary axis
+#. along_axis_2: Used to translate the molecule along its tertiary axis
+#. random: Used to translate the molecule randomly
 
 
 :underline:`RUN SIMULATION:` 

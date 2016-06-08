@@ -1,0 +1,77 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+ 
+Relative path
+=============
+../fullrmc/Examples/improperConstraint/
+
+
+Description
+===========
+A pentafluoroxenate molecule is used to demonstrate how an improper angle constraint can 
+be used to force the planarity of a molecule. This example was used to generate the 
+`improper constraint video example 
+<https://youtu.be/qVATE-9cIBg?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ as seen in the 
+online documentation.  When running this  example a trajectory file will be generated. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+
+
+Files
+=====
+
+#. system.pdb: The water molecule pdb file
+#. run.py: The script file used to run the simulation
+
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed bonds, bond-angles and improper-angles constraints. 
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+
+#. run_normal: Constraint :math:`\vec{F4}` defined between F4 and F2 atoms to be 
+   within -2 and 2 degrees off the plane defined by the three atoms (F2, F1, F3). 
+   The same constraint applies for :math:`\vec{F5}` and :math:`\vec{Xe}` vectors.
+#. run_loosen_1: Constraint :math:`\vec{F4}` defined between F4 and F2 atoms to be 
+   within -60 and 50 degrees off the plane defined by the three atoms (F2, F1, F3). 
+   The same constraint applies for :math:`\vec{F5}` and :math:`\vec{Xe}` vectors.
+#. run_loosen_2: Constraint :math:`\vec{F4}` defined between F4 and F2 atoms to be 
+   within 50 and 60 degrees off the plane defined by the three atoms (F2, F1, F3). 
+   The same constraint applies for :math:`\vec{F5}` and :math:`\vec{Xe}` vectors.
+                                                                          
+   
+:underline:`RUN SIMULATION:` 
+
+Run in order all of 'run_normal', 'run_loosen_1', 'run_loosen_2' and finally 
+'run_normal' again.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+"trajectory.xyz".
+
+

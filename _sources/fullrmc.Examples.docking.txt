@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
-     
+   
+ 
 Relative path
 =============
 ../fullrmc/Examples/docking/
+
 
 Description
 ===========
@@ -14,11 +18,14 @@ as seen in the online documentation. When running this example several files
 will be generated where all moved are saved. If 
 `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
 of all moves will be automatically visualized. 
-   
+ 
+ 
 Files
 =====
+
 #. system.pdb: The single constituted of two molecules
 #. run.py: The script file used to run the simulation
+
 
 run.py explained
 ================
@@ -44,11 +51,12 @@ Create the engine and the needed inter-molecular distance constraints.
 Define functions to run fitting engine. All of the following functions finish 
 running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.
-   #. move_towards: Groups are using engine set_groups_as_molecules method.
-      Then only first group is kept in the engine keeping the other as fixed.
-      A collection of move generators :class:`.MoveGeneratorCollector` is 
-      created and set to the remaining group. :class:`.RotationGenerator` 
-      and :class:`.TranslationTowardsCenterGenerator` are added to this collection.
+
+#. move_towards: Groups are using engine set_groups_as_molecules method.
+   Then only first group is kept in the engine keeping the other as fixed.
+   A collection of move generators :class:`.MoveGeneratorCollector` is 
+   created and set to the remaining group. :class:`.RotationGenerator` 
+   and :class:`.TranslationTowardsCenterGenerator` are added to this collection.
 
 
 :underline:`RUN SIMULATION:` 

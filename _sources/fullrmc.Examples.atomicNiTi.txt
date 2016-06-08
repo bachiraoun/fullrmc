@@ -1,9 +1,13 @@
+:orphan:
+
 .. role:: underline
    :class: underline
+   
    
 Relative path
 =============
 ../fullrmc/Examples/atomicNiTi/
+
 
 Description
 ===========
@@ -15,8 +19,10 @@ fit long ranger ordering. This example was used to generate the
 `swap video <https://youtu.be/yTnCAw1DK3Q?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco>`_ 
 as seen in the online documentation. 
 
+
 Files
 =====
+
 #. system.pdb: The initial configuration input file.
 #. experimental.gr: The x-rays experimental pair distribution function data.
 #. experimental.fq: The x-rays experimental reduced structure factor data.
@@ -50,19 +56,20 @@ assigned 'used' flag to False.
 
 Define functions to run the fitting engine. All of the following functions finish 
 running the engine using Engine.run method.
-   #. run_normal: used set_groups(None) which is equivalent to creating
-      a group per atom. Here the engine runs traditional RMC with 
-      random selection of groups using :class:`.RandomSelector` and random
-      atomic translations using :class:`.TranslationGenerator` move
-      generator.
-   #. run_swap: used set_groups(None) which is equivalent to creating
-      a group per atom. Create two swapping lists. THe first one containing
-      only all Nickel atoms indexes and the second only Titanium atoms indexes.
-      Create two :class:`.SwapPositionsGenerator` for swapping Nickel atoms with
-      Titanium and the other the opposite. Loop over all engine's groups, check
-      whether group's atom is Nickel or Titanium and assign it respectively
-      :class:`.SwapPositionsGenerator` to Titanium atoms and another 
-      :class:`.SwapPositionsGenerator` to Nickel atoms.
+
+#. run_normal: used set_groups(None) which is equivalent to creating
+   a group per atom. Here the engine runs traditional RMC with 
+   random selection of groups using :class:`.RandomSelector` and random
+   atomic translations using :class:`.TranslationGenerator` move
+   generator.
+#. run_swap: used set_groups(None) which is equivalent to creating
+   a group per atom. Create two swapping lists. THe first one containing
+   only all Nickel atoms indexes and the second only Titanium atoms indexes.
+   Create two :class:`.SwapPositionsGenerator` for swapping Nickel atoms with
+   Titanium and the other the opposite. Loop over all engine's groups, check
+   whether group's atom is Nickel or Titanium and assign it respectively
+   :class:`.SwapPositionsGenerator` to Titanium atoms and another 
+   :class:`.SwapPositionsGenerator` to Nickel atoms.
       
       
 :underline:`RUN SIMULATION:` 

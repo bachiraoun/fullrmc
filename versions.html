@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.1',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -41,7 +41,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
-                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
                 <li><a href="fullrmc.Selectors.html">Selectors</a></li>
                 <li><a href="fullrmc.Generators.html">Generators</a></li>
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -113,6 +113,8 @@
 <div class="section" id="must-know">
 <h2>Must know<a class="headerlink" href="#must-know" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
+<li>fullrmc supported version is always the newest one. Older version are
+never supported as updating is very simple.</li>
 <li>fullrmc uses pdbParser library to parse input pdb files and to visualize
 system&#8217;s atomic structure using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.  
 VMD which stands for Visual Molecular Dynamics is a free software for 
@@ -443,6 +445,33 @@ draw the boundary conditions vectors directly. Also visualization method
 &#8216;boxToCenter&#8217; flag is added to correct for box visualization shifts by 
 translating boundary conditions vectors&#8217; centre to atom coordinates one.</p>
 </div>
+<div class="section" id="id17">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.1.0">Version 1.1.0</a>:<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>Several levels of abstractions are made allowing multiple core computations
+using openmp. Nevertheless more testing is needed and therefore the current
+version is published as single core still.
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.CoordinationNumberConstraints.AtomicCoordinationNumberConstraint"><tt class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></tt></a> uses python objects which 
+makes it very slow, it must be revisited.</p>
+<div class="section" id="id18">
+<h4>New Modules and definitions:<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><tt class="xref py py-class docutils literal"><span class="pre">Constraint</span></tt></a> computation cost property added. This is used at engine 
+runtime to minimize computations and enhance performance by computing less
+costly constraints first.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id19">
+<h4>Fixes and improvements:<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></tt></a> computing angle right vector normalization bug fixed.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></tt></a> computing improper vector bug fixed.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
 </div>
 </div>
 
@@ -495,6 +524,11 @@ translating boundary conditions vectors&#8217; centre to atom coordinates one.</
 </ul>
 </li>
 <li><a class="reference internal" href="#id15">Version 1.0.1:</a></li>
+<li><a class="reference internal" href="#id17">Version 1.1.0:</a><ul>
+<li><a class="reference internal" href="#id18">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id19">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -532,7 +566,7 @@ translating boundary conditions vectors&#8217; centre to atom coordinates one.</
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

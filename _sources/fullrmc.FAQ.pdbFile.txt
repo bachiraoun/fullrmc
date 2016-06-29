@@ -29,17 +29,17 @@ in information. The most important inputs are highlighted below.
     </hy>                                                                                   
     REMARK    this file is generated using 'pdbParser' package                       
     <hb>REMARK    Boundary Conditions: 54.0  0.0  0.0  0.0  54.0  0.0  0.0  0.0  54.0 </hb> 
-    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   1</hc>     -19.317   2.636  -9.568  1.00  0.00      <hg>   1</hg><hm>C </hm> 
-    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   1</hc>     -20.330   3.198  -9.506  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   1</hc>     -18.304   2.075  -9.630  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.556  16.509  -9.132  1.00  0.00      <hg>   1</hg><hm>C </hm> 
-    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.275  17.063 -10.112  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   2</hc>     -23.837  15.956  -8.152  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.969 -23.431   3.920  1.00  0.00      <hg>   1</hg><hm>C </hm> 
-    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.989 -24.310   3.163  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      3 <ho>O2 </ho>  <hp>CO2</hp>  <hc>   3</hc>      12.949 -22.552   4.676  1.00  0.00      <hg>   1</hg><hm>O </hm> 
-    ATOM      1 <ho>C  </ho>  <hp>CO2</hp>  <hc>   4</hc>      16.999 -19.836   8.272  1.00  0.00      <hg>   1</hg><hm>C </hm> 
-    ATOM      2 <ho>O1 </ho>  <hp>CO2</hp>  <hc>   4</hc>      17.957 -20.165   7.706  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C   </ho> <hp>CO2</hp>  <hc>   1</hc>     -19.317   2.636  -9.568  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1  </ho> <hp>CO2</hp>  <hc>   1</hc>     -20.330   3.198  -9.506  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2  </ho> <hp>CO2</hp>  <hc>   1</hc>     -18.304   2.075  -9.630  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C   </ho> <hp>CO2</hp>  <hc>   2</hc>     -23.556  16.509  -9.132  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1  </ho> <hp>CO2</hp>  <hc>   2</hc>     -23.275  17.063 -10.112  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2  </ho> <hp>CO2</hp>  <hc>   2</hc>     -23.837  15.956  -8.152  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C   </ho> <hp>CO2</hp>  <hc>   3</hc>      12.969 -23.431   3.920  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1  </ho> <hp>CO2</hp>  <hc>   3</hc>      12.989 -24.310   3.163  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      3 <ho>O2  </ho> <hp>CO2</hp>  <hc>   3</hc>      12.949 -22.552   4.676  1.00  0.00      <hg>   1</hg><hm>O </hm> 
+    ATOM      1 <ho>C   </ho> <hp>CO2</hp>  <hc>   4</hc>      16.999 -19.836   8.272  1.00  0.00      <hg>   1</hg><hm>C </hm> 
+    ATOM      2 <ho>O1  </ho> <hp>CO2</hp>  <hc>   4</hc>      17.957 -20.165   7.706  1.00  0.00      <hg>   1</hg><hm>O </hm> 
     </pre>  
 
 

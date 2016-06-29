@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -144,20 +144,20 @@ running the engine using Engine.run method. A trajectory of all moves is saved
 to the disk by setting XYZPath argument not to None.</p>
 <ol class="arabic simple">
 <li>agitate_bonds: Groups are created by O-H pair of atoms using their indexes.
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></tt></a> is assigned to each group. A
-<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make sure selecting every group.
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><code class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></code></a> is assigned to each group. A
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></code></a> is used to make sure selecting every group.
 Number of engine steps is set to 250 * number of groups so each O-H group
 will be agitated 250 times.</li>
 <li>agitate_angles: Groups are created by O-H-H triplets of atoms using
-engine set_groups_as_molecules method. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a>
-is assigned to each group. A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make
+engine set_groups_as_molecules method. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></code></a>
+is assigned to each group. A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></code></a> is used to make
 sure selecting every group. Number of engine steps is set to 250 * number
 of groups so each O-H-H group will be agitated 250 times.</li>
 <li>agitate_both: Groups are created by O-H-H triplets of atoms using
 engine set_groups_as_molecules method, then groups of O-H pair of
 atoms are also created and added to the engine.
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></tt></a> is assigned to each group.
-A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><tt class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></tt></a> is used to make sure selecting every group.
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></code></a> is assigned to each group.
+A <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">DefinedOrderSelector</span></code></a> is used to make sure selecting every group.
 Number of engine steps is set to 250 * number of groups so each
 O-H-H and O-H group will be agitated 250 times.</li>
 </ol>
@@ -183,7 +183,7 @@ four trajectories &#8220;along0.xyz&#8221;, &#8220;along1.xyz&#8221;, &#8220;alo
 <li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
 </ul>
 
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -191,9 +191,6 @@ four trajectories &#8220;along0.xyz&#8221;, &#8220;along1.xyz&#8221;, &#8220;alo
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -214,7 +211,7 @@ four trajectories &#8220;along0.xyz&#8221;, &#8220;along1.xyz&#8221;, &#8220;alo
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

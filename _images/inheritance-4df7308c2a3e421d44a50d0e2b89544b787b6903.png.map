@@ -1,0 +1,11 @@
+<map id="inheritance32367ebff3" name="inheritance32367ebff3">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,53,119,77"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="186,17,295,41"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationGenerator" target="_top" title="Generates random translations moves upon groups of atoms." alt="" coords="167,89,314,113"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" target="_top" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="378,5,612,29"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="392,53,598,77"/>
+<area shape="rect" id="node7" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards a pre&#45;defined axis" alt="" coords="706,53,928,77"/>
+<area shape="rect" id="node5" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="362,101,628,125"/>
+<area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" target="_top" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="377,149,613,173"/>
+<area shape="rect" id="node9" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards one of its symmetry" alt="" coords="676,101,958,125"/>
+</map>

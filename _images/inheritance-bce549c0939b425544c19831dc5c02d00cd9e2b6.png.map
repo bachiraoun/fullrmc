@@ -1,6 +1,0 @@
-<map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,31,87,56"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="143,5,254,31"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,55,263,80"/>
-<area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="311,31,475,56"/>
-</map>

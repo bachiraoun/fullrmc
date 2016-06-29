@@ -1,0 +1,79 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+ 
+Relative path
+=============
+../fullrmc/Examples/coordNumConstraint/
+
+
+Description
+===========
+A created AlCl2F2 is created to demonstrate how atomic coordination number constraint
+works and can be used to force atoms coordination. This example was used to generate
+the `coordination number constraint video example  <https://youtu.be/R8t-_XwizOI>`_ 
+as seen in the online documentation.  When running this  example a trajectory file will 
+be generated. If `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, 
+the trajectory of all moves will be automatically visualized.  
+
+
+Files
+=====
+
+#. system.pdb: The AlCl2F2 molecule pdb file
+#. run.py: The script file used to run the simulation
+
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`XY TRANSLATION GENERATOR:` 
+
+Defining XYTranslationGenerator move generator class. This move generator is used to
+move groups randomly in only XY plane. Defining a move generator is as easy as 
+overloading the method 'transform_coordinates' which is used by the engine to
+move atoms' coordinates.
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine as well as the needed Inter-molecular distance and atomic 
+coordination number constraints.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+
+#. run_normal: Constraint both chlorine atoms to be within aluminum coordination
+   shell between 1.5 and 2.5  :math:`\AA`. Same way constraint both sulfur atom 
+   to be in a coordination shell between 2.5 and 3  :math:`\AA`.
+
+                                                                          
+   
+:underline:`RUN SIMULATION:` 
+
+Run 'run_normal' and generate a 10000 steps trajectory
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+"trajectory.xyz".
+
+

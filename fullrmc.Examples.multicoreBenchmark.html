@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="relative-path">
+<h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
+<p>../fullrmc/Examples/multicoreBenchmark/</p>
+</div>
+<div class="section" id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>This example is used to benchmark cores usage multicore fitting performance.
+It is meaningless to run this example if fullrmc is not compiled with fopenmp flag.
+Benchmarking is very useful because it allows to judge whether it&#8217;s worth it to use
+multicores when modelling a system of certain size. It is important to know that
+running fullrmc on multicores doesn&#8217;t necessarily means that the fitting time will
+be a factor times faster. Using multicores doesn&#8217;t even guarantee speeding up the time
+per RMC step. For small systems it is faster to run the simulation on single core
+because using multiple cores comes with some overhead cost. This Examples has two
+different run files. &#8216;run_methods.py&#8217; to benchmark different parallelized methods
+(figures a and b) and &#8216;run_simulation.py&#8217; to benchmark a real simulation
+(figures c). Analyzing the benchmark figures (a,b and c) it is clear that
+it would be beneficial to use 3 or 4 cores when number of atoms is bigger than 10000.
+Even though the used machine to do the benchmark has 4 cores, it is preferable to use
+3 cores and leave one free for the operating system normal tasks.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/distanceToMultiPointsBenchmark.png"><img alt="_images/distanceToMultiPointsBenchmark.png" src="_images/distanceToMultiPointsBenchmark.png" style="width: 400px; height: 300px;" /></a>
+<p class="caption"><span class="caption-text">a) pairs_distances_to_multi_points function
+benchmark using run_methods.py.</span></p>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><div class="first last figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/histogramsBenchmark.png"><img alt="_images/histogramsBenchmark.png" src="_images/histogramsBenchmark.png" style="width: 400px; height: 300px;" /></a>
+<p class="caption"><span class="caption-text">b) single_pairs_histograms function
+benchmark using run_methods.py.</span></p>
+</div>
+</td>
+</tr>
+<tr class="row-odd"><td><div class="first last figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/simulationBenchmark.png"><img alt="_images/simulationBenchmark.png" src="_images/simulationBenchmark.png" style="width: 400px; height: 300px;" /></a>
+<p class="caption"><span class="caption-text">c) 26065 atoms full simulation benchmark.
+Comparing atomic an molecular refinement.</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="files">
+<h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li>run_methods.py: The script used benchmark different methods used in fullrmc</li>
+<li>run_simulation.py: The script used to benchmark number of used cores when
+fitting a real molecular system</li>
+<li>thf.pdb: The tetrahydrofuran simulation box used in run_simulation.py</li>
+<li>thf_pdf.exp: The experimental x-rays PDF data used in run_simulation.py</li>
+</ol>
+</div>
+<div class="section" id="run-methods-py-explained">
+<h1>run_methods.py explained<a class="headerlink" href="#run-methods-py-explained" title="Permalink to this headline">¶</a></h1>
+<p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
+<p>All useful packages, modules and definitions are imported.</p>
+<p><span class="underline">USER VARIBLES:</span></p>
+<p>Used to set the benchmark variables. You must change and adapt according to your needs
+and systems.</p>
+<ul class="simple">
+<li>CORES: The number of cores list to benchmark</li>
+<li>AVERAGE: Every method benchmarked will be ran AVERAGE time</li>
+<li>NUMBER_OF_ATOMS: The number of atoms to benchmark reflecting the number of atoms
+you might be fitting</li>
+<li>HISTOGRAMS: Whether to benchmark histograms</li>
+<li>PAIRS_DISTANCES: Whether to benchmark pairs distances</li>
+<li>ATOMIC_DISTANCES: Whether to benchmark atomic distances</li>
+</ul>
+<p><span class="underline">INIT VARIABLES:</span></p>
+<p>Initialize useful variables</p>
+<p><span class="underline">HISTOGRAMS:</span></p>
+<p>If HISTOGRAMS is set to True, benchmark single_pairs_histograms method used in different
+constraints such as <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a></p>
+<p><span class="underline">PAIRS DISTANCES:</span></p>
+<p>If PAIRS_DISTANCES is set to True, benchmark pairs_distances_to_indexcoords and
+pairs_distances_to_multi_points method used in different places of the code to compute
+atomic pair distances</p>
+<p><span class="underline">ATOMIC DISTANCES:</span></p>
+<p>If ATOMIC_DISTANCES is set to True, benchmark single_atomic_distances_dists used in
+different constraints such as <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></code></a></p>
+<p><span class="underline">PLOT:</span></p>
+<p>Plot all benchmarks data.</p>
+</div>
+<div class="section" id="run-simulation-py-explained">
+<h1>run_simulation.py explained<a class="headerlink" href="#run-simulation-py-explained" title="Permalink to this headline">¶</a></h1>
+<p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
+<p>All useful packages, modules and definitions are imported.</p>
+<p><span class="underline">SHUT DOWN LOGGING:</span></p>
+<p>Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging.</p>
+<p><span class="underline">USER VARIBLES:</span></p>
+<p>Used to set the benchmark variables. You must change and adapt according to your needs
+and systems.</p>
+<ul class="simple">
+<li>CORES: The number of cores list to benchmark</li>
+<li>NSTEPS: The number of steps to run the engine</li>
+</ul>
+<p><span class="underline">DEFINE run_engine METHOD :</span></p>
+<p>Define the main run method used to do the benchmarking.</p>
+<p><span class="underline">RUN BENCHMARK:</span></p>
+<p>Run the different benchmarks</p>
+<p><span class="underline">PLOT:</span></p>
+<p>Plot all benchmarks data.</p>
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Relative path</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#run-methods-py-explained">run_methods.py explained</a></li>
+<li><a class="reference internal" href="#run-simulation-py-explained">run_simulation.py explained</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

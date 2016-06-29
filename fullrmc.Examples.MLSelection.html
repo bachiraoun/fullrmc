@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -119,7 +119,7 @@ to demonstrate that reinforcement machine learning can improve ratio of accepted
 by smartly selecting groups. This example was used to generate the following
 <a class="reference external" href="fullrmc.Selectors.html#module-fullrmc.Selectors.RandomSelectors">reinforcement machine learning selection images</a>.
 It is very interesting to note that by zooming at the very beginning of the simulation,
-a warming up steps are needed for the <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></tt></a> to learn the system and
+a warming up steps are needed for the <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></code></a> to learn the system and
 therefore increase the number of accepted moves by selecting the right groups.</p>
 </div>
 <div class="section" id="files">
@@ -139,7 +139,7 @@ but force &#8216;move accepted&#8217; logging file flag to be always True.</p>
 <p><span class="underline">CREATE ENGINE:</span></p>
 <p>Create the engine and the needed constraints.</p>
 <p><span class="underline">CREATE MOVES GENERATORS:</span></p>
-<p>Set <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a> to all groups but 75% of those translation
+<p>Set <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> to all groups but 75% of those translation
 generators are given a realistic maximum translation amplitude of <span class="math">\(0.3 \AA\)</span>
 while the remaining 25% are given an unrealistic maximum amplitude of
 <span class="math">\(10 \AA\)</span> that will lead to a lot of unaccepted moves.</p>
@@ -148,9 +148,9 @@ while the remaining 25% are given an unrealistic maximum amplitude of
 All of the following functions finish running the engine using Engine.run method.</p>
 <ol class="arabic simple">
 <li>normal_run: Running engine with a normal and traditional random selector
-<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt></a>.</li>
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></code></a>.</li>
 <li>ML_run: Running engine with a reinforcement machine learning enabled
-random selector <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></tt></a>.</li>
+random selector <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></code></a>.</li>
 </ol>
 <p><span class="underline">RUN SIMULATION:</span></p>
 <p>Run both normal_run and ML_run functions. Then flush the LOGGER to make sure
@@ -176,7 +176,7 @@ everything is written to logging files.</p>
 <li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
 </ul>
 
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -184,9 +184,6 @@ everything is written to logging files.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -207,7 +204,7 @@ everything is written to logging files.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

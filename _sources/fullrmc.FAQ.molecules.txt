@@ -1,0 +1,21 @@
+:orphan:
+
+molecules 
+=========
+fullrmc is not a mere atomic reverse monte carlo application but molecules and rigid 
+bodies enabled stochastic atomic reverse modelling platform. Molecules are very important 
+in fullrmc to define bonds, angles, improper and especially inter-molecular distance 
+constraints, etc. When a system is atomic, one should make sure to specify that in  
+the pdb file or use the engine to do that.
+
+Molecules can be defined in two different ways in fullrmc.
+
+#. The first and more natural way of defining molecules is using a correct and
+   complete pdb file. for more information about pdb files click 
+   `here <fullrmc.FAQ.pdbFile.html>`__.
+#. The second way to define molecules is by using Engine.set_molecules_indexes method.
+
+Engine methods such as 'set_groups_as_atoms' and 'set_groups_as_molecules' make full use 
+of molecules definition. They reset the engine groups list and automatically generate 
+respectively as list of groups of single atom each or a list of groups of single molecule 
+each.  

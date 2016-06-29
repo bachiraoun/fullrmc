@@ -14,10 +14,17 @@ Collection
     :members:
     :undoc-members:
     :show-inheritance:
+
+DistanceConstraints
+-------------------
+.. automodule:: fullrmc.Constraints.DistanceConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
     
-AngleConstraints
-----------------
-.. automodule:: fullrmc.Constraints.AngleConstraints
+CoordinationConstraints
+-----------------------
+.. automodule:: fullrmc.Constraints.AtomicCoordinationConstraints
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,24 +35,17 @@ BondConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-
-DistanceConstraints
--------------------
-.. automodule:: fullrmc.Constraints.DistanceConstraints
+    
+AngleConstraints
+----------------
+.. automodule:: fullrmc.Constraints.AngleConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-
+    
 ImproperAngleConstraints
 ------------------------
 .. automodule:: fullrmc.Constraints.ImproperAngleConstraints
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-CoordinationNumberConstraints
------------------------------
-.. automodule:: fullrmc.Constraints.CoordinationNumberConstraints
     :members:
     :undoc-members:
     :show-inheritance:

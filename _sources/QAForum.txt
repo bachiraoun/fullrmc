@@ -6,6 +6,8 @@ Herein is a list of some of the Frequently Asked Questions (FAQ).
 Click on title to get directed to the answer and detailed explanation page.
 
 * `PDB file <fullrmc.FAQ.pdbFile.html>`__: What is a .pdb file and how it is used in fullrmc?
+* `Molecules <fullrmc.FAQ.molecules.html>`__: How molecules are defined in fullrmc?
+* `Multiprocessing <fullrmc.FAQ.multiprocessing.html>`__: Does fullrmc runs on multicore?
 
 
 Q&A Forum

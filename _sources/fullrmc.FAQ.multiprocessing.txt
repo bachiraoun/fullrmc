@@ -1,0 +1,62 @@
+:orphan:
+
+Multiprocessing 
+===============
+RMC fitting method runs sequentially by construction. Nevertheless, fullrmc computation 
+blocks are multi-threaded and can make use of the full capacity of your machine. As  
+distributed, fullrmc is compiled to run on single core (thread) only but advanced users  
+have the option to compile the code with openmp. Reason why fullrmc is not distributed as  
+multithreads enabled is because of the following reasons:
+
+#. To avoid compilation errors because not all compilers and machine have openmp  
+   library installed and correctly linked (e.g. clang).
+#. For small systems (maybe <20000 atoms), running fullrmc on single core can be 
+   faster because threads comes with some overhead cost. 
+   
+   
+How to compile with openmp
+==========================
+To compile fullrmc with openmp it is very simple. You should pull 
+`Extensions directory <https://github.com/bachiraoun/fullrmc/tree/master/Extensions>`__ 
+from github and run the following.
+
+.. code-block:: shell
+
+    python setup.py build_ext --inplace
+    
+If compiling with openmp fails, the script ensures recompiling without openmp just to 
+make sure that you didn't break your fullrmc installation (nothing guaranteed though).
+In worst case scenario, you can reinstall fullrmc using pip as the following
+
+.. code-block:: shell
+
+    pip install --upgrade --no-deps --force-reinstall fullrmc
+
+In setup.py you can set the compiler path in 'COMPILER' section. In section 
+'COMPILER ARGUMENTS' you should make sure extra arguments lists 'EXTRA_COMPILE_ARGS' 
+and 'EXTRA_LINK_ARGS' are not commented and -fopenmp is appended to both, otherwise 
+you won't be compiling with openmp.
+
+**ATTENTION: This script is always up to date with the latest distributed version of 
+fullrmc. Compiling with un-matching versions might lead to errors when running fullrmc.**
+
+
+Performance
+===========
+Running fullrmc on multicores doesn't mean that you will be dividing the whole fitting 
+process time by some factor of the number of cores (threads) used. Also, using ncores 
+will never result in occupying the ncores 100% because parallelization in fullrmc is 
+an intercalation of multithreaded computation blocks with serial ones. For big systems,
+You will compute moves faster with no guarantee that those moves will be accepted.
+The speed of fitting is directly related with the ratio of accepted moves and not 
+just how fast the moves are computed. fullrmc is an interactive fitting platform and 
+the more you used it the more you understand that creating models requires some skills 
+and some understanding of the system you are trying to model.
+
+
+
+
+
+
+
+  

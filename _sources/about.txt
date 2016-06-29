@@ -14,7 +14,6 @@ releases were made as needed.
 Authors and developers
 ======================
 * `Bachir Aoun <https://www.linkedin.com/in/bachiraoun>`_ (Author, Developer) 
-* `Jonathan Barnes <https://www.linkedin.com/in/johnathan-barnes-a558b230>`_ (Developer, consulting) 
 
 Citing fullrmc
 ==============

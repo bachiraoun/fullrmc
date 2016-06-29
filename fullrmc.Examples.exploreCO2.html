@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -128,9 +128,9 @@ as seen in the online documentation.</p>
 <li>Xrays.gr: The x-rays experimental pair distribution function data.</li>
 <li>run.py: The script file used to run the simulation.</li>
 <li>plot.py: The script file to plot the last saved engine state of
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> constraint data.</li>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a> constraint data.</li>
 <li>multiplot.py: The script file to plot the last saved engine state
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> constraint data in three different
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a> constraint data in three different
 axes just like in the video.</li>
 </ol>
 </div>
@@ -139,7 +139,7 @@ axes just like in the video.</li>
 <p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
 <p>All useful packages, modules and definitions are imported.</p>
 <p><span class="underline">CREATE ENGINE:</span></p>
-<p>Create the engine and the needed constraints. <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><tt class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></tt></a>
+<p>Create the engine and the needed constraints. <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></code></a>
 is forces O=C=O bond angle to be not more than degrees off by setting the
 limits to be between 170 and 180 degrees. Also all constraints used
 flag are set to True. Actually by default used flag is True, but here we
@@ -152,18 +152,18 @@ to the disk by setting XYZPath argument not to None.</p>
 <ol class="arabic simple">
 <li>run_atoms: used set_groups(None) which is equivalent to creating
 a group per atom. Here the engine runs traditional RMC with
-random selection of groups using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt></a> and random
-atomic translations using <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a> move
+random selection of groups using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></code></a> and random
+atomic translations using <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> move
 generator.</li>
 <li>run_molecules: Groups are created by molecules using engine
-set_groups_as_molecules method. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></tt></a>
-and <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><tt class="xref py py-class docutils literal"><span class="pre">RotationGenerator</span></tt></a> are collected and passed to a
-<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="fullrmc.Core.MoveGenerator.MoveGeneratorCollector"><tt class="xref py py-class docutils literal"><span class="pre">MoveGeneratorCollector</span></tt></a> and set to every and each group.
-<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt></a> to allow recurring selection and
+set_groups_as_molecules method. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a>
+and <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal"><span class="pre">RotationGenerator</span></code></a> are collected and passed to a
+<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="fullrmc.Core.MoveGenerator.MoveGeneratorCollector"><code class="xref py py-class docutils literal"><span class="pre">MoveGeneratorCollector</span></code></a> and set to every and each group.
+<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><code class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></code></a> to allow recurring selection and
 therefore enabling fitting modes such as &#8216;recur&#8217;, &#8216;refine&#8217; and &#8216;explore&#8217;</li>
 <li>run_recurring_atoms: Here also set_groups(None) is used which is equivalent
-to creating a group per atom. But <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><tt class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></tt></a> is wrapped with
-<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><tt class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></tt></a> to allow recurring selection and therefore
+to creating a group per atom. But <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></code></a> is wrapped with
+<a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="fullrmc.Core.GroupSelector.RecursiveGroupSelector"><code class="xref py py-class docutils literal"><span class="pre">RecursiveGroupSelector</span></code></a> to allow recurring selection and therefore
 enabling fitting modes such as &#8216;recur&#8217;, &#8216;refine&#8217; and &#8216;explore&#8217;</li>
 </ol>
 <p><span class="underline">RUN SIMULATION:</span></p>
@@ -171,7 +171,7 @@ enabling fitting modes such as &#8216;recur&#8217;, &#8216;refine&#8217; and &#8
 to achieve decent fit and model. Therefore run_recurring_atoms is called twice
 with explore flag set to True in the first time and refine in the second.</p>
 <p><span class="underline">PLOT PDF CONSTRAINT:</span></p>
-<p>Plotting the <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><tt class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></tt></a> data after fitting.</p>
+<p>Plotting the <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a> data after fitting.</p>
 </div>
 
 
@@ -189,7 +189,7 @@ with explore flag set to True in the first time and refine in the second.</p>
 <li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
 </ul>
 
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -197,9 +197,6 @@ with explore flag set to True in the first time and refine in the second.</p>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -220,7 +217,7 @@ with explore flag set to True in the first time and refine in the second.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

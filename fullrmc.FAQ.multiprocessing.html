@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Multiprocessing &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="multiprocessing">
+<h1>Multiprocessing<a class="headerlink" href="#multiprocessing" title="Permalink to this headline">¶</a></h1>
+<p>RMC fitting method runs sequentially by construction. Nevertheless, fullrmc computation
+blocks are multi-threaded and can make use of the full capacity of your machine. As
+distributed, fullrmc is compiled to run on single core (thread) only but advanced users
+have the option to compile the code with openmp. Reason why fullrmc is not distributed as
+multithreads enabled is because of the following reasons:</p>
+<ol class="arabic simple">
+<li>To avoid compilation errors because not all compilers and machine have openmp
+library installed and correctly linked (e.g. clang).</li>
+<li>For small systems (maybe &lt;20000 atoms), running fullrmc on single core can be
+faster because threads comes with some overhead cost.</li>
+</ol>
+</div>
+<div class="section" id="how-to-compile-with-openmp">
+<h1>How to compile with openmp<a class="headerlink" href="#how-to-compile-with-openmp" title="Permalink to this headline">¶</a></h1>
+<p>To compile fullrmc with openmp it is very simple. You should pull
+<a class="reference external" href="https://github.com/bachiraoun/fullrmc/tree/master/Extensions">Extensions directory</a>
+from github and run the following.</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>python setup.py build_ext --inplace
+</pre></div>
+</div>
+<p>If compiling with openmp fails, the script ensures recompiling without openmp just to
+make sure that you didn&#8217;t break your fullrmc installation (nothing guaranteed though).
+In worst case scenario, you can reinstall fullrmc using pip as the following</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>pip install --upgrade --no-deps --force-reinstall fullrmc
+</pre></div>
+</div>
+<p>In setup.py you can set the compiler path in &#8216;COMPILER&#8217; section. In section
+&#8216;COMPILER ARGUMENTS&#8217; you should make sure extra arguments lists &#8216;EXTRA_COMPILE_ARGS&#8217;
+and &#8216;EXTRA_LINK_ARGS&#8217; are not commented and -fopenmp is appended to both, otherwise
+you won&#8217;t be compiling with openmp.</p>
+<p><strong>ATTENTION: This script is always up to date with the latest distributed version of
+fullrmc. Compiling with un-matching versions might lead to errors when running fullrmc.</strong></p>
+</div>
+<div class="section" id="performance">
+<h1>Performance<a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h1>
+<p>Running fullrmc on multicores doesn&#8217;t mean that you will be dividing the whole fitting
+process time by some factor of the number of cores (threads) used. Also, using ncores
+will never result in occupying the ncores 100% because parallelization in fullrmc is
+an intercalation of multithreaded computation blocks with serial ones. For big systems,
+You will compute moves faster with no guarantee that those moves will be accepted.
+The speed of fitting is directly related with the ratio of accepted moves and not
+just how fast the moves are computed. fullrmc is an interactive fitting platform and
+the more you used it the more you understand that creating models requires some skills
+and some understanding of the system you are trying to model.</p>
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Multiprocessing</a></li>
+<li><a class="reference internal" href="#how-to-compile-with-openmp">How to compile with openmp</a></li>
+<li><a class="reference internal" href="#performance">Performance</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

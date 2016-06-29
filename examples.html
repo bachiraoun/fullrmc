@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Available examples &mdash; fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Available examples &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -110,7 +110,7 @@
         
   <span class="target" id="module-fullrmc.Examples"></span><dl class="function">
 <dt id="fullrmc.Examples.get_examples_path">
-<tt class="descclassname">fullrmc.Examples.</tt><tt class="descname">get_examples_path</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Examples.get_examples_path" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fullrmc.Examples.</code><code class="descname">get_examples_path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Examples.get_examples_path" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get distribution examples directory path in the standard distribution.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -127,7 +127,7 @@
 
 <dl class="function">
 <dt id="fullrmc.Examples.find_example">
-<tt class="descclassname">fullrmc.Examples.</tt><tt class="descname">find_example</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#fullrmc.Examples.find_example" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fullrmc.Examples.</code><code class="descname">find_example</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Examples.find_example" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return example&#8217;s path given its name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -150,7 +150,7 @@ None if example is not found.</li>
 
 <dl class="function">
 <dt id="fullrmc.Examples.get_available_examples">
-<tt class="descclassname">fullrmc.Examples.</tt><tt class="descname">get_available_examples</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Examples.get_available_examples" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fullrmc.Examples.</code><code class="descname">get_available_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Examples.get_available_examples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all available examples as delivered in the standard distribution.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -167,7 +167,7 @@ None if example is not found.</li>
 
 <dl class="function">
 <dt id="fullrmc.Examples.print_available_examples">
-<tt class="descclassname">fullrmc.Examples.</tt><tt class="descname">print_available_examples</tt><big>(</big><big>)</big><a class="headerlink" href="#fullrmc.Examples.print_available_examples" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">fullrmc.Examples.</code><code class="descname">print_available_examples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Examples.print_available_examples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print all available examples path in the standard distribution.</p>
 </dd></dl>
 
@@ -182,45 +182,65 @@ A short description of each example is shown in the list below. It is
 recommended not to run any example from within fullrmc. But copy the
 example folder to any safe place such as one&#8217;s home directory and run it
 from there. To locate an example and copy it, one can do the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># import find_example</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import find_example</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Examples</span> <span class="kn">import</span> <span class="n">find_example</span>
-<span class="c"># search for an examples. e.g. atomicNiTi</span>
-<span class="k">print</span> <span class="n">find_example</span><span class="p">(</span><span class="s">&#39;atomicNiTi&#39;</span><span class="p">)</span>
+<span class="c1"># search for an examples. e.g. atomicNiTi</span>
+<span class="k">print</span> <span class="n">find_example</span><span class="p">(</span><span class="s1">&#39;atomicNiTi&#39;</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="s">&#39;../site-packages/fullrmc/Examples/atomicNiTi&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;../site-packages/fullrmc/Examples/atomicNiTi&#39;</span>
 </pre></div>
 </div>
 <p>In all examples, run.py is the name of the file that must be
 executed from the command line as the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre>python run.py
+<div class="highlight-bash"><div class="highlight"><pre><span></span>python run.py
 </pre></div>
 </div>
 <p>Examples folder name is used as the click-able items in the following list.</p>
+<p><span class="underline">Constraints:</span></p>
 <ul class="simple">
-<li><a class="reference external" href="fullrmc.Examples.bondsConstraint.html">bondsConstraint</a>: Used show how to
+<li><a class="reference external" href="fullrmc.Examples.coordinationNumberConstraint.html">coordNumConstraint</a>:
+Used to show how to coordination number constraint works.</li>
+<li><a class="reference external" href="fullrmc.Examples.bondsConstraint.html">bondsConstraint</a>: Used to show
 how bonds constraint works.</li>
-<li><a class="reference external" href="fullrmc.Examples.anglesConstraint.html">anglesConstraint</a>: Used show how to
+<li><a class="reference external" href="fullrmc.Examples.anglesConstraint.html">anglesConstraint</a>: Used to show
 how angles constraint works.</li>
-<li><a class="reference external" href="fullrmc.Examples.improperConstraint.html">improperConstraint</a>: Used show how to
+<li><a class="reference external" href="fullrmc.Examples.improperConstraint.html">improperConstraint</a>: Used to show
 how improper angles constraint works.</li>
+</ul>
+<p><span class="underline">Generators:</span></p>
+<ul class="simple">
 <li><a class="reference external" href="fullrmc.Examples.translations.html">translations</a>: Used show how to
 use translation generators.</li>
-<li><a class="reference external" href="fullrmc.Examples.rotations.html">rotations</a>: Used to show how to
-use rotation generators.</li>
-<li><a class="reference external" href="fullrmc.Examples.agitations.html">agitations</a>: Used to show how to
+<li><a class="reference external" href="fullrmc.Examples.rotations.html">rotations</a>: To show how to use
+rotation generators.</li>
+<li><a class="reference external" href="fullrmc.Examples.agitations.html">agitations</a>: To show how to
 use agitation generators.</li>
-<li><a class="reference external" href="fullrmc.Examples.docking.html">docking</a>: To show how to move one group
-of atoms towards another.</li>
+</ul>
+<p><span class="underline">Fitting modes:</span></p>
+<ul class="simple">
+<li><a class="reference external" href="fullrmc.Examples.docking.html">docking</a>: To show how to move
+one group of atoms towards another.</li>
 <li><a class="reference external" href="fullrmc.Examples.explore.html">explore</a>: This is a simulation of a molecule
 exploring a cavity.</li>
 <li><a class="reference external" href="fullrmc.Examples.refine.html">refine</a>: This is a simulation of a molecule
 refining its position in a cavity.</li>
-<li><a class="reference external" href="fullrmc.Examples.benchmark.html">benchmark</a>: This example can be used to
-benchmark fullrmc.</li>
-<li><a class="reference external" href="fullrmc.Examples.MLSelection.html">MLSelection</a>: In this example we show
-that reinforcement machine learning can help increasing accepted moves ratio.</li>
 <li><a class="reference external" href="fullrmc.Examples.exploreCO2.html">ExploreCO2</a>: This is a fit of CO2 gas
 in critical condition.</li>
+</ul>
+<p><span class="underline">Selectors:</span></p>
+<ul class="simple">
+<li><a class="reference external" href="fullrmc.Examples.MLSelection.html">MLSelection</a>: In this example we show
+that reinforcement machine learning can help increasing accepted moves ratio.</li>
+</ul>
+<p><span class="underline">Benchmarks:</span></p>
+<ul class="simple">
+<li><a class="reference external" href="fullrmc.Examples.benchmark.html">benchmark</a>: This example can be used to
+benchmark fullrmc.</li>
+<li><a class="reference external" href="fullrmc.Examples.multicoreBenchmark.html">multicoreBenchmark</a>: This is used to
+benchmark multicore computation.</li>
+</ul>
+<p><span class="underline">Real systems:</span></p>
+<ul class="simple">
 <li><a class="reference external" href="fullrmc.Examples.atomicNiTi.html">atomicNiTi</a>: Fitting a Ni-Ti memory
 shape binary compound.</li>
 <li><a class="reference external" href="fullrmc.Examples.molecularTHF.html">molecularTHF</a>: This is a tetrahydrofuran
@@ -237,7 +257,7 @@ oxide nanosphere fitting.</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -245,9 +265,6 @@ oxide nanosphere fitting.</li>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -268,7 +285,7 @@ oxide nanosphere fitting.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

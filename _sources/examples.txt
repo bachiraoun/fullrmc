@@ -1,5 +1,8 @@
 :orphan:
 
+.. role:: underline
+   :class: underline
+   
 .. automodule:: fullrmc.Examples 
 
 Available examples
@@ -35,35 +38,62 @@ executed from the command line as the following:
           
 Examples folder name is used as the click-able items in the following list.
 
-*  `bondsConstraint <fullrmc.Examples.bondsConstraint.html>`__: Used show how to 
+
+:underline:`Constraints:`
+
+*  `coordNumConstraint <fullrmc.Examples.coordinationNumberConstraint.html>`__: 
+   Used to show how to coordination number constraint works.
+*  `bondsConstraint <fullrmc.Examples.bondsConstraint.html>`__: Used to show 
    how bonds constraint works.
-*  `anglesConstraint <fullrmc.Examples.anglesConstraint.html>`__: Used show how to 
+*  `anglesConstraint <fullrmc.Examples.anglesConstraint.html>`__: Used to show 
    how angles constraint works.
-*  `improperConstraint <fullrmc.Examples.improperConstraint.html>`__: Used show how to 
+*  `improperConstraint <fullrmc.Examples.improperConstraint.html>`__: Used to show 
    how improper angles constraint works.
+
+
+:underline:`Generators:`
+
 *  `translations <fullrmc.Examples.translations.html>`__: Used show how to 
    use translation generators.
-*  `rotations <fullrmc.Examples.rotations.html>`__: Used to show how to 
-   use rotation generators.
-*  `agitations <fullrmc.Examples.agitations.html>`__: Used to show how to 
+*  `rotations <fullrmc.Examples.rotations.html>`__: To show how to use 
+   rotation generators.
+*  `agitations <fullrmc.Examples.agitations.html>`__: To show how to 
    use agitation generators.
-*  `docking <fullrmc.Examples.docking.html>`__: To show how to move one group
-   of atoms towards another.
+
+   
+:underline:`Fitting modes:`
+
+*  `docking <fullrmc.Examples.docking.html>`__: To show how to move 
+   one group of atoms towards another.
 *  `explore <fullrmc.Examples.explore.html>`__: This is a simulation of a molecule
    exploring a cavity. 
 *  `refine <fullrmc.Examples.refine.html>`__: This is a simulation of a molecule
    refining its position in a cavity.
-*  `benchmark <fullrmc.Examples.benchmark.html>`__: This example can be used to 
-   benchmark fullrmc.
-*  `MLSelection <fullrmc.Examples.MLSelection.html>`__: In this example we show
-   that reinforcement machine learning can help increasing accepted moves ratio.
 *  `ExploreCO2 <fullrmc.Examples.exploreCO2.html>`__: This is a fit of CO2 gas
    in critical condition.  
+
+   
+:underline:`Selectors:`
+
+*  `MLSelection <fullrmc.Examples.MLSelection.html>`__: In this example we show
+   that reinforcement machine learning can help increasing accepted moves ratio.
+
+
+:underline:`Benchmarks:`
+
+*  `benchmark <fullrmc.Examples.benchmark.html>`__: This example can be used to 
+   benchmark fullrmc.
+*  `multicoreBenchmark <fullrmc.Examples.multicoreBenchmark.html>`__: This is used to
+   benchmark multicore computation. 
+
+
+:underline:`Real systems:`
+
 *  `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__: Fitting a Ni-Ti memory   
    shape binary compound.
 *  `molecularTHF <fullrmc.Examples.molecularTHF.html>`__: This is a tetrahydrofuran 
    electrolyte system fitting.
 *  `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon 
-   oxide nanosphere fitting. 
+   oxide nanosphere fitting.    
    
    

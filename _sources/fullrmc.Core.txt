@@ -87,25 +87,31 @@ pairs distances
 atomic coordination number
 --------------------------
 
-.. automodule::   fullrmc.Core.atomic_coordination_number
+.. automodule::   fullrmc.Core.atomic_coordination
 
-.. autofunction:: fullrmc.Core.atomic_coordination_number.single_shell_coordination_number
-.. autofunction:: fullrmc.Core.atomic_coordination_number.single_atomic_coordination_number
-.. autofunction:: fullrmc.Core.atomic_coordination_number.multiple_atomic_coordination_number    
-.. autofunction:: fullrmc.Core.atomic_coordination_number.full_atomic_coordination_number
-.. autofunction:: fullrmc.Core.atomic_coordination_number.atom_coordination_number_data
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_subdists
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_totdists
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_coords    
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_multi_shells_totdists
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_multi_shells_coords
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_coord_number_totdists
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_coord_number_coords
+.. autofunction:: fullrmc.Core.atomic_coordination.multi_atoms_coord_number_totdists
+.. autofunction:: fullrmc.Core.atomic_coordination.multi_atoms_coord_number_coords
+.. autofunction:: fullrmc.Core.atomic_coordination.all_atoms_coord_number_totdists
+.. autofunction:: fullrmc.Core.atomic_coordination.all_atoms_coord_number_coords
     
     
-van der waals
--------------
+atomic distances
+----------------
 
-.. automodule::   fullrmc.Core.vdw
+.. automodule::   fullrmc.Core.atomic_distances
 
-.. autofunction:: fullrmc.Core.vdw.single_vdw_dists
-.. autofunction:: fullrmc.Core.vdw.multiple_vdw_coords
-.. autofunction:: fullrmc.Core.vdw.multiple_vdw_dists
-.. autofunction:: fullrmc.Core.vdw.full_vdw_coords
-.. autofunction:: fullrmc.Core.vdw.full_vdw_dists
+.. autofunction:: fullrmc.Core.atomic_distances.single_atomic_distances_dists
+.. autofunction:: fullrmc.Core.atomic_distances.multiple_atomic_distances_coords
+.. autofunction:: fullrmc.Core.atomic_distances.multiple_atomic_distances_dists
+.. autofunction:: fullrmc.Core.atomic_distances.full_atomic_distances_coords
+.. autofunction:: fullrmc.Core.atomic_distances.full_atomic_distances_dists
     
     
 bonds

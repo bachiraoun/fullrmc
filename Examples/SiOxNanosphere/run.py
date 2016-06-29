@@ -22,7 +22,7 @@ NCORES               = 1
 
 # dirname
 DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
-if engineSavePath not in os.listdir(DIR_PATH) or True:
+if engineSavePath not in os.listdir(DIR_PATH):
     ## create and initialize engine
     ENGINE = Engine(pdb=structurePdbPath, constraints=None)
     # create and add pair distribution constraint to the engine
@@ -81,21 +81,14 @@ def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1):
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
-# run normal rmc
-import time
-tic = time.time()
-NCORES=1
+run_explore(ncores=NCORES)
 run_normal_rmc(nsteps=100000, ncores=NCORES)
-print time.time()-tic
-exit()
-#run_explore(ncores=NCORES)
-#run_normal_rmc(nsteps=100000, ncores=NCORES)
-#run_explore(ncores=NCORES)
-## expand nanoparticule
-#expand_nanoparticule(ncores=NCORES)
-#expand_nanoparticule(ncores=NCORES)
-#expand_nanoparticule(ncores=NCORES)
-#expand_nanoparticule(ncores=NCORES)
+run_explore(ncores=NCORES)
+# expand nanoparticule
+expand_nanoparticule(ncores=NCORES)
+expand_nanoparticule(ncores=NCORES)
+expand_nanoparticule(ncores=NCORES)
+expand_nanoparticule(ncores=NCORES)
     
     
     

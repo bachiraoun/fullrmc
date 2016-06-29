@@ -351,17 +351,6 @@ def shrink(ENGINE, newDim, exportPdb=False):
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
-
-ENGINE.set_groups_as_atoms()  
-import time
-tic = time.time()
-ENGINE.run(numberOfSteps=10000, saveFrequency=10000000000, savePath=engineFilePath, ncores=1)
-print time.time()-tic
-
-
-exit()
-
-
 # set short limits
 PDF_CONSTRAINT.set_limits((None,5))
 # fit bonds

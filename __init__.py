@@ -9,7 +9,7 @@
                          fullrmc.Generators.Rotations 
                          fullrmc.Generators.Swaps 
                          fullrmc.Generators.Agitations
-                         fullrmc.Constraints.CoordinationNumberConstraints
+                         fullrmc.Constraints.AtomicCoordinationConstraints
                          fullrmc.Constraints.DistanceConstraints
                          fullrmc.Constraints.BondConstraints
                          fullrmc.Constraints.AngleConstraints

@@ -1,7 +1,6 @@
 """
 This is a C compiled module to compute bonded atoms angle.
-""" 
-                        
+"""      
 from libc.math cimport sqrt, abs
 import cython
 cimport cython

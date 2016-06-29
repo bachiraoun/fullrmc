@@ -15,6 +15,7 @@ import time
 import sys
 import atexit
 import tempfile
+import multiprocessing
 
 # external libraries imports
 import numpy as np
@@ -117,9 +118,23 @@ class Engine(object):
             self.add_constraints(constraints)
         # set tolerance
         self.set_tolerance(tolerance)
+        # create runtime variables and arguments
+        self._runtime_ncores = INT_TYPE(1)
         # set LOGGER file path to saveEngine path
         #logFile = os.path.join( os.path.dirname(os.path.realpath(_savePath)), LOGGER.logFileBasename)
         #LOGGER.set_log_file_basename(logFile)
+        
+    def __set_runtime_ncores(self, ncores):
+        if ncores is None:
+            ncores = INT_TYPE(1)
+        else:
+            assert is_integer(ncores), LOGGER.error("ncores must be an integer")
+            ncores = INT_TYPE(ncores)
+            assert ncores>0, LOGGER.error("ncores must be > 0")
+            if ncores > multiprocessing.cpu_count():
+                LOGGER.warn("ncores '%s' is reset to %s which is the number of available cores on your machine"%(ncores, multiprocessing.cpu_count()))
+                ncores = INT_TYPE(multiprocessing.cpu_count())
+        self._runtime_ncores = ncores
         
     def _initialize_engine(self):
         """ Initialize all engine arguments and flags. """
@@ -237,6 +252,16 @@ class Engine(object):
         """ Get boundaryConditions instance. """
         return self.__boundaryConditions
     
+    @property
+    def isPBC(self):
+        """ Get whether boundaryConditions are periodic. """
+        return self.__isPBC
+        
+    @property
+    def isIBC(self):
+        """ Get whether boundaryConditions are infinte. """
+        return self.__isIBC
+        
     @property
     def basisVectors(self):
         """ Get the basis vectors in case of PeriodicBoundaries or None in case of InfiniteBoundaries. """
@@ -643,7 +668,6 @@ class Engine(object):
         if boundaryConditions is None:
             boundaryConditions = InfiniteBoundaries()
         if is_number(boundaryConditions) or isinstance(boundaryConditions, (list, tuple, np.ndarray)):
-            self.__canSetNumberDensity = False
             try:   
                 bc = PeriodicBoundaries()
                 bc.set_vectors(boundaryConditions)
@@ -654,26 +678,11 @@ class Engine(object):
             except: 
                 raise Exception( LOGGER.error("boundaryConditions must be an InfiniteBoundaries or PeriodicBoundaries instance or a valid vectors numpy.array or a positive number") )
         elif isinstance(boundaryConditions, InfiniteBoundaries) and not isinstance(boundaryConditions, PeriodicBoundaries):
-            self.__canSetNumberDensity = True
-            coordsCenter = np.sum(self.__realCoordinates, axis=0)/self.__realCoordinates.shape[0]
-            coordinates  = self.__realCoordinates-coordsCenter
-            distances    = np.sqrt( np.sum(coordinates**2, axis=1) )
-            maxDistance  = 2.*np.max(distances) 
-            cubixBoxLength = np.ceil( 3.*maxDistance )
-            bc = PeriodicBoundaries()
-            bc.set_vectors(cubixBoxLength)
-            self.__boundaryConditions = bc
-            self.__basisVectors = np.array(bc.get_vectors(), dtype=FLOAT_TYPE)
-            self.__reciprocalBasisVectors = np.array(bc.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
-            #self.__volume = FLOAT_TYPE(bc.get_box_volume()) 
-            self.__volume = FLOAT_TYPE( 1./.0333679 * self.numberOfAtoms )      
-            LOGGER.warn("Not periodic but InfiniteBoundaries boundary conditions is not directly implemented yet. \
-Therefore cubic PeriodicBoundaries is automatically created with size '%s Angstroms' equal to 3 times the system size. \
-System's number density is set to '.0333679' which is the same as water. The system's volume is then computed \
-equal to %.6f. If this is incorrect, use set_number_density method to set the system's correct number density \
-and therefore the volume."%(cubixBoxLength,self.__volume,))
+            self.__boundaryConditions = boundaryConditions
+            self.__basisVectors = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
+            self.__reciprocalBasisVectors = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
+            self.__volume = FLOAT_TYPE( 1./.0333679 * self.numberOfAtoms ) 
         elif isinstance(boundaryConditions, PeriodicBoundaries):
-            self.__canSetNumberDensity = False
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = np.array(boundaryConditions.get_vectors(), dtype=FLOAT_TYPE)
             self.__reciprocalBasisVectors = np.array(boundaryConditions.get_reciprocal_vectors(), dtype=FLOAT_TYPE)
@@ -683,11 +692,16 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # get box coordinates
         if isinstance(self.__boundaryConditions, PeriodicBoundaries):
             self.__boxCoordinates = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=self.__realCoordinates)
+            self.__isPBC = True
+            self.__isIBC = False
         else:
-            self.__boxCoordinates = None
+            #self.__boxCoordinates = None
+            self.__boxCoordinates = self.__realCoordinates
+            self.__isPBC = False
+            self.__isIBC = True
         # check box coordinates for none periodic boundary conditions
-        if self.__boxCoordinates is None:
-            raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
+        #if self.__boxCoordinates is None:
+        #    raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
         # set number density
         self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
         # broadcast to constraints
@@ -704,7 +718,7 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         if isinstance(self.__boundaryConditions, InfiniteBoundaries) and not isinstance(self.__boundaryConditions, PeriodicBoundaries):
             LOGGER.warn("Setting number density is not when boundary conditions are periodic.") 
             return
-        if not self.__canSetNumberDensity:
+        if self.__isPBC:
             LOGGER.warn("Setting number density is not when boundary conditions are periodic.") 
             return
         assert is_number(numberDensity), LOGGER.error("numberDensity must be a number.")
@@ -753,12 +767,10 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                 assert len(moleculesIndexes.shape)==1, LOGGER.error("moleculesIndexes numpy.ndarray must have a dimension of 1")
                 assert moleculesIndexes.dtype.type is INT_TYPE, LOGGER.error("moleculesIndexes must be of type numpy.int32")
             else:
-                for idx in moleculesIndexes:
-                    try:
-                        idx = float(idx)
-                    except:
-                        raise Exception(LOGGER.error("moleculesIndexes must be a list of numbers"))
-                    assert is_integer(idx), LOGGER.error("moleculesIndexes must be a list of integers")
+                for molIdx in moleculesIndexes:
+                    assert is_integer(molIdx), LOGGER.error("molecule's index must be an integer")
+                    molIdx = INT_TYPE(molIdx)
+                    assert int(molIdx)>=0, LOGGER.error("molecule's index must positive")
         # check molecules names
         if moleculesNames is not None:
             assert isinstance(moleculesNames, (list, set, tuple)), LOGGER.error("moleculesNames must be a list")
@@ -1191,9 +1203,10 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
         # return
         return xyzFrequency, xyzPath
         
-    def run(self, numberOfSteps=100000, sortConstraints=True,
-                  saveFrequency=1000, savePath="restart", 
-                  xyzFrequency=None, xyzPath="trajectory.xyz"):
+    def run(self, numberOfSteps=100000,     sortConstraints=True,
+                  saveFrequency=1000,       savePath="restart", 
+                  xyzFrequency=None,        xyzPath="trajectory.xyz",
+                  restartPdb='restart.pdb',  ncores=None):
         """
         Run the Reverse Monte Carlo engine by performing random moves on engine groups.
         
@@ -1209,14 +1222,31 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                regardless totalStandardError has decreased or not.
                If None, no .xyz file will be generated.
             #. xyzPath (string): Save coordinates to .xyz file.
+            #. restartPdb (None, string): Export a pdb file of the last configuration at 
+               the end of the run. If None is given, no pdb file will be exported. If 
+               string is given, it should be the path and the pdb file name.
+            #. ncores (None, integer): set the number of cores to use. If None, is  
+               given, ncores will be set automatically to 1. This argument is only
+               effective if fullrmc is compiled with openmp.
         """
         # get arguments
         _numberOfSteps            = self.__runtime_get_number_of_steps(numberOfSteps)
         _saveFrequency, _savePath = self.__runtime_get_save_engine(saveFrequency, savePath)
         _xyzFrequency, _xyzPath   = self.__runtime_get_save_xyz(xyzFrequency, xyzPath)
+        # set runtime ncores
+        self.__set_runtime_ncores(ncores)
         # create xyz file
         if _xyzFrequency is not None:
             _xyzfd = open(_xyzPath, 'a')
+        # set restartPdb
+        if restartPdb is None:
+            restartPdb = False
+        else:
+            assert isinstance(restartPdb, basestring), LOGGER.error("restartPdb must be None or a string")
+            restartPdb = str(restartPdb)
+            if not restartPdb.endswith('.pdb'):
+                LOGGER.warn(".pdb appended to restartPdb '%s'"%restartPdb)
+                restartPdb += ".pdb"
         # get and initialize used constraints
         _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints(sortConstraints=sortConstraints)
         if not len(_usedConstraints):
@@ -1352,12 +1382,19 @@ and therefore the volume."%(cubixBoxLength,self.__volume,))
                     _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - totStdErr:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__totalStandardError))
                     frame = [self.__allNames[idx]+ " " + "%10.5f"%self.__realCoordinates[idx][0] + " %10.5f"%self.__realCoordinates[idx][1] + " %10.5f"%self.__realCoordinates[idx][2] + "\n" for idx in self.__pdb.xindexes]
                     _xyzfd.write("".join(frame)) 
-                    
-        #   #####################################################################################   #
-        #   ################################# FINISH ENGINE RUN #################################   #        
-        LOGGER.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
+        
         # close .xyz file
         if _xyzFrequency is not None:
             _xyzfd.close()
+        # export restart pdb
+        if restartPdb:
+            self.export_pdb( restartPdb )  
+            
+        #   #####################################################################################   #
+        #   ################################# FINISH ENGINE RUN #################################   #        
+        LOGGER.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))  
+
+
+            
         
         

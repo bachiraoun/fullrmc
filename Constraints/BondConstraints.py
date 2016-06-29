@@ -9,7 +9,6 @@ BondConstraints contains classes for all constraints related bonds between atoms
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
@@ -374,7 +373,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_bonds_coords(bonds                 = self.__bonds, 
                                      boxCoords             = self.engine.boxCoordinates,
                                      basis                 = self.engine.basisVectors,
-                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     isPBC                 = self.engine.isPBC,
                                      reduceDistanceToUpper = False,
                                      reduceDistanceToLower = False,
                                      ncores                = INT_TYPE(1))
@@ -399,7 +398,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_bonds_coords(bonds                 = bondsDict, 
                                      boxCoords             = self.engine.boxCoordinates,
                                      basis                 = self.engine.basisVectors,
-                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     isPBC                 = self.engine.isPBC,
                                      reduceDistanceToUpper = False,
                                      reduceDistanceToLower = False,
                                      ncores                = INT_TYPE(1))
@@ -427,7 +426,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_bonds_coords(bonds                 = bondsDict, 
                                      boxCoords             = self.engine.boxCoordinates,
                                      basis                 = self.engine.basisVectors,
-                                     isPBC                 = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                     isPBC                 = self.engine.isPBC,
                                      reduceDistanceToUpper = False,
                                      reduceDistanceToLower = False,
                                      ncores                = INT_TYPE(1))

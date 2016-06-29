@@ -77,7 +77,6 @@ ENGINE.visualize( commands = ["trajectory.xyz"],
                                  "label textthickness 2",
                                  "color Labels Atoms black",
                                  "color Labels Bonds black",
-                                 "color Labels Bonds black",
                                  "scale set 0.75"] )    
     
  

@@ -50,21 +50,24 @@ cdef void _from_to_boxpoints_realdifferences_PBC( C_FLOAT32[:,:] boxPointsFrom,
                                                   C_INT32        ncores = 1) nogil:
     # declare variables
     cdef C_INT32 i
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
     cdef C_FLOAT32 box_dx, box_dy, box_dz
+    cdef C_INT32 num_threads = ncores
     # loop
-    #for i in prange(size, nogil=True, num_threads=ncores): # Error compiling Cython file: Cannot read reduction variable in loop body
-    for i from INT32_ZERO <= i < <C_INT32>boxPointsFrom.shape[0]:
+    for i in prange(<C_INT32>boxPointsFrom.shape[0], nogil=True, schedule="static", num_threads=num_threads): 
+    #for i from INT32_ZERO <= i < <C_INT32>boxPointsFrom.shape[0]:
         # calculate difference
-        box_dx = boxPointsTo[i,0]-boxPointsFrom[i,0]
-        box_dy = boxPointsTo[i,1]-boxPointsFrom[i,1]
-        box_dz = boxPointsTo[i,2]-boxPointsFrom[i,2]
-        box_dx -= round(box_dx)
-        box_dy -= round(box_dy)
-        box_dz -= round(box_dz)
+        diff_x = boxPointsTo[i,0]-boxPointsFrom[i,0]
+        diff_y = boxPointsTo[i,1]-boxPointsFrom[i,1]
+        diff_z = boxPointsTo[i,2]-boxPointsFrom[i,2]
+        box_dx = diff_x-round(diff_x)
+        box_dy = diff_y-round(diff_y)
+        box_dz = diff_z-round(diff_z)
         # get real difference
         differences[i,0] = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         differences[i,1] = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
         differences[i,2] = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+
 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -77,8 +80,9 @@ cdef void _from_to_realpoints_realdifferences_IBC( C_FLOAT32[:,:] realPointsFrom
                                                    C_INT32        ncores = 1) nogil:
     # declare variables
     cdef C_INT32 i
+    cdef C_INT32 num_threads = ncores
     # loop
-    for i in prange(INT32_ZERO, <C_INT32>realPointsFrom.shape[0], INT32_ONE, nogil=True, num_threads=ncores):
+    for i in prange(INT32_ZERO, <C_INT32>realPointsFrom.shape[0], INT32_ONE, nogil=True, schedule="static", num_threads=num_threads):
     #for i from INT32_ZERO <= i < <C_INT32>boxPointsFrom.shape[0]:
         # calculate difference
         differences[i,0] = realPointsTo[i,0]-realPointsFrom[i,0]
@@ -99,29 +103,25 @@ cdef void _boxcoords_realdifferences_to_boxpoint_PBC( C_FLOAT32[:]   boxPoint,
                                                       C_FLOAT32[:,:] differences,
                                                       C_INT32        ncores = 1) nogil:
     # declare variables
-    cdef C_INT32 i, size
+    cdef C_INT32 i
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
     cdef C_FLOAT32 box_dx, box_dy, box_dz
-    cdef C_FLOAT32 atomBox_x, atomBox_y, atomBox_z
-    # compute size
-    size = <C_INT32>boxCoords.shape[0]
-    # get point coordinates
-    atomBox_x = boxPoint[0]
-    atomBox_y = boxPoint[1]
-    atomBox_z = boxPoint[2]    
+    cdef C_INT32 num_threads = ncores
     # loop
-    #for i in prange(size, nogil=True, num_threads=ncores): # Error compiling Cython file: Cannot read reduction variable in loop body
-    for i in range(size):
+    for i in prange(<C_INT32>boxCoords.shape[0], nogil=True, schedule="static", num_threads=num_threads): 
+    #for i in range(<C_INT32>boxCoords.shape[0]):
         # calculate difference
-        box_dx = atomBox_x - boxCoords[i,0]
-        box_dy = atomBox_y - boxCoords[i,1]
-        box_dz = atomBox_z - boxCoords[i,2]
-        box_dx -= round(box_dx)
-        box_dy -= round(box_dy)
-        box_dz -= round(box_dz)
+        diff_x = boxPoint[0]-boxCoords[i,0]
+        diff_y = boxPoint[1]-boxCoords[i,1]
+        diff_z = boxPoint[2]-boxCoords[i,2]
+        box_dx = diff_x-round(diff_x)
+        box_dy = diff_y-round(diff_y)
+        box_dz = diff_z-round(diff_z)
         # get real difference
         differences[i,0] = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         differences[i,1] = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
         differences[i,2] = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+
 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -133,17 +133,16 @@ cdef void _realcoords_realdifferences_to_realpoint_IBC( C_FLOAT32[:]   realPoint
                                                         C_FLOAT32[:,:] differences,
                                                         C_INT32        ncores=1) nogil:
     # declare variables
-    cdef C_INT32 i, size
+    cdef C_INT32 i
     cdef C_FLOAT32 atomReal_x, atomReal_y, atomReal_z
-    # compute size
-    size = <C_INT32>realCoords.shape[0]
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomReal_x = realPoint[0]
     atomReal_y = realPoint[1]
     atomReal_z = realPoint[2]    
     # loop
-    for i in prange(size, nogil=True, num_threads=ncores): 
-    #for i in range(size):
+    for i in prange(<C_INT32>realCoords.shape[0], nogil=True, schedule="static", num_threads=num_threads): 
+    #for i in range(<C_INT32>realCoords.shape[0]):
         # calculate difference
         differences[i,0] = atomReal_x-realCoords[i,0]
         differences[i,1] = atomReal_y-realCoords[i,1]
@@ -165,8 +164,10 @@ cdef void _boxcoords_realdifferences_to_indexcoords_PBC( C_INT32        atomInde
                                                          C_INT32        ncores = 1) nogil:                          
     # declare variables
     cdef C_INT32 i, startIndex, endIndex
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
     cdef C_FLOAT32 box_dx, box_dy, box_dz
     cdef C_FLOAT32 atomBox_x, atomBox_y, atomBox_z
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomBox_x = boxCoords[atomIndex,0]
     atomBox_y = boxCoords[atomIndex,1]
@@ -178,19 +179,20 @@ cdef void _boxcoords_realdifferences_to_indexcoords_PBC( C_INT32        atomInde
         startIndex = <C_INT32>atomIndex
     endIndex = <C_INT32>boxCoords.shape[0]
     # loop
-    #for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, num_threads=ncores): # Error compiling Cython file: Cannot read reduction variable in loop body
-    for i from startIndex <= i < endIndex:
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads): 
+    #for i from startIndex <= i < endIndex:
         # calculate difference
-        box_dx = atomBox_x - boxCoords[i,0]
-        box_dy = atomBox_y - boxCoords[i,1]
-        box_dz = atomBox_z - boxCoords[i,2]
-        box_dx -= round(box_dx)
-        box_dy -= round(box_dy)
-        box_dz -= round(box_dz)
+        diff_x = atomBox_x-boxCoords[i,0]
+        diff_y = atomBox_y-boxCoords[i,1]
+        diff_z = atomBox_z-boxCoords[i,2]
+        box_dx = diff_x-round(diff_x)
+        box_dy = diff_y-round(diff_y)
+        box_dz = diff_z-round(diff_z)
         # get real difference
         differences[i,0] = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         differences[i,1] = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
         differences[i,2] = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]                                                  
+               
                                                     
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -205,6 +207,7 @@ cdef void _realcoords_realdifferences_to_indexcoords_IBC( C_INT32        atomInd
     # declare variables
     cdef C_INT32 i, startIndex, endIndex
     cdef C_FLOAT32 atomReal_x, atomReal_y, atomReal_z
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomReal_x = realCoords[atomIndex,0]
     atomReal_y = realCoords[atomIndex,1]
@@ -216,7 +219,7 @@ cdef void _realcoords_realdifferences_to_indexcoords_IBC( C_INT32        atomInd
         startIndex = <C_INT32>atomIndex
     endIndex = <C_INT32>realCoords.shape[0]
     # loop
-    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, num_threads=ncores): 
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads): 
     #for i from startIndex <= i < endIndex:
         # calculate difference
         differences[i,0] = atomReal_x - realCoords[i,0]
@@ -239,26 +242,26 @@ cdef void _boxcoords_realdistances_to_boxpoint_PBC( C_FLOAT32[:]   boxPoint,
                                                     C_FLOAT32[:]   distances,
                                                     C_INT32        ncores = 1) nogil:
     # declare variables
-    cdef C_INT32 i, size
+    cdef C_INT32 i
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
     cdef C_FLOAT32 box_dx, box_dy, box_dz
     cdef C_FLOAT32 real_dx, real_dy, real_dz,
     cdef C_FLOAT32 atomBox_x, atomBox_y, atomBox_z
-    # compute size
-    size = <C_INT32>boxCoords.shape[0]
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomBox_x = boxPoint[0]
     atomBox_y = boxPoint[1]
     atomBox_z = boxPoint[2]    
     # loop
-    #for i in prange(size, nogil=True, num_threads=ncores): # Error compiling Cython file: Cannot read reduction variable in loop body
-    for i in range(size):
+    for i in prange(<C_INT32>boxCoords.shape[0], nogil=True, schedule="static", num_threads=num_threads): # Error compiling Cython file: Cannot read reduction variable in loop body
+    #for i in range(<C_INT32>boxCoords.shape[0]):
         # calculate difference
-        box_dx = boxCoords[i,0]-atomBox_x
-        box_dy = boxCoords[i,1]-atomBox_y
-        box_dz = boxCoords[i,2]-atomBox_z
-        box_dx -= round(box_dx)
-        box_dy -= round(box_dy)
-        box_dz -= round(box_dz)
+        diff_x = atomBox_x - boxCoords[i,0]
+        diff_y = atomBox_y - boxCoords[i,1]
+        diff_z = atomBox_z - boxCoords[i,2]
+        box_dx = diff_x - round(diff_x)
+        box_dy = diff_y - round(diff_y)
+        box_dz = diff_z - round(diff_z)
         # get real difference
         real_dx = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         real_dy = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
@@ -280,9 +283,11 @@ cdef void _boxcoords_realdistances_to_indexcoords_PBC( C_INT32        atomIndex,
                                                        C_INT32        ncores = 1) nogil:                          
     # declare variables
     cdef C_INT32 i, startIndex, endIndex
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
     cdef C_FLOAT32 box_dx, box_dy, box_dz
     cdef C_FLOAT32 real_dx, real_dy, real_dz,
     cdef C_FLOAT32 atomBox_x, atomBox_y, atomBox_z
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomBox_x = boxCoords[atomIndex,0]
     atomBox_y = boxCoords[atomIndex,1]
@@ -294,15 +299,15 @@ cdef void _boxcoords_realdistances_to_indexcoords_PBC( C_INT32        atomIndex,
         startIndex = <C_INT32>atomIndex
     endIndex = <C_INT32>boxCoords.shape[0]
     # loop
-    #for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, num_threads=ncores): # Error compiling Cython file: Cannot read reduction variable in loop body
-    for i from startIndex <= i < endIndex:
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads): # Error compiling Cython file: Cannot read reduction variable in loop body
+    #for i from startIndex <= i < endIndex:
         # calculate difference
-        box_dx = boxCoords[i,0]-atomBox_x
-        box_dy = boxCoords[i,1]-atomBox_y
-        box_dz = boxCoords[i,2]-atomBox_z
-        box_dx -= round(box_dx)
-        box_dy -= round(box_dy)
-        box_dz -= round(box_dz)
+        diff_x = atomBox_x - boxCoords[i,0]
+        diff_y = atomBox_y - boxCoords[i,1]
+        diff_z = atomBox_z - boxCoords[i,2]
+        box_dx = diff_x - round(diff_x)
+        box_dy = diff_y - round(diff_y)
+        box_dz = diff_z - round(diff_z)
         # get real difference
         real_dx = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
         real_dy = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
@@ -321,18 +326,17 @@ cdef void _realcoords_realdistances_to_realpoint_IBC( C_FLOAT32[:]   realPoint,
                                                       C_FLOAT32[:]   distances,
                                                       C_INT32        ncores=1) nogil:
     # declare variables
-    cdef C_INT32 i, size
+    cdef C_INT32 i
     cdef C_FLOAT32 real_dx, real_dy, real_dz
     cdef C_FLOAT32 atomReal_x, atomReal_y, atomReal_z
-    # compute size
-    size = <C_INT32>realCoords.shape[0]
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomReal_x = realPoint[0]
     atomReal_y = realPoint[1]
     atomReal_z = realPoint[2]    
     # loop
-    for i in prange(size, nogil=True, num_threads=ncores): 
-    #for i in range(size):
+    for i in prange(<C_INT32>realCoords.shape[0], nogil=True, schedule="static", num_threads=num_threads): 
+    #for i in range(<C_INT32>realCoords.shape[0]):
         # calculate difference
         real_dx = realCoords[i,0]-atomReal_x
         real_dy = realCoords[i,1]-atomReal_y
@@ -355,6 +359,7 @@ cdef void _realcoords_realdistances_to_indexcoords_IBC( C_INT32        atomIndex
     cdef C_INT32 i, startIndex, endIndex
     cdef C_FLOAT32 real_dx, real_dy, real_dz
     cdef C_FLOAT32 atomReal_x, atomReal_y, atomReal_z
+    cdef C_INT32 num_threads = ncores
     # get point coordinates
     atomReal_x = realCoords[atomIndex,0]
     atomReal_y = realCoords[atomIndex,1]
@@ -366,12 +371,12 @@ cdef void _realcoords_realdistances_to_indexcoords_IBC( C_INT32        atomIndex
         startIndex = <C_INT32>atomIndex
     endIndex = <C_INT32>realCoords.shape[0]
     # loop
-    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, num_threads=ncores): 
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads): 
     #for i from startIndex <= i < endIndex:
         # calculate difference
-        real_dx = realCoords[i,0]-atomReal_x
-        real_dy = realCoords[i,1]-atomReal_y
-        real_dz = realCoords[i,2]-atomReal_z
+        real_dx = atomReal_x - realCoords[i,0]
+        real_dy = atomReal_y - realCoords[i,1]
+        real_dz = atomReal_z - realCoords[i,2]
         # calculate distance         
         distances[i] = <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz)
         
@@ -385,7 +390,7 @@ cdef void _realcoords_realdistances_to_indexcoords_IBC( C_INT32        atomIndex
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def from_to_points_differences( ndarray[C_FLOAT32, ndim=2] pointsFrom  not None,
+def from_to_points_differences( ndarray[C_FLOAT32, ndim=2] pointsFrom not None,
                                 ndarray[C_FLOAT32, ndim=2] pointsTo not None,
                                 C_FLOAT32[:,:]             basis not None,
                                 bint                       isPBC, 

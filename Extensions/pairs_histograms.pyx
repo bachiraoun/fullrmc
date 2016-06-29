@@ -28,6 +28,46 @@ cdef C_INT32   INT32_ONE       = 1
 
 
 
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+cdef void _single_pairs_histograms( C_INT32          atomIndex, 
+                                    C_INT32          atomSymbolIndex,
+                                    C_INT32          atomMoleculeIndex,
+                                    C_INT32          startIndex, 
+                                    C_INT32          endIndex, 
+                                    C_FLOAT32[:]     distances,
+                                    C_INT32[:]       moleculeIndex,
+                                    C_INT32[:]       elementIndex,
+                                    C_FLOAT32[:,:,:] hintra,
+                                    C_FLOAT32[:,:,:] hinter,
+                                    C_FLOAT32        minDistance,
+                                    C_FLOAT32        maxDistance,
+                                    C_FLOAT32        bin,
+                                    C_INT32          ncores = 1) nogil:
+    cdef C_FLOAT32 distance
+    cdef C_INT32 i, binIndex
+    cdef C_INT32 num_threads = ncores
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads):
+        if i == atomIndex: continue
+        # get distance         
+        distance = distances[i]
+        # check limits
+        if distance<minDistance:
+            continue
+        if distance>=maxDistance:
+            continue
+        # get index
+        binIndex = <C_INT32>((distance-minDistance)/bin)
+        # increment histograms
+        if moleculeIndex[i] == atomMoleculeIndex:
+            hintra[atomSymbolIndex,elementIndex[i],binIndex] += FLOAT32_ONE
+        else:
+            hinter[atomSymbolIndex,elementIndex[i],binIndex] += FLOAT32_ONE
+    
+                             
 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -43,7 +83,8 @@ def single_pairs_histograms( C_INT32                    atomIndex,
                              C_FLOAT32                  minDistance,
                              C_FLOAT32                  maxDistance,
                              C_FLOAT32                  bin, 
-                             bint                       allAtoms = True):
+                             bint                       allAtoms = True,
+                             C_INT32                    ncores = 1):
     """
     Computes the pair distribution histograms of a single atom given a distances array.
     
@@ -67,14 +108,12 @@ def single_pairs_histograms( C_INT32                    atomIndex,
     cdef C_INT32 i, startIndex, endIndex
     cdef C_INT32 binIndex
     cdef C_INT32 atomMoleculeIndex, atomSymbolIndex
-    cdef C_INT32 histSize
     cdef C_FLOAT32 float32Var, distance
+    cdef C_INT32 num_threads = ncores
     # cast arguments
     bin = <C_FLOAT32>bin
     minDistance = <C_FLOAT32>minDistance
     maxDistance = <C_FLOAT32>maxDistance
-    # get histogram size
-    histSize = <C_INT32>hintra.shape[2]
     # get atom molecule and symbol
     atomMoleculeIndex = moleculeIndex[atomIndex]
     atomSymbolIndex   = elementIndex[atomIndex]
@@ -84,26 +123,23 @@ def single_pairs_histograms( C_INT32                    atomIndex,
     else:
         startIndex = <C_INT32>atomIndex
     endIndex = <C_INT32>distances.shape[0]
-    # loop
-    for i from startIndex <= i < endIndex:
-        if i == atomIndex: continue
-        # get distance         
-        distance = distances[i]
-        # check limits
-        if distance<minDistance:
-            continue
-        if distance>=maxDistance:
-            continue
-        # get index
-        binIndex = <C_INT32>((distance-minDistance)/bin)
-        # increment histograms
-        if moleculeIndex[i] == atomMoleculeIndex:
-            hintra[atomSymbolIndex,elementIndex[i],binIndex] += FLOAT32_ONE
-        else:
-            hinter[atomSymbolIndex,elementIndex[i],binIndex] += FLOAT32_ONE
-   
+    # compute histograms
+    _single_pairs_histograms( atomIndex         = atomIndex, 
+                              atomSymbolIndex   = atomSymbolIndex,
+                              atomMoleculeIndex = atomMoleculeIndex,
+                              startIndex        = startIndex, 
+                              endIndex          = endIndex, 
+                              distances         = distances,
+                              moleculeIndex     = moleculeIndex,
+                              elementIndex      = elementIndex,
+                              hintra            = hintra,
+                              hinter            = hinter,
+                              minDistance       = minDistance,
+                              maxDistance       = maxDistance,
+                              bin               = bin,
+                              ncores            = ncores)
 
-
+            
 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -175,7 +211,8 @@ def multiple_pairs_histograms_coords( ndarray[C_INT32, ndim=1]      indexes not 
                                  minDistance   = minDistance,
                                  maxDistance   = maxDistance,
                                  bin           = bin,
-                                 allAtoms      = allAtoms )
+                                 allAtoms      = allAtoms,
+                                 ncores        = ncores )
     return hintra, hinter
     
 
@@ -193,7 +230,8 @@ def multiple_pairs_histograms_dists( ndarray[C_INT32, ndim=1]      indexes not N
                                      C_FLOAT32                     maxDistance,
                                      C_FLOAT32                     bin,
                                      C_INT32                       histSize,
-                                     bint                          allAtoms=True):    
+                                     bint                          allAtoms=True,
+                                     C_INT32                       ncores = 1):    
     """
     Computes the pair distribution histograms of multiple atoms given atomic distances.
     
@@ -236,7 +274,8 @@ def multiple_pairs_histograms_dists( ndarray[C_INT32, ndim=1]      indexes not N
                                  minDistance   = minDistance,
                                  maxDistance   = maxDistance,
                                  bin           = bin,
-                                 allAtoms      = allAtoms )
+                                 allAtoms      = allAtoms,
+                                 ncores        = ncores )
     return hintra, hinter
     
     
@@ -306,7 +345,8 @@ def full_pairs_histograms_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
                                  C_FLOAT32                     minDistance,
                                  C_FLOAT32                     maxDistance,
                                  C_FLOAT32                     bin,
-                                 C_INT32                       histSize):    
+                                 C_INT32                       histSize,
+                                 C_INT32                       ncores = 1):    
     """
     Computes the pair distribution histograms of multiple atoms given atomic distances.
     
@@ -336,7 +376,8 @@ def full_pairs_histograms_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
                                            maxDistance      = maxDistance,
                                            histSize         = histSize,
                                            bin              = bin,
-                                           allAtoms         = False)
+                                           allAtoms         = False,
+                                           ncores           = ncores)
 
 
 

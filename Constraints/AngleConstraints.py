@@ -11,7 +11,6 @@ import copy
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
@@ -425,7 +424,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_angles_coords( anglesDict         = anglesDict ,
                                        boxCoords          = self.engine.boxCoordinates,
                                        basis              = self.engine.basisVectors ,
-                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       isPBC              = self.engine.isPBC,
                                        reduceAngleToUpper = False,
                                        reduceAngleToLower = False,
                                        ncores             = INT_TYPE(1))
@@ -453,7 +452,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_angles_coords( anglesDict         = anglesDict ,
                                        boxCoords          = self.engine.boxCoordinates,
                                        basis              = self.engine.basisVectors ,
-                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       isPBC              = self.engine.isPBC,
                                        reduceAngleToUpper = False,
                                        reduceAngleToLower = False,
                                        ncores             = INT_TYPE(1))
@@ -483,7 +482,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         dataDict = full_angles_coords( anglesDict         = anglesDict ,
                                        boxCoords          = self.engine.boxCoordinates,
                                        basis              = self.engine.basisVectors ,
-                                       isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                       isPBC              = self.engine.isPBC,
                                        reduceAngleToUpper = False,
                                        reduceAngleToLower = False,
                                        ncores             = INT_TYPE(1))
@@ -521,269 +520,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
 
-
-
-    
-    
-class AtomicCoordinationAngleConstraint(RigidConstraint, SingularConstraint):
-    """
-    It's a quasi-rigid constraint that controls the inter-molecular coordination angle between atoms. 
-    The maximum standard error is defined as the sum of minimum number of neighbours of all atoms
-    in the system.
-    
-    :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
-        #. defaultDistance (number): The minimum distance allowed set by default for all atoms type.
-        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.   
-        #. coordAngleDef (None, dict): The coordination number definition. It must be a dictionary where keys are
-               atoms type. Atoms type can be 'element' or 'name' as set by set_type_definition method.\n
-               Every key value is the atom central type and every value is a list of definitions. 
-               Every definition is a tuple or list of 3 items.\n
-               #. tuple of 3 items (first neighbour atom type, lower limit coordination distance, upper limit coordination distance)
-               #. tuple of 3 items (second neighbour atom type, lower limit coordination distance, upper limit coordination distance) 
-               #. tuple of 2 items (lower limit coordination angle, upper limit coordination angle)
-        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
-    """
-    def __init__(self, engine, typeDefinition="element", coordAngleDef=None, rejectProbability=1):
-        # initialize constraint
-        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
-        # set type definition
-        self.__coordAngleDefinition = coordAngleDef
-        self.set_type_definition(typeDefinition)
-
-    @property
-    def typeDefinition(self):
-        """Get types definition."""    
-        return self.__typeDefinition
-        
-    @property
-    def coordAngleDefinition(self):
-        """Get coordination number definition dictionary"""
-        return self.__coordAngleDefinition
-        
-    def listen(self, message, argument=None):
-        """   
-        listen to any message sent from the Broadcaster.
-        
-        :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. argument (object): Any type of argument to pass to the listeners.
-        """
-        if message in("engine changed", "update molecules indexes"):
-            self.set_type_definition(typeDefinition=self.__typeDefinition, coordAngleDef = self.__coordAngleDefinition)
-        elif message in("update boundary conditions",):
-            self.reset_constraint()        
-    
-    def set_type_definition(self, typeDefinition, coordAngleDef=None):
-        """
-        Sets the atoms typing definition.
-        
-        :Parameters:
-            #. typeDefinition (string): Can be either 'element' or 'name'. 
-               It sets the rules about how to differentiate between atoms and how to parse pairsLimits.   
-            #. coordAngleDef (None, dict): The coordination number definition. It must be a dictionary where keys are
-               atoms type. Atoms type can be 'element' or 'name' as set by set_type_definition method.\n
-               Every key value is the atom central type and every value is a list of definitions. 
-               Every definition is a tuple or list of 3 items.\n
-               #. tuple of 3 items (first neighbour atom type, lower limit coordination distance, upper limit coordination distance)
-               #. tuple of 3 items (second neighbour atom type, lower limit coordination distance, upper limit coordination distance) 
-               #. tuple of 2 items (lower limit coordination angle, upper limit coordination angle)
-        """
-        # set typeDefinition
-        assert typeDefinition in ("name", "element"), LOGGER.error("typeDefinition must be either 'name' or 'element'")
-        if self.engine is None:
-            self.__types                = []
-            self.__typesLUT             = {}
-            self.__typesInverseLUT      = {}
-            self.__allTypes             = []
-            self.__numberOfTypes        = []
-            self.__typesIndexes         = []
-            self.__numberOfAtomsPerType = []
-        elif typeDefinition == "name":
-            self.__types                = self.engine.names
-            self.__typesLUT             = dict(zip(self.__types,range(len(self.__types))))
-            self.__typesInverseLUT      = {v: k for k, v in self.__typesLUT.items()}
-            self.__allTypes             = self.engine.allNames
-            self.__numberOfTypes        = self.engine.numberOfNames
-            self.__typesIndexes         = self.engine.namesIndexes
-            self.__numberOfAtomsPerType = self.engine.numberOfAtomsPerName  
-        elif typeDefinition == "element":
-            self.__types                = self.engine.elements
-            self.__typesLUT             = dict(zip(self.__types,range(len(self.__types))))
-            self.__typesInverseLUT      = {v: k for k, v in self.__typesLUT.items()}
-            self.__allTypes             = self.engine.allElements
-            self.__numberOfTypes        = self.engine.numberOfElements
-            self.__typesIndexes         = self.engine.elementsIndexes
-            self.__numberOfAtomsPerType = self.engine.numberOfAtomsPerElement
-        # get type indexes LUT
-        self.__typeIndexesLUT = dict([(idx,[]) for idx in self.__typesLUT.values()])
-        for idx in range(len(self.__typesIndexes)):
-            self.__typeIndexesLUT[self.__typesIndexes[idx]].append(idx)
-        for k,v in self.__typeIndexesLUT.items():
-            self.__typeIndexesLUT[k] = np.array(v, dtype=INT_TYPE)
-        #for typeIdx in 
-        self.__typeDefinition = typeDefinition
-        # set coordination number definition
-        if coordAngleDef is None:
-            coordAngleDef = self.__coordAngleDefinition
-        self.set_coordination_angle_definition(coordAngleDef)
-        
-    def set_coordination_angle_definition(self, coordAngleDef):
-        """
-        Set the coordination angle definition.
-
-        :Parameters:
-            #. coordAngleDef (None, dict): The coordination number definition. It must be a dictionary where keys are
-               atoms type. Atoms type can be 'element' or 'name' as set by set_type_definition method.\n
-               Every key value is the atom central type and every value is a list of definitions. 
-               Every definition is a tuple or list of 3 items.\n
-               #. tuple of 3 items (first neighbour atom type, lower limit coordination distance, upper limit coordination distance)
-               #. tuple of 3 items (second neighbour atom type, lower limit coordination distance, upper limit coordination distance) 
-               #. tuple of 2 items (lower limit coordination angle, upper limit coordination angle)
-               
-               ::
-
-                   e.g. {"C":  [ (('C',1.4,1.6.), ('C',1.4,1.6.), (100.,120.)), ...], "O": ... }      
-                   
-        """
-        if self.engine is None:
-            self.__coordAngleDefinition = coordAngleDef
-            self.__coordAngData         = None
-            return
-        elif coordAngleDef is None:
-            coordAngleDef = {}
-        else:
-            assert isinstance(coordAngleDef, dict), LOGGER.error("coordAngleDef must be a dictionary")
-            for key, caValues in coordAngleDef.items():
-                keyValues = []
-                assert key in self.__types, LOGGER.error("coordAngleDef key '%s' is not a valid type %s."%(key, self.__types))
-                assert isinstance(caValues, (list, set, tuple)), LOGGER.error("Coordination angle key '%s' definition value must be a list."%key)
-                for caIt in caValues:
-                    assert isinstance(caIt, (list, set, tuple)), LOGGER.error("Coordination angle key '%s' definition values must be a list of lists."%key)    
-                    caIt = list(caIt)
-                    assert len(caIt)==3, LOGGER.error("Coordination angle key '%s' definition values must be a list of lists of length 3 each."%key)    
-                    first, second, angLim = caIt
-                    # check first coordination neighbour
-                    assert isinstance(first, (list, set, tuple)), LOGGER.error("Coordination angle key '%s'. Definition first value must be a list"%key)     
-                    first = list(first)
-                    assert len(first)==3, LOGGER.error("Coordination angle key '%s'. Definition first value must be a list of three items"%key)
-                    assert first[0] in self.__types, LOGGER.error("Coordination angle key '%s'. Definition first value must be a list which first item must be a valid type %s"%(key, self.__types))
-                    assert is_number(first[1]), LOGGER.error("Coordination angle key '%s'. Definition first value must be a list which second item must be a number"%(key))       
-                    first[1] = FLOAT_TYPE(first[1])
-                    assert first[1]>0, LOGGER.error("Coordination angle key '%s'. Definition first value must be a list which second item must be a positive number"%(key))  
-                    assert is_number(first[2]), LOGGER.error("Coordination angle key '%s'. Definition first value must be a list which third item must be a number"%(key))       
-                    first[2] = FLOAT_TYPE(first[2])
-                    assert first[2]>=first[1], LOGGER.error("Coordination angle key '%s'. Definition first value must be a list which third item must be a number bigger than the second item"%(key))       
-                    # check second coordination neighbour
-                    assert isinstance(second, (list, set, tuple)), LOGGER.error("Coordination angle key '%s'. Definition second value must be a list"%key)     
-                    second = list(second)
-                    assert len(second)==3, LOGGER.error("Coordination angle key '%s'. Definition second value must be a list of three items"%key)
-                    assert second[0] in self.__types, LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which first item must be a valid type %s"%(key, self.__types))
-                    assert is_number(second[1]), LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which second item must be a number"%(key))       
-                    second[1] = FLOAT_TYPE(second[1])
-                    assert second[1]>0, LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which second item must be a positive number"%(key))  
-                    assert is_number(second[2]), LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which third item must be a number"%(key))       
-                    second[2] = FLOAT_TYPE(second[2])
-                    assert second[2]>=second[1], LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which third item must be a number bigger than the second item"%(key))       
-                    # check angles limit
-                    assert isinstance(angLim, (list, set, tuple)), LOGGER.error("Coordination angle key '%s'. Definition third value must be a list"%key)     
-                    angLim = list(angLim)
-                    assert is_number(angLim[0]), LOGGER.error("Coordination angle key '%s'. Definition third value must be a list which first item must be a number"%(key))       
-                    angLim[0] = FLOAT_TYPE(angLim[0])
-                    assert angLim[0]>=0, LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which first item must be a positive number"%(key))  
-                    assert is_number(angLim[1]), LOGGER.error("Coordination angle key '%s'. Definition third value must be a list which second item must be a number"%(key))       
-                    angLim[1] = FLOAT_TYPE(angLim[1])
-                    assert angLim[0]<=angLim[1], LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which first item must be smaller than the second one"%(key))  
-                    assert angLim[1]<=180, LOGGER.error("Coordination angle key '%s'. Definition second value must be a list which second item must be smaller than 180"%(key))  
-                    # append definition
-                    if (first, second, angLim) in keyValues:
-                        LOGGER.warn("Coordination angle key '%s'. Definition %s is redundant."%(key, (first, second, angLim)))
-                    else:
-                        keyValues.append( (first, second, angLim) )
-                # update definition 
-                coordAngleDef[key] = keyValues
-        # set coordination angle dictionary definition
-        self.__coordAngleDefinition = coordAngleDef
-        # set coordinationNumberPerType
-        typeData                     = {}
-        typeData['firstTypeIdx']     = []
-        typeData['firstLowerLimit']  = []
-        typeData['firstUpperLimit']  = []
-        typeData['secondTypeIdx']    = []
-        typeData['secondLowerLimit'] = []
-        typeData['secondUpperLimit'] = []
-        typeData['angleLowerLimit']  = []
-        typeData['angleUpperLimit']  = []
-        self.__typesCoordAngDef      = {}
-        # initialize typesCoordNumDef
-        for typeName in self.__types:
-            typeIdx  = self.__typesLUT[typeName] 
-            self.__typesCoordAngDef[typeIdx] = copy.deepcopy(typeData)
-        for typeName, caValues in self.__coordAngleDefinition.items():
-            typeIdx  = self.__typesLUT[typeName] 
-            data = self.__typesCoordAngDef[typeIdx]
-            for first, second, angLim in caValues:
-                typeData['firstTypeIdx'].append( self.__typesLUT[first[0]] )
-                typeData['firstLowerLimit'].append( first[1] )
-                typeData['firstUpperLimit'].append( first[2] )
-                typeData['secondTypeIdx'].append( self.__typesLUT[second[0]] )
-                typeData['secondLowerLimit'].append( second[1] )
-                typeData['secondUpperLimit'].append( second[2] )
-                typeData['angleLowerLimit'].append( angLim[0] )
-                typeData['angleUpperLimit'].append( angLim[1] )
-            # set data 
-            self.__typesCoordAngDef[typeIdx]['firstTypeIdx']     = np.array(data['firstTypeIdx'], dtype=INT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['firstLowerLimit']  = np.array(data['firstLowerLimit'], dtype=FLOAT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['firstUpperLimit']  = np.array(data['firstUpperLimit'], dtype=FLOAT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['secondTypeIdx']    = np.array(data['secondTypeIdx'], dtype=INT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['secondLowerLimit'] = np.array(data['secondLowerLimit'], dtype=FLOAT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['secondUpperLimit'] = np.array(data['secondUpperLimit'], dtype=FLOAT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['angleLowerLimit']  = np.array(data['angleLowerLimit'], dtype=FLOAT_TYPE)
-            self.__typesCoordAngDef[typeIdx]['angleUpperLimit']  = np.array(data['angleUpperLimit'], dtype=FLOAT_TYPE)
-        
-        # set coordination number data
-        self.__coordAngData = []
-        maxSquaredDev = 0
-        for idx in range(len(self.__allTypes)):
-            typeName = self.__allTypes[idx]
-            typeIdx  = self.__typesLUT[typeName]
-            typeDef  = self.__typesCoordAngDef.get(typeName, None)
-            data     = {}
-            if not len(self.__typesCoordAngDef[typeIdx]['firstTypeIdx']):
-                data['firstNeighs']  = {}
-                data['secondNeighs'] = {}
-                data['deviations']   = np.array([0], dtype=INT_TYPE)
-            else:
-                numberOfEntries = len(self.__typesCoordAngDef[typeIdx]['firstTypeIdx'])
-                data['firstNeighs']  = {}
-                data['secondNeighs'] = {}
-                data['deviations']   = np.zeros((numberOfEntries,), dtype=INT_TYPE)
-            data['neighbouring']      = {}
-            data['standardError'] = np.sum(data['deviations']**2)
-            #maxSquaredDev += data['standardError']
-            self.__coordAngData.append(data)
-        # set maximum squared deviation as the sum of all atoms atomDeviations
-        #self._set_maximum_standard_error(maxSquaredDev)
-        
-     
-    def compute_data(self):
-        """ Compute data and update engine constraintsData dictionary. """
-        self.__coordAngData = full_atomic_coordination_angle( boxCoords       = self.engine.boxCoordinates,
-                                                              basis           = self.engine.basisVectors,
-                                                              moleculeIndex   = self.engine.moleculesIndexes,
-                                                              typesIndex      = self.__typesIndexes,
-                                                              typesDefinition = self.__typesCoordAngDef,
-                                                              typeIndexesLUT  = self.__typeIndexesLUT,
-                                                              coordAngData    = self.__coordAngData)
-        ## update data
-        #self.set_data( self.__coordAngData )
-        #self.set_active_atoms_data_before_move(None)
-        #self.set_active_atoms_data_after_move(None)
-        ## set standardError
-        #SD = self.compute_standard_error(data = self.__coordAngData)
-        #self.set_standard_error(SD) 
 
 
 

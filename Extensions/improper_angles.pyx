@@ -1,7 +1,6 @@
 """
 This is a C compiled module to compute improper angles.
-""" 
-                          
+"""            
 from libc.math cimport sqrt, abs
 import cython
 cimport cython

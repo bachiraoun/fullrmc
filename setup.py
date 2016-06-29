@@ -57,8 +57,6 @@ commands = [# include MANIFEST.in
             'global-exclude *.cpp',
             'global-exclude *.so',
             'global-exclude *.rmc',
-            # exclude specific files
-            'global-exclude %s/Extensions/atomic_coordination_angle.pyx'%PACKAGE_NAME,
             # exclude all other non necessary files 
             '\n# exclude all other non necessary files ',
             'global-exclude .project',
@@ -238,11 +236,16 @@ EXTENSIONS = [# boundary conditions collection
                         include_dirs=[np.get_include()],
                         language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"pairs_histograms.pyx")]),
-              # vdw
-              Extension('fullrmc.Core.vdw',
+              # atomic_distances
+              Extension('fullrmc.Core.atomic_distances',
                         include_dirs=[np.get_include()],
                         language="c",
-                        sources = [os.path.join(EXTENSIONS_PATH,"vdw.pyx")]),
+                        sources = [os.path.join(EXTENSIONS_PATH,"atomic_distances.pyx")]),
+              # atomic coordination number
+              Extension('fullrmc.Core.atomic_coordination',
+                        include_dirs=[np.get_include()],
+                        language="c++",
+                        sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination.pyx")]),
               # bonds
               Extension('fullrmc.Core.bonds',
                         include_dirs=[np.get_include()],
@@ -255,11 +258,6 @@ EXTENSIONS = [# boundary conditions collection
               Extension('fullrmc.Core.improper_angles',
                         include_dirs=[np.get_include()],
                         sources = [os.path.join(EXTENSIONS_PATH,"improper_angles.pyx")]),
-              # atomic coordination number
-              Extension('fullrmc.Core.atomic_coordination_number',
-                        include_dirs=[np.get_include()],
-                        language="c++",
-                        sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination_number.pyx")]),
               ]
 CMDCLASS = {'build_ext' : build_ext}
        
@@ -295,14 +293,14 @@ metadata = dict(# package
                 ext_modules      = EXTENSIONS,
                 cmdclass         = CMDCLASS,
                 # online
-                url              = "http://bachiraoun.github.io/fullrmc/index.html",
+                url              = "http://bachiraoun.github.io/fullrmc",
                 download_url     = "https://github.com/bachiraoun/fullrmc",
                 # Licence and classifiers
                 license          = 'GNU',
                 classifiers      = [_f for _f in CLASSIFIERS.split('\n') if _f],
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
-                install_requires = ["pysimplelog>=0.1.7",
+                install_requires = ["pysimplelog>=0.2.1",
                                     "pdbParser>=0.1.5",
                                     "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''], 
@@ -315,4 +313,26 @@ metadata = dict(# package
 setup(**metadata)
 
 
+
+##########################################################################################
+###################################  BUILD EXTENSIONS  ###################################
+#try:
+#    from fullrmc.Core.Collection import get_path
+#except (Exception, SystemExit) as e:
+#    raise "fullrmc not found: %s"%e
+#
+#try:
+#    PYTHON_EXECUTABLE = sys.executable
+#    FULLRMC_PATH      = get_path("fullrmc")
+#    SETUP_PATH        = os.path.join(FULLRMC_PATH, "Extensions", "setup.py")
+#    os.system(PYTHON_EXECUTABLE + " " + SETUP_PATH + " build_ext --inplace")
+#except (Exception, SystemExit) as e:
+#    raise "Unable to build extension files: %s"%e
+#
+        
+    
+    
+
+    
+    
     

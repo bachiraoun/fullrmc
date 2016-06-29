@@ -45,7 +45,7 @@ For your general understanding, fullrmc requires the following:
    #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
       from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
       - 0.1.5 is used starting from fullrmc 1.0.1)
-   #. pysimplelog (lowest version tested is 0.1.7)
+   #. pysimplelog (lowest version tested is 0.2.1)
 
 **Installation using pip:**\n
 Installing fullrmc with pip is done in two steps.
@@ -76,7 +76,7 @@ automatically installed and updated while fullrmc is being installed.
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
                           ('pdbParser'  ,'0.1.5') ,
-                          ('pysimplelog','0.1.7') ,
+                          ('pysimplelog','0.2.1') ,
                           ('matplotlib' ,'1.4'  )]:
             try:
                 lib = __import__(name)
@@ -332,10 +332,30 @@ Fixes and improvements:
 ~~~~~~~~~~~~~~~~~~~~~~~  
     #. :class:`.BondsAngleConstraint` computing angle right vector normalization bug fixed.
     #. :class:`.ImproperAngleConstraint` computing improper vector bug fixed.
+   
+   
+   
+`Version 1.2.0 <https://pypi.python.org/pypi/fullrmc/1.2.0>`_:
+--------------------------------------------------------------
+Starting from this version, running fullrmc on multicore and multiprocessor computers 
+is possible. Also, pysimplelog (>=0.2.1) is used. Isolated system in non-periodic 
+boundary conditions are treated correctly as in an infinte box using inifinite boundary 
+conditions instead of a very big box with periodic boundaries.
+
+
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. :class:`.AtomicCoordinationNumberConstraint` completely reimplemented and optimized.
+      Coordination number definition is re-formatted allowing any type of core's and 
+      shell's atoms. This new implementation computes mean coordination number per shell 
+      definition rather than per atom. Fractional coordination numbers are allowed and 
+      this implementation benefits from a tremendous performance increase of 1000 times 
+      compared to the old one.
+    #. Engine.run method 'restartPdb' and 'ncore' arguments added. 
   
 """
 
-__version__    = '1.1.0'
+__version__    = '1.2.0'
                
 __author__     = "Bachir Aoun"
                

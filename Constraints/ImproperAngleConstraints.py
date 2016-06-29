@@ -10,7 +10,6 @@ import itertools
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
@@ -398,15 +397,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
-        #                                 boxCoords          = self.engine.boxCoordinates,
-        #                                 basis              = self.engine.basisVectors ,
-        #                                 reduceAngleToUpper = False,
-        #                                 reduceAngleToLower = False)
         dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
                                                 boxCoords          = self.engine.boxCoordinates,
                                                 basis              = self.engine.basisVectors ,
-                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                isPBC              = self.engine.isPBC,
                                                 reduceAngleToUpper = False,
                                                 reduceAngleToLower = False,
                                                 ncores             = INT_TYPE(1) )                 
@@ -431,15 +425,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in set(anglesIndexes):
             anglesDict[idx] = self.angles[idx] 
         # compute data before move
-        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
-        #                                 boxCoords          = self.engine.boxCoordinates,
-        #                                 basis              = self.engine.basisVectors ,
-        #                                 reduceAngleToUpper = False,
-        #                                 reduceAngleToLower = False)
         dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
                                                 boxCoords          = self.engine.boxCoordinates,
                                                 basis              = self.engine.basisVectors ,
-                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                isPBC              = self.engine.isPBC,
                                                 reduceAngleToUpper = False,
                                                 reduceAngleToLower = False,
                                                 ncores             = INT_TYPE(1) )
@@ -466,15 +455,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[indexes] = movedBoxCoordinates
         # compute data before move
-        #dataDict = full_improper_angles( anglesDict         = anglesDict ,
-        #                                 boxCoords          = self.engine.boxCoordinates,
-        #                                 basis              = self.engine.basisVectors ,
-        #                                 reduceAngleToUpper = False,
-        #                                 reduceAngleToLower = False)
         dataDict = full_improper_angles_coords( anglesDict         = anglesDict ,
                                                 boxCoords          = self.engine.boxCoordinates,
                                                 basis              = self.engine.basisVectors ,
-                                                isPBC              = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                isPBC              = self.engine.isPBC,
                                                 reduceAngleToUpper = False,
                                                 reduceAngleToLower = False,
                                                 ncores             = INT_TYPE(1) )

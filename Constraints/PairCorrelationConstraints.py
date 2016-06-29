@@ -12,7 +12,6 @@ import itertools
 import numpy as np
 from pdbParser.Utilities.Database import is_element_property, get_element_property
 from pdbParser.Utilities.Collection import get_normalized_weighting
-from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
@@ -74,10 +73,18 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         qmax = self._shapeFuncParams['qmax']
         dq   = self._shapeFuncParams['dq'  ]
         if rmax is None:
-            a = self.engine.boundaryConditions.get_a()
-            b = self.engine.boundaryConditions.get_b()
-            c = self.engine.boundaryConditions.get_c()
-            rmax = FLOAT_TYPE( np.max([a,b,c]) + 10 )
+            if self.engine.isPBC:
+                a = self.engine.boundaryConditions.get_a()
+                b = self.engine.boundaryConditions.get_b()
+                c = self.engine.boundaryConditions.get_c()
+                rmax = FLOAT_TYPE( np.max([a,b,c]) + 10 )
+            else:
+                coordsCenter = np.sum(self.engine.realCoordinates, axis=0)/self.engine.realCoordinates.shape[0]
+                coordinates  = self.engine.realCoordinates-coordsCenter
+                distances    = np.sqrt( np.sum(coordinates**2, axis=1) )
+                maxDistance  = 2.*np.max(distances) 
+                rmax = FLOAT_TYPE( maxDistance + 10 )
+                LOGGER.warn("Better set shape function rmax with infinite boundary conditions. Here value is automatically set to %s"%rmax)
         shapeFunc  = ShapeFunction(engine    = self.engine, 
                                    weighting = self.weighting,
                                    qmin=qmin, qmax=qmax, dq=dq,
@@ -194,7 +201,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         """ Compute data and update engine constraintsData dictionary. """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
-                                                    isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries), 
+                                                    isPBC            = self.engine.isPBC, 
                                                     moleculeIndex    = self.engine.moleculesIndexes,
                                                     elementIndex     = self.engine.elementsIndexes,
                                                     numberOfElements = self.engine.numberOfElements,
@@ -202,7 +209,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                     maxDistance      = self.maximumDistance,
                                                     histSize         = self.histogramSize,
                                                     bin              = self.bin,
-                                                    ncores           = INT_TYPE(1))                  
+                                                    ncores           = self.engine._runtime_ncores)                  
         # update data
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
@@ -221,7 +228,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
-                                                          isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                          isPBC            = self.engine.isPBC,
                                                           moleculeIndex    = self.engine.moleculesIndexes,
                                                           elementIndex     = self.engine.elementsIndexes,
                                                           numberOfElements = self.engine.numberOfElements,
@@ -230,10 +237,10 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                           histSize         = self.histogramSize,
                                                           bin              = self.bin,
                                                           allAtoms         = True,
-                                                          ncores           = INT_TYPE(1)) 
+                                                          ncores           = self.engine._runtime_ncores) 
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
                                                       basis            = self.engine.basisVectors,
-                                                      isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                      isPBC            = self.engine.isPBC,
                                                       moleculeIndex    = self.engine.moleculesIndexes[indexes],
                                                       elementIndex     = self.engine.elementsIndexes[indexes],
                                                       numberOfElements = self.engine.numberOfElements,
@@ -241,7 +248,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                       maxDistance      = self.maximumDistance,
                                                       histSize         = self.histogramSize,
                                                       bin              = self.bin,
-                                                      ncores           = INT_TYPE(1) )                                             
+                                                      ncores           = self.engine._runtime_ncores )                                             
         # set active atoms data
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
@@ -261,7 +268,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
-                                                          isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                          isPBC            = self.engine.isPBC,
                                                           moleculeIndex    = self.engine.moleculesIndexes,
                                                           elementIndex     = self.engine.elementsIndexes,
                                                           numberOfElements = self.engine.numberOfElements,
@@ -270,10 +277,10 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                           histSize         = self.histogramSize,
                                                           bin              = self.bin,
                                                           allAtoms         = True,
-                                                          ncores           = INT_TYPE(1) )
+                                                          ncores           = self.engine._runtime_ncores )
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
                                                       basis            = self.engine.basisVectors,
-                                                      isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                      isPBC            = self.engine.isPBC,
                                                       moleculeIndex    = self.engine.moleculesIndexes[indexes],
                                                       elementIndex     = self.engine.elementsIndexes[indexes],
                                                       numberOfElements = self.engine.numberOfElements,
@@ -281,7 +288,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                       maxDistance      = self.maximumDistance,
                                                       histSize         = self.histogramSize,
                                                       bin              = self.bin,
-                                                      ncores           = INT_TYPE(1)  )                                             
+                                                      ncores           = self.engine._runtime_ncores  )                                             
         # set active atoms data
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates

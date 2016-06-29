@@ -12,7 +12,6 @@ import itertools
 import numpy as np
 from pdbParser.Utilities.Database import is_element_property, get_element_property
 from pdbParser.Utilities.Collection import get_normalized_weighting
-from pdbParser.Utilities.BoundaryConditions import PeriodicBoundaries
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
@@ -702,7 +701,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         """ Compute data and update engine constraintsData dictionary. """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
-                                                    isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                    isPBC            = self.engine.isPBC,
                                                     moleculeIndex    = self.engine.moleculesIndexes,
                                                     elementIndex     = self.engine.elementsIndexes,
                                                     numberOfElements = self.engine.numberOfElements,
@@ -710,7 +709,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                     maxDistance      = self.__maximumDistance,
                                                     histSize         = self.__histogramSize,
                                                     bin              = self.__bin,
-                                                    ncores           = INT_TYPE(1)  )                  
+                                                    ncores           = self.engine._runtime_ncores  )                  
         # update data
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
@@ -729,7 +728,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
-                                                          isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                          isPBC            = self.engine.isPBC,
                                                           moleculeIndex    = self.engine.moleculesIndexes,
                                                           elementIndex     = self.engine.elementsIndexes,
                                                           numberOfElements = self.engine.numberOfElements,
@@ -738,10 +737,10 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                           histSize         = self.__histogramSize,
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
-                                                          ncores           = INT_TYPE(1) )  
+                                                          ncores           = self.engine._runtime_ncores )  
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
                                                       basis            = self.engine.basisVectors,
-                                                      isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                      isPBC            = self.engine.isPBC,
                                                       moleculeIndex    = self.engine.moleculesIndexes[indexes],
                                                       elementIndex     = self.engine.elementsIndexes[indexes],
                                                       numberOfElements = self.engine.numberOfElements,
@@ -749,7 +748,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                       maxDistance      = self.__maximumDistance,
                                                       histSize         = self.__histogramSize,
                                                       bin              = self.__bin,
-                                                      ncores           = INT_TYPE(1) )                                             
+                                                      ncores           = self.engine._runtime_ncores )                                             
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
     
@@ -768,7 +767,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
-                                                          isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                          isPBC            = self.engine.isPBC,
                                                           moleculeIndex    = self.engine.moleculesIndexes,
                                                           elementIndex     = self.engine.elementsIndexes,
                                                           numberOfElements = self.engine.numberOfElements,
@@ -777,10 +776,10 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                           histSize         = self.__histogramSize,
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
-                                                          ncores           = INT_TYPE(1) )  
+                                                          ncores           = self.engine._runtime_ncores )  
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
                                                       basis            = self.engine.basisVectors,
-                                                      isPBC            = isinstance(self.engine.boundaryConditions, PeriodicBoundaries),
+                                                      isPBC            = self.engine.isPBC,
                                                       moleculeIndex    = self.engine.moleculesIndexes[indexes],
                                                       elementIndex     = self.engine.elementsIndexes[indexes],
                                                       numberOfElements = self.engine.numberOfElements,
@@ -788,7 +787,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                       maxDistance      = self.__maximumDistance,
                                                       histSize         = self.__histogramSize,
                                                       bin              = self.__bin,
-                                                      ncores           = INT_TYPE(1)  )                                             
+                                                      ncores           = self.engine._runtime_ncores  )                                             
         # set active atoms data
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates

@@ -2,22 +2,18 @@
 import os
 
 # fullrmc library imports
-from fullrmc.Engine import Engine
+from fullrmc import Engine
 
 # dirname
 DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+engineFilePath = os.path.join(DIR_PATH, "thf_engine.rmc")
 
-# engine variables
-engineFileName = "thf_engine.rmc"
-engineFilePath = os.path.join(DIR_PATH, engineFileName)
-
-# check Engine already saved
-if engineFileName not in os.listdir(DIR_PATH):
-    exit()
+# load
+ENGINE = Engine(path=None)
+result, mes = ENGINE.is_engine(engineFilePath, mes=True)
+if result:
+    ENGINE = ENGINE.load(engineFilePath)
+    ENGINE.constraints[0].plot()
 else:
-    ENGINE = Engine(pdb=None).load(engineFilePath)
-    PDF = ENGINE.constraints[0] 
-    PDF.plot()
-    
-    
+    print mes
  

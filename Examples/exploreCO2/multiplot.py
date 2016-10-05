@@ -22,12 +22,21 @@ INTRA_STYLES = [r[0] + r[1]for r in itertools.product(markers, INTRA_STYLES)]
 INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], colors)]
 INTER_STYLES = [r[0] + r[1]for r in itertools.product(markers, INTER_STYLES)]
 
-enginePath = "CO2.rmc"
 
-# create engine
-ENGINE = Engine(pdb=None).load(enginePath)
+# dirname
+DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+engineFilePath = os.path.join(DIR_PATH, "CO2.rmc")
+
+# load
+ENGINE = Engine(path=None)
+result, mes = ENGINE.is_engine(engineFilePath, mes=True)
+if not result:
+    print mes
+    exit()
+    
+# load engine and get pdf constraint engine
+ENGINE = ENGINE.load(engineFilePath)
 PDF_CONSTRAINT = ENGINE.constraints[0]
-
 
 def create_figure(PDF):
     # get output

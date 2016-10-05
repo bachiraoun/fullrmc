@@ -29,13 +29,14 @@ NSTEPS  = 10000
 pdbPath = 'system.pdb'
 expData = 'experimental.gr'
 # initialize engine
-ENGINE = Engine(pdb=pdbPath, constraints=None)
+ENGINE = Engine(path=None)
+ENGINE.set_pdb(pdbPath)
 # create constraints
-PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=expData, weighting="atomicNumber")
-EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
-B_CONSTRAINT   = BondConstraint(engine=None)
-BA_CONSTRAINT  = BondsAngleConstraint(engine=None)
-IA_CONSTRAINT  = ImproperAngleConstraint(engine=None)
+PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=expData, weighting="atomicNumber")
+EMD_CONSTRAINT = InterMolecularDistanceConstraint()
+B_CONSTRAINT   = BondConstraint()
+BA_CONSTRAINT  = BondsAngleConstraint()
+IA_CONSTRAINT  = ImproperAngleConstraint()
 # add constraints to engine
 ENGINE.add_constraints([PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT])
 # initialize constraints definitions
@@ -95,7 +96,7 @@ def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, impr
     # run
     ENGINE.initialize_used_constraints()
     tic = time.time()
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, restartPdb=None)
     spentTime = time.time()-tic
     # log
     message += "constraints --> ("

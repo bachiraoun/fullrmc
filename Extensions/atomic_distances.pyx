@@ -30,13 +30,8 @@ cdef extern from "math.h":
     C_FLOAT32 floor(C_FLOAT32 x) nogil
     C_FLOAT32 ceil(C_FLOAT32 x)  nogil
     C_FLOAT32 sqrt(C_FLOAT32 x)  nogil
-    C_FLOAT32 abs(C_FLOAT32 x)  nogil
-
-    
-cdef inline C_FLOAT32 round(C_FLOAT32 num) nogil:
-    return floor(num + HALF_BOX_LENGTH) if (num > FLOAT_ZERO) else ceil(num - HALF_BOX_LENGTH)
-
-
+    C_FLOAT32 abs(C_FLOAT32 x)   nogil # not sure why abs(-1.1) = 1 not 1.1, it is rounding. so we won't use it.
+    C_FLOAT32 fabs(C_FLOAT32 x)  nogil 
 
             
 @cython.nonecheck(False)
@@ -62,14 +57,22 @@ cdef void _single_atomic_distances_dists( C_INT32          atomIndex,
                                           bint             reduceDistanceToUpper = False,
                                           bint             reduceDistanceToLower = False,
                                           bint             reduceDistance = False,
+                                          bint             allAtoms = True, # added OCT 2016
                                           C_INT32          ncores = 1):
     # declare variables
     cdef C_FLOAT32 distance, upper, lower
     cdef C_INT32 i, startIndex, endIndex
     cdef C_INT32 inLoopMoleculeIndex, inLoopElementIndex
     cdef C_INT32 num_threads = ncores
+    # start index
+    if allAtoms:
+        startIndex = INT32_ZERO
+    else:
+        startIndex = <C_INT32>atomIndex
+    endIndex = <C_INT32>distances.shape[0]
     # start openmp loop
-    for i in prange(INT32_ZERO, <C_INT32>distances.shape[0], INT32_ONE, nogil=True, schedule="static", num_threads=num_threads):
+    for i in prange(startIndex, endIndex, INT32_ONE, nogil=True, schedule="static", num_threads=num_threads): # added OCT 2016
+    #for i in prange(INT32_ZERO, <C_INT32>distances.shape[0], INT32_ONE, nogil=True, schedule="static", num_threads=num_threads):
     #for i from startIndex <= i < endIndex:
         if i == atomIndex: continue
         inLoopMoleculeIndex = moleculeIndex[i]
@@ -95,21 +98,21 @@ cdef void _single_atomic_distances_dists( C_INT32          atomIndex,
                 continue
         # reduce distance to the smaller difference between distance and limits.
         if reduceDistanceToUpper:
-            distance = abs(upper-distance)
+            distance = fabs(upper-distance)
         elif reduceDistanceToLower:
-            distance = abs(lower-distance)
+            distance = fabs(lower-distance)
         elif reduceDistance:
             if distance > (lower+upper)/FLOAT_TWO:
-                distance = abs(upper-distance)
+                distance = fabs(upper-distance)
             else:
-                distance = abs(lower-distance)
+                distance = fabs(lower-distance)
         # increment histograms
-        #print startIndex, i, inLoopElementIndex,atomElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance
+        #with gil: print atomIndex, atomIndex, lower, upper, distances[i], distance
         if inLoopMoleculeIndex == atomMoleculeIndex:
             dintra[atomElementIndex,inLoopElementIndex,0] += distance
             nintra[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
-            #print startIndex, i, atomElementIndex, inLoopElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance
         else:
+            #with gil: print atomIndex, i, atomElementIndex,inLoopElementIndex, ' distance: ',distance, distances[i], ' lower, upper: ',lower, upper, upper-distances[i], abs(upper-distances[i]), fabs(upper-distances[i])
             dinter[atomElementIndex,inLoopElementIndex,0] += distance
             ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
             
@@ -209,14 +212,14 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
                 continue
         # reduce distance to the smaller difference between distance and limits.
         if reduceDistanceToUpper:
-            distance = abs(upper-distance)
+            distance = fabs(upper-distance) # abs is rounding abs(-1.1) = 1 not 1.1
         elif reduceDistanceToLower:
-            distance = abs(lower-distance)
+            distance = fabs(lower-distance)
         elif reduceDistance:
             if distance > (lower+upper)/FLOAT_TWO:
-                distance = abs(upper-distance)
+                distance = fabs(upper-distance)
             else:
-                distance = abs(lower-distance)
+                distance = fabs(lower-distance)
         # increment histograms
         #print startIndex, i, inLoopElementIndex,atomElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance
         if inLoopMoleculeIndex == atomMoleculeIndex:
@@ -282,18 +285,12 @@ def single_atomic_distances_dists( C_INT32                       atomIndex,
        #. ninter (float32 array): The updated (numberOfElements,numberOfElements,1) array for inter-molecular counted elements.
     """
     # declare variables
-    cdef C_INT32 i, startIndex, endIndex
+    cdef C_INT32 i
     cdef C_INT32 atomMoleculeIndex, atomElementIndex
     cdef C_FLOAT32 atomBox_x, atomBox_y, atomBox_z
     # get atom molecule and symbol
     atomMoleculeIndex = moleculeIndex[atomIndex]
     atomElementIndex  = elementIndex[atomIndex]
-    # start index
-    if allAtoms:
-        startIndex = <C_INT32>0
-    else:
-        startIndex = <C_INT32>atomIndex
-    endIndex = <C_INT32>distances.shape[0]
     # loop
     _single_atomic_distances_dists( atomIndex             = atomIndex,
                                     atomMoleculeIndex     = atomMoleculeIndex,
@@ -313,6 +310,7 @@ def single_atomic_distances_dists( C_INT32                       atomIndex,
                                     reduceDistanceToUpper = reduceDistanceToUpper,
                                     reduceDistanceToLower = reduceDistanceToLower,
                                     reduceDistance        = reduceDistance,
+                                    allAtoms              = allAtoms,
                                     ncores                = ncores)
             
             
@@ -388,7 +386,7 @@ def multiple_atomic_distances_coords( ndarray[C_INT32, ndim=1]      indexes not 
                                                     basis     = basis,
                                                     isPBC     = isPBC,
                                                     allAtoms  = allAtoms,
-                                                    ncores    = ncores)       
+                                                    ncores    = ncores)    
         # compute single atomic distances 
         single_atomic_distances_dists( atomIndex             = i, 
                                        distances             = distances,

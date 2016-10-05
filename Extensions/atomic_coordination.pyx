@@ -1,7 +1,6 @@
 """
 This is a C compiled module to compute atomic bonds.
 """                      
-from libc.math cimport sqrt, abs
 import cython
 cimport cython
 import numpy as np
@@ -17,10 +16,10 @@ ctypedef np.float32_t C_FLOAT32
 ctypedef np.int32_t   C_INT32
 
 # declare constants
-cdef C_FLOAT32 FLOAT_ZERO      = 0.0
-cdef C_FLOAT32 FLOAT_ONE       = 1.0
-cdef C_INT32   INT32_ZERO      = 0
-cdef C_INT32   INT32_ONE       = 1
+cdef C_FLOAT32 FLOAT_ZERO  = 0.0
+cdef C_FLOAT32 FLOAT_ONE   = 1.0
+cdef C_INT32   INT32_ZERO  = 0
+cdef C_INT32   INT32_ONE   = 1
 
 
 

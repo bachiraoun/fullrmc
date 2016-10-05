@@ -133,7 +133,10 @@ LONG_DESCRIPTION = ["fullrmc is a Reverse Monte Carlo (RMC) modelling package.",
                     "fullrmc is a python package with its core and calculation modules optimized and compiled in Cython.",
                     "fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure."
                     "fullrmc's Engine sub-module is the main module that contains the definition of 'Engine' which is the main and only class used to launch an RMC calculation.",
-                    "Engine reads only Protein Data Bank formatted atomic configuration files '.pdb' and handles other definitions and attributes."]               
+                    "Engine reads only Protein Data Bank formatted atomic configuration files '.pdb' and handles other definitions and attributes.",
+                    "Starting from version 1.x.y fitting non-periodic boundary conditions or isolated molecules is added.",
+                    "fullrmc >= 1.2.x can be compiled with 'openmp' allowing multithreaded fitting."
+                    "fullrmc >= 2.x.x engine is a single file no more but apyrep repository."]               
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 
 # get package info
@@ -302,6 +305,7 @@ metadata = dict(# package
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.2.1",
                                     "pdbParser>=0.1.5",
+                                    "pyrep>=1.0.2",
                                     "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

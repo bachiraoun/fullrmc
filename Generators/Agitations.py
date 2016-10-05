@@ -68,7 +68,10 @@ class DistanceAgitationGenerator(MoveGenerator):
         from fullrmc.Generators.Agitations import DistanceAgitationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -244,7 +247,10 @@ class AngleAgitationGenerator(MoveGenerator):
         from fullrmc.Generators.Agitations import AngleAgitationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

@@ -22,12 +22,13 @@ LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
 
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
-pdbPath = "waterBox.pdb" 
-ENGINE = Engine(pdb=pdbPath, constraints=None)
+pdbPath = "waterBox.pdb"
+ENGINE = Engine(path=None)
+ENGINE.set_pdb( pdbPath  )
 
 # add constraints
-B_CONSTRAINT  = BondConstraint(engine=None)
-BA_CONSTRAINT = BondsAngleConstraint(engine=None)
+B_CONSTRAINT  = BondConstraint()
+BA_CONSTRAINT = BondsAngleConstraint()
 ENGINE.add_constraints([B_CONSTRAINT, BA_CONSTRAINT]) 
 B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"TIP": [('OH2' ,'H1' , 0.8, 1.1),
                                                                   ('OH2' ,'H2' , 0.8, 1.1)] })
@@ -51,7 +52,7 @@ def agitate_bonds():
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     nsteps = 250*len(ENGINE.groups)
     xyzFrequency = len(ENGINE.groups)
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def agitate_angles():
     print "Agitate angles"
@@ -65,7 +66,7 @@ def agitate_angles():
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     nsteps = 250*len(ENGINE.groups)
     xyzFrequency = len(ENGINE.groups)
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def agitate_both():
     print "Agitate both"
@@ -94,7 +95,7 @@ def agitate_both():
     nsteps = 250*len(ENGINE.groups)
     xyzFrequency = len(ENGINE.groups)
     # run engine
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
  
 ##########################################################################################

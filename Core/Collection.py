@@ -6,6 +6,7 @@ It contains a collection of methods and classes that are useful for the package.
 import os
 import sys
 import time
+import uuid
 from random import random  as generate_random_float   # generates a random float number between 0 and 1
 from random import randint as generate_random_integer # generates a random integer number between given lower and upper limits
 
@@ -842,13 +843,39 @@ def step_function(x, center=0, FWHM=0.1, height=1, check=True):
     sf /= sf[-1]
     return (sf*height).astype(FLOAT_TYPE)    
 
+
+class ListenerBase(object):
+    """All listeners base class."""
+    def __init__(self):
+        self.__listenerId = str(uuid.uuid1())
+        
+    @property
+    def listenerId(self):
+        """ Listener unique id set at initialization"""
+        return self.__listenerId
     
+    def listen(self, message, argument=None):
+        """   
+        Listens to any message sent from the Broadcaster.
+        
+        :Parameters:
+            #. message (object): Any python object to send to constraint's listen method.
+            #. arguments (object): Any python object.
+        """
+        pass
+        
+            
 class Broadcaster(object):
     """ 
     A broadcaster broadcasts a message to all listener throughout execution.
     """
     def __init__(self):
         self.__listeners = []
+    
+    @property
+    def listeners(self):
+        """listeners list copy."""
+        return [l for l in self.__listeners]
         
     def add_listener(self, listener):
         """
@@ -857,7 +884,7 @@ class Broadcaster(object):
         :Parameters:
             #. listener (object): Any python object having a listen method.
         """
-        assert callable(getattr(listener, "listen", None)), LOGGER.error("listener has no 'listen' method.")
+        assert isinstance(listener, ListenerBase), LOGGER.error("listener must be a ListenerBase instance.")
         if listener not in self.__listeners:
             self.__listeners.append(listener)
         else:
@@ -870,9 +897,10 @@ class Broadcaster(object):
         :Parameters:
             #. listener (object): The listener object to remove.
         """
-        if listener in self.__listeners:
-            self.__listeners.remove(listener)
-            
+        assert isinstance(listener, ListenerBase), LOGGER.error("listener must be a ListenerBase instance.")
+        # remove listener
+        self.__listeners = [l for l in self.__listeners if l.listenerId != listener.listenerId]
+
     def broadcast(self, message, arguments=None):
         """
         Broadcast a message to all the listeners

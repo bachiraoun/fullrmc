@@ -10,15 +10,16 @@ from fullrmc.Engine import Engine
 from fullrmc.Constraints.PairCorrelationConstraints import PairDistributionConstraint
 
 
-ENGINE =  Engine(pdb='system.pdb', constraints=None)
-PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData="experimental.gr", weighting="atomicNumber")
+ENGINE =  Engine(path=None)
+ENGINE.set_pdb('system.pdb')
+PDF_CONSTRAINT = PairDistributionConstraint(experimentalData="experimental.gr", weighting="atomicNumber")
 ENGINE.add_constraints([PDF_CONSTRAINT]) 
 
 # Create plotting styles
 colors = ["b",'g','r','c','m','y']
 markers = ["",'.','+','^','|']
 STYLE = [r[0] + r[1]for r in itertools.product(['-'], colors)]
-STYLE = [r[0] + r[1]for r in itertools.product(markers, INTER_STYLES)]
+STYLE = [r[0] + r[1]for r in itertools.product(markers, STYLE)]
 
 def plot(PDF, figName, imgpath, show=False, save=True):
     # plot

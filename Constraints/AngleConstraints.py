@@ -32,7 +32,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         
     
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. anglesMap (list): The angles map definition.
            Every item must be a list of five items.
            
@@ -64,10 +63,13 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        BAC = BondsAngleConstraint(engine=None)
+        BAC = BondsAngleConstraint()
         ENGINE.add_constraints(BAC)
         
         # define intra-molecular angles 
@@ -78,12 +80,24 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                                                           
             
     """
-    def __init__(self, engine, anglesMap=None, rejectProbability=1):
+    def __init__(self, anglesMap=None, rejectProbability=1):
         # initialize constraint
-        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set bonds map
-        self.set_angles(anglesMap)# set computation cost
+        self.set_angles(anglesMap)
+        # set computation cost
         self.set_computation_cost(2.0)
+        # create dump flag
+        self.__dumpAngles = True
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_BondsAngleConstraint__anglesMap',
+                           '_BondsAngleConstraint__angles',
+                           '_BondsAngleConstraint__atomsLUAD'] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( [] )
+        object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA',tuple(RUNTIME_DATA) )
         
     @property
     def anglesMap(self):
@@ -95,7 +109,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         """ Get angles dictionary."""
         return self.__angles
     
-    @property    
+    @property
     def atomsLUAD(self):
         """ Get look up angles dictionary, connecting every atom's index to a central atom angles definition of angles attribute."""
         return self.__atomsLUAD
@@ -116,8 +130,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed","update boundary conditions",):
-            self.reset_constraint()        
+        if message in("engine set","update boundary conditions",):
+            # set angles and reset constraint
+            self.set_angles( self.__anglesMap )
         
     def should_step_get_rejected(self, standardError):
         """
@@ -140,7 +155,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             if np.any((after-before)>PRECISION):
                 reject = True
                 break
-        #print before, after, np.any(after>before), reject
         return reject
         
     def set_angles(self, anglesMap):
@@ -181,15 +195,21 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                     assert centralIdx!=rightIdx, LOGGER.error("bondsMap items lists first and third items can't be the same")
                     assert leftIdx!=rightIdx, LOGGER.error("bondsMap items lists second and third items can't be the same")
                     map.append((centralIdx, leftIdx, rightIdx, lower, upper))  
-        # set anglesMap definition
-        self.__anglesMap = map     
+        # reset anglesMap definition where angles are in degrees
+        self.__anglesMap = []
         # create bonds list of indexes arrays
-        self.__angles = {}
+        self.__angles    = {}
         self.__atomsLUAD = {}
         if self.engine is not None:
             # parse anglesMap
-            for angle in self.__anglesMap:
-                self.add_angle(angle)
+            self.__dumpAngles = False
+            try:
+                for angle in map:
+                    self.add_angle(angle)
+            except Exception as e:
+                self.__dumpAngles = True
+                raise LOGGER.error(e)
+            self.__dumpAngles = True
             # finalize angles
             for idx in self.engine.pdb.xindexes:
                 angles = self.__angles.get(idx, {"leftIndexes":[],"rightIndexes":[],"lower":[],"upper":[]} )
@@ -199,6 +219,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                                  "upper"  : np.array(angles["upper"]  , dtype = FLOAT_TYPE) }
                 lut = self.__atomsLUAD.get(idx, [] )
                 self.__atomsLUAD[INT_TYPE(idx)] = sorted(set(lut))
+        # dump to repository
+        self._dump_to_repository({'_BondsAngleConstraint__anglesMap' :self.__anglesMap,
+                                  '_BondsAngleConstraint__angles'    :self.__angles,
+                                  '_BondsAngleConstraint__anglesLUAD':self.__atomsLUAD})
         # reset constraint
         self.reset_constraint()
     
@@ -232,6 +256,8 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         assert upper<=180, LOGGER.error("angle items lists fifth item must be smaller or equal to 180")
         lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
+        # append anglesMap definition where angles are in degrees
+        self.__anglesMap.append( angle )
         # create atoms look up angles dictionary
         if not self.__atomsLUAD.has_key(centralIdx):
             self.__atomsLUAD[centralIdx] = []
@@ -283,6 +309,11 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         self.__atomsLUAD[leftIdx] = sorted(set(lut))
         lut = self.__atomsLUAD.get(rightIdx, [] )
         self.__atomsLUAD[rightIdx] = sorted(set(lut))
+        # dump to repository
+        if self.__dumpAngles:
+            self._dump_to_repository({'_BondsAngleConstraint__anglesMap' :self.__anglesMap,
+                                      '_BondsAngleConstraint__angles'    :self.__angles,
+                                      '_BondsAngleConstraint__anglesLUAD':self.__atomsLUAD})
 
     def create_angles_by_definition(self, anglesDefinition):
         """ 
@@ -312,7 +343,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                                                  
         """
         if self.engine is None:
-            raise Exception(LOGGER.error("Engine is not defined. Can't create angles"))
+            raise Exception(LOGGER.error("Engine is not defined. Can't create angles by definition"))
         assert isinstance(anglesDefinition, dict), LOGGER.error("anglesDefinition must be a dictionary")
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))

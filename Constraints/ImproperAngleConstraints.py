@@ -34,7 +34,6 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         
         
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. anglesMap (list): The angles map definition.
                Every item must be a list of five items.
                
@@ -70,10 +69,13 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        IAC = ImproperAngleConstraint(engine=None)
+        IAC = ImproperAngleConstraint()
         ENGINE.add_constraints(IAC)
         
         # define intra-molecular improper angles 
@@ -83,13 +85,22 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                                                             
     """
     
-    def __init__(self, engine, anglesMap=None, rejectProbability=1):
+    def __init__(self, anglesMap=None, rejectProbability=1):
         # initialize constraint
-        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
-        # set bonds map
+        RigidConstraint.__init__(self, rejectProbability=rejectProbability)
+        # set angles map
         self.set_angles(anglesMap)
         # set computation cost
         self.set_computation_cost(3.0)
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_ImproperAngleConstraint__anglesMap',
+                           '_ImproperAngleConstraint__angles',
+                           '_ImproperAngleConstraint__atomsLUAD',] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( [] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA) )
+        object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
         
     @property
     def anglesMap(self):
@@ -125,8 +136,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed","update boundary conditions",):
-            self.reset_constraint()        
+        if message in("engine set","update boundary conditions",):
+            # st angles and reset constraint
+            self.set_angles(anglesMap=self.__anglesMap)       
         
     def should_step_get_rejected(self, standardError):
         """
@@ -185,9 +197,13 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                     assert is_integer(yIdx), LOGGER.error("anglesMap items lists of fourth item must be an integer")
                     yIdx = INT_TYPE(yIdx)
                     assert improperIdx>=0, LOGGER.error("anglesMap items lists first item must be positive")
+                    assert improperIdx<len(self.engine.pdb), LOGGER.error("anglesMap items lists first item atom index must be smaller than maximum number of atoms")
                     assert oIdx>=0, LOGGER.error("anglesMap items lists second item must be positive")
+                    assert oIdx<len(self.engine.pdb), LOGGER.error("anglesMap items lists second item atom index must be smaller than maximum number of atoms")
                     assert xIdx>=0, LOGGER.error("anglesMap items lists third item must be positive")
+                    assert xIdx<len(self.engine.pdb), LOGGER.error("anglesMap items lists third item atom index must be smaller than maximum number of atoms")
                     assert yIdx>=0, LOGGER.error("anglesMap items lists fourth item must be positive")
+                    assert yIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
                     assert improperIdx!=oIdx, LOGGER.error("bondsMap items lists first and second items can't be the same")
                     assert improperIdx!=xIdx, LOGGER.error("bondsMap items lists first and third items can't be the same")
                     assert improperIdx!=yIdx, LOGGER.error("bondsMap items lists first and fourth items can't be the same")
@@ -201,22 +217,18 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                     assert lower>=-90, LOGGER.error("anglesMap items lists fifth item must be bigger or equal to -90 deg.")
                     assert upper>lower, LOGGER.error("anglesMap items lists fifth item must be smaller than the sixth item")
                     assert upper<=90, LOGGER.error("anglesMap items lists sixth item must be smaller or equal to 90")
-                    lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-                    upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                     map.append((improperIdx, oIdx, xIdx, yIdx, lower, upper))  
-        # set anglesMap definition
+        # set anglesMap where angles are in degrees
         self.__anglesMap = map      
         # create bonds list of indexes arrays
-        self.__angles = {}
+        self.__angles    = {}
         self.__atomsLUAD = {}
         if self.engine is not None:
             # parse bondsMap
             for angle in self.__anglesMap:
                 improperIdx, oIdx, xIdx, yIdx, lower, upper = angle
-                assert improperIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                assert oIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                assert xIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-                assert yIdx<len(self.engine.pdb), LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+                lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
+                upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
                 # create atoms look up angles dictionary
                 if not self.__atomsLUAD.has_key(improperIdx):
                     self.__atomsLUAD[improperIdx] = []
@@ -255,8 +267,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                                                  "upper"  : np.array(angles["upper"],     dtype = FLOAT_TYPE) }
                 lut = self.__atomsLUAD.get(idx, [] )
                 self.__atomsLUAD[INT_TYPE(idx)] = sorted(set(lut))
+        # dump to repository
+        self._dump_to_repository({'_ImproperAngleConstraint__atomsLUAD': self.__atomsLUAD,
+                                  '_ImproperAngleConstraint__angles'   : self.__angles,
+                                  '_ImproperAngleConstraint__anglesMap': self.__anglesMap}) 
         # reset constraint
-        self.reset_constraint()
+        self.reset_constraint() 
     
     def create_angles_by_definition(self, anglesDefinition):
         """ 
@@ -286,7 +302,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                                                   
         """
         if self.engine is None:
-            raise Exception("Engine is not defined. Can't create angles")
+            raise Exception("Engine is not defined. Can't create impoper angles by definition")
         assert isinstance(anglesDefinition, dict), "anglesDefinition must be a dictionary"
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))

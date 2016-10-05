@@ -100,7 +100,7 @@ we would appreciate citations to the following paper:
 
 **Text entry:**
 
-Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* 2016, 37, 1102â€“1111. DOI: 10.1002/jcc.24304
+Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304
 
 **Bibtex entry:** 
 ```
@@ -151,5 +151,6 @@ Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
 Authors and developers
 ======================
 * [Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
+* [Jonathan Barnes](https://www.linkedin.com/in/johnathan-barnes-a558b230) (Advisory) 
 
 

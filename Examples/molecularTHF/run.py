@@ -34,29 +34,32 @@ DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
 engineFileName = "thf_engine.rmc"
 expFileName    = "thf_pdf.exp"
 pdbFileName    = "thf.pdb" 
+freshStart     = False
 
 # engine variables
 expPath        = os.path.join(DIR_PATH, expFileName)
 pdbPath        = os.path.join(DIR_PATH, pdbFileName)
 engineFilePath = os.path.join(DIR_PATH, engineFileName)
-    
-# check Engine exists, if not build it otherwise load it.
-if engineFileName not in os.listdir(DIR_PATH):
-    # initialize engine
-    ENGINE = Engine(pdb=pdbPath, constraints=None)
-    # create experimental constraints
-    #PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=expPath, weighting="atomicNumber")
+ENGINE = Engine(path=None)
+if freshStart or not ENGINE.is_engine(engineFilePath):
+    # create engine
+    ENGINE = Engine(path=engineFilePath, freshStart=True)
+    ENGINE.set_pdb(pdbFileName)
+    ## create experimental constraints
+    #PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=expPath, weighting="atomicNumber")
     _,_,_, gr = convert_Gr_to_gr(np.loadtxt(expPath), minIndex=[4,5,6])
     dataWeights = np.ones(gr.shape[0])
     dataWeights[:np.nonzero(gr[:,1]>0)[0][0]] = 0  
-    PDF_CONSTRAINT = PairCorrelationConstraint(engine=None, experimentalData=gr.astype(FLOAT_TYPE), weighting="atomicNumber", dataWeights=dataWeights)
+    PDF_CONSTRAINT = PairCorrelationConstraint(experimentalData=gr.astype(FLOAT_TYPE), weighting="atomicNumber", dataWeights=dataWeights)
     # create and define molecular constraints
-    EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None, defaultDistance=1.5)
-    B_CONSTRAINT   = BondConstraint(engine=None)
-    BA_CONSTRAINT  = BondsAngleConstraint(engine=None)
-    IA_CONSTRAINT  = ImproperAngleConstraint(engine=None)
+    EMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=1.5)
+    B_CONSTRAINT   = BondConstraint()
+    BA_CONSTRAINT  = BondsAngleConstraint()
+    IA_CONSTRAINT  = ImproperAngleConstraint()
     # add constraints to engine
     ENGINE.add_constraints([PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT])
+    
+    
     # initialize constraints definitions
     B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"THF": [('O' ,'C1' , 1.29, 1.70),
                                                                       ('O' ,'C4' , 1.29, 1.70),
@@ -97,19 +100,11 @@ if engineFileName not in os.listdir(DIR_PATH):
                                                                           ('C4' ,'H42','C3' , 80, 123) ] })
     IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
                                                                           ('C3','O','C1','C4', -15, 15) ] })
-    # initialize constraints data
-    PDF_CONSTRAINT.set_used(True)
-    EMD_CONSTRAINT.set_used(True)
-    B_CONSTRAINT.set_used(True)
-    BA_CONSTRAINT.set_used(True)
-    IA_CONSTRAINT.set_used(True)
-    ENGINE.initialize_used_constraints()
     # save engine
-    ENGINE.save(engineFilePath)
+    ENGINE.save()
 else:
-    ENGINE = Engine(pdb=None).load(engineFilePath)
-# tweak constraints
-PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENGINE.constraints
+    ENGINE = ENGINE.load(engineFilePath)
+    PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENGINE.constraints
  
  
 ##########################################################################################
@@ -136,7 +131,7 @@ def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True, exportPdb=Fa
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'bonds_CH' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_bonds_CH.pdb"%(ENGINE.generated)) )
 
@@ -158,7 +153,7 @@ def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True, exportPdb=F
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'angles_HCH' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_angles_HCH.pdb"%(ENGINE.generated)) )    
 
@@ -178,7 +173,7 @@ def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True, 
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_atoms.pdb"%(ENGINE.generated)) )
             
@@ -193,7 +188,7 @@ def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True, exportPdb=False
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_atoms.pdb"%(ENGINE.generated)) )    
      
@@ -211,7 +206,7 @@ def about0(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=Fals
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'about0' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about0.pdb"%(ENGINE.generated)) ) 
  
@@ -229,7 +224,7 @@ def about1(ENGINE, rang=5, recur=10, refine=True, explore=False, exportPdb=False
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'about1' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about1.pdb"%(ENGINE.generated)) )    
         
@@ -247,7 +242,7 @@ def about2(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=Fals
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'about2' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about2.pdb"%(ENGINE.generated)) )  
 
@@ -265,7 +260,7 @@ def along0(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'along0' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along0.pdb"%(ENGINE.generated)) )    
 
@@ -284,7 +279,7 @@ def along1(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'along1' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along1.pdb"%(ENGINE.generated)) )    
 
@@ -302,7 +297,7 @@ def along2(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(rang):
         LOGGER.info("Running 'along2' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along2.pdb"%(ENGINE.generated)) )    
 
@@ -317,7 +312,7 @@ def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=F
     ENGINE.set_group_selector(gs)
     for stepIdx in range(rang):
         LOGGER.info("Running 'molecules' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_molecules.pdb"%(ENGINE.generated)) )
 
@@ -342,7 +337,7 @@ def shrink(ENGINE, newDim, exportPdb=False):
     nsteps = recur*len(ENGINE.groups)
     for stepIdx in range(10):
         LOGGER.info("Running 'shrink' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineFilePath)
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         fname = "shrink_"+str(newDim).replace(".","p")
         if exportPdb:
             ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_%s.pdb"%(ENGINE.generated, fname)) )    
@@ -351,6 +346,7 @@ def shrink(ENGINE, newDim, exportPdb=False):
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
+
 # set short limits
 PDF_CONSTRAINT.set_limits((None,5))
 # fit bonds

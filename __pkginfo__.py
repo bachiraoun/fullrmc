@@ -42,6 +42,7 @@ For your general understanding, fullrmc requires the following:
    #. NumPy (lowest version tested is 1.7.1)
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
+   #. pyrep (lowest version tested is 1.0.2)
    #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
       from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
       - 0.1.5 is used starting from fullrmc 1.0.1)
@@ -75,6 +76,7 @@ automatically installed and updated while fullrmc is being installed.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
+                          ('pyrep'      ,'1.0.2') ,
                           ('pdbParser'  ,'0.1.5') ,
                           ('pysimplelog','0.2.1') ,
                           ('matplotlib' ,'1.4'  )]:
@@ -87,7 +89,7 @@ automatically installed and updated while fullrmc is being installed.
                     print '%s installed version %s is below minimum suggested version %s.\
 Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
                 else:
-                    print '%s is installed properly and minimum version requirement is \
+                    print '%s is properly installed and minimum version requirement is \
 met.'%(name)
         
            
@@ -335,6 +337,7 @@ Fixes and improvements:
    
    
    
+   
 `Version 1.2.0 <https://pypi.python.org/pypi/fullrmc/1.2.0>`_:
 --------------------------------------------------------------
 Starting from this version, running fullrmc on multicore and multiprocessor computers 
@@ -351,11 +354,78 @@ New Modules and definitions:
       definition rather than per atom. Fractional coordination numbers are allowed and 
       this implementation benefits from a tremendous performance increase of 1000 times 
       compared to the old one.
-    #. Engine.run method 'restartPdb' and 'ncore' arguments added. 
-  
+   #. Engine.run method 'restartPdb' and 'ncore' arguments added. 
+   
+   
+ 
+ 
+`Version 1.2.1 <https://pypi.python.org/pypi/fullrmc/1.2.1>`_:
+--------------------------------------------------------------
+No bugs fixed but some examples corrected. 
+
+
+
+
+`Version 2.0.0 <https://pypi.python.org/pypi/fullrmc/2.0.0>`_:
+--------------------------------------------------------------
+This is a main version change from 1.x.y to 2.x.y. Starting from this version engine 
+is no more a single file but a `pyrep <http://bachiraoun.github.io/pyrep/>`_ 
+repository. Using a repository engine instead of a single file has many advantages. 
+The first and more important advantage is the limitation of accessing and saving single 
+big engine files when the simulated atomic system is big. The second advantage 
+is the introduction of the concept of engine frames. Frames can be used to build a 
+fitting history or even better to creating a statistical structural solution rather than 
+a single structure one which is prone primarily to overfitting and other errors.
+Also, repository engine's insure a sort of backwards compatibility and files can be 
+retrieved when updating fullrmc's versions. Implementation wise, switching from single 
+file to repository is the ground layer to taking fullrmc to the next level of 
+super-computing.
+Engine repository is not a binary black box file but a directory or a folder that one 
+can browse. It's advisable not to manually delete or add files or folders to the 
+repository. Interacting with fullrmc.Engine instance is what one should do to creating 
+or updating engine's repository.
+The transition to fullrmc 2.x.y. should be done seemlessly at the end of the user 
+except for small modifications that were made and that are listed below.
+
+Modifications:
+~~~~~~~~~~~~~~  
+    #. :class:`.Engine`: Several modification happend to fullrmc.Engine class.
+        * Instanciating engine arguments have changed. We found that it's a bad practice 
+          to set the pdb structure, the constraints, the groups and all other attributes
+          at the engine instanciation. Therefore, now engine's instanciation takes more 
+          appropriate arguments such as the engine's repository path, the frames, the
+          log file path and whether to delete a found engine at the given path and start 
+          fresh using freshStart flag.
+        * Engine.is_engine method is added to check whether a given path is a 
+          fullrmc.Engine repository.
+        * Engine frames related methods are also added to manipulate and switch between 
+          frames.
+        * Engine.run method takes no more savePath argument, as the path has to be the 
+          repository. In case one wants to save in a new repository, he should save the 
+          engine first using Engine.save method and then run the engine using 
+          Engine.run method.
+    #. :class:`.Constraint`: We also found that constraints must not be allowed to change 
+       engine and therefore Constraint.set_engine method is now deprecated. Also 
+       Constraints are now instanciated without engine argument. Constraint's engine is 
+       set automatically when a constraint is added to an engine.
+
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+    #. abs function changed in all compiled files as it was creating rounding issues on
+       some operating systems.
+    #. arcos function cliped for floating errors in angles compiled file.
+    #. :class:`.InterMolecularDistanceConstraint`: Computing constraint data in function
+       single_atomic_distances_dists of compiled atomic_distances fixed.
+    #. :class:`.BondConstraint`: bondsMap fixed from causing definition conflicts if set
+       multiple times.
+    #. :class:`.BondsAngleConstraint`: anglesMap fixed from causing definition conflicts 
+       if set multiple times. 
+    #. :class:`.ImproperAngleConstraint`: anglesMap fixed from causing definition  
+       conflicts if set multiple times. 
+
 """
 
-__version__    = '1.2.0'
+__version__    = '2.0.0'
                
 __author__     = "Bachir Aoun"
                

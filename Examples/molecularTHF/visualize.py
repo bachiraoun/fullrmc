@@ -1,21 +1,22 @@
 # standard libraries imports
 import os
 
-# external libraries imports
-
 # fullrmc library imports
 from fullrmc.Engine import Engine
 
-# engine variables
-engineSavePath = "thf_engine.rmc"
-    
-# check Engine already saved
-if engineSavePath not in os.listdir("."):
-    exit()
+# dirname
+DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+engineFilePath = os.path.join(DIR_PATH, "thf_engine.rmc")
+
+# load
+ENGINE = Engine(path=None)
+result, mes = ENGINE.is_engine(engineFilePath, mes=True)
+if result:
+    ENGINE = ENGINE.load(engineFilePath)
+    ENGINE.visualize( boxToCenter=True)  
 else:
-    ENGINE = Engine(pdb=None).load(engineSavePath)
-    # visualize    
-    ENGINE.visualize( boxToCenter=True)     
+    print mes
+  
     
     
     

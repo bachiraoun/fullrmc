@@ -16,7 +16,7 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_integer
+from fullrmc.Core.Collection import ListenerBase, is_integer
 from fullrmc.Core.Group import Group
 from fullrmc.Core.MoveGenerator import PathGenerator
 
@@ -30,9 +30,20 @@ class GroupSelector(object):
     """
     
     def __init__(self, engine=None):
+        # init GroupSelector
+        super(GroupSelector, self).__init__()
         # set engine
         self.set_engine(engine)
-
+    
+    def __getstate__(self):
+        state = {}
+        for k, v in self.__dict__.items():
+            if k == '_GroupSelector__engine':
+                state[k] = None
+            else:
+                state[k] = v
+        return state
+        
     def _runtime_initialize(self):
         """   
         This method is called by the engine at the runtime to initialize the group selector if needed.
@@ -123,16 +134,6 @@ class GroupSelector(object):
         It will always return False because recurrence is a property of RecursiveGroupSelector instances only.
         """
         return False
-        
-    def listen(self, message, argument=None):
-        """   
-        Listens to any message sent from the Broadcaster.
-        
-        :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
-        """
-        pass
         
     def set_engine(self, engine):
         """
@@ -249,7 +250,10 @@ class RecursiveGroupSelector(GroupSelector):
         from fullrmc.Core.GroupSelector import RecursiveGroupSelector
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

@@ -58,10 +58,13 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         from fullrmc.Constraints.PairCorrelationConstraints import PairCorrelationConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        PCC = PairCorrelationConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
+        PCC = PairCorrelationConstraint(experimentalData="pcf.dat", weighting="atomicNumber")
         ENGINE.add_constraints(PCC)
         
     """
@@ -302,7 +305,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
 
     def plot(self, ax=None, intra=True, inter=True, shapeFunc=True, 
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleStdErr=True, titleScaleFactor=True):
+                   title=True, usedFrame=True, titleStdErr=True, titleScaleFactor=True):
         """ 
         Plot pair correlation constraint.
         
@@ -320,6 +323,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
             #. title (boolean): Whether to create the title or not
+            #. usedFrame(boolean): Whether to show used frame name.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
@@ -370,7 +374,10 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
         # set title
         if title:
-            t = ''
+            if usedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:

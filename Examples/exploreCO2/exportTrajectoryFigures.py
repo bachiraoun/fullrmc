@@ -26,9 +26,11 @@ trajectories = ["atomsTraj.xyz","exploreTraj.xyz"]
 pdbPath = "CO2.pdb"
 expDataPath = "Xrays.gr"
 
+
 # create engine
-ENGINE = Engine(pdb=pdbPath, constraints=None)
-PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=expDataPath, weighting="atomicNumber")
+ENGINE = Engine(path=None)
+ENGINE.set_pdb(pdbPath)
+PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=expDataPath, weighting="atomicNumber")
 ENGINE.add_constraints([PDF_CONSTRAINT])
 ENGINE.initialize_used_constraints()
 ENGINE.set_chi_square()

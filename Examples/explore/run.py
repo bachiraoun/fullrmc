@@ -210,9 +210,10 @@ class BiasedEngine(Engine):
 # engine variables
 pdbPath = "system.pdb"
 # initialize engine
-ENGINE = BiasedEngine(pdb=pdbPath, constraints=None)
+ENGINE = BiasedEngine(path=None)
+ENGINE.set_pdb(pdbPath)
 # create constraints
-EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
+EMD_CONSTRAINT = InterMolecularDistanceConstraint()
 # add constraints to engine
 ENGINE.add_constraints([EMD_CONSTRAINT])
 
@@ -231,7 +232,6 @@ def explore(ENGINE, nsteps=1000, rang=3):
     # run
     for step in range(rang):
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps)
-        #ENGINE.export_pdb( os.path.join("pdbFiles","step_%i.pdb"%step) )    
 
         
 ##########################################################################################
@@ -246,7 +246,7 @@ explore(ENGINE, 1000)
 ##########################################################################################
 ##################################  VISUALIZE SIMULATION  ################################
 ENGINE.set_pdb(pdbPath)
-ENGINE.visualize( boxAtOrigin=True, boxWidth=1, 
+ENGINE.visualize( boxToCenter=True, boxWidth=1, 
                   otherParams = ['mol new trajectory.xyz', 'mol modstyle 0 1 VDW'],
                   representationParams='CPK 1.0 0.2 50 50')  
 

@@ -59,7 +59,9 @@ class ShapeFunction(object):
         # create StructureFactorConstraint
         Q = np.arange(qmin, qmax, dq)
         D = np.transpose([Q, np.zeros(len(Q))]).astype(FLOAT_TYPE)
-        self._SFC = StructureFactorConstraint(engine=engine, rmin=rmin, rmax=rmax, dr=dr, experimentalData=D, weighting="atomicNumber")
+        self._SFC = StructureFactorConstraint(rmin=rmin, rmax=rmax, dr=dr, experimentalData=D, weighting="atomicNumber")
+        self._SFC._set_engine(engine)
+        self._SFC.listen(message="engine set")
         # set parameters
         self._rmin = FLOAT_TYPE(rmin)
         self._rmax = FLOAT_TYPE(rmax)

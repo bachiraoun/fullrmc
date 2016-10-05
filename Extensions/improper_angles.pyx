@@ -1,7 +1,7 @@
 """
 This is a C compiled module to compute improper angles.
 """            
-from libc.math cimport sqrt, abs
+from libc.math cimport sqrt, fabs
 import cython
 cimport cython
 import numpy as np
@@ -121,21 +121,21 @@ def single_improper_angles_diffs( ndarray[C_FLOAT32, ndim=2]    improperVectors 
         # compute dot product
         dot = improperVector_x*ozVector_x + improperVector_y*ozVector_y + improperVector_z*ozVector_z
         # calculate angle
-        angle = PI_2 - <C_FLOAT32>np.arccos( dot )  # PI_2 - <C_FLOAT32>np.arccos( np.clip( dot ,-1, 1 ) )
+        angle = PI_2 - <C_FLOAT32>np.arccos( np.clip( dot ,-1, 1 ) ) # PI_2 - <C_FLOAT32>np.arccos( dot ) clipped for floating errors
         # compute reduced angle
         lower = lowerLimit[i]
         upper = upperLimit[i]
         if angle>=lower and angle<=upper:
             reducedAngle = FLOAT_ZERO     
         elif reduceAngleToUpper:
-            reducedAngle = abs(upper-angle)
+            reducedAngle = fabs(upper-angle)
         elif reduceAngleToLower:
-            reducedAngle = abs(lower-angle)
+            reducedAngle = fabs(lower-angle)
         else:
             if angle > (lower+upper)/FLOAT_TWO:
-                reducedAngle = abs(upper-angle)
+                reducedAngle = fabs(upper-angle)
             else:
-                reducedAngle = abs(lower-angle)
+                reducedAngle = fabs(lower-angle)
         # increment histograms
         angles[i]        = angle
         reducedAngles[i] = reducedAngle

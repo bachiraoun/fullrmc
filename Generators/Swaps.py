@@ -38,7 +38,10 @@ class SwapPositionsGenerator(SwapGenerator):
         from fullrmc.Generators.Swaps import SwapPositionsGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -129,7 +132,10 @@ class SwapCentersGenerator(SwapGenerator):
         from fullrmc.Generators.Swaps import SwapCentersGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

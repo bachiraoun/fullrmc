@@ -143,24 +143,29 @@ Tetrahydrofuran simple example yet complete and straight to the point
     pdfData      = "thf_pdf.exp"
     pdbStructure = "thf.pdb"
     enginePath   = "thf_engine.rmc"
-    thisFilePath = os.path.dirname( os.path.realpath(__file__) )
     
     #   #####################################################################################   #
     #   ################################# CREATE RMC SYSTEM #################################   #
+    ENGINE = Engine(path=None)
     # if engine is not created and saved
-    if enginePath not in os.listdir(thisFilePath):
-        ## create and initialize engine
-        ENGINE = Engine(pdb=pdbStructure, constraints=None)
-        ## set structure boundary conditions
+    if not ENGINE.is_engine(enginePath)
+        # create and initialize engine
+        ENGINE = Engine(path=enginePath, freshStart=True)
+        ENGINE.set_pdb(pdbFileName)
+        
+        # re-set structure boundary conditions
         ENGINE.set_boundary_conditions(np.array([48.860,0,0, 0,48.860,0, 0,0,48.860]))
-        ## create and add pair distribution constraint to the engine
-        PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=pdfData, weighting="atomicNumber")
+        
+        # create and add pair distribution constraint to the engine
+        PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=pdfData, weighting="atomicNumber")
         ENGINE.add_constraints([PDF_CONSTRAINT])
-        ## create and add intermolecular distances constraint to the engine
-        EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
+        
+        # create and add intermolecular distances constraint to the engine
+        EMD_CONSTRAINT = InterMolecularDistanceConstraint()
         ENGINE.add_constraints([EMD_CONSTRAINT])
-        ## create and add bonds constraint to the engine
-        B_CONSTRAINT = BondConstraint(engine=None)
+        
+        # create and add bonds constraint to the engine
+        B_CONSTRAINT = BondConstraint()
         ENGINE.add_constraints([B_CONSTRAINT])
         B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"THF": [('O' ,'C1' , 1.20, 1.70),
                                                                           ('O' ,'C4' , 1.20, 1.70),
@@ -171,8 +176,9 @@ Tetrahydrofuran simple example yet complete and straight to the point
                                                                           ('C2','H21', 0.88, 1.16),('C2','H22', 0.88, 1.16),
                                                                           ('C3','H31', 0.88, 1.16),('C3','H32', 0.88, 1.16),
                                                                           ('C4','H41', 0.88, 1.16),('C4','H42', 0.88, 1.16)] })
-        ## create and add angles constraint to the engine
-        BA_CONSTRAINT = BondsAngleConstraint(engine=None)
+        
+        # create and add angles constraint to the engine
+        BA_CONSTRAINT = BondsAngleConstraint()
         ENGINE.add_constraints([BA_CONSTRAINT])
         BA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('O'  ,'C1' ,'C4' , 105, 125),
                                                                               ('C1' ,'O'  ,'C2' , 100, 120),
@@ -202,19 +208,22 @@ Tetrahydrofuran simple example yet complete and straight to the point
                                                                               ('C3' ,'H32','C4' , 103, 123),
                                                                               ('C4' ,'H41','C3' , 103, 123),
                                                                               ('C4' ,'H42','C3' , 103, 123) ] })
-        ## create and add improper angles constraint to the engine keeping THF molecules' atoms in the plane
-        IA_CONSTRAINT = ImproperAngleConstraint(engine=None)
+        
+        # create and add improper angles constraint to the engine keeping THF molecules' atoms in the plane
+        IA_CONSTRAINT = ImproperAngleConstraint()
         ENGINE.add_constraints([IA_CONSTRAINT])
         IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
                                                                               ('C3','O','C1','C4', -15, 15) ] })
-        ## initialize constraints data
+        
+        # initialize constraints data
         ENGINE.initialize_used_constraints()
+        
         # save engine
-        ENGINE.save(enginePath)
+        ENGINE.save()
     # if engine is created and saved, it can be simply loaded.
     else: 
-        ENGINE = Engine(pdb=None).load(enginePath)
-        # unpack constraints
+        ENGINE = ENGINE.load(engineFilePath)
+        # unpack constraints before fitting in case tweaking is needed
         PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENGINE.constraints
     
     #   #####################################################################################   #
@@ -274,6 +283,7 @@ the Engine is run for additional several hours to refine atoms positions separat
 """
 # import package info
 from __pkginfo__ import __version__, __author__, __email__, __onlinedoc__, __repository__, __pypi__
+from Engine import Engine
 
 def get_version():
     """Get fullrmc's version number."""

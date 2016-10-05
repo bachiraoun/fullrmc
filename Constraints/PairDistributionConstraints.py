@@ -77,7 +77,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
     :math:`N_{i,j}` is the total number of atoms i and j in the system. \n
 
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
         #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
@@ -137,25 +136,56 @@ class PairDistributionConstraint(ExperimentalConstraint):
         from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        PDC = PairDistributionConstraint(engine=None, experimentalData="pcf.dat", weighting="atomicNumber")
+        PDC = PairDistributionConstraint(experimentalData="pdf.dat", weighting="atomicNumber")
         ENGINE.add_constraints(PDC)
 
     """
-    def __init__(self, engine, experimentalData, dataWeights=None, weighting="atomicNumber", 
+    def __init__(self, experimentalData, dataWeights=None, weighting="atomicNumber", 
                        scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
                        shapeFuncParams=None, windowFunction=None, limits=None):
         self.__limits = limits
         # initialize constraint
-        super(PairDistributionConstraint, self).__init__(engine=engine, experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+        super(PairDistributionConstraint, self).__init__(experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
         # set elements weighting
         self.set_weighting(weighting)
         # set window function
         self.set_window_function(windowFunction)
         # set shape function parameters
         self.set_shape_function_parameters(shapeFuncParams)
+        
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_PairDistributionConstraint__bin',
+                           '_PairDistributionConstraint__minDistIdx',  
+                           '_PairDistributionConstraint__maxDistIdx',
+                           '_PairDistributionConstraint__minimumDistance',
+                           '_PairDistributionConstraint__maximumDistance',
+                           '_PairDistributionConstraint__shellCenters',
+                           '_PairDistributionConstraint__edges',
+                           '_PairDistributionConstraint__histogramSize',
+                           '_PairDistributionConstraint__experimentalDistances',
+                           '_PairDistributionConstraint__experimentalPDF',
+                           '_PairDistributionConstraint__shellVolumes',
+                           '_PairDistributionConstraint__elementsPairs',
+                           '_PairDistributionConstraint__weighting',
+                           '_PairDistributionConstraint__weightingScheme',
+                           '_PairDistributionConstraint__windowFunction',
+                           '_PairDistributionConstraint__limits',
+                           '_usedDataWeights',
+                           '_shapeFuncParams',
+                           '_shapeUpdateFreq',
+                           '_shapeArray', ] )
+                                  
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( ['_shapeArray'] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)  )
+        object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
         
     def __set_used_data_weights(self, minDistIdx=None, maxDistIdx=None):
         # set used dataWeights
@@ -170,7 +200,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
             assert np.sum(self._usedDataWeights), LOGGER.error("used points dataWeights are all zero.")
             self._usedDataWeights /= FLOAT_TYPE( np.sum(self._usedDataWeights) )
             self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
-
+        # dump to repository
+        self._dump_to_repository({'_usedDataWeights': self._usedDataWeights})   
+                                  
     def _update_shape_array(self):
         rmin = self._shapeFuncParams['rmin']
         rmax = self._shapeFuncParams['rmax']
@@ -197,7 +229,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
                                    rmin=rmin, rmax=rmax, dr=dr)
         self._shapeArray = shapeFunc.get_Gr_shape_function( self.shellCenters )
         del shapeFunc
-
+        # dump to repository
+        self._dump_to_repository({'_shapeArray': self._shapeArray}) 
+        
     def _reset_standard_error(self):
         # recompute squared deviation
         if self.data is not None:
@@ -315,7 +349,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed", "update molecules indexes"):
+        if message in("engine set", "update molecules indexes"):
             if self.engine is not None:
                 self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
                 elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
@@ -325,6 +359,9 @@ class PairDistributionConstraint(ExperimentalConstraint):
             else:
                 self.__elementsPairs   = None
                 self.__weightingScheme = None
+            # dump to repository
+            self._dump_to_repository({'_PairDistributionConstraint__elementsPairs'  : self.__elementsPairs,
+                                      '_PairDistributionConstraint__weightingScheme': self.__weightingScheme}) 
         elif message in("update boundary conditions",):
             self.reset_constraint()
             
@@ -391,6 +428,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 assert is_number(n), LOGGER.error("numpy.ndarray shapeFuncParams must be numbers")
             self._shapeFuncParams = shapeFuncParams.astype(FLOAT_TYPE)    
             self._shapeUpdateFreq = 0
+        # dump to repository
+        self._dump_to_repository({'_shapeFuncParams': self._shapeFuncParams,
+                                  '_shapeUpdateFreq': self._shapeUpdateFreq}) 
+
         
     def set_weighting(self, weighting):
         """
@@ -408,6 +449,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         assert is_element_property(weighting),LOGGER.error( "weighting is not a valid pdbParser atoms database entry")
         assert weighting != "atomicFormFactor", LOGGER.error("atomicFormFactor weighting is not allowed")
         self.__weighting = weighting
+        # dump to repository
+        self._dump_to_repository({'_PairDistributionConstraint__weighting': self.__weighting}) 
      
     def set_window_function(self, windowFunction):
         """
@@ -430,6 +473,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # check window size
         # set windowFunction
         self.__windowFunction = windowFunction
+        # dump to repository
+        self._dump_to_repository({'_PairDistributionConstraint__windowFunction': self.__windowFunction}) 
     
     def set_experimental_data(self, experimentalData):
         """
@@ -441,8 +486,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # get experimental data
         super(PairDistributionConstraint, self).set_experimental_data(experimentalData=experimentalData)
         self.__bin = FLOAT_TYPE(self.experimentalData[1,0] - self.experimentalData[0,0])
+        # dump to repository
+        self._dump_to_repository({'_PairDistributionConstraint__bin': self.__bin})
         # set limits
-        self.set_limits(self.__limits)
+        self.set_limits(self.__limits) 
     
     def set_data_weights(self, dataWeights):
         """
@@ -517,6 +564,18 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set experimental distances and pdf
         self.__experimentalDistances = self.experimentalData[self.__minDistIdx:self.__maxDistIdx +1,0]
         self.__experimentalPDF       = self.experimentalData[self.__minDistIdx:self.__maxDistIdx +1,1]      
+        # dump to repository
+        self._dump_to_repository({'_PairDistributionConstraint__limits'               : self.__limits,
+                                  '_PairDistributionConstraint__minDistIdx'           : self.__minDistIdx,
+                                  '_PairDistributionConstraint__maxDistIdx'           : self.__maxDistIdx,
+                                  '_PairDistributionConstraint__minimumDistance'      : self.__minimumDistance,
+                                  '_PairDistributionConstraint__maximumDistance'      : self.__maximumDistance,
+                                  '_PairDistributionConstraint__shellCenters'         : self.__shellCenters,
+                                  '_PairDistributionConstraint__edges'                : self.__edges,
+                                  '_PairDistributionConstraint__histogramSize'        : self.__histogramSize,
+                                  '_PairDistributionConstraint__shellVolumes'         : self.__shellVolumes,
+                                  '_PairDistributionConstraint__experimentalDistances': self.__experimentalDistances,
+                                  '_PairDistributionConstraint__experimentalPDF'      : self.__experimentalPDF}) 
         # set used dataWeights
         self.__set_used_data_weights(minDistIdx=self.__minDistIdx, maxDistIdx=self.__maxDistIdx )   
         # reset constraint
@@ -858,7 +917,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleStdErr=True, titleScaleFactor=True):
+                   title=True, titleStdErr=True, usedFrame=True, titleScaleFactor=True):
         """ 
         Plot pair distribution constraint.
         
@@ -880,6 +939,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
             #. title (boolean): Whether to create the title or not
+            #. usedFrame(boolean): Whether to show used frame name.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
@@ -930,7 +990,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
             AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
         # set title
         if title:
-            t = ''
+            if usedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:

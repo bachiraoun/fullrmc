@@ -20,7 +20,8 @@ LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
 pdbPath = "molecule.pdb"
-ENGINE = Engine(pdb=pdbPath, constraints=None)
+ENGINE = Engine(path=None)
+ENGINE.set_pdb(pdbPath)
 
 # set groups as the whole molecule
 ENGINE.set_groups_as_molecules()   
@@ -38,7 +39,7 @@ def along_axis_0():
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
     print "Translation along symmetry axis 0: ",X
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=0)) for g in ENGINE.groups]    
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def along_axis_1():
     # run engine translation along axis 1
@@ -47,7 +48,7 @@ def along_axis_1():
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
     print "Translation along symmetry axis 1: ", Y
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=1)) for g in ENGINE.groups]    
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def along_axis_2():    
     # run engine translation along axis 2
@@ -56,7 +57,7 @@ def along_axis_2():
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
     print "Translation along symmetry axis 2: ", Z
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=2)) for g in ENGINE.groups]    
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def random():    
     # run engine random translations
@@ -64,7 +65,7 @@ def random():
     print "Random translation"
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     [g.set_move_generator(TranslationGenerator(amplitude=0.5)) for g in ENGINE.groups]
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
  
  
 ##########################################################################################

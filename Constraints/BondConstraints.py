@@ -29,7 +29,6 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         
         
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. bondsMap (list): The bonds map definition.
                Every item must be a list of four items.\n
                #. First item is the first atom index.
@@ -54,10 +53,13 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         from fullrmc.Constraints.BondConstraints import BondConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        BC = BondConstraint(engine=None)
+        BC = BondConstraint()
         ENGINE.add_constraints(BC)
         
         # define intra-molecular bonds 
@@ -67,13 +69,23 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         
     """
     
-    def __init__(self, engine, bondsMap=None, rejectProbability=1):
+    def __init__(self, bondsMap=None, rejectProbability=1):
         # initialize constraint
-        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set bonds map
         self.set_bonds(bondsMap)
         # set computation cost
         self.set_computation_cost(1.0)
+        # create dump flag
+        self.__dumpBonds = True
+         # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_BondConstraint__bondsMap',
+                           '_BondConstraint__bonds',] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( [] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
         
     @property
     def bondsMap(self):
@@ -101,8 +113,9 @@ class BondConstraint(RigidConstraint, SingularConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed","update boundary conditions",):
-            self.reset_constraint()        
+        if message in("engine set","update boundary conditions",):
+            # set bonds and reset constraint
+            self.set_bonds(self.__bondsMap)       
         
     def should_step_get_rejected(self, standardError):
         """
@@ -163,21 +176,31 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                     assert upper>lower, LOGGER.error("bondsMap items lists third item must be smaller than the fourth item")
                     map.append((idx1, idx2, lower, upper))  
         # set bondsMap definition
-        self.__bondsMap = map      
+        self.__bondsMap = []      
         # create bonds list of indexes arrays
-        self.__bonds = {}
+        self.__bonds    = {}
         if self.engine is not None:
             # parse bondsMap
-            for bond in self.__bondsMap:
-                self.add_bond(bond)
+            self.__dumpBonds = False
+            try:
+                for bond in map:
+                    self.add_bond(bond)
+            except Exception as e:
+                self.__dumpBonds = True
+                raise LOGGER.error(e)
+            self.__dumpBonds = True
             # finalize bonds
             for idx in self.engine.pdb.xindexes:
                 bonds = self.__bonds.get(idx, {"indexes":[],"lower":[],"upper":[]} )
                 self.__bonds[INT_TYPE(idx)] =  {"indexes": np.array(bonds["indexes"], dtype = INT_TYPE)  ,
                                                 "lower"  : np.array(bonds["lower"]  , dtype = FLOAT_TYPE),
                                                 "upper"  : np.array(bonds["upper"]  , dtype = FLOAT_TYPE) }
+        # dump to repository
+        self._dump_to_repository({'_BondConstraint__bondsMap' :self.__bondsMap,
+                                  '_BondConstraint___bonds'   :self.__bonds})
         # reset constraint
         self.reset_constraint()
+       
     
     def add_bond(self, bond):
         """
@@ -195,6 +218,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         assert idx2<len(self.engine.pdb), LOGGER.error("bond atom index must be smaller than maximum number of atoms")
         idx1 = INT_TYPE(idx1)
         idx2 = INT_TYPE(idx2)
+        self.__bondsMap.append( (idx1, idx2, lower, upper) )
         # create bonds
         if not self.__bonds.has_key(idx1):
             idx1ToArray = False
@@ -238,6 +262,10 @@ class BondConstraint(RigidConstraint, SingularConstraint):
             self.__bonds[idx2] =  {"indexes": np.array(bonds["indexes"], dtype = INT_TYPE)  ,
                                     "lower"  : np.array(bonds["lower"]  , dtype = FLOAT_TYPE),
                                     "upper"  : np.array(bonds["upper"]  , dtype = FLOAT_TYPE) }
+        # dump to repository
+        if self.__dumpBonds:
+            self._dump_to_repository({'_BondConstraint__bondsMap' :self.__bondsMap,
+                                      '_BondConstraint___bonds'   :self.__bonds})
                                                          
     def create_bonds_by_definition(self, bondsDefinition):
         """ 
@@ -264,7 +292,10 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                                                                     
         """
         if self.engine is None:
-            raise Exception(LOGGER.error("engine is not defined. Can't create bonds"))
+            raise Exception(LOGGER.error("engine is not defined. Can't create bonds by definition"))
+            return
+        if bondsDefinition is None:
+            bondsDefinition = {}
         assert isinstance(bondsDefinition, dict), LOGGER.error("bondsDefinition must be a dictionary")
         # check map definition
         existingMoleculesNames = sorted(set(self.engine.moleculesNames))

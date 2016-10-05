@@ -22,28 +22,40 @@ from fullrmc.Generators.Rotations import RotationGenerator
 #####################################  CREATE ENGINE  ####################################
 # file names
 expDataPath = "Xrays.gr"
-pdbPath = "CO2.pdb"
-enginePath = "CO2.rmc"
-# initialize engine
-ENGINE = Engine(pdb=pdbPath, constraints=None)
-PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=expDataPath, weighting="atomicNumber")
-IMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None, defaultDistance=1.4)
-B_CONSTRAINT   = BondConstraint(engine=None)
-BA_CONSTRAINT  = BondsAngleConstraint(engine=None)
-# add constraints
-ENGINE.add_constraints([PDF_CONSTRAINT, IMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT])
-B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"CO2": [('C' ,'O1' , 0.52, 1.4),
-                                                                  ('C' ,'O2' , 0.52, 1.4)] })
-BA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"CO2": [ ('C' ,'O1' ,'O2' , 170, 180)] })
+pdbPath     = "CO2.pdb"
+enginePath  = "CO2.rmc"
+FRESH_START = False
+
+ENGINE = Engine(path=None)
+if not ENGINE.is_engine(enginePath) or FRESH_START:
+    # initialize engine
+    ENGINE = Engine(path=enginePath, freshStart=True)
+    ENGINE.set_pdb(pdbPath)
+    PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=expDataPath, weighting="atomicNumber")
+    IMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=1.4)
+    B_CONSTRAINT   = BondConstraint()
+    BA_CONSTRAINT  = BondsAngleConstraint()
+    # add constraints
+    ENGINE.add_constraints([PDF_CONSTRAINT, IMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT])
+    B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"CO2": [('C' ,'O1' , 0.52, 1.4),
+                                                                      ('C' ,'O2' , 0.52, 1.4)] })
+    BA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"CO2": [ ('C' ,'O1' ,'O2' , 170, 180)] })
+    # initialize constraints data
+    ENGINE.initialize_used_constraints()
+    # save engine
+    ENGINE.save()
+else:
+    ENGINE = ENGINE.load(enginePath)
+    # unpack constraints before fitting in case tweaking is needed
+    PDF_CONSTRAINT, IMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT = ENGINE.constraints
+
+
 # set all constraints as used. Used value is True by default! 
 # Now you know you can deactivate any constraint at any time though.
 PDF_CONSTRAINT.set_used(True)
 IMD_CONSTRAINT.set_used(True)
 B_CONSTRAINT.set_used(True)
 BA_CONSTRAINT.set_used(True)
-# initialize constraints data
-ENGINE.initialize_used_constraints()
-
 
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ################################### 
@@ -57,7 +69,7 @@ def run_atoms(ENGINE, rang=None, recur=None, xyzFrequency=500):
     if rang is None: rang=20
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, savePath=enginePath, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="atomsTraj.xyz")
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="atomsTraj.xyz", restartPdb=None)
 
 def run_molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=False, xyzFrequency=500):
     ENGINE.set_groups_as_molecules()
@@ -69,7 +81,7 @@ def run_molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportP
     ENGINE.set_group_selector(gs)
     for stepIdx in range(rang):
         LOGGER.info("Running 'molecules' mode step %i"%(stepIdx))
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=enginePath, xyzFrequency=xyzFrequency, xyzPath="moleculeTraj.xyz")
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="moleculeTraj.xyz", restartPdb=None)
          
 def run_recurring_atoms(ENGINE, rang=None, recur=None, explore=True, refine=False, xyzFrequency=500):
     ENGINE.set_groups(None)  
@@ -83,11 +95,11 @@ def run_recurring_atoms(ENGINE, rang=None, recur=None, explore=True, refine=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'explore' mode step %i"%(stepIdx))
         if explore:
-            ENGINE.run(numberOfSteps=nsteps, savePath=enginePath, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="exploreTraj.xyz")
+            ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="exploreTraj.xyz", restartPdb=None)
         elif refine:            
-            ENGINE.run(numberOfSteps=nsteps, savePath=enginePath, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="refineTraj.xyz")
+            ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="refineTraj.xyz", restartPdb=None)
         else:
-            ENGINE.run(numberOfSteps=nsteps, savePath=enginePath, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="recurTraj.xyz")
+            ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="recurTraj.xyz", restartPdb=None)
             
 ##########################################################################################
 ####################################  RUN SIMULATION  ####################################

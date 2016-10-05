@@ -8,6 +8,7 @@ Therefore it has become possible to fully customize and set any possibly imagina
 """
 
 # standard libraries imports
+import os
 import inspect
 from random import random as randfloat
 
@@ -16,24 +17,73 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path
+from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path
 
    
-class Constraint(object):
+class Constraint(ListenerBase):
     """
     A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.
-    
-    :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
     """
-    def __init__(self, engine):
+    def __init__(self):
+        # init ListenerBase
+        super(Constraint, self).__init__()
+        # set engine
+        self.__engine = None
+        # set used flag
         self.set_used(True)
-        self.set_engine(engine)
         # initialize data
         self.__initialize_constraint()
         # computation cost 
-        self.__computationCost = 0
+        #self.__computationCost = 0
+        self.set_computation_cost(0)
+        # set frame data
+        FRAME_DATA  = ('_Constraint__state', '_Constraint__used',
+                       '_Constraint__tried', '_Constraint__accepted',
+                       '_Constraint__varianceSquared','_Constraint__standardError',
+                       '_Constraint__originalData', '_Constraint__data',
+                       '_Constraint__activeAtomsDataBeforeMove', '_Constraint__activeAtomsDataAfterMove',
+                       '_Constraint__afterMoveStandardError','_Constraint__computationCost')
+        RUNTIME_DATA = ('_Constraint__state','_Constraint__tried', '_Constraint__accepted',
+                        '_Constraint__varianceSquared','_Constraint__standardError','_Constraint__data',)
+        object.__setattr__(self, 'FRAME_DATA',  FRAME_DATA   )
+        object.__setattr__(self, 'RUNTIME_DATA',RUNTIME_DATA )
     
+    def __setattr__(self, name, value):
+        if name in ('FRAME_DATA','RUNTIME_DATA',):
+            raise LOGGER.error("Setting '%s' is not allowed."%name)
+        else:
+            object.__setattr__(self, name, value)
+            
+    def __getstate__(self):
+        state = {}
+        for k, v in self.__dict__.items():            
+            if k in self.FRAME_DATA:
+                continue
+            else:
+                state[k] = v
+        return state
+    
+    def _set_engine(self, engine):
+        assert self.__engine is None, LOGGER.error("Re-setting constraint engine is not allowed.")
+        from fullrmc.Engine import Engine
+        assert isinstance(engine, Engine),LOGGER.error("engine must be a fullrmc Engine instance")
+        self.__engine = engine
+        # set constraint unique id
+        names = [c.constraintId for c in engine.constraints]
+        idx = 0
+        while True:
+            name = self.__class__.__name__ + "_%i"%idx
+            if name not in names:
+                self.__constraintId = name
+                break
+            else:
+                idx += 1
+        # reset flags
+        # resetting is commented because changing engine is not allowed anymore
+        # and there is no need to reset_constraint anymore since at this poing all flag
+        # are still and their reset value.
+        #self.reset_constraint(reinitialize=False, flags=True, data=False)
+        
     def __initialize_constraint(self):
         # initialize flags
         self.__state           = None
@@ -48,7 +98,23 @@ class Constraint(object):
         # initialize standard error
         self.__standardError           = None
         self.__afterMoveStandardError  = None
+        # dunp to repository
+        self._dump_to_repository({'_Constraint__state'                    : self.__state,
+                                  '_Constraint__tried'                    : self.__tried,
+                                  '_Constraint__accepted'                 : self.__accepted,
+                                  '_Constraint__varianceSquared'          : self.__varianceSquared,
+                                  '_Constraint__originalData'             : self.__originalData,
+                                  '_Constraint__data'                     : self.__data,
+                                  '_Constraint__activeAtomsDataBeforeMove': self.__activeAtomsDataBeforeMove,
+                                  '_Constraint__activeAtomsDataAfterMove' : self.__activeAtomsDataAfterMove,
+                                  '_Constraint__standardError'            : self.__standardError,
+                                  '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError})
     
+    @property
+    def constraintId(self):
+        """ Get constraints unique id."""
+        return self.__constraintId 
+        
     @property
     def engine(self):
         """ Get the engine fullrmc instance."""
@@ -113,21 +179,28 @@ class Constraint(object):
     def afterMoveStandardError(self):
         """ Get constraint's current calculated StandardError after last move."""
         return self.__afterMoveStandardError
-        
+       
+    def _get_repository(self):
+        if self.engine is None:
+            return None
+        else:
+            return self.engine._get_repository()
+    
+    def _dump_to_repository(self, dataDict):
+        rep = self._get_repository()
+        if rep is None:
+            return
+        cp = os.path.join(self.engine.usedFrame, 'constraints', self.__constraintId)
+        #print 'Constraint._dump_to_repository --> ', cp
+        for name, value in dataDict.items():
+            rep.dump(value=value, relativePath=cp, name=name, replace=True)    
+    
     def _set_original_data(self, data):
         """ Used only by the engine to set constraint's data as initialized for the first time."""
         self.__originalData = data
-        
-    def listen(self, message, argument=None):
-        """   
-        Listen's to any message sent from the Broadcaster.
-        
-        :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any type of argument to pass to the listeners.
-        """
-        pass
-        
+        # dump to repository
+        self._dump_to_repository({'_Constraint__originalData' :self.__originalData})
+    
     def _runtime_initialize(self):
         """   
         This is called once everytime engine.run method is executed.
@@ -168,6 +241,8 @@ class Constraint(object):
         """
         assert is_number(value), LOGGER.error("computation cost value must be convertible to a number")
         self.__computationCost  = FLOAT_TYPE(value)
+        # dump to repository
+        self._dump_to_repository({'_Constraint__computationCost' :self.__computationCost})
    
     def set_used(self, value):
         """
@@ -178,6 +253,8 @@ class Constraint(object):
         """
         assert isinstance(value, bool), LOGGER.error("value must be boolean")
         self.__used = value
+        # dump to repository
+        self._dump_to_repository({'_Constraint__used' :self.__used})
     
     def set_state(self, value):
         """
@@ -290,36 +367,33 @@ class Constraint(object):
             self.__initialize_constraint()
         # initialize flags
         if flags:
-            self.__state        = None
-            self.__tried        = 0
-            self.__accepted     = 0
+            self.__state                  = None
+            self.__tried                  = 0
+            self.__accepted               = 0
+            self.__standardError          = None
+            self.__afterMoveStandardError = None
+            # dunp to repository
+            self._dump_to_repository({'_Constraint__state'                  : self.__state,
+                                      '_Constraint__tried'                  : self.__tried,
+                                      '_Constraint__accepted'               : self.__accepted,
+                                      '_Constraint__standardError'          : self.__standardError,
+                                      '_Constraint__afterMoveStandardError' : self.__afterMoveStandardError})
         # initialize data
         if data:
             self.__originalData              = None
             self.__data                      = None
             self.__activeAtomsDataBeforeMove = None
             self.__activeAtomsDataAfterMove  = None
-        # initialize standard error
-        self.__standardError           = None
-        self.__afterMoveStandardError  = None
-   
-    def set_engine(self, engine):
-        """
-        Sets the constraints fullrmc engine instance.
-        'engine changed' message will be broadcasted automatically to the constraint's listener listen method.
-        
-        :Parameters:
-            #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
-        """
-        if engine is not None:
-            from fullrmc.Engine import Engine
-            assert isinstance(engine, Engine),LOGGER.error("engine must be None or fullrmc Engine instance")
-        self.__engine = engine
-        # reset flags
-        self.reset_constraint(reinitialize=False, flags=True, data=False)
-        #self.set_state(None)
-        #self.set_tried(0)
-        #self.set_accepted(0)
+            self.__standardError             = None
+            self.__afterMoveStandardError    = None
+            # dunp to repository
+            self._dump_to_repository({'_Constraint__originalData'             : self.__originalData,
+                                      '_Constraint__data'                     : self.__data,
+                                      '_Constraint__activeAtomsDataBeforeMove': self.__activeAtomsDataBeforeMove,
+                                      '_Constraint__activeAtomsDataAfterMove' : self.__activeAtomsDataAfterMove,
+                                      '_Constraint__standardError'            : self.__standardError,
+                                      '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError})
+
     
     def compute_and_set_standard_error(self):
         """ Computes and sets the constraint's standardError by calling compute_standard_error and passing the constraint's data."""
@@ -379,9 +453,9 @@ class ExperimentalConstraint(Constraint):
     untouched and the limits minimum and maximum won't be checked.
            
     """
-    def __init__(self, engine, experimentalData, dataWeights=None, scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2) ):
+    def __init__(self, experimentalData, dataWeights=None, scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2) ):
         # initialize constraint
-        super(ExperimentalConstraint, self).__init__(engine=engine)
+        super(ExperimentalConstraint, self).__init__()
         # set the constraint's experimental data
         self.__dataWeights      = None
         self.__experimentalData = None
@@ -392,7 +466,16 @@ class ExperimentalConstraint(Constraint):
         self.set_adjust_scale_factor(adjustScaleFactor)
         # set data weights
         self.set_data_weights(dataWeights)
-    
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_ExperimentalConstraint__dataWeights',
+                           '_ExperimentalConstraint__experimentalData',
+                           '_ExperimentalConstraint__scaleFactor'] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( ['_ExperimentalConstraint__scaleFactor'] )
+        object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA',tuple(RUNTIME_DATA) )
+        
     def _set_fitted_scale_factor_value(self, scaleFactor):
         """
         This method is a scaleFactor value without any validity checking.
@@ -402,7 +485,6 @@ class ExperimentalConstraint(Constraint):
             LOGGER.info("Experimental constraint '%s' scale factor updated from %.6f to %.6f" %(self.__class__.__name__, self.__scaleFactor, scaleFactor))
             self.__scaleFactor = scaleFactor
         
-    
     @property
     def experimentalData(self):
         """ Gets the experimental data of the constraint. """
@@ -446,6 +528,8 @@ class ExperimentalConstraint(Constraint):
         """
         assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
         self.__scaleFactor = FLOAT_TYPE(scaleFactor)
+        # dump to repository
+        self._dump_to_repository({'_ExperimentalConstraint__scaleFactor' :self.__scaleFactor})
         ## reset constraint
         self.reset_constraint()
     
@@ -478,6 +562,10 @@ class ExperimentalConstraint(Constraint):
         self.__adjustScaleFactorFrequency = freq
         self.__adjustScaleFactorMinimum   = minSF
         self.__adjustScaleFactorMaximum   = maxSF
+        # dump to repository
+        self._dump_to_repository({'_ExperimentalConstraint__adjustScaleFactorFrequency': self.__adjustScaleFactorFrequency,
+                                  '_ExperimentalConstraint__adjustScaleFactorMinimum'  : self.__adjustScaleFactorMinimum,
+                                  '_ExperimentalConstraint__adjustScaleFactorMaximum'  : self.__adjustScaleFactorMaximum})
         # reset constraint
         self.reset_constraint()
         
@@ -501,6 +589,8 @@ class ExperimentalConstraint(Constraint):
             self.__experimentalData = experimentalData
         else:
             raise Exception( LOGGER.error("%s"%message) )
+        # dump to repository
+        self._dump_to_repository({'_ExperimentalConstraint__experimentalData': self.__experimentalData})
     
     def set_data_weights(self, dataWeights):
         """
@@ -529,6 +619,8 @@ class ExperimentalConstraint(Constraint):
             dataWeights /= FLOAT_TYPE( np.sum(dataWeights) )
             dataWeights *= FLOAT_TYPE( len(dataWeights) )                      
         self.__dataWeights = dataWeights
+        # dump to repository
+        self._dump_to_repository({'_ExperimentalConstraint__dataWeights': self.__dataWeights})
         
     def check_experimental_data(self, experimentalData):
         """
@@ -593,7 +685,6 @@ class ExperimentalConstraint(Constraint):
                 SF = self.fit_scale_factor(experimentalData, modelData, dataWeights)                 
         return SF
     
-    
     def compute_standard_error(self, experimentalData, modelData):
         """ 
         Compute the squared deviation between modal computed data and the experimental ones. 
@@ -626,25 +717,24 @@ class ExperimentalConstraint(Constraint):
 class SingularConstraint(Constraint):
     """ A singular constraint is a constraint that doesn't allow multiple instances in the same engine."""
     
-    @property
-    def is_singular(self):
+    def is_singular(self, engine):
         """
         Get whether only one instance of this constraint type is present in the engine.
         True for only itself found, False for other instance of the same __class__.__name__
         """
-        for c in self.engine.constraints:
+        for c in engine.constraints:
             if c is self: 
                 continue
             if c.__class__.__name__ == self.__class__.__name__:
                 return False
         return True
             
-    def assert_singular(self):
+    def assert_singular(self, engine):
         """
         Checks whether only one instance of this constraint type is present in the engine.
         Raises Exception if multiple instances are present.
         """
-        assert self.is_singular, LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine"%self.__class__.__name__)
+        assert self.is_singular(engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine"%self.__class__.__name__)
         
         
 class RigidConstraint(Constraint):
@@ -659,11 +749,15 @@ class RigidConstraint(Constraint):
            It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
            and 0 means accepting all steps regardless whether standardError increases or not.
     """
-    def __init__(self, engine, rejectProbability):
+    def __init__(self, rejectProbability):
         # initialize constraint
-        super(RigidConstraint, self).__init__(engine=engine)
+        super(RigidConstraint, self).__init__()
         # set probability
         self.set_reject_probability(rejectProbability)
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_RigidConstraint__rejectProbability'] )
+        object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA) )
         
     @property
     def rejectProbability(self):
@@ -683,6 +777,8 @@ class RigidConstraint(Constraint):
         rejectProbability = FLOAT_TYPE(rejectProbability)
         assert rejectProbability>=0 and rejectProbability<=1, LOGGER.error("rejectProbability must be between 0 and 1")
         self.__rejectProbability = rejectProbability
+        # dump to repository
+        self._dump_to_repository({'_RigidConstraint__dataWeights': self.__rejectProbability})
     
     def should_step_get_rejected(self, standardError):
         """
@@ -738,7 +834,14 @@ class QuasiRigidConstraint(RigidConstraint):
         # set probability
         self.set_threshold_ratio(thresholdRatio)
         # initialize maximum standard error
-        self.__maximumStandardError = None
+        #self.__maximumStandardError = None
+        self._set_maximum_standard_error(None)
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_QuasiRigidConstraint__thresholdRatio',
+                           '_QuasiRigidConstraint__maximumStandardError'] )
+        object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA) )
+        
         
     def _set_maximum_standard_error(self, maximumStandardError):
         """ Sets the maximum standard error. Use carefully, it's not meant to be used externally.
@@ -749,7 +852,9 @@ class QuasiRigidConstraint(RigidConstraint):
             maximumStandardError = FLOAT_TYPE(maximumStandardError)
             assert maximumStandardError>0, LOGGER.error("maximumStandardError must be a positive.")
         self.__maximumStandardError = maximumStandardError
-        
+        # dump to repository
+        self._dump_to_repository({'_QuasiRigidConstraint__maximumStandardError': self.__maximumStandardError})
+    
     @property
     def thresholdRatio(self):
         """ Get threshold ratio. """
@@ -773,6 +878,8 @@ class QuasiRigidConstraint(RigidConstraint):
         thresholdRatio = FLOAT_TYPE(thresholdRatio)
         assert thresholdRatio>=0 and thresholdRatio<=1, LOGGER.error("thresholdRatio must be between 0 and 1")
         self.__thresholdRatio = thresholdRatio
+        # dump to repository
+        self._dump_to_repository({'_QuasiRigidConstraint__thresholdRatio': self.__thresholdRatio})
         
     def should_step_get_rejected(self, standardError):
         """

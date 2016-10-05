@@ -17,9 +17,10 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, generate_random_float
+from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path, generate_random_float
 
 
+#class MoveGenerator(ListenerBase):
 class MoveGenerator(object):
     """ 
     It is the parent class for all moves generators.
@@ -29,22 +30,15 @@ class MoveGenerator(object):
         #. group (None, Group): The group instance.
     """
     def __init__(self, group=None):
+        # init ListenerBase
+        super(MoveGenerator, self).__init__()
+        # set group
         self.set_group(group)
     
     @property
     def group(self):
         """ Get the group instance."""
         return self.__group
-    
-    def listen(self, message, argument=None):
-        """   
-        Listens to any message sent from the Broadcaster.
-        
-        :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. arguments (object): Any python object.
-        """
-        pass
         
     def set_group(self, group):
         """
@@ -376,7 +370,10 @@ class MoveGeneratorCombinator(MoveGenerator):
         from fullrmc.Generators.Rotations import RotationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -505,7 +502,10 @@ class MoveGeneratorCollector(MoveGenerator):
         from fullrmc.Generators.Rotations import RotationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

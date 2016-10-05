@@ -37,7 +37,10 @@ class Group(object):
         from fullrmc.Core.Group import Group
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         

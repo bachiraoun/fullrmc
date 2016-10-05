@@ -2,7 +2,7 @@
 This is a C compiled module to compute transformations from 
 real to reciprocal space and vice versa.
 """
-from libc.math cimport sqrt, abs, sin
+from libc.math cimport sin
 import cython
 cimport cython
 import numpy as np
@@ -31,7 +31,6 @@ cdef C_INT32   INT32_ZERO      = 0
 cdef extern from "math.h":
     C_FLOAT32 floor(C_FLOAT32 x)
     C_FLOAT32 ceil(C_FLOAT32 x)
-    C_FLOAT32 sqrt(C_FLOAT32 x)
 
     
     

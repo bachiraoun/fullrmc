@@ -89,7 +89,10 @@ class TranslationGenerator(MoveGenerator):
         from fullrmc.Generators.Translations import TranslationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -198,7 +201,10 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
         from fullrmc.Generators.Translations import TranslationAlongAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -307,7 +313,10 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
         from fullrmc.Generators.Translations import TranslationTowardsAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -395,7 +404,10 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         from fullrmc.Generators.Translations import TranslationAlongSymmetryAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -520,7 +532,10 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
         from fullrmc.Generators.Translations import TranslationTowardsSymmetryAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -608,7 +623,10 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         from fullrmc.Generators.Translations import TranslationAlongSymmetryAxisPath
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -735,7 +753,10 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         from fullrmc.Generators.Translations import TranslationTowardsCenterGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

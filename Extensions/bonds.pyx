@@ -1,7 +1,7 @@
 """
 This is a C compiled module to compute atomic bonds.
 """                      
-from libc.math cimport sqrt, abs
+from libc.math cimport sqrt, fabs
 import cython
 cimport cython
 import numpy as np
@@ -68,14 +68,14 @@ def single_bonds_dists( ndarray[C_FLOAT32, ndim=1]    distances not None,
         if distance>=lower and distance<=upper:
             reducedDistance = FLOAT_ZERO     
         elif reduceDistanceToUpper:
-            reducedDistance = abs(upper-distance)
+            reducedDistance = fabs(upper-distance)
         elif reduceDistanceToLower:
-            reducedDistance = abs(lower-distance)
+            reducedDistance = fabs(lower-distance)
         else:
             if distance > (lower+upper)/FLOAT_TWO:
-                reducedDistance = abs(upper-distance)
+                reducedDistance = fabs(upper-distance)
             else:
-                reducedDistance = abs(lower-distance)
+                reducedDistance = fabs(lower-distance)
         # increment histograms
         bondsLength[i]      = distance
         reducedDistances[i] = reducedDistance

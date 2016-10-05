@@ -33,7 +33,6 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         
         
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. coordNumDef (None, list, tuple): The coordination number definition. 
            It must be None or a list or tuple where every element is a list or a
            tuple of exactly 6 items and an optional 7th item for weight.
@@ -61,20 +60,64 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
            It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
            and 0 means accepting all steps regardless whether standardError increases or not.
+    
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.AtomicCoordinationConstraints import AtomicCoordinationNumberConstraint
+        
+        # create engine 
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
+        
+        # create and add constraint
+        ACNC = AtomicCoordinationNumberConstraint()
+        ENGINE.add_constraints(ACNC)
+        
+        # create definition
+        ACNC.set_coordination_number_definition( [ ('Al','Cl',1.5, 2.5, 2, 2),
+                                                   ('Al','S', 2.5, 3.0, 2, 2)] )
+        
     """
-    def __init__(self, engine, coordNumDef=None, rejectProbability=1):
+    def __init__(self, coordNumDef=None, rejectProbability=1):
         # initialize constraint
-        RigidConstraint.__init__(self, engine=engine, rejectProbability=rejectProbability)
+        RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # initialize data
         self.__initialize_constraint_data()
         # set coordination number definition
         self.set_coordination_number_definition(coordNumDef)
         # set computation cost
         self.set_computation_cost(5.0)
+        
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_AtomicCoordinationNumberConstraint__coordNumDef',
+                           '_AtomicCoordinationNumberConstraint__coresIndexes',
+                           '_AtomicCoordinationNumberConstraint__numberOfCores',
+                           '_AtomicCoordinationNumberConstraint__shellsIndexes',
+                           '_AtomicCoordinationNumberConstraint__lowerShells',
+                           '_AtomicCoordinationNumberConstraint__upperShells',
+                           '_AtomicCoordinationNumberConstraint__minAtoms',
+                           '_AtomicCoordinationNumberConstraint__maxAtoms',
+                           '_AtomicCoordinationNumberConstraint__coordNumData',
+                           '_AtomicCoordinationNumberConstraint__weights',
+                           '_AtomicCoordinationNumberConstraint__asCoreDefIdxs',
+                           '_AtomicCoordinationNumberConstraint__inShellDefIdxs',] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( ['_AtomicCoordinationNumberConstraint__coordNumData',] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
     
     def __initialize_constraint_data(self):
+        # set definition
+        self.__coordNumDef = None
         # the following is the parsing of defined shells
         self.__coresIndexes  = []
+        self.__numberOfCores = []
         self.__shellsIndexes = []
         self.__lowerShells   = []
         self.__upperShells   = []
@@ -86,7 +129,9 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # atoms to cores and shells pointers
         self.__asCoreDefIdxs  = []
         self.__inShellDefIdxs = []
-        
+        # no need to dump to repository because all of those attributes will be written 
+        # at the point of setting the definition. 
+
     @property
     def coordNumDef(self):
         """Get coordination number definition dictionary"""
@@ -158,7 +203,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed", "update molecules indexes"):
+        if message in("engine set", "update molecules indexes"):
             self.set_coordination_number_definition(self.__coordNumDef)
         elif message in("update boundary conditions",):
             self.reset_constraint()        
@@ -203,8 +248,8 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                         [ ([0,10,11,15,1000],{'name':'Ti'}, 2.2, 3.1, 7, 9, 5), ...]   
         
         """
-        self.__coordNumDef = coordNumDef
         if self.engine is None:
+            self.__coordNumDef = coordNumDef
             return
         elif coordNumDef is None:
             coordNumDef = []
@@ -317,6 +362,19 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         self.__coordNumData  = np.array( self.__coordNumData, dtype=FLOAT_TYPE )
         self.__weights       = np.array( self.__weights, dtype=FLOAT_TYPE )
         self.__numberOfCores = np.array( [len(idxs) for idxs in self.__coresIndexes], dtype=FLOAT_TYPE )
+        # set definition
+        self.__coordNumDef = coordNumDef
+        # dump to repository
+        self._dump_to_repository({'_AtomicCoordinationNumberConstraint__coordNumDef'  :self.__coordNumDef,
+                                  '_AtomicCoordinationNumberConstraint__coordNumData' :self.__coordNumData,
+                                  '_AtomicCoordinationNumberConstraint__weights'      :self.__weights,
+                                  '_AtomicCoordinationNumberConstraint__numberOfCores':self.__numberOfCores,
+                                  '_AtomicCoordinationNumberConstraint__coresIndexes' :self.__coresIndexes,
+                                  '_AtomicCoordinationNumberConstraint__shellsIndexes':self.__shellsIndexes,
+                                  '_AtomicCoordinationNumberConstraint__lowerShells'  :self.__lowerShells,
+                                  '_AtomicCoordinationNumberConstraint__upperShells'  :self.__upperShells,
+                                  '_AtomicCoordinationNumberConstraint__minAtoms'     :self.__minAtoms,
+                                  '_AtomicCoordinationNumberConstraint__maxAtoms'     :self.__maxAtoms})
 
     def compute_standard_error(self, data):
         """ 

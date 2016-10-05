@@ -3,7 +3,7 @@ This is a C compiled module to compute
 boundary conditions related calculations
 """
 
-from libc.math cimport sqrt, abs
+from libc.math cimport sqrt
 import cython
 cimport cython
 import numpy as np

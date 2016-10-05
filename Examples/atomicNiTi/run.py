@@ -32,48 +32,53 @@ sqExpPath      = os.path.join(DIR_PATH, sqFileName)
 pdbPath        = os.path.join(DIR_PATH, pdbFileName)
 engineFilePath = os.path.join(DIR_PATH, engineFileName)
 # set some useful flags
-EXPORT_PDB = False    
+EXPORT_PDB  = False    
+FRESH_START = True
 
 # check Engine exists, if not build it otherwise load it.
-if engineFileName not in os.listdir(DIR_PATH):
-    # create engine
-    ENGINE = Engine(pdb=pdbPath, constraints=None)
+ENGINE = Engine(path=None)
+if not ENGINE.is_engine(engineFilePath) or FRESH_START:
+   # create engine
+    ENGINE = Engine(path=engineFilePath, freshStart=True)
+    ENGINE.set_pdb(pdbFileName)
     # add G(r) constraint
-    PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=grExpPath, weighting="atomicNumber")
+    PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=grExpPath, weighting="atomicNumber")
     ENGINE.add_constraints([PDF_CONSTRAINT]) 
     # Rebin S(Q) experimental data and build constraint
     Sq = np.transpose( rebin(np.loadtxt(sqExpPath) , bin=0.05) ).astype(FLOAT_TYPE)
-    RSF_CONSTRAINT = ReducedStructureFactorConstraint(engine=None, experimentalData=Sq, weighting="atomicNumber")
+    RSF_CONSTRAINT = ReducedStructureFactorConstraint(experimentalData=Sq, weighting="atomicNumber")
     ENGINE.add_constraints([RSF_CONSTRAINT])
-    # add coordination number constraint
-    ACN_CONSTRAINT = AtomicCoordinationNumberConstraint(engine=None)
+    # add coordination number constraint and set to un-used
+    ACN_CONSTRAINT = AtomicCoordinationNumberConstraint()
     ENGINE.add_constraints([ACN_CONSTRAINT]) 
-    ACN_CONSTRAINT.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8), 
-                                                         ('ti','ni',2.2, 3.1, 6, 10),
-                                                         ('ni','ni',2.5, 3.5, 4, 8), 
-                                                         ('ni','ti',2.2, 3.1, 6, 10) ] )
+    ACN_CONSTRAINT.set_used(False)
     # add inter-molecular distance constraint
-    EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None, defaultDistance=2.2)
+    EMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=2.2, flexible=True)
     ENGINE.add_constraints([EMD_CONSTRAINT]) 
     # save engine
-    ENGINE.save(engineFilePath)
+    ENGINE.save()
 else:
-    ENGINE = Engine(pdb=None).load(engineFilePath)      
+    ENGINE = ENGINE.load(engineFilePath)
     # unpack constraints before fitting in case tweaking is needed
     PDF_CONSTRAINT, RSF_CONSTRAINT, ACN_CONSTRAINT, EMD_CONSTRAINT = ENGINE.constraints
-  
-
 
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ################################### 
 def run_normal(nsteps, saveFrequency, engineFilePath, exportPdb=True):
-    ENGINE.set_groups(None)
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency, savePath=engineFilePath)
+    ENGINE.set_groups_as_atoms()
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
     if exportPdb:
         ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i.pdb"%(ENGINE.generated)) )
 
 def run_swap(nsteps, saveFrequency, engineFilePath, exportPdb=True):
-    ENGINE.set_groups(None)
+    # activate coordination number. Play with definition and set_used to True
+    ACN_CONSTRAINT.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8), 
+                                                         ('ti','ni',2.2, 3.1, 6, 10),
+                                                         ('ni','ni',2.5, 3.5, 4, 8), 
+                                                         ('ni','ti',2.2, 3.1, 6, 10) ] )
+    ACN_CONSTRAINT.set_used(False)
+    # reset groups
+    ENGINE.set_groups_as_atoms()
     #### set swap generators Ni-->Ti and Ti-->Ni ###
     allElements = ENGINE.allElements
     niSwapList = [[idx] for idx in range(len(allElements)) if allElements[idx]=='ni']
@@ -88,7 +93,7 @@ def run_swap(nsteps, saveFrequency, engineFilePath, exportPdb=True):
         elif allElements[g.indexes[0]]=='ti':
             g.set_move_generator(toNiSG)
     # run
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency, savePath=engineFilePath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
     if exportPdb:
         ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i.pdb"%(ENGINE.generated)) )
 

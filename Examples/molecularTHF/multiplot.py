@@ -33,15 +33,18 @@ INTRA_STYLES = [r[0] + r[1]for r in itertools.product(markers, INTRA_STYLES)]
 INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], colors)]
 INTER_STYLES = [r[0] + r[1]for r in itertools.product(markers, INTER_STYLES)]
 
-# engine variables
-engineSavePath = "thf_engine.rmc"
-    
-# check Engine already saved
-if engineSavePath not in os.listdir("."):
-    exit()
+# dirname
+DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+engineFilePath = os.path.join(DIR_PATH, "thf_engine.rmc")
+
+# load
+ENGINE = Engine(path=None)
+result, mes = ENGINE.is_engine(engineFilePath, mes=True)
+if result:
+    ENGINE = ENGINE.load(engineFilePath)
+    PDF = ENGINE.constraints[0]
 else:
-    ENGINE = Engine(pdb=None).load(engineSavePath)
-    PDF = ENGINE.constraints[0] 
+    print mes
 
 
 # plot total
@@ -69,7 +72,7 @@ highRAx.plot(PDF.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25,
 #        lowRAx.plot(PDF.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key.split("rdf_")[1] )
 #        highRAx.plot(PDF.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key.split("rdf_")[1] )
 #        interStyleIndex+=1
-#        
+
 # set legend        
 totalAx.legend(ncol=2, frameon=False, fontsize=20)#, loc=(1.05,-1.25))
 totalAx.set_xlim([0,16])

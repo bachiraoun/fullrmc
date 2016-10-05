@@ -1,7 +1,7 @@
 """
 This is a C compiled module to compute bonded atoms angle.
 """      
-from libc.math cimport sqrt, abs
+from libc.math cimport sqrt, fabs
 import cython
 cimport cython
 import numpy as np
@@ -94,21 +94,21 @@ def single_angles_diffs( ndarray[C_FLOAT32, ndim=2]    leftVectors not None,
         dot = leftVector_x*rightVector_x + leftVector_y*rightVector_y + leftVector_z*rightVector_z
         # calculate angle
         dot  /= (leftNorm*rightNorm)
-        angle = np.arccos( dot ) #np.arccos( np.clip( dot ,-1, 1 ) )  
+        angle = np.arccos( np.clip( dot ,-1, 1 ) )  # np.arccos( dot ) clip for floating errors
         # compute reduced angle
         lower = lowerLimit[i]
         upper = upperLimit[i]
         if angle>=lower and angle<=upper:
             reducedAngle = FLOAT_ZERO     
         elif reduceAngleToUpper:
-            reducedAngle = abs(upper-angle)
+            reducedAngle = fabs(upper-angle)
         elif reduceAngleToLower:
-            reducedAngle = abs(lower-angle)
+            reducedAngle = fabs(lower-angle)
         else:
             if angle > (lower+upper)/FLOAT_TWO:
-                reducedAngle = abs(upper-angle)
+                reducedAngle = fabs(upper-angle)
             else:
-                reducedAngle = abs(lower-angle)
+                reducedAngle = fabs(lower-angle)
         # increment histograms
         angles[i]        = angle
         reducedAngles[i] = reducedAngle

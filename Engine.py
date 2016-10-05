@@ -13,7 +13,7 @@ bond-angles, inter-molecular-distances, etc.
 import os
 import time
 import sys
-import atexit
+import uuid
 import tempfile
 import multiprocessing
 
@@ -25,51 +25,43 @@ except:
     import pickle
 from pdbParser.pdbParser import pdbParser
 from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
+from pyrep import Repository
 
 # fullrmc library imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.boundary_conditions_collection import transform_coordinates
-from fullrmc.Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.Group import Group
-from fullrmc.Core.MoveGenerator import SwapGenerator
-from fullrmc.Core.GroupSelector import GroupSelector
-from fullrmc.Selectors.RandomSelectors import RandomSelector
+from __pkginfo__ import __version__
+from Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from Core.boundary_conditions_collection import transform_coordinates
+from Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
+from Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from Core.Group import Group
+from Core.MoveGenerator import SwapGenerator
+from Core.GroupSelector import GroupSelector
+from Selectors.RandomSelectors import RandomSelector
 
 
 class Engine(object):
     """ 
     The Reverse Monte Carlo (RMC) engine, used to launched an RMC simulation. 
     It has the capability to use and fit simultaneously multiple sets of 
-    experimental data. One can also define other constraints such as distances, 
+    experimental data. One can also define constraints such as distances, 
     bonds length, angles and many others.   
     
     :Parameters:
-            #. pdb (pdbParser, string): The configuration pdb as a pdbParser instance or a path string to a pdb file.
-            #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, numpy.ndarray, number): The configuration's boundary conditions.
-               If None, boundaryConditions are set to InfiniteBoundaries with no periodic boundaries.
-               If numpy.ndarray is given, it must be pass-able to a PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
-               If number is given, it's like a numpy.ndarray of shape (1,), it is assumed as a cubic box of box length equal to number.
-            #. names (None, list): All pdb atoms names list. 
-               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
-               If None names will be assigned automatically by parsing pdbParser instance.
-            #. elements (None, list): All pdb atoms elements list.
-               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
-               If None elements will be assigned automatically by parsing pdbParser instance.
-            #. moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
-               If None moleculesIndexes will be assigned automatically by parsing pdbParser instance.
-            #. moleculesNames (None, list): The molecules names list. 
-               List length must be equal to the number of atoms in the pdbParser instance or pdb file.
-               If None, it is automatically generated as the pdb residues name.
-            #. groups (None, list): list of groups, where every group must be a numpy.ndarray of atoms indexes of type numpy.int32.
-               If None, single atom groups of all atoms will be all automatically created.
-            #. groupSelector (None, GroupSelector): The GroupSelector instance. 
-               If None, RandomGroupSelector is set automatically.
-            #. constraints (None, list): The list of constraints instances.
-            #. tolerance (number): The runtime tolerance parameters. 
-               It's the percentage of allowed unsatisfactory 'tried' moves. 
-      
+        #. path (None, string): Engine repository path to save the engine. If None is given
+           path will be set when saving the engine using Engine.save method. if a 
+           non-empty directory is found at the given path an error will be raised.
+        #. frames (None, list): List of frames name. Frames are used to store fitting
+           data. Multiple frames can be used to create a fitting story or to fit 
+           multiple structures simultaneously. Also multiple frames can be used to 
+           launch multiple simulations at the same time and merge structures at some 
+           predefined merging frequency.
+           If None is given, a single frame '0' is initialized automatically.
+        #. logFile (None, string): Logging file basename. A logging file full name will
+           be the given logFile appended '.log' extension automatically.
+           If None is given, logFile is left unchanged.
+        #. freshStart (boolean): Whether to remove any existing fullrmc engine at the 
+           given path if found. If set to False, an error will be raise if a fullrmc 
+           engine or a non-empty directory is found at the given path.
     
     .. code-block:: python
         
@@ -77,53 +69,148 @@ class Engine(object):
         from fullrmc.Engine import Engine
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
         
-        # save engine
-        ENGINE.save("system.rmc")
+        # set pdb file
+        ENGINE.set_pdb(pdbFileName)
         
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups selector if needed ...
         # Re-define moves generators if needed ...
         
+        # save engine
+        ENGINE.save()
+        
         # run engine for 10000 steps and save only at the end
         ENGINE.run(numberOfSteps=10000, saveFrequency=10000, savePath="system.rmc")
     
     """
-    
-    def __init__(self, pdb, boundaryConditions=None,
-                       names=None, elements=None, 
-                       moleculesIndexes=None, moleculesNames=None,
-                       groups=None, groupSelector=None, 
-                       constraints=None, tolerance=0.):
-        # initialize
+    def __init__(self, path=None, frames=None, logFile=None, freshStart=False):
+        # set repository and frame data
+        ENGINE_DATA  = ('_Engine__frames', '_Engine__usedFrame', )
+        FRAME_DATA   = ('_Engine__pdb', '_Engine__tolerance',
+                        '_Engine__boundaryConditions', '_Engine__isPBC', '_Engine__isIBC',
+                        '_Engine__basisVectors', '_Engine__reciprocalBasisVectors',
+                        '_Engine__numberDensity', '_Engine__volume',
+                        '_Engine__realCoordinates','_Engine__boxCoordinates',
+                        '_Engine__groups', '_Engine__groupSelector', '_Engine__state', 
+                        '_Engine__generated', '_Engine__tried', '_Engine__accepted',
+                        '_Engine__tolerated', '_Engine__totalStandardError',
+                        '_Engine__lastSelectedGroupIndex', '_Engine__numberOfMolecules',
+                        '_Engine__moleculesIndexes', '_Engine__moleculesNames',
+                        '_Engine__allElements', '_Engine__elements',
+                        '_Engine__elementsIndexes', '_Engine__numberOfAtomsPerElement',
+                        '_Engine__allNames', '_Engine__names',
+                        '_Engine__namesIndexes', '_Engine__numberOfAtomsPerName') 
+        RUNTIME_DATA = ('_Engine__realCoordinates','_Engine__boxCoordinates',
+                        '_Engine__state', '_Engine__generated', '_Engine__tried', 
+                        '_Engine__accepted','_Engine__tolerated', 
+                        '_Engine__totalStandardError', '_Engine__lastSelectedGroupIndex',)            
+        # might need to add groups to FRAME_DATA
+        object.__setattr__(self, 'ENGINE_DATA', tuple( ENGINE_DATA)  )
+        object.__setattr__(self, 'FRAME_DATA',  tuple( FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA',tuple( RUNTIME_DATA) )
+        
+        # initialize engine' info
+        if frames is None:
+            self.__frames = ('0')
+        else:        
+            self.__frames = []
+            self.__frames = tuple( self.__get_normalized_frames_name(frames) )
+        self.__usedFrame  = self.__frames[0]
+        self.__id         = str(uuid.uuid1())
+        self.__version    = __version__
+        
+        # check whether an engine exists at this path
+        if self.is_engine(path):
+            if freshStart: 
+                Repository().remove_repository(path, relatedFiles=True, relatedFolders=True)                
+            else:
+                m  = "An Engine is found at '%s'. "%path
+                m += "If you wish to override it set freshStart argument to True. "
+                m += "If you wish to load it set path to None and use Engine.load method instead. "
+                raise Exception( LOGGER.error(m) )
+        
+        # initialize path and repository
+        if path is not None:
+            result, message = self.__check_path_to_create_repository(path)
+            assert result, LOGGER.error(message)
+        self.__path       = path
+        self.__repository = None
+        
+        # initialize engine attributes
         self.__broadcaster   = Broadcaster()
         self.__constraints   = []
-        self.__state         = None
+        self.__state         = time.time()
         self.__groups        = []
         self.__groupSelector = None
-        # initialize engine flags and arguments
-        #self._initialize_engine()
+        self.__tolerance     = 0.
+        
+        # set mustSave flag, it indicates  whether saving whole engine is needed before running
+        self.__mustSave = False
+        self.__saveGroupsFlag = True
+        
         # set pdb
-        self.set_pdb(pdb=pdb, boundaryConditions=boundaryConditions, elements=elements, moleculesIndexes=moleculesIndexes, moleculesNames=moleculesNames)
-        # set set groups
-        if groups is not None:
-            self.set_groups(groups)
-        # set group selector
-        if groupSelector is not None:
-            self.set_group_selector(groupSelector)
-        # set constraints
-        if constraints is not None:
-            self.add_constraints(constraints)
-        # set tolerance
-        self.set_tolerance(tolerance)
+        self.set_pdb(pdb=None)
+        
         # create runtime variables and arguments
         self._runtime_ncores = INT_TYPE(1)
-        # set LOGGER file path to saveEngine path
-        #logFile = os.path.join( os.path.dirname(os.path.realpath(_savePath)), LOGGER.logFileBasename)
-        #LOGGER.set_log_file_basename(logFile)
         
+        # set LOGGER file path
+        if logFile is not None:
+            self.set_log_file(logFile)
+        
+    def __setattr__(self, name, value):
+        if name in ('ENGINE_DATA', 'FRAME_DATA', 'RUNTIME_DATA'):
+            raise LOGGER.error("Setting '%s' is not allowed."%name)
+        else:
+            object.__setattr__(self, name, value)
+            
+    def __getstate__(self):
+        state = {}
+        for k, v in self.__dict__.items():
+            if k in self.ENGINE_DATA:
+                continue
+            if k in self.FRAME_DATA:
+                continue
+            state[k] = v
+        return state
+
+    def __get_normalized_frames_name(self, frames):
+        if not isinstance(frames, (list,set,tuple)):
+            frames = [frames]
+        else:
+            frames = list(frames)
+        assert len(frames), LOGGER.error("frames must be a non-empty list.")
+        for idx, f in enumerate(frames):
+            if isinstance(f, basestring):
+                f = str(f)
+                assert str(f).replace('_','').replace('-','').replace(' ','').isalnum(), LOGGER.error("String frame must be strictly alphanumeric allowing only '-' and '_'")
+            else:
+                assert isinstance(f, int), LOGGER.error('Each frame must be either interger or string')
+            f = str(f)
+            assert f not in self.__frames, LOGGER.error("frame '%s' is already used."%f)
+            frames[idx] = f
+        # check for redundancy
+        assert len(frames) == len(set(frames)), "Redundancy is not allowed in frame names."
+        # all is good
+        return frames
+     
+    def __check_path_to_create_repository(self, path):
+        # check for string
+        if not isinstance(path, basestring):
+             return False, "path must be a string. '%s' is given"%path
+        # test if directory is empty
+        if os.path.exists(path):
+            # test directory
+            if not os.path.isdir(path):
+                return False, "path must be a directory. '%s' is given"%path
+            if len(os.listdir(path)):
+                return False, "path directory at '%s' is not empty"%path
+        # all is good unless directory is not writable. 
+        return True, ""
+                
     def __set_runtime_ncores(self, ncores):
         if ncores is None:
             ncores = INT_TYPE(1)
@@ -136,8 +223,10 @@ class Engine(object):
                 ncores = INT_TYPE(multiprocessing.cpu_count())
         self._runtime_ncores = ncores
         
-    def _initialize_engine(self):
+    def _reinit_engine(self):
         """ Initialize all engine arguments and flags. """
+        # engine state
+        self.__state = time.time()
         # engine last moved group index
         self.__lastSelectedGroupIndex = None
         # engine generated steps number
@@ -154,288 +243,667 @@ class Engine(object):
         self.set_groups(None)
         # set group selector as random
         self.set_group_selector(None)
-        
-    def _set_generated(self, generated):
-        """ Set generated flag. """
-        assert is_integer(generated), LOGGER.error("generated must be an integer")
-        generated = int(generated)
-        assert generated>=0, LOGGER.error("generated must be positive")
-        assert generated>=self.__tried, LOGGER.error("generated must be bigger than tried")
-        self.__generated = generated
+        # update constraints in repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True) 
+            self.__repository.dump(value=self.__state, relativePath=self.__usedFrame, name='_Engine__state', replace=True)    
+            self.__repository.dump(value=self.__lastSelectedGroupIndex, relativePath=self.__usedFrame, name='_Engine__lastSelectedGroupIndex', replace=True)    
+            self.__repository.dump(value=self.__generated, relativePath=self.__usedFrame, name='_Engine__generated', replace=True)    
+            self.__repository.dump(value=self.__tried, relativePath=self.__usedFrame, name='_Engine__tried', replace=True)    
+            self.__repository.dump(value=self.__accepted, relativePath=self.__usedFrame, name='_Engine__accepted', replace=True)    
+            self.__repository.dump(value=self.__tolerated, relativePath=self.__usedFrame, name='_Engine__tolerated', replace=True)    
+            self.__repository.dump(value=self.__totalStandardError, relativePath=self.__usedFrame, name='_Engine__totalStandardError', replace=True)                
+            
+    def _set_path(self, path):
+        self.__path = path
     
-    def _set_tried(self, tried):
-        """ Set tried flag. """
-        assert is_integer(tried), LOGGER.error("tried must be an integer")
-        tried = int(tried)
-        assert tried>=0, LOGGER.error("tried must be positive")
-        assert tried<=self.__generated, LOGGER.error("tried must be smaller than generated")
-        self.__tried = tried
+    def _set_repository(self, repo):
+        self.__repository = repo
     
-    def _set_accepted(self, accepted):
-        """ Set accepted flag. """
-        assert is_integer(accepted), LOGGER.error("accepted must be an integer")
-        accepted = int(accepted)
-        assert accepted>=0, LOGGER.error("accepted must be positive")
-        assert accepted<=self.__tried, LOGGER.error("accepted must be smaller than tried")
-        self.__accepted = accepted
+    def _get_repository(self):
+        return self.__repository
         
-    def _set_tolerance(self, tolerated):
-        """ Set tolerance flag. """
-        assert is_integer(tolerated), LOGGER.error("tolerated must be an integer")
-        tolerated = int(tolerated)
-        assert tolerated>=0, LOGGER.error("tolerated must be positive")
-        assert tolerated<=self.__generated, LOGGER.error("tolerated must be smaller than generated")
-        assert tolerated<=self.__tried, LOGGER.error("tolerated must be smaller than tried")
-        self.__tolerated = tolerated
+    def _get_broadcaster(self):
+        return self.__broadcaster
+
+    #def _set_generated(self, generated):
+    #    """ Set generated flag. """
+    #    assert is_integer(generated), LOGGER.error("generated must be an integer")
+    #    generated = int(generated)
+    #    assert generated>=0, LOGGER.error("generated must be positive")
+    #    assert generated>=self.__tried, LOGGER.error("generated must be bigger than tried")
+    #    self.__generated = generated
+    #
+    #def _set_tried(self, tried):
+    #    """ Set tried flag. """
+    #    assert is_integer(tried), LOGGER.error("tried must be an integer")
+    #    tried = int(tried)
+    #    assert tried>=0, LOGGER.error("tried must be positive")
+    #    assert tried<=self.__generated, LOGGER.error("tried must be smaller than generated")
+    #    self.__tried = tried
+    #
+    #def _set_accepted(self, accepted):
+    #    """ Set accepted flag. """
+    #    assert is_integer(accepted), LOGGER.error("accepted must be an integer")
+    #    accepted = int(accepted)
+    #    assert accepted>=0, LOGGER.error("accepted must be positive")
+    #    assert accepted<=self.__tried, LOGGER.error("accepted must be smaller than tried")
+    #    self.__accepted = accepted
+    #    
+    #def _set_tolerated(self, tolerated):
+    #    """ Set tolerance flag. """
+    #    assert is_integer(tolerated), LOGGER.error("tolerated must be an integer")
+    #    tolerated = int(tolerated)
+    #    assert tolerated>=0, LOGGER.error("tolerated must be positive")
+    #    assert tolerated<=self.__generated, LOGGER.error("tolerated must be smaller than generated")
+    #    assert tolerated<=self.__tried, LOGGER.error("tolerated must be smaller than tried")
+    #    self.__tolerated = tolerated
         
     @property
+    def info(self):
+        """ Engine's information (version, id)  tuple."""
+        return (self.__version, self.__id)
+    
+    @property
+    def frames(self):
+        """ Engine's frames list copy."""
+        return [f for f in self.__frames]
+    
+    @property
+    def usedFrame(self):
+        """ Engine's frame in use."""
+        return self.__usedFrame
+       
+    @property
     def lastSelectedGroupIndex(self):
-        """ Get the last moved group instance index in groups list. """
+        """ The last moved group instance index in groups list. """
         return self.__lastSelectedGroupIndex
     
     @property
     def lastSelectedGroup(self):
-        """ Get the last moved group instance. """
+        """ The last moved group instance. """
         if self.__lastSelectedGroupIndex is None:
             return None
         return self.__groups[self.__lastSelectedGroupIndex]
     
     @property
     def lastSelectedAtomsIndexes(self):
-        """ Get the last moved atoms indexes. """
+        """ The last moved atoms indexes. """
         if self.__lastSelectedGroupIndex is None:
             return None
         return self.lastSelectedGroup.indexes
         
     @property
     def state(self):
-        """ Get engine's state. """
+        """ Engine's state. """
         return self.__state
     
     @property
     def generated(self):
-        """ Get number of generated moves. """
+        """ Number of generated moves. """
         return self.__generated
             
     @property
     def tried(self):
-        """ Get number of tried moves. """
+        """ Number of tried moves. """
         return self.__tried
     
     @property
     def accepted(self):
-        """ Get number of accepted moves. """
+        """ Number of accepted moves. """
         return self.__accepted
     
     @property
     def tolerated(self):
-        """ Get the number of tolerated steps in spite of increasing total totalStandardError"""
+        """ Number of tolerated steps in spite of increasing total totalStandardError"""
         return self.__tolerated
         
     @property
     def tolerance(self):
-        """ Get the tolerance in percent. """
+        """ Tolerance in percent. """
         return self.__tolerance*100.
     
     @property
     def groups(self):
-        """ Get engine's defined groups. """
+        """ Engine's defined groups list. """
         return self.__groups
     
     @property
     def pdb(self):
-        """ Get pdbParser instance. """
+        """ Engine's pdbParser instance. """
         return self.__pdb
     
     @property
     def boundaryConditions(self):
-        """ Get boundaryConditions instance. """
+        """ Engine's boundaryConditions instance. """
         return self.__boundaryConditions
     
     @property
     def isPBC(self):
-        """ Get whether boundaryConditions are periodic. """
+        """ Whether boundaryConditions are periodic. """
         return self.__isPBC
         
     @property
     def isIBC(self):
-        """ Get whether boundaryConditions are infinte. """
+        """ Whether boundaryConditions are infinte. """
         return self.__isIBC
         
     @property
     def basisVectors(self):
-        """ Get the basis vectors in case of PeriodicBoundaries or None in case of InfiniteBoundaries. """
+        """ The boundary conditions basis vectors in case of PeriodicBoundaries, None in case of InfiniteBoundaries. """
         return self.__basisVectors
     
     @property
     def reciprocalBasisVectors(self):
-        """ Get the basis vectors in case of PeriodicBoundaries or None in case of InfiniteBoundaries. """
+        """ The boundary conditions reciprocal basis vectors in case of PeriodicBoundaries, None in case of InfiniteBoundaries. """
         return self.__reciprocalBasisVectors
     
     @property
     def volume(self):
-        """ Get basis volume or None in case of InfiniteBoundaries. """
+        """ The boundary conditions basis volume in case of PeriodicBoundaries, None in case of InfiniteBoundaries. """
         return self.__volume
         
     @property
     def realCoordinates(self):
-        """ Get the real coordinates of the current configuration. """
+        """ The real coordinates of the current configuration. """
         return self.__realCoordinates
         
     @property
     def boxCoordinates(self):
-        """ Get the box coordinates of the current configuration or None in case of InfiniteBoundaries.. """
+        """ The box coordinates of the current configuration in case of PeriodicBoundaries. Similar to realCoordinates in case of InfiniteBoundaries."""
         return self.__boxCoordinates
         
     @property
     def numberOfMolecules(self):
-        """ Get the defined number of molecules."""
+        """ Number of molecules."""
         return self.__numberOfMolecules
         
     @property
     def moleculesIndexes(self):
-        """ Get all atoms molecules indexes. """
+        """ All atoms molecules indexes. """
         return self.__moleculesIndexes
     
     @property
     def moleculesNames(self):
-        """ Get all atoms molecules names. """    
+        """ Al atoms molecules names. """    
         return self.__moleculesNames 
         
     @property
     def elementsIndexes(self):
-        """ Get all atoms element index in elements list. """
+        """ All atoms element index in elements list. """
         return self.__elementsIndexes
     
     @property
     def elements(self):
-        """ Get sorted set of all existing atom elements. """
+        """ Sorted set of all existing atom elements. """
         return self.__elements
     
     @property
     def allElements(self):
-        """ Get all atoms elements. """
+        """ All atoms elements. """
         return self.__allElements
         
     @property
     def namesIndexes(self):
-        """ Get all atoms name index in names list"""
+        """ All atoms name index in names list"""
         return self.__namesIndexes
         
     @property
     def names(self):
-        """ Get sorted set of all existing atom names. """
+        """ Srted set of all existing atom names. """
         return self.__names
     
     @property
     def allNames(self):
-        """ Get all atoms name list. """
+        """ All atoms name list. """
         return self.__allNames
         
     @property
     def numberOfNames(self):
-        """ Get the number of defined atom names set. """
+        """ Number of defined atom names set. """
         return len(self.__names)
     
     @property
     def numberOfAtoms(self):
-        """ Get the number of atoms in pdb."""
+        """ Number of atoms in pdb structure."""
         return len(self.__pdb)
         
     @property
     def numberOfAtomsPerName(self):
-        """ Get the number of atoms per name dictionary. """
+        """ Number of atoms per name dictionary. """
         return self.__numberOfAtomsPerName
         
     @property
     def numberOfElements(self):
-        """ Get the number of different elements in the configuration. """
+        """ Number of different elements in the configuration. """
         return len(self.__elements)
      
     @property
     def numberOfAtomsPerElement(self):
-        """ Get the number of atoms per element dictionary. """
+        """ Number of atoms per element dictionary. """
         return self.__numberOfAtomsPerElement
     
     @property
     def numberDensity(self):
         """ 
-        get system's number density computed as :math:`\\rho_{0}=\\frac{N}{V}`
+        System's number density computed as :math:`\\rho_{0}=\\frac{N}{V}`
         where N is the total number of atoms and V the volume of the system.
         """
         return self.__numberDensity
         
     @property
     def constraints(self):
-        """ Get a list copy of all constraints instances. """
+        """ List copy of all constraints instances. """
         return [c for c in self.__constraints]
     
     @property
     def groupSelector(self):
-        """ Get the group selector instance. """
+        """ Engine's group selector instance. """
         return self.__groupSelector
         
     @property
     def totalStandardError(self):
-        """ Get the last recorded totalStandardError of the current configuration. """
+        """ Engine's last recorded totalStandardError of the current configuration. """
         return self.__totalStandardError
     
-    def save(self, path):
+    def is_engine(self, path, repo=False, mes=False):
         """
-        Save engine to disk.
+        Get whether a fullrmc engine is stored in the given path.
         
         :Parameters:
-            #. path (string): the file path to save the engine
+            #. path (string): The path to fetch.
+            #. repo (boolean): Whether to return repository if an engine is found. 
+               Otherwise None is returned.
+            #. mes (boolean): Whether to return explanatory message.
+        
+        :Returns:
+            #. result (boolean): The fetch result, True if engine is found False otherwise.
+            #. repo (pyrep.Repository): The repository instance. 
+               This is returned only if 'repo' argument is set to True.
+            #. message (string): The explanatory message.
+               This is returned only if 'mes' argument is set to True.
         """
-        LOGGER.saved("Saving Engine... DON'T INTERRUPT")
-        dirPath  = os.path.os.path.dirname(path)
-        fileName = os.path.basename(path)
-        fileName = fileName.split(".")[0]
-        assert len(fileName), LOGGER.error("Path filename must be a non zero string")
-        fileName += ".rmc"
-        path = os.path.join(dirPath,fileName)
-        # open file
-        try:
-            fd = open(path, 'wb')
-        except Exception as e:
-            raise Exception( LOGGER.error("Unable to open file '%s' to save engine. (%s)"%(path,e)) )
-        # save engine
-        try:
-            pickle.dump( self, fd, protocol=pickle.HIGHEST_PROTOCOL )
-        except Exception as e:
-            fd.close()
-            raise Exception( LOGGER.error("Unable to save engine instance. (%s)"%e) )
-        finally:
-            fd.close()
-        LOGGER.saved("Engine saved '%s'"%path)
+        assert isinstance(repo, bool), "repo must be boolean"
+        assert isinstance(mes, bool), "mes must be boolean"
+        rep = Repository()
+        # check if this is a repository
+        if path is None:
+            result  = False
+            rep     = None 
+            message = "No Path given"
+        elif not isinstance(path, basestring):
+            result  = False
+            rep     = None 
+            message = "Given path '%s' is not valid"%path
+        elif not rep.is_repository(path):
+            result  = False
+            rep     = None 
+            message = "No repository found at '%s'"%path
+        else:
+            # check if this repository is a fullrmc's engine
+            info = {'repository type':'fullrmc engine', 'fullrmc version':__version__, 'engine id':self.__id}
+            rep = rep.load_repository(path)
+            if not isinstance(rep.info, dict):
+                result  = False
+                rep     = None 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+            elif len(rep.info) < 3:
+                result  = False
+                rep     = None 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+            elif rep.info.get('repository type', None) != 'fullrmc engine':
+                result  = False
+                rep     = None 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+            elif rep.info.get('fullrmc version', None) is None:
+                result  = False
+                rep     = None 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+            elif rep.info.get('engine id', None) is None:
+                result  = False
+                rep     = None 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+            else:
+                result  = True 
+                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+                # check repository version
+                message = ""
+                if info['fullrmc version'] != rep.info['fullrmc version']:
+                    message += "Engine's version is found to be %s but current installation version is %s. "%(rep.info['fullrmc version'], info['fullrmc version'])
+        # return
+        if repo and mes:
+            return result, rep, message
+        elif mes:
+            return result, message
+        elif repo:
+            return result, rep
+        else:
+            return result
+    
+    def __runtime_save(self, frame):
+        LOGGER.saved("Runtime saving frame %s... DON'T INTERRUPT"%frame)
+        # dump engine's used frame FRAME_DATA
+        for dname in self.RUNTIME_DATA:
+            value = self.__dict__[dname]
+            #name  = dname.split('_Engine__')[1]
+            name = dname
+            #tic = time.time()
+            self.__repository.dump(value=value, relativePath=frame, name=name, replace=True) 
+            #print "engine: %s - %s"%(name, time.time()-tic)
+        # dump constraints' used frame FRAME_DATA
+        for c in self.__constraints:
+            cp = os.path.join(frame, 'constraints', c.constraintId)
+            #self.__repository.add_directory( cp )
+            for dname in c.RUNTIME_DATA:
+                value = c.__dict__[dname]
+                #name  = dname.split('__')[1]
+                name = dname
+                #tic = time.time()
+                self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
+                #print "%s: %s - %s"%(c.__class__.__name__, name, time.time()-tic)    
+        # engine saved
+        LOGGER.saved("Runtime frame %s is successfuly saved"%(frame,) )
+               
+    def save(self, path=None, copyFrames=True):
+        """
+        Save engine to disk. 
+        
+        :Parameters:
+            #. path (None, string): Repository path to save the engine. 
+               If path is None, engine's path is used to update already saved engine. 
+               If path and engine's path are both None, and error will be raised.
+            #. copyFrames (boolean): If path is None, this argument is discarded. 
+               This argument sets whether to copy all frames data to the new repository 
+               path. If path is not None and this argument is False, Only used frame data 
+               will be copied and other frames will be discarded in new engine.
+               
+        N.B. If path is given, it will automatically updates engine's path to point towards given path.
+        """
+        LOGGER.saved("Saving Engine and frame %s data... DON'T INTERRUPT"%self.__usedFrame)
+        # create info dict
+        info = {'repository type':'fullrmc engine', 'fullrmc version':__version__, 'engine id':self.__id}
+        # path is given
+        if path is not None:
+            result, message = self.__check_path_to_create_repository(path)
+            assert result, LOGGER.error(message)
+            REP = Repository()
+            REP.create_repository(path, info=info)
+            self.__path = path
+        # first time saving this engine
+        elif self.__repository is None:
+            assert self.__path is not None, LOGGER.error("Given path and engine's path are both None, must give a valid path for saving.")
+            REP = Repository()
+            REP.create_repository(self.__path, info=info)
+        # engine loaded or saved before
+        else:
+            REP = self.__repository
+        # create repository frames
+        if (self.__repository is None) or (path is not None and copyFrames):
+            for frame in self.__frames:
+                REP.add_directory( os.path.join(frame, 'constraints') )
+        elif path is not None:
+            self.__frames = (self.__usedFrame, )
+            REP.add_directory( os.path.join(self.__usedFrame, 'constraints') )
+        # dump engine
+        REP.dump(value=self, relativePath='.', name='engine', replace=True)
+        # dump used frame ENGINE_DATA
+        for dname in self.ENGINE_DATA:
+            value = self.__dict__[dname]
+            #name  = dname.split('_Engine__')[1]
+            name = dname
+            REP.dump(value=value, relativePath='.', name=name, replace=True)
+        # dump engine's used frame FRAME_DATA
+        for dname in self.FRAME_DATA:
+            value = self.__dict__[dname]
+            #name  = dname.split('_Engine__')[1]
+            name = dname
+            REP.dump(value=value, relativePath=self.__usedFrame, name=name, replace=True)    
+        # dump constraints' used frame FRAME_DATA
+        for c in self.__constraints:
+            cp = os.path.join(self.__usedFrame, 'constraints', c.constraintId)
+            REP.add_directory( cp )
+            for dname in c.FRAME_DATA:
+                value = c.__dict__[dname]
+                #name  = dname.split('__')[1]
+                name = dname
+                REP.dump(value=value, relativePath=cp, name=name, replace=True)    
+        # copy rest of frames
+        if (self.__repository is not None) and (path is not None and copyFrames):
+            # dump rest of frames
+            for frame in self.__frames:
+                if frame == self.__usedFrame:
+                    continue
+                for rp, _ in self.__repository.walk_files_info(relativePath=frame):
+                    value = self.__repository.pull(relativePath=frame, name=rp)
+                    REP.dump(value=value, relativePath=frame, name=rp, replace=True)    
+        # set repository
+        self.__repository = REP
+        # set mustSave flag
+        self.__mustSave = False
+        # engine saved
+        LOGGER.saved("Engine and frame %s data saved successfuly to '%s'"%(self.__usedFrame, self.__path) )
     
     def load(self, path):
         """
-        Load and return engine instance. None of the current engine attribute will be updated.
+        Load and return engine instance. None of the current engine attribute will be 
+        updated. must be used as the following
+        
+        
+        .. code-block:: python
+        
+            # import engine
+            from fullrmc.Engine import Engine
+        
+            # create engine 
+            ENGINE = Engine().load(path)
+        
         
         :Parameters:
             #. path (string): the file path to save the engine
         
         :Returns:
-            #. engine (Engine): the engine instance.
+            #. engine (Engine): the engine's instance.
         """
-        # open file for reading
-        try:
-            fd = open(path, 'rb')
-        except Exception as e:
-            raise Exception(LOGGER.error("Can't open '%s' file for reading. (%s)"%(path,e) ))
-        # unpickle file
-        try:
-            engine = pickle.load( fd )
-        except Exception as e:
-            fd.close()
-            raise Exception( LOGGER.error("Unable to open fullrmc engine file '%s'. (%s)"%(path,e)) )
-        finally:
-            fd.close()
-        assert isinstance(engine, Engine), LOGGER.error("%s is not a fullrmc Engine file"%path)
-        # return engineInstance
+        # check whether an engine exists at this path
+        isEngine, REP, message = self.is_engine(path=path, repo=True, mes=True)
+        if not isEngine:
+            raise LOGGER.error(message)
+        if len(message):
+            LOGGER.warn(message)
+        # load engine
+        engine = REP.pull(relativePath='.', name='engine')
+        engine._set_repository(REP)
+        engine._set_path(path)
+        # pull engine's ENGINE_DATA
+        for dname in engine.ENGINE_DATA:
+            #name  = dname.split('_Engine__')[1]
+            name = dname
+            value = REP.pull(relativePath='.', name=name)
+            object.__setattr__(engine, dname, value)   
+        # pull engine's FRAME_DATA
+        for dname in engine.FRAME_DATA:
+            #name  = dname.split('_Engine__')[1]
+            name = dname
+            value = REP.pull(relativePath=engine.usedFrame, name=name)
+            object.__setattr__(engine, dname, value)             
+        # pull constraints' used frame FRAME_DATA
+        for c in engine.constraints:
+            cp = os.path.join(engine.usedFrame, 'constraints', c.constraintId)
+            for dname in c.FRAME_DATA:
+                #name  = dname.split('__')[1]
+                name = dname
+                value = REP.pull(relativePath=cp, name=name)
+                object.__setattr__(c, dname, value) 
+        # set engine must save to false
+        object.__setattr__(engine, '_Engine__mustSave', False)
+        # set engine group selector
+        engine.groupSelector.set_engine(engine)
+        # return engine instance
         return engine
-              
+    
+    def set_log_file(self, logFile):
+        """
+        Set the log file basename.
+    
+        :Parameters:
+           #. logFile (None, string): Logging file basename. A logging file full name will
+              be the given logFile appended '.log' extension automatically.
+        """
+        assert isinstance(logFile, basestring), LOGGER.error("logFile must be a string, '%s' is given"%logFile)
+        LOGGER.set_log_file_basename(logFile)
+        
+    def __create_frame_data(self, frame):
+        def check_set_or_raise(this, relativePath):
+            # find missing data
+            missing = []
+            for dname in this.FRAME_DATA:
+                #name  = dname.split('_Engine__')[1]
+                name = dname
+                info, _ = self.__repository.get_file_info(relativePath=relativePath, name=name)
+                if info is None:
+                    missing.append(dname)
+            # check all or None missing
+            if len(missing) == 0:
+                return
+            else:
+                assert len(missing) == len(this.FRAME_DATA), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missing,frame,))     
+                LOGGER.warn("Using frame '%s' data to create '%s' frame '%s' data."%(self.__usedFrame, this.__class__.__name__, frame))     
+                # create frame data
+                for dname in this.FRAME_DATA:
+                    value = this.__dict__[dname]
+                    #name  = dname.split('_Engine__')[1]
+                    name = dname
+                    self.__repository.dump(value=value, relativePath=relativePath, name=name, replace=True)  
+        # check engine frame data
+        check_set_or_raise(this=self, relativePath=frame)
+        # create constraints frame data
+        for c in self.__constraints:
+            cp = os.path.join(frame, 'constraints', c.constraintId)
+            check_set_or_raise(this=c, relativePath=cp)
+
+    def add_frames(self, frames):
+        """
+        Add a single or multiple frames to engine.
+        
+        :Parameters:
+            #. frames (string, list): Frames name. It can be a string to add a single
+               frame or a list of strings to add multiple frames.
+        """
+        frames = self.__get_normalized_frames_name(frames)
+        # create frames directories
+        if self.__repository is not None:
+            for frame in frames:
+                self.__repository.add_directory( os.path.join(frame, 'constraints') )
+        # append frames to list
+        self.__frames = list(self.__frames)
+        self.__frames.extend(frames)
+        self.__frames = tuple( self.__frames )
+        # save frames
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
+
+    def reinit_frame(self, frame):
+        """
+        Reset frame data to initial pdb coordinates.
+        
+        :Parameters:
+            #. frame (string): The frame name to set.
+            #. warnUnsaved (boolean): Warn if already used frame has un-saved data and.
+               if True and un-saved data are found, method will return without setting 
+               a new used frame.
+        """
+        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
+        if self.__repository is None and frame != self.__usedFrame:
+            raise LOGGER.error("It's not allowed to re-initialize frame other than usedFrame prior to building engine's repository. Save engine using Engine.save method first.")
+        oldUsedFrame = self.__usedFrame
+        # temporarily set used frame
+        if frame != self.__usedFrame:
+            self.set_used_frame(frame)
+        # reset pdb
+        self.set_pdb(self.__pdb)
+        #  re-set old used frame
+        if self.__usedFrame != oldUsedFrame:
+            self.set_used_frame(oldUsedFrame)
+        
+    def set_used_frame(self, frame):
+        """
+        Set engine frame in use.
+        
+        :Parameters:
+            #. frame (string): The frame name to set.
+        """
+        if frame == self.__usedFrame:
+            return
+        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
+        if self.__repository is None:
+            raise LOGGER.error("It's not allowed to set used frame prior to building engine's repository. Save engine using Engine.save method first.")
+        else:
+            # create frame data if missing or raise is partially missing
+            self.__create_frame_data(frame=frame)
+            self.__usedFrame = frame
+            # pull engine's FRAME_DATA
+            for dname in self.FRAME_DATA:
+                #name  = dname.split('_Engine__')[1]
+                name = dname
+                value = self.__repository.pull(relativePath=self.__usedFrame, name=name)
+                # set data 
+                object.__setattr__(self, dname, value)
+            # pull constraints' used frame FRAME_DATA
+            for c in self.__constraints:
+                cp = os.path.join(self.usedFrame, 'constraints', c.constraintId)
+                for dname in c.FRAME_DATA:
+                    name = dname
+                    value = self.__repository.pull(relativePath=cp, name=name)
+                    # set data 
+                    object.__setattr__(c, dname, value)
+        # set engine to specific frame data
+        self.__groupSelector.set_engine(self)
+        # save used frames to disk
+        self.__repository.dump(value=self.__usedFrame, relativePath='.', name='_Engine__usedFrame', replace=True)
+        
+    def delete_frame(self, frame, newName):
+        """
+        Delete frame data from Engine as well as from system.
+        
+        :Parameters:
+            #. frame (string): The frame name to delete.
+        """
+        assert frame != self.__usedFrame, LOGGER.error("Can't delete used frame '%s'"%frame)
+        # remove frame directory        
+        if self.__repository is not None:
+            self.__repository.remove_directory(relativePath=frame, removeFromSystem=True)
+        # reset frames
+        self.__frames = tuple([f for f in self.__frames if f != frame])
+        # save frames
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
+        
+    def rename_frame(self, frame, newName):
+        """
+        Rename frame.
+        
+        :Parameters:
+            #. frame (string): The frame name to rename.
+            #. newName (string): The frame new name.
+        """
+        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
+        newName = self.__get_normalized_frames_name(newName)[0]
+        # rename frame in repository
+        if self.__repository is not None:
+            try:
+                self.__repository.rename_directory(relativePath=frame, newName=newName, replace=False)
+            except Exception as e:
+                raise LOGGER.error("Unable to rename frame (%s)"%e)
+        # reset frames
+        self.__frames = tuple([f if f != frame else newName for f in self.__frames])
+        # check used frame
+        if self.__usedFrame == frame:
+            self.__usedFrame = newName
+        # save frames
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
+            self.__repository.dump(value=self.__usedFrame, relativePath='.', name='_Engine__usedFrame', replace=True)
+           
     def export_pdb(self, path):
         """
         Export a pdb file of the last refined and save configuration state.
@@ -471,6 +939,9 @@ class Engine(object):
         assert tolerance>=0, LOGGER.error("tolerance must be positive")
         assert tolerance<=100, LOGGER.error("tolerance must be smaller than 100")
         self.__tolerance = FLOAT_TYPE(tolerance/100.)
+        # save tolerance to disk
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__tolerance, relativePath='.', name='_Engine__tolerance', replace=True)
         
     def set_group_selector(self, selector):
         """
@@ -488,24 +959,30 @@ class Engine(object):
         if self.__groupSelector is not None:
             self.__groupSelector.set_engine(None)
             # remove from broadcaster listeners list
-            self.__broadcaster.remove_listener(self.__groupSelector)
+            #self.__broadcaster.remove_listener(self.__groupSelector)
         # set new selector
         selector.set_engine(self)
         self.__groupSelector = selector
         # add to broadcaster listeners list
-        self.__broadcaster.add_listener(self.__groupSelector)
+        #self.__broadcaster.add_listener(self.__groupSelector)
+        # save selector to repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__groupSelector, relativePath=self.__usedFrame, name='_Engine__groupSelector', replace=True)    
     
     def clear_groups(self):
         """ Clear all engine defined groups
         """
         self.__groups = []
+        # save groups to repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)    
         
     def add_group(self, g, broadcast=True):
         """
         Add a group to engine groups list.
         
         :Parameters:
-            #. g (Group, integer, list, set, tuple numpy.ndattay): Group instance, integer, 
+            #. g (Group, integer, list, set, tuple numpy.ndarray): Group instance, integer, 
                list, tuple, set or numpy.ndarray of atoms indexes of atoms indexes.
             #. broadcast (boolean): Whether to broadcast "update groups". Keep True unless you know what you are doing.
         """
@@ -541,6 +1018,9 @@ class Engine(object):
         # broadcast to constraints
         if broadcast:
             self.__broadcaster.broadcast("update groups")
+         # save groups
+        if self.__repository is not None and self.__saveGroupsFlag:
+            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)    
       
     def set_groups(self, groups):
         """
@@ -553,15 +1033,26 @@ class Engine(object):
                If None, single atom groups of all atoms will be all automatically created 
                which is the same as using set_groups_as_atoms method.
         """
-        self.__groups = []
-        if groups is None:
-            self.__groups = [Group(indexes=[idx]) for idx in self.__pdb.indexes]
-        elif isinstance(groups, Group):
-            self.add_group(groups, broadcast=False)
-        else:
-            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a None, Group, list, set or tuple")
-            for g in groups:
-                self.add_group(g, broadcast=False)
+        self.__saveGroupsFlag = False
+        lastGroups            = self.__groups
+        self.__groups         = []
+        try:
+            if groups is None:
+                self.__groups = [Group(indexes=[idx]) for idx in self.__pdb.indexes]
+            elif isinstance(groups, Group):
+                self.add_group(groups, broadcast=False)
+            else:
+                assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a None, Group, list, set or tuple")
+                for g in groups:
+                    self.add_group(g, broadcast=False)
+        except Exception as e:
+            self.__saveGroupsFlag = True
+            self.__groups         = lastGroups
+            raise LOGGER.error(e)
+            return
+        # save groups to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
     
@@ -572,12 +1063,24 @@ class Engine(object):
         :Parameters:
             #. groups (Group, list): Group instance or list of groups, where every group must be a Group instance or a numpy.ndarray of atoms indexes of type numpy.int32.
         """
-        if isinstance(groups, Group):
-            self.add_group(groups, broadcast=False)
-        else:
-            assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
-            for g in groups:
-                self.add_group(g, broadcast=False)
+        self.__saveGroupsFlag = False
+        lastGroups            = self.__groups
+        self.__groups         = []
+        try:
+            if isinstance(groups, Group):
+                self.add_group(groups, broadcast=False)
+            else:
+                assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
+                for g in groups:
+                    self.add_group(g, broadcast=False)
+        except Exception as e:
+            self.__saveGroupsFlag = True
+            self.__groups         = lastGroups
+            raise LOGGER.error(e)
+            return
+        # save groups to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
         
@@ -601,12 +1104,21 @@ class Engine(object):
         # add groups
         for k in keys:
             self.add_group(np.array(moleculesIndexes[k], dtype=INT_TYPE), broadcast=False) 
+        # save groups to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
             
     def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndexes=None, moleculesNames=None):
         """
-        Sets the configuration pdb. Engine and constraintsData will be automatically reset
+        Set used frame pdb  configuration. Engine and constraints data will be 
+        automatically reset but not constraints definitions. If pdb was already set and 
+        this is a resetting of a different atomic configuration, with different elements 
+        or atomic order, or different size and number of atoms, constraints definitions 
+        must be reset manually. In general their is no point in changing the atomic 
+        configuration of a completely different atomic nature. It is advisable to create 
+        a new engine from scratch or redefining all constraints definitions.
         
         :Parameters:
             #. pdb (pdbParser, string): the configuration pdb as a pdbParser instance or a path string to a pdb file.
@@ -632,13 +1144,15 @@ class Engine(object):
             try:
                 pdb = pdbParser(pdb)
             except:
-                raise Exception( LOGGER.error("pdb must be a pdbParser instance or a string path to a protein database (pdb) file.") )
+                raise Exception( LOGGER.error("pdb must be None, pdbParser instance or a string path to a protein database (pdb) file.") )
         # set pdb
         self.__pdb = pdb 
         # get coordinates
-        self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE) 
-        # reset configuration state
-        self.__state = time.time()
+        self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE)
+        # save data to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__pdb, relativePath=self.__usedFrame, name='_Engine__pdb', replace=True)    
+            self.__repository.dump(value=self.__realCoordinates, relativePath=self.__usedFrame, name='_Engine__realCoordinates', replace=True)    
         # set boundary conditions
         if boundaryConditions is None:
             boundaryConditions = pdb.boundaryConditions
@@ -699,13 +1213,25 @@ class Engine(object):
             self.__boxCoordinates = self.__realCoordinates
             self.__isPBC = False
             self.__isIBC = True
-        # check box coordinates for none periodic boundary conditions
-        #if self.__boxCoordinates is None:
-        #    raise Exception( LOGGER.error("Not periodic boundary conditions is not implemented yet") )
         # set number density
         self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
+        # save data to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__boundaryConditions, relativePath=self.__usedFrame, name='_Engine__boundaryConditions', replace=True)    
+            self.__repository.dump(value=self.__basisVectors, relativePath=self.__usedFrame, name='_Engine__basisVectors', replace=True)    
+            self.__repository.dump(value=self.__reciprocalBasisVectors, relativePath=self.__usedFrame, name='_Engine__reciprocalBasisVectors', replace=True)    
+            self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_Engine__numberDensity', replace=True)    
+            self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_Engine__volume', replace=True)       
+            self.__repository.dump(value=self.__isPBC, relativePath=self.__usedFrame, name='_Engine__isPBC', replace=True)    
+            self.__repository.dump(value=self.__isIBC, relativePath=self.__usedFrame, name='_Engine__isIBC', replace=True)    
+            self.__repository.dump(value=self.__boxCoordinates, relativePath=self.__usedFrame, name='_Engine__boxCoordinates', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update boundary conditions")
+        
+        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
+        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET. 
+#        # set mustSave flag
+#        self.__mustSave = True
     
     def set_number_density(self, numberDensity):
         """   
@@ -727,7 +1253,14 @@ class Engine(object):
         if numberDensity>1: 
             LOGGER.warn("numberDensity value is %.6f value isn't it too big?"%numberDensity)
         self.__numberDensity = numberDensity
-        self.__volume = FLOAT_TYPE( 1./numberDensity * self.numberOfAtoms )      
+        self.__volume = FLOAT_TYPE( 1./numberDensity * self.numberOfAtoms )
+        # save data to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_Engine__numberDensity', replace=True)    
+            self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_Engine__volume', replace=True)    
+        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET. 
+#        # set mustSave flag
+#        self.__mustSave = True      
         
     def set_molecules_indexes(self, moleculesIndexes=None, moleculesNames=None):
         """
@@ -793,8 +1326,18 @@ class Engine(object):
         self.__numberOfMolecules = len(set(moleculesIndexes))
         self.__moleculesIndexes  = np.array(moleculesIndexes, dtype=INT_TYPE)
         self.__moleculesNames    = list(moleculesNames)
+        # save data to repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__numberOfMolecules, relativePath=self.__usedFrame, name='_Engine__numberOfMolecules', replace=True)    
+            self.__repository.dump(value=self.__moleculesIndexes, relativePath=self.__usedFrame, name='_Engine__moleculesIndexes', replace=True)    
+            self.__repository.dump(value=self.__moleculesNames, relativePath=self.__usedFrame, name='_Engine__moleculesNames', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update molecules indexes")
+        
+        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
+        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET. 
+#        # set mustSave flag
+#        self.__mustSave = True
 
     def set_elements_indexes(self, elements=None):
         """
@@ -822,8 +1365,19 @@ class Engine(object):
             if not self.__numberOfAtomsPerElement.has_key(el):
                 self.__numberOfAtomsPerElement[el] = 0
             self.__numberOfAtomsPerElement[el] += 1
+        # save data to repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__allElements, relativePath=self.__usedFrame, name='_Engine__allElements', replace=True)    
+            self.__repository.dump(value=self.__elements, relativePath=self.__usedFrame, name='_Engine__elements', replace=True)    
+            self.__repository.dump(value=self.__elementsIndexes, relativePath=self.__usedFrame, name='_Engine__elementsIndexes', replace=True)    
+            self.__repository.dump(value=self.__numberOfAtomsPerElement, relativePath=self.__usedFrame, name='_Engine__numberOfAtomsPerElement', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update elements indexes")
+        
+        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
+        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET. 
+#        # set mustSave flag
+#        self.__mustSave = True
         
     def set_names_indexes(self, names=None):
         """
@@ -851,8 +1405,19 @@ class Engine(object):
             if not self.__numberOfAtomsPerName.has_key(n):
                 self.__numberOfAtomsPerName[n] = 0
             self.__numberOfAtomsPerName[n] += 1
+        # save data to repository
+        if self.__repository is not None:
+            self.__repository.dump(value=self.__allNames, relativePath=self.__usedFrame, name='_Engine__allNames', replace=True)    
+            self.__repository.dump(value=self.__names, relativePath=self.__usedFrame, name='_Engine__names', replace=True)    
+            self.__repository.dump(value=self.__namesIndexes, relativePath=self.__usedFrame, name='_Engine__namesIndexes', replace=True)    
+            self.__repository.dump(value=self.__numberOfAtomsPerName, relativePath=self.__usedFrame, name='_Engine__numberOfAtomsPerName', replace=True)    
         # broadcast to constraints
         self.__broadcaster.broadcast("update names indexes")
+        
+        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
+        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET. 
+#        # set mustSave flag
+#        self.__mustSave = True
     
     def visualize(self, commands=None, foldIntoBox=False, boxToCenter=False,
                         boxWidth=2, boxStyle="solid", boxColor="yellow", 
@@ -1001,8 +1566,8 @@ class Engine(object):
             coords = self.__boundaryConditions.fold_real_array(self.__realCoordinates)
         self.__pdb.visualize(commands=commands, coordinates=coords, startupScript=tclFile)
         # remove .tcl file
-        os.remove(tclFile)
-        
+        os.remove(tclFile)                    
+                           
     def add_constraints(self, constraints):
         """
         Add constraints to the engine.
@@ -1014,24 +1579,40 @@ class Engine(object):
             constraints = list(constraints)
         else:
             constraints = [constraints]
+        # check all constraints
         for c in constraints:
-            assert isinstance(c, Constraint), LOGGER.error("constraints must be a Constraint instance or a list of Constraint instances")
+            assert isinstance(c, Constraint), LOGGER.error("constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been added to the engine.")
+            # check for singularity
+            if isinstance(c, SingularConstraint):
+                assert c.is_singular(self), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine. None of the constraints have been added to the engine."%self.__class__.__name__)
+        # set constraints        
+        for c in constraints:
             # check whether same instance added twice
             if c in self.__constraints:
                 LOGGER.warn("constraint '%s' already exist in list of constraints"%c)
                 continue
             # add engine to constraint
-            c.set_engine(self)
+            c._set_engine(self)
             # add to broadcaster listeners list
             self.__broadcaster.add_listener(c)
-            # check for singularity
-            if isinstance(c, SingularConstraint):
-                c.assert_singular()
             # add constraint to engine
             self.__constraints.append(c)
             # broadcast 'engine changed' to constraint
-            c.listen("engine changed")
-    
+            c.listen("engine set")        
+        # add constraints to repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)    
+            for frame in self.__frames:
+                for c in constraints:
+                    # Add constraint to all frames
+                    cp = os.path.join(frame, 'constraints', c.constraintId)
+                    self.__repository.add_directory( cp )
+                    for dname in c.FRAME_DATA:
+                        value = c.__dict__[dname]
+                        #name  = dname.split('__')[1]
+                        name = dname
+                        self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)    
+
     def remove_constraints(self, constraints):
         """
         Remove constraints from engine list of constraints.
@@ -1049,17 +1630,40 @@ class Engine(object):
                 c.set_engine(None)
                 # add to broadcaster listeners list
                 self.__broadcaster.remove_listener(c) 
+        # remove constraints from all frames in repository       
+        if self.__repository is not None:
+            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)   
+            for frame in self.__frames: 
+                for c in constraints:
+                    # Add constraint to all frames
+                    cp = os.path.join(frame, 'constraints', c.constraintId)
+                    self.__repositoryremove_directory(relativePath=cp, removeFromSystem=True)
        
     def reset_constraints(self):
         """ Reset constraints flags. """
         for c in self.__constraints:
-            c.reset_constraint()
+            c.reset_constraint(reinitialize=True)
+        # update constraints in repository used frame only
+        if self.__repository is not None:
+            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)    
+            for c in self.__constraints:
+                # Add constraint to all frames
+                cp = os.path.join(self.__usedFrame, 'constraints', c.constraintId)
+                for dname in c.FRAME_DATA:
+                    value = c.__dict__[dname]
+                    #name  = dname.split('__')[1]
+                    name = dname
+                    self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)    
+#        # set mustSave flag
+#        self.__mustSave = True
     
     def reset_engine(self):
         """ Re-initialize engine and resets constraints flags and data. """
-        self._initialize_engine()
+        self._reinit_engine()
         # reset constraints flags
         self.reset_constraints()
+#        # set mustSave flag
+#        self.__mustSave = True
     
     def compute_total_standard_error(self, constraints, current=True):
         """
@@ -1174,7 +1778,7 @@ class Engine(object):
         # return
         return int(numberOfSteps)
         
-    def __runtime_get_save_engine(self, saveFrequency, savePath): 
+    def __runtime_get_save_engine(self, saveFrequency, frame): 
         # check saveFrequency
         assert is_integer(saveFrequency), LOGGER.error("saveFrequency must be an integer")
         if saveFrequency is not None:
@@ -1183,11 +1787,14 @@ class Engine(object):
             saveFrequency = int(saveFrequency)
         if saveFrequency == 0:
             saveFrequency = None
-        # check savePath
-        assert isinstance(savePath, basestring), LOGGER.error("savePath must be a string")
-        savePath = str(savePath)
+        # check frame
+        if frame is None:
+            frame = self.__usedFrame
+        frame = str(frame)
+        # set used frame
+        self.set_used_frame(frame)
         # return
-        return saveFrequency, savePath
+        return saveFrequency, frame
     
     def __runtime_get_save_xyz(self, xyzFrequency, xyzPath):    
         # check saveFrequency
@@ -1203,10 +1810,11 @@ class Engine(object):
         # return
         return xyzFrequency, xyzPath
         
+    # MUST REMOVE savePath AND PUT frame INSTEAD
     def run(self, numberOfSteps=100000,     sortConstraints=True,
-                  saveFrequency=1000,       savePath="restart", 
+                  saveFrequency=1000,       frame=None, 
                   xyzFrequency=None,        xyzPath="trajectory.xyz",
-                  restartPdb='restart.pdb',  ncores=None):
+                  restartPdb='restart.pdb', ncores=None):
         """
         Run the Reverse Monte Carlo engine by performing random moves on engine groups.
         
@@ -1230,9 +1838,12 @@ class Engine(object):
                effective if fullrmc is compiled with openmp.
         """
         # get arguments
-        _numberOfSteps            = self.__runtime_get_number_of_steps(numberOfSteps)
-        _saveFrequency, _savePath = self.__runtime_get_save_engine(saveFrequency, savePath)
-        _xyzFrequency, _xyzPath   = self.__runtime_get_save_xyz(xyzFrequency, xyzPath)
+        _numberOfSteps          = self.__runtime_get_number_of_steps(numberOfSteps)
+        _saveFrequency, _frame  = self.__runtime_get_save_engine(saveFrequency, frame)
+        _xyzFrequency, _xyzPath = self.__runtime_get_save_xyz(xyzFrequency, xyzPath)
+        assert _frame == self.__usedFrame, LOGGER.error("Must save engine before changing frame.")
+        if _saveFrequency<=_numberOfSteps:
+            assert self.__repository is not None, LOGGER.error("engine might be saving during this run but repository is not defined. Use Engine.save method before calling run method.")
         # set runtime ncores
         self.__set_runtime_ncores(ncores)
         # create xyz file
@@ -1258,11 +1869,13 @@ class Engine(object):
         # compute totalStandardError
         self.__totalStandardError = self.compute_total_standard_error(_constraints, current=True)
         # initialize useful arguments
-        _engineStartTime    = time.time()
+        _engineStartTime             = time.time()
         _lastSavedTotalStandardError = self.__totalStandardError
-        _coordsBeforeMove   = None
-        _moveTried          = False
-        
+        _coordsBeforeMove            = None
+        _moveTried                   = False
+        # save whole engine if must be done
+        if self.__mustSave: # Currently it is always False. will check and fix it later
+            self.save()
         #   #####################################################################################   #
         #   #################################### RUN ENGINE #####################################   #
         LOGGER.info("Engine started %i steps, total standard error is: %.6f"%(_numberOfSteps, self.__totalStandardError) )
@@ -1372,7 +1985,8 @@ class Engine(object):
                            c.set_state(self.__state)
                         # save engine
                         _lastSavedTotalStandardError = self.__totalStandardError
-                        self.save(_savePath)
+                        #self.save(_frame)
+                        self.__runtime_save(_frame)
             ############################### dump coords to xyz file ###############################
             if _xyzFrequency is not None:
                 if not(step+1)%_xyzFrequency:

@@ -35,7 +35,10 @@ class DefinedOrderSelector(GroupSelector):
         from fullrmc.Selectors.OrderedSelectors import DefinedOrderSelector
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -49,7 +52,7 @@ class DefinedOrderSelector(GroupSelector):
         # compute increasing order
         order     = np.argsort(distances)
         # set group selector
-        ENGINE.set_group_selector( DefinedOrderSelector(ENGINE, order = order) )         
+        ENGINE.set_group_selector( DefinedOrderSelector(engine=ENGINE, order=order) )         
     
     """
     def __init__(self, engine, order=None):
@@ -74,7 +77,9 @@ class DefinedOrderSelector(GroupSelector):
         if self.__order is None:
             self.__order = np.array(range(len(self.engine.groups)), dtype=INT_TYPE)
             self.__initialize_selector__()
-        
+        elif self.__order[-1] != len(self.engine.groups)-1:
+            raise LOGGER.error("Groups are modified, must set GroupSelector order using set_order method")
+            
     @property
     def order(self):
         """ List copy of the order of selection."""
@@ -186,7 +191,10 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -194,9 +202,9 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         
         # Set the order of selection from further to the closest to a (1,1,1).
         # Automatically adjust the groups move generators allowing modulation of amplitudes.
-        ENGINE.set_group_selector( DirectionalOrderSelector(ENGINE, 
+        ENGINE.set_group_selector( DirectionalOrderSelector(engine = ENGINE, 
                                                             center = (1,1,1),
-                                                            adjustMoveGenerators=True) )         
+                                                            adjustMoveGenerators = True) )         
         
     """
     def __init__(self, engine, center=None, expand=True,

@@ -22,12 +22,13 @@ LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
 pdbPath = "system.pdb" 
-ENGINE = Engine(pdb=pdbPath, constraints=None)
+ENGINE = Engine(path=None)
+ENGINE.set_pdb(pdbPath)
 
 # add constraints
-B_CONSTRAINT  = BondConstraint(engine=None)
-BA_CONSTRAINT = BondsAngleConstraint(engine=None)
-IA_CONSTRAINT  = ImproperAngleConstraint(engine=None)
+B_CONSTRAINT  = BondConstraint()
+BA_CONSTRAINT = BondsAngleConstraint()
+IA_CONSTRAINT  = ImproperAngleConstraint()
 ENGINE.add_constraints([B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT]) 
 B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"PFT": [('Xe' ,'F1' , 1.9, 2.1),
                                                                   ('Xe' ,'F2' , 1.9, 2.1),
@@ -54,19 +55,19 @@ def run_normal(nsteps, xyzPath):
     IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"PFT": [ ('F4','F2','F1','F3', -2, 2),
                                                                           ('F5','F2','F1','F3', -2, 2),
                                                                           ('Xe','F2','F1','F3', -2, 2) ] })
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath, restartPdb=None)
 
 def run_loosen_1(nsteps, xyzPath):
     IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"PFT": [ ('F4','F2','F1','F3', -60, -50),
                                                                           ('F5','F2','F1','F3', -60, -50),
                                                                           ('Xe','F2','F1','F3', -60, -50) ] })
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath, restartPdb=None)
 
 def run_loosen_2(nsteps, xyzPath):
     IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"PFT": [ ('F4','F2','F1','F3', 50, 60),
                                                                           ('F5','F2','F1','F3', 50, 60),
                                                                           ('Xe','F2','F1','F3', 50, 60) ] })
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps*2, xyzFrequency=1, xyzPath=xyzPath, restartPdb=None)
                                                                           
 
     

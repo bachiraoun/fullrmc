@@ -23,10 +23,10 @@ LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
 pdbPath = "system.pdb" 
-ENGINE = Engine(pdb=pdbPath, constraints=None)
-
+ENGINE = Engine(path=None)
+ENGINE.set_pdb(pdbPath)
 # add inter-molecular distance constraint
-EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=ENGINE, defaultDistance=1.75)
+EMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=1.75)
 ENGINE.add_constraints([EMD_CONSTRAINT]) 
 
 ##########################################################################################
@@ -48,7 +48,7 @@ def move_towards():
     # run engine
     xyzPath="trajectory.xyz"
     if os.path.isfile(xyzPath): os.remove(xyzPath)
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
  
 

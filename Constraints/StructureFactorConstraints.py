@@ -67,7 +67,6 @@ class StructureFactorConstraint(ExperimentalConstraint):
 
     
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
         #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
         #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
            Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
@@ -110,14 +109,17 @@ class StructureFactorConstraint(ExperimentalConstraint):
         from fullrmc.Constraints.StructureFactorConstraints import StructureFactorConstraint
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # create and add constraint
-        SFC = StructureFactorConstraint(engine=None, experimentalData="sq.dat", weighting="atomicNumber")
+        SFC = StructureFactorConstraint(experimentalData="sq.dat", weighting="atomicNumber")
         ENGINE.add_constraints(SFC)
     
     """
-    def __init__(self, engine, experimentalData, 
+    def __init__(self,  experimentalData, 
                        dataWeights=None, weighting="atomicNumber", 
                        rmin=None, rmax=None, dr=None, 
                        scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
@@ -125,6 +127,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # initialize variables
         self.__limits              = limits
         self.__experimentalQValues = None
+        self.__experimentalSF      = None
         self.__rmin                = None
         self.__rmax                = None
         self.__dr                  = None
@@ -136,7 +139,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.__shellVolumes        = None
         self.__Gr2SqMatrix         = None
         # initialize constraint
-        super(StructureFactorConstraint, self).__init__(engine=engine, experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+        super(StructureFactorConstraint, self).__init__( experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
         # set elements weighting
         self.set_weighting(weighting)
         self.__set_weighting_scheme()
@@ -146,21 +149,42 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_rmin(rmin)
         self.set_rmax(rmax)
         self.set_dr(dr)
+        
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_StructureFactorConstraint__limits',
+                           '_StructureFactorConstraint__experimentalQValues',
+                           '_StructureFactorConstraint__experimentalSF',
+                           '_StructureFactorConstraint__qmin',
+                           '_StructureFactorConstraint__qmax',
+                           '_StructureFactorConstraint__rmin',
+                           '_StructureFactorConstraint__rmax',
+                           '_StructureFactorConstraint__dr',
+                           '_StructureFactorConstraint__minimumDistance',
+                           '_StructureFactorConstraint__maximumDistance',
+                           '_StructureFactorConstraint__bin',
+                           '_StructureFactorConstraint__shellCenters',
+                           '_StructureFactorConstraint__histogramSize',
+                           '_StructureFactorConstraint__shellVolumes',
+                           '_StructureFactorConstraint__Gr2SqMatrix',
+                           '_StructureFactorConstraint__windowFunction'] )
+        RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
+        RUNTIME_DATA.extend( [] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
+        object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
+                                  
+    #def __getstate__(self):
+    #    # make sure that __Gr2SqMatrix is not pickled but saved to the disk as None
+    #    state = super(StructureFactorConstraint, self).__getstate__()
+    #    state["_StructureFactorConstraint__Gr2SqMatrix"] = None
+    #    return state
+    #    
+    #def __setstate__(self, state):
+    #    # make sure to regenerate G(r) to S(q) matrix at loading time
+    #    self.__dict__.update( state )
+    #    self.__set_Gr_2_Sq_matrix()     
+    # 
 
-    def __getstate__(self):
-        # make sure that __Gr2SqMatrix is not pickled but saved to the disk as None
-        D = {}
-        for k, v in self.__dict__.iteritems():
-            if k == "_StructureFactorConstraint__Gr2SqMatrix":
-                v = None
-            D[k] = v
-        return D
-        
-    def __setstate__(self, d):
-        # make sure to regenerate G(r) to S(q) matrix at loading time
-        self.__dict__ = d
-        self.__set_Gr_2_Sq_matrix()      
-        
     def __set_Gr_2_Sq_matrix(self):
         if self.__experimentalQValues is None or self.__shellCenters is None:
             self.__Gr2SqMatrix = None
@@ -186,7 +210,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
             assert np.sum(self._usedDataWeights), LOGGER.error("used points dataWeights are all zero.")
             self._usedDataWeights /= FLOAT_TYPE( np.sum(self._usedDataWeights) )
             self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
-            
+        # dump to repository
+        self._dump_to_repository({'_usedDataWeights': self._usedDataWeights})   
+        
     def __set_weighting_scheme(self):
         if self.engine is not None:
             self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
@@ -197,6 +223,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
         else:
             self.__elementsPairs   = None
             self.__weightingScheme = None
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__elementsPairs'  : self.__elementsPairs,
+                                  '_StructureFactorConstraint__weightingScheme': self.__weightingScheme}) 
             
     def __set_histogram(self):
         if self.__minimumDistance is None or self.__maximumDistance is None or self.__bin is None:
@@ -219,6 +248,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
             self.__histogramSize = INT_TYPE( len(self.__edges)-1 )
             # set shell centers and volumes
             self.__shellVolumes = FLOAT_TYPE(4.0/3.)*PI*((self.__edges[1:])**3 - self.__edges[0:-1]**3)
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__minimumDistance': self.__minimumDistance,
+                                  '_StructureFactorConstraint__maximumDistance': self.__maximumDistance,
+                                  '_StructureFactorConstraint__shellCenters'   : self.__shellCenters,
+                                  '_StructureFactorConstraint__histogramSize'  : self.__histogramSize,
+                                  '_StructureFactorConstraint__shellVolumes'   : self.__shellVolumes}) 
         # reset constraint
         self.reset_constraint()
         # reset sq matrix
@@ -327,7 +362,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             #. message (object): Any python object to send to constraint's listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine changed", "update molecules indexes"):
+        if message in("engine set", "update molecules indexes"):
             self.__set_weighting_scheme()
             # reset histogram
             if self.engine is not None:
@@ -352,8 +387,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
             assert minimumDistance<self.__maximumDistance, LOGGER.error("rmin must be smaller than rmax %s"%self.__maximumDistance)
         self.__rmin = rmin
         self.__minimumDistance = minimumDistance
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__rmin': self.__rmin,
+                                  '_StructureFactorConstraint__minimumDistance': self.__minimumDistance})
         # reset histogram
         self.__set_histogram()
+         
 
     def set_rmax(self, rmax):
         """
@@ -373,9 +412,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
             assert maximumDistance>self.__minimumDistance, LOGGER.error("rmax must be bigger than rmin %s"%self.__minimumDistance)
         self.__rmax = rmax
         self.__maximumDistance = maximumDistance
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__rmax': self.__rmax,
+                                  '_StructureFactorConstraint__maximumDistance': self.__maximumDistance}) 
         # reset histogram
         self.__set_histogram()
-    
+        
     def set_dr(self, dr):
         """
         Set dr value.
@@ -395,19 +437,24 @@ class StructureFactorConstraint(ExperimentalConstraint):
             bin = FLOAT_TYPE(dr)
         self.__dr = dr
         self.__bin = bin
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__dr': self.__dr,
+                                  '_StructureFactorConstraint__bin': self.__bin}) 
         # reset histogram
         self.__set_histogram()
     
     def set_weighting(self, weighting):
         """
-        Sets elements weighting. It must a valid entry of pdbParser atoms database
+        Sets elements weighting. It must a valid entry of pdbParser atoms database.
         
         :Parameters:
             #. weighting (string): The elements weighting.
         """
         assert is_element_property(weighting),LOGGER.error( "weighting is not a valid pdbParser atoms database entry")
         assert weighting != "atomicFormFactor", LOGGER.error("atomicFormFactor weighting is not allowed")
-        self.__weighting = weighting
+        self.__weighting = weighting        
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__weighting': self.__weighting}) 
      
     def set_window_function(self, windowFunction):
         """
@@ -430,6 +477,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # check window size
         # set windowFunction
         self.__windowFunction = windowFunction
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__windowFunction': self.__windowFunction}) 
     
     def set_experimental_data(self, experimentalData):
         """
@@ -484,6 +533,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set qmin and qmax
         self.__qmin = self.__experimentalQValues[0]
         self.__qmax = self.__experimentalQValues[-1]
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__limits'             : self.__limits,
+                                  '_StructureFactorConstraint__experimentalQValues': self.__experimentalQValues,
+                                  '_StructureFactorConstraint__experimentalSF'     : self.__experimentalSF,
+                                  '_StructureFactorConstraint__qmin'               : self.__qmin,
+                                  '_StructureFactorConstraint__qmax'               : self.__qmax}) 
         # set used dataWeights
         self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)   
         # reset constraint
@@ -835,7 +890,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleStdErr=True, titleScaleFactor=True):
+                   title=True, usedFrame=True, titleStdErr=True, titleScaleFactor=True):
         """ 
         Plot structure factor constraint.
         
@@ -855,7 +910,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
-            #. title (boolean): Whether to create the title or not
+            #. title (boolean): Whether to create the title or not.
+            #. usedFrame(boolean): Whether to show used frame name.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
         
@@ -904,7 +960,10 @@ class StructureFactorConstraint(ExperimentalConstraint):
             AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
         # set title
         if title:
-            t = ''
+            if usedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:
@@ -940,7 +999,7 @@ class ReducedStructureFactorConstraint(StructureFactorConstraint):
     The only reason why the Reduced Structure Factor is implemented, is because
     many experimental data are treated in this form. And it is just convenient not
     to manipulate the experimental data every time.
-    """
+    """ 
     def _get_Sq_from_Gr(self, Gr):
         return np.sum(Gr.reshape((-1,1))*self.Gr2SqMatrix, axis=0)
         

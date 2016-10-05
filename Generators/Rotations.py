@@ -69,7 +69,10 @@ class RotationGenerator(MoveGenerator):
         from fullrmc.Generators.Rotations import RotationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -168,7 +171,10 @@ class RotationAboutAxisGenerator(RotationGenerator):
         from fullrmc.Generators.Rotations import RotationAboutAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -261,7 +267,10 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         from fullrmc.Generators.Rotations import RotationAboutSymmetryAxisGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -343,7 +352,10 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         from fullrmc.Generators.Rotations import RotationAboutSymmetryAxisPath
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -480,7 +492,10 @@ class OrientationGenerator(MoveGenerator):
         from fullrmc.Generators.Rotations import OrientationGenerator
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...

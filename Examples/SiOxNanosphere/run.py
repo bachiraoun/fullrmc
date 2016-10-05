@@ -15,18 +15,27 @@ from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
   
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
-experimentalDataPath = "SiOx.gr"
-structurePdbPath     = "SiOx.pdb"
-engineSavePath       = "SiOx.rmc"
-NCORES               = 1
-
 # dirname
 DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
-if engineSavePath not in os.listdir(DIR_PATH):
-    ## create and initialize engine
-    ENGINE = Engine(pdb=structurePdbPath, constraints=None)
+# files name
+grFileName     = "SiOx.gr"
+pdbFileName    = "SiOx.pdb"
+engineFileName = "SiOx.rmc"
+NCORES         = 1
+FRESH_START    = True
+# engine variables
+grExpPath      = os.path.join(DIR_PATH, grFileName)
+pdbPath        = os.path.join(DIR_PATH, pdbFileName)
+engineFilePath = os.path.join(DIR_PATH, engineFileName)
+
+
+ENGINE = Engine(path=None)
+if not ENGINE.is_engine(engineFilePath) or FRESH_START:
+   # create engine
+    ENGINE = Engine(path=engineFilePath, freshStart=True)
+    ENGINE.set_pdb(pdbPath)
     # create and add pair distribution constraint to the engine
-    PDF_CONSTRAINT = PairDistributionConstraint(engine=None, experimentalData=experimentalDataPath, weighting="atomicNumber")
+    PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=grExpPath, weighting="atomicNumber")
     # shape function parameters
     params = {'rmin':0., 'rmax':None, 'dr':0.5,
               'qmin':0.0001, 'qmax':0.6, 'dq':0.005,
@@ -34,12 +43,12 @@ if engineSavePath not in os.listdir(DIR_PATH):
     PDF_CONSTRAINT.set_shape_function_parameters(params)
     ENGINE.add_constraints([PDF_CONSTRAINT])
     # Intermolecular constraint
-    EMD_CONSTRAINT = InterMolecularDistanceConstraint(engine=None)
+    EMD_CONSTRAINT = InterMolecularDistanceConstraint()
     ENGINE.add_constraints([EMD_CONSTRAINT])
     EMD_CONSTRAINT.set_type_definition("element")
     EMD_CONSTRAINT.set_pairs_distance([('Si','Si',1.75), ('o','o',1.10), ('Si','o',1.30)])
     # coordination number constraint
-    ACNC_CONSTRAINT = AtomicCoordinationNumberConstraint(engine=None)
+    ACNC_CONSTRAINT = AtomicCoordinationNumberConstraint()
     ENGINE.add_constraints([ACNC_CONSTRAINT])
     ACNC_CONSTRAINT.set_coordination_number_definition( coordNumDef=[('Si','Si',1.8,2.6,3,5), ])
     # initialize constraints
@@ -47,9 +56,9 @@ if engineSavePath not in os.listdir(DIR_PATH):
     # set number density
     ENGINE.set_number_density(.0125)
     # save engine
-    ENGINE.save(engineSavePath)
+    ENGINE.save()
 else:
-    ENGINE = Engine(pdb=None).load(engineSavePath)
+    ENGINE = ENGINE.load(engineFilePath)
     # get constraints
     PDF_CONSTRAINT, EMD_CONSTRAINT, ACNC_CONSTRAINT = ENGINE.constraints
 
@@ -58,14 +67,14 @@ else:
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ###################################
 def run_normal_rmc(nsteps=150000, saveFreq=10000, ncores=1):
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFreq, savePath=engineSavePath, ncores=ncores)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFreq, ncores=ncores, restartPdb=False)
 
 def run_explore(recur=50, saveFreq=10000, ncores=1):
     gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=False, explore=True)
     ENGINE.set_group_selector(gs)
      # number of steps
     nsteps = recur*len(ENGINE.groups)
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, savePath=engineSavePath, ncores=ncores)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, ncores=ncores, restartPdb=None)
         
 def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1): 
     # create expansion selector and explore creating shell layer
@@ -75,12 +84,13 @@ def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1):
     ENGINE.set_group_selector(RGS)
     nsteps = ENGINE.numberOfAtoms*recur
     # run rmc
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps/10, savePath=engineSavePath, ncores=ncores)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps/10, ncores=ncores, restartPdb=None)
 
 
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
+
 run_explore(ncores=NCORES)
 run_normal_rmc(nsteps=100000, ncores=NCORES)
 run_explore(ncores=NCORES)

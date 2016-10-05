@@ -56,15 +56,18 @@ class RandomSelector(GroupSelector):
         from fullrmc.Engine import Engine
         from fullrmc.Selectors.RandomSelectors import RandomSelector
         
-        # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+       # create engine 
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups generators as needed ...
         
         # set group selector as random selection from all defined groups.
-        ENGINE.set_group_selector( RandomSelector(ENGINE) )  
+        ENGINE.set_group_selector( RandomSelector(engine=ENGINE) )  
         
     """
     def select_index(self):
@@ -92,7 +95,10 @@ class WeightedRandomSelector(RandomSelector):
         from fullrmc.Selectors.RandomSelectors import WeightedRandomSelector
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -100,9 +106,9 @@ class WeightedRandomSelector(RandomSelector):
         
         # set group selector as random selection but with double likelihood to
         # selecting the first and the last group.
-        weights = [1 for _ in ENGINE.pdb.indexes]
-        weights[0] = weights[-1] = 2 
-        ENGINE.set_group_selector( WeightedRandomSelector(ENGINE, weights) )  
+        WEIGHTS = [1 for _ in ENGINE.pdb.indexes]
+        WEIGHTS[0] = WEIGHTS[-1] = 2 
+        ENGINE.set_group_selector( WeightedRandomSelector(engine=ENGINE, weights=WEIGHTS) )  
         
     """
     def __init__(self, engine, weights=None):
@@ -130,14 +136,22 @@ class WeightedRandomSelector(RandomSelector):
     def _set_selection_scheme(self):
         """ Sets selection scheme. """
         cumsumWeights = np.cumsum(self.__weights, dtype=FLOAT_TYPE)
-        self.__selectionScheme = cumsumWeights/cumsumWeights[-1]
-        
-    @property    
+        self._selectionScheme = cumsumWeights/cumsumWeights[-1]
+    
+    def _runtime_initialize(self):
+        """   
+        Automatically check the groups weight
+        """
+        assert self.engine is not None, LOGGER.error("engine must be set prior to calling _runtime_initialize")
+        if len(self._selectionScheme) != len(self.engine.groups):
+            raise LOGGER.error("Groups are modified, must set GroupSelector weights using set_weights method")
+
+    @property
     def weights(self):
         """Groups weight of selection as initialized."""
         return self.__weights
         
-    @property    
+    @property
     def groupsWeight(self):
         """Groups weight of selection at current state."""
         groupsWeight = np.copy(self.selectionScheme)
@@ -145,10 +159,10 @@ class WeightedRandomSelector(RandomSelector):
             groupsWeight[1:] -= self.selectionScheme[:-1]
         return groupsWeight
         
-    @property    
+    @property
     def selectionScheme(self):
         """Groups selection scheme used upon group selection."""
-        return self.__selectionScheme
+        return self._selectionScheme
         
     def set_weights(self, weights): 
         """
@@ -189,7 +203,7 @@ class WeightedRandomSelector(RandomSelector):
         :Returns:
             #. index (integer): the selected group index in engine groups list
         """
-        return INT_TYPE( np.searchsorted(self.__selectionScheme, generate_random_float()) )
+        return INT_TYPE( np.searchsorted(self._selectionScheme, generate_random_float()) )
 
     
     
@@ -216,7 +230,10 @@ class SmartRandomSelector(WeightedRandomSelector):
         from fullrmc.Selectors.RandomSelectors import SmartRandomSelector
         
         # create engine 
-        ENGINE = Engine(pdb='system.pdb')
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
         
         # Add constraints ...
         # Re-define groups if needed ...
@@ -224,7 +241,7 @@ class SmartRandomSelector(WeightedRandomSelector):
         
         # set group selector as random smart selection that will adjust its
         # weighting scheme to improve the chances of moves getting accepted.        
-        ENGINE.set_group_selector( SmartRandomSelector(ENGINE) )  
+        ENGINE.set_group_selector( SmartRandomSelector(engine=ENGINE) )  
         
     """
     
@@ -238,8 +255,8 @@ class SmartRandomSelector(WeightedRandomSelector):
     
     def _set_selection_scheme(self):
         """ Sets selection scheme. """
-        self.__selectionScheme = np.cumsum(self.weights, dtype=FLOAT_TYPE)
-        
+        self._selectionScheme = np.cumsum(self.weights, dtype=FLOAT_TYPE)
+ 
     @property
     def biasFactor(self):
         """The biasing factor."""
@@ -249,11 +266,6 @@ class SmartRandomSelector(WeightedRandomSelector):
     def unbiasFactor(self):
         """The unbiasing factor."""
         return self.__unbiasFactor
-           
-    @property    
-    def selectionScheme(self):
-        """Groups selection scheme used upon group selection."""
-        return self.__selectionScheme
         
     def set_bias_factor(self, biasFactor):
         """
@@ -291,7 +303,7 @@ class SmartRandomSelector(WeightedRandomSelector):
         :Parameters:
             #. index (integer): the selected group index in engine groups list
         """
-        self.__selectionScheme[index:] += self.__biasFactor
+        self._selectionScheme[index:] += self.__biasFactor
     
     def move_rejected(self, index):
         """
@@ -304,10 +316,10 @@ class SmartRandomSelector(WeightedRandomSelector):
         if self.__unbiasFactor is None:
             return
         if index == 0:
-            if  self.__selectionScheme[index] - self.__unbiasFactor > 0:
-                self.__selectionScheme[index:] -= self.__unbiasFactor  
-        elif self.__selectionScheme[index] - self.__unbiasFactor > self.__selectionScheme[index-1]:
-            self.__selectionScheme[index:] -= self.__unbiasFactor  
+            if  self._selectionScheme[index] - self.__unbiasFactor > 0:
+                self._selectionScheme[index:] -= self.__unbiasFactor  
+        elif self._selectionScheme[index] - self.__unbiasFactor > self._selectionScheme[index-1]:
+            self._selectionScheme[index:] -= self.__unbiasFactor  
                   
     def select_index(self):
         """
@@ -316,7 +328,7 @@ class SmartRandomSelector(WeightedRandomSelector):
         :Returns:
             #. index (integer): the selected group index in engine groups list
         """
-        return INT_TYPE( np.searchsorted(self.__selectionScheme, generate_random_float()*self.__selectionScheme[-1]) )
+        return INT_TYPE( np.searchsorted(self._selectionScheme, generate_random_float()*self._selectionScheme[-1]) )
         
         
         

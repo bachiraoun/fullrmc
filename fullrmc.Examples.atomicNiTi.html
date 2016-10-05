@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -158,13 +158,16 @@ random selection of groups using <a class="reference internal" href="fullrmc.Sel
 atomic translations using <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> move
 generator.</li>
 <li>run_swap: used set_groups(None) which is equivalent to creating
-a group per atom. Create two swapping lists. THe first one containing
+a group per atom. Create two swapping lists. The first one containing
 only all Nickel atoms indexes and the second only Titanium atoms indexes.
 Create two <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> for swapping Nickel atoms with
 Titanium and the other the opposite. Loop over all engine&#8217;s groups, check
 whether group&#8217;s atom is Nickel or Titanium and assign it respectively
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> to Titanium atoms and another
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> to Nickel atoms.</li>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> to Nickel atoms.
+Advanced users can change <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> used flag
+to True and try playing with the given coordination number definition and improve
+the fit quality and the physical meaning of the final structure.</li>
 </ol>
 <p><span class="underline">RUN SIMULATION:</span></p>
 <p>run_normal several times with different number of steps and saving frequencies.
@@ -194,8 +197,8 @@ run_swap is called to fit long range order correlations.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -219,7 +222,7 @@ run_swap is called to fit long range order correlations.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

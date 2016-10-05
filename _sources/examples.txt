@@ -94,6 +94,16 @@ Examples folder name is used as the click-able items in the following list.
 *  `molecularTHF <fullrmc.Examples.molecularTHF.html>`__: This is a tetrahydrofuran 
    electrolyte system fitting.
 *  `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon 
-   oxide nanosphere fitting.    
+   oxide nanosphere fitting. 
+   
+:underline:`Frames:`   
+
+*  `frames <fullrmc.Examples.frames.html>`__: Fitting the same Ni-Ti memory shape binary  
+   compound as in example `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__. But in 
+   this example we define different frames and build different fitting processes all
+   contained in the same engine.
+   
+   
+   
    
    

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Selectors package &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Selectors package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
             <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -221,24 +221,6 @@ It will always return False because recurrence is a property of RecursiveGroupSe
 <code class="descname">isExploring</code></dt>
 <dd><p>Get whether selection is recurring and explore flag is True.
 It will always return False because recurrence is a property of RecursiveGroupSelector instances only.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Listens to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -388,7 +370,10 @@ frameborder="0" allowfullscreen>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -660,7 +645,10 @@ If None, order is set automatically to all groups indexes list.</li>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DefinedOrderSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -674,7 +662,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <span class="c1"># compute increasing order</span>
 <span class="n">order</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
 <span class="c1"># set group selector</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)</span> <span class="p">)</span>         
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="p">)</span>         
 </pre></div>
 </div>
 <dl class="attribute">
@@ -790,7 +778,10 @@ frameborder="0" allowfullscreen>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -798,9 +789,9 @@ frameborder="0" allowfullscreen>
 
 <span class="c1"># Set the order of selection from further to the closest to a (1,1,1).</span>
 <span class="c1"># Automatically adjust the groups move generators allowing modulation of amplitudes.</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> 
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">engine</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="p">,</span> 
                                                     <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                                                    <span class="n">adjustMoveGenerators</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="p">)</span>         
+                                                    <span class="n">adjustMoveGenerators</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="p">)</span>         
 </pre></div>
 </div>
 <dl class="attribute">
@@ -980,22 +971,25 @@ amplitudes is set to 0.25A.</span></p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import external libraries</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-
-<span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">RandomSelector</span>
-
+<div class="highlight-python"><div class="highlight"><pre><span></span> <span class="c1"># import external libraries</span>
+ <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+ 
+ <span class="c1"># import fullrmc modules</span>
+ <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+ <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">RandomSelector</span>
+ 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
-
-<span class="c1"># Add constraints ...</span>
-<span class="c1"># Re-define groups if needed ...</span>
-<span class="c1"># Re-define groups generators as needed ...</span>
-
-<span class="c1"># set group selector as random selection from all defined groups.</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+ <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+ 
+ <span class="c1"># set pdb file</span>
+ <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+ 
+ <span class="c1"># Add constraints ...</span>
+ <span class="c1"># Re-define groups if needed ...</span>
+ <span class="c1"># Re-define groups generators as needed ...</span>
+ 
+ <span class="c1"># set group selector as random selection from all defined groups.</span>
+ <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
 </pre></div>
 </div>
 <dl class="method">
@@ -1039,7 +1033,10 @@ amplitudes is set to 0.25A.</span></p>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">WeightedRandomSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -1047,9 +1044,9 @@ amplitudes is set to 0.25A.</span></p>
 
 <span class="c1"># set group selector as random selection but with double likelihood to</span>
 <span class="c1"># selecting the first and the last group.</span>
-<span class="n">weights</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
-<span class="n">weights</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> 
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="p">)</span>  
+<span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
+<span class="n">WEIGHTS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> 
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">)</span> <span class="p">)</span>  
 </pre></div>
 </div>
 <dl class="attribute">
@@ -1153,7 +1150,10 @@ Un-biasing will be performed only if group weight remains positive.</li>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">SmartRandomSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -1161,7 +1161,7 @@ Un-biasing will be performed only if group weight remains positive.</li>
 
 <span class="c1"># set group selector as random smart selection that will adjust its</span>
 <span class="c1"># weighting scheme to improve the chances of moves getting accepted.        </span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
 </pre></div>
 </div>
 <dl class="attribute">
@@ -1174,12 +1174,6 @@ Un-biasing will be performed only if group weight remains positive.</li>
 <dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor">
 <code class="descname">unbiasFactor</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor" title="Permalink to this definition">¶</a></dt>
 <dd><p>The unbiasing factor.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.selectionScheme">
-<code class="descname">selectionScheme</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups selection scheme used upon group selection.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1308,8 +1302,8 @@ This method is empty must be overloaded when needed.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -1345,7 +1339,7 @@ This method is empty must be overloaded when needed.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

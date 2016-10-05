@@ -10,8 +10,8 @@ multithreads enabled is because of the following reasons:
 
 #. To avoid compilation errors because not all compilers and machine have openmp  
    library installed and correctly linked (e.g. clang).
-#. For small systems (maybe <20000 atoms), running fullrmc on single core can be 
-   faster because threads comes with some overhead cost. 
+#. For small systems (maybe < 20000 atoms), running fullrmc on single core can be 
+   faster because threads run with some additional processing overhead time. 
    
    
 How to compile with openmp
@@ -48,7 +48,7 @@ process time by some factor of the number of cores (threads) used. Also, using n
 will never result in occupying the ncores 100% because parallelization in fullrmc is 
 an intercalation of multithreaded computation blocks with serial ones. For big systems,
 You will compute moves faster with no guarantee that those moves will be accepted.
-The speed of fitting is directly related with the ratio of accepted moves and not 
+The speed of fitting is directly related to the ratio of accepted moves and not 
 just how fast the moves are computed. fullrmc is an interactive fitting platform and 
 the more you used it the more you understand that creating models requires some skills 
 and some understanding of the system you are trying to model.

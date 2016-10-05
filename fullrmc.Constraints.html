@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -118,30 +118,26 @@
   <p>Constraint contains parent classes for all constraints.
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
-<img src="_images/inheritance-393f8e0889e6b9652b43673f6e94cda42f1bfa99.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-ccb0cc7651beeed5829e05b193174333feae323b.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,53,87,77"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="159,53,272,77"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,101,281,125"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" target="_top" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="343,53,491,77"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,53,235,77"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="306,53,419,77"/>
+<area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="297,101,428,125"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,53,104,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.QuasiRigidConstraint" target="_top" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="491,53,638,77"/>
 </map>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">Constraint</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">Constraint</code></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" title="fullrmc.Core.Collection.ListenerBase"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.ListenerBase</span></code></a></p>
 <p>A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt>
+<code class="descname">constraintId</code></dt>
+<dd><p>Get constraints unique id.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt>
 <code class="descname">engine</code></dt>
@@ -218,24 +214,6 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dt>
 <code class="descname">afterMoveStandardError</code></dt>
 <dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Listen&#8217;s to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -466,24 +444,6 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the constraints fullrmc engine instance.
-&#8216;engine changed&#8217; message will be broadcasted automatically to the constraint&#8217;s listener listen method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
 <code class="descname">compute_and_set_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Computes and sets the constraint&#8217;s standardError by calling compute_standard_error and passing the constraint&#8217;s data.</p>
 </dd></dl>
@@ -537,7 +497,7 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">ExperimentalConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">ExperimentalConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>An ExperimentalConstraint is any constraint related to experimental data.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -814,19 +774,19 @@ If None, all data points will be considered as having the same weight.</li>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">SingularConstraint</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">SingularConstraint</code></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>A singular constraint is a constraint that doesn&#8217;t allow multiple instances in the same engine.</p>
-<dl class="attribute">
+<dl class="method">
 <dt>
-<code class="descname">is_singular</code></dt>
+<code class="descname">is_singular</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
 <dd><p>Get whether only one instance of this constraint type is present in the engine.
 True for only itself found, False for other instance of the same __class__.__name__</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">assert_singular</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<code class="descname">assert_singular</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
 <dd><p>Checks whether only one instance of this constraint type is present in the engine.
 Raises Exception if multiple instances are present.</p>
 </dd></dl>
@@ -835,7 +795,7 @@ Raises Exception if multiple instances are present.</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">RigidConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>rejectProbability</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">RigidConstraint</code><span class="sig-paren">(</span><em>rejectProbability</em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>A rigid constraint is a constraint that doesn&#8217;t count into the total standardError of the Engine.
 But it&#8217;s internal standardError must monotonously decrease or remain the same from one engine step to another.
@@ -1109,17 +1069,17 @@ function reciprocal data.</li>
 <div class="section" id="module-fullrmc.Constraints.DistanceConstraints">
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
-<img src="_images/inheritance-b5329f2c78c7c8638b9dc8d8d90de860bfa0e631.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-f57b2d27a2444b76c8eadffc102179a1a0f51549.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="314,5,533,29"/>
-<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="314,53,533,77"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="462,29,680,53"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.DistanceConstraints.</code><code class="descname">InterMolecularDistanceConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>flexible=True</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.DistanceConstraints.</code><code class="descname">InterMolecularDistanceConstraint</code><span class="sig-paren">(</span><em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>flexible=True</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1127,8 +1087,6 @@ function reciprocal data.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all 
 atoms type.</p>
 </li>
@@ -1146,11 +1104,12 @@ given defaultMinimumDistance value .</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">flexible (boolean): Whether to allow atoms to break constraints definition 
-under the condition of decreasing total standardError. If flexible is set 
-to False, atoms will never be allowed to cross from above to below minimum 
-allowed distance. Even if the later will decrease some other unsatisfying 
-atoms distances, and therefore the total standardError of the constraint.</p>
+<li><p class="first">flexible (boolean): Whether to allow atoms to break constraint&#8217;s definition 
+under the condition of decreasing total standardError of the constraint. 
+If flexible is set to False, atoms will never be allowed to cross from above 
+to below minimum allowed distance. Even if the later will decrease some other 
+unsatisfying atoms distances, and therefore the total standardError of the 
+constraint.</p>
 </li>
 <li><p class="first">rejectProbability (Number): rejecting probability of all steps where 
 standardError increases. It must be between 0 and 1 where 1 means 
@@ -1162,6 +1121,24 @@ all steps regardless whether standardError increases or not.</p>
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.DistanceConstraints</span> <span class="kn">import</span> <span class="n">InterMolecularDistanceConstraint</span>
+
+<span class="c1"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># create and add constraint</span>
+<span class="n">EMD</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">()</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">EMD</span><span class="p">)</span>
+
+<span class="c1"># create definition</span>
+<span class="n">EMD</span><span class="o">.</span><span class="n">set_pairs_distance</span><span class="p">([(</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="mf">1.75</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="mf">1.10</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="mf">1.30</span><span class="p">)])</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.defaultDistance">
 <code class="descname">defaultDistance</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.defaultDistance" title="Permalink to this definition">¶</a></dt>
@@ -1184,12 +1161,6 @@ all steps regardless whether standardError increases or not.</p>
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.flexible">
 <code class="descname">flexible</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.flexible" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get flexible flag</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.powerLaw">
-<code class="descname">powerLaw</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.powerLaw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the power law</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1500,356 +1471,21 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 
 </dd></dl>
 
-<dl class="class">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.DistanceConstraints.</code><code class="descname">IntraMolecularDistanceConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>defaultMinDistance=0.67</em>, <em>typeDefinition='name'</em>, <em>pairsLimitsDefinition=None</em>, <em>rejectProbability=1</em>, <em>mode='distance'</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
-<p>Its controls the intra-molecular distances between atoms.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
-<li><p class="first">defaultMinDistance (number): The minimum distance allowed set by default for all atoms type.</p>
-</li>
-<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</p>
-</li>
-<li><p class="first">pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
-A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
-First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="p">[(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span> 
-</pre></div>
-</div>
-</li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-and 0 means accepting all steps regardless whether standardError increases or not.</p>
-</li>
-<li><p class="first">mode (string): Defines the way standardError is calculated. In such constraints the definition of standardError
-can be confusing because many parameters play different roles in this type of calculation. The number of
-unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
-Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li>distance (Default): standardError is simply calculated as the square summation of the reduced out of limits distances.
-This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.</li>
-<li>number: standardError is calculated such as the number of non-satisfied constraints must decrease 
-from one step to another while the square summation of the reduced out of limits distances might increase.</li>
-</ol>
-</div></blockquote>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeDefinition">
-<code class="descname">typeDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get types definition.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingStandardErrorModes">
-<code class="descname">existingStandardErrorModes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.existingStandardErrorModes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get list of defined standardError modes of calculation</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode">
-<code class="descname">mode</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the mode of standardError calculation.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.types">
-<code class="descname">types</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the defined types set.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.allTypes">
-<code class="descname">allTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.allTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all atoms types.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfTypes">
-<code class="descname">numberOfTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of defined types in the configuration.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.defaultMinDistance">
-<code class="descname">defaultMinDistance</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.defaultMinDistance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the experimental data distances minimum.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsLimitsDefinition">
-<code class="descname">pairsLimitsDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsLimitsDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the pairs limits definition as defined by user</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsLimits">
-<code class="descname">pairsLimits</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsLimits" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the normalized pairs limits definition</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typesPairs">
-<code class="descname">typesPairs</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typesPairs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the list of pairs of types</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typesIndexes">
-<code class="descname">typesIndexes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typesIndexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get defined types indexes</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfAtomsPerType">
-<code class="descname">numberOfAtomsPerType</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfAtomsPerType" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of atoms per type dictionary.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.lowerLimitArray">
-<code class="descname">lowerLimitArray</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.lowerLimitArray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get lowerLimitArray used in distances calculation.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.upperLimitArray">
-<code class="descname">upperLimitArray</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.upperLimitArray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get upperLimitArray used in distances calculation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.listen">
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>listen to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode">
-<code class="descname">set_mode</code><span class="sig-paren">(</span><em>mode</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the standardError mode of calculation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>mode (object): The mode of calculation</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_default_minimum_distance">
-<code class="descname">set_default_minimum_distance</code><span class="sig-paren">(</span><em>defaultMinDistance</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_default_minimum_distance" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the default intermolecular minimum distance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>defaultMinDistance (number): The default minimum distance.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_type_definition">
-<code class="descname">set_type_definition</code><span class="sig-paren">(</span><em>typeDefinition</em>, <em>pairsLimitsDefinition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_type_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Its an alias to set_pairs_limits with pairsLimits argument passed as the already defined pairsLimitsDefinitions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_pairs_limits">
-<code class="descname">set_pairs_limits</code><span class="sig-paren">(</span><em>pairsLimitsDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_pairs_limits" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the pairs intermolecular minimum distance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
-A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
-First defined elements pair distance will cancel all redundant. 
-If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="p">[(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span> 
-</pre></div>
-</div>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error">
-<code class="descname">compute_standard_error</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the squared deviation of data not satisfying constraint conditions.</p>
-<div class="math">
-\[SD = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} (d_{ij}-D_{ij})^{2} \bigg( 1-\int_{0}^{d_{ij}} \delta(x-D_{ij}) dx \bigg) \]</div>
-<p>Where:</p>
-<p><span class="math">\(N\)</span> is the total number of atoms in the system.</p>
-<p><span class="math">\(D_{ij}\)</span> is the distance constraint set for atoms pair (i,j).</p>
-<p><span class="math">\(d_{ij}\)</span> is the distance between atom i and atom j.</p>
-<p><span class="math">\(\delta\)</span> is the Dirac delta function.</p>
-<p><span class="math">\(\int_{0}^{d_{ij}}\delta(x-D_{ij})dx\)</span> is equal to 0 if <span class="math">\(d_{ij}&lt;D_{ij}\)</span> and 1 when <span class="math">\(d_{ij} \geqslant D_{ij}\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute standardError.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>standardError (number): The calculated standardError of the constraint.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.get_constraint_value">
-<code class="descname">get_constraint_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute all partial Mean Pair Distances (MPD) below the defined minimum distance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute constraint before move is executed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute constraint after move is executed</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
-<li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept move</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-fullrmc.Constraints.AtomicCoordinationConstraints">
 <span id="coordinationconstraints"></span><h2>CoordinationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AtomicCoordinationConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AtomicCoordinationConstraints contains classes for all constraints related to coordination numbers in shells around atoms.</p>
-<img src="_images/inheritance-15c9ebce31117d998a7c721e780ccaf1d23f74aa.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints" usemap="#inheritance58c05307aa" class="inheritance"/>
+<img src="_images/inheritance-5e568bb817c8e76c0d266f5013e2af274459ee7f.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints" usemap="#inheritance58c05307aa" class="inheritance"/>
 <map id="inheritance58c05307aa" name="inheritance58c05307aa">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number between atoms. " alt="" coords="314,29,560,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number between atoms. " alt="" coords="462,29,707,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.AtomicCoordinationConstraints.</code><code class="descname">AtomicCoordinationNumberConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>coordNumDef=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.AtomicCoordinationConstraints.</code><code class="descname">AtomicCoordinationNumberConstraint</code><span class="sig-paren">(</span><em>coordNumDef=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>It&#8217;s a rigid constraint that controls the coordination number between atoms.</p>
 <iframe width="560" height="315" 
@@ -1860,7 +1496,6 @@ frameborder="0" allowfullscreen>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint RMC engine.</li>
 <li>coordNumDef (None, list, tuple): The coordination number definition. 
 It must be None or a list or tuple where every element is a list or a
 tuple of exactly 6 items and an optional 7th item for weight.<ol class="arabic">
@@ -1894,6 +1529,25 @@ and 0 means accepting all steps regardless whether standardError increases or no
 </tr>
 </tbody>
 </table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.AtomicCoordinationConstraints</span> <span class="kn">import</span> <span class="n">AtomicCoordinationNumberConstraint</span>
+
+<span class="c1"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># create and add constraint</span>
+<span class="n">ACNC</span> <span class="o">=</span> <span class="n">AtomicCoordinationNumberConstraint</span><span class="p">()</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">ACNC</span><span class="p">)</span>
+
+<span class="c1"># create definition</span>
+<span class="n">ACNC</span><span class="o">.</span><span class="n">set_coordination_number_definition</span><span class="p">(</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;Al&#39;</span><span class="p">,</span><span class="s1">&#39;Cl&#39;</span><span class="p">,</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+                                           <span class="p">(</span><span class="s1">&#39;Al&#39;</span><span class="p">,</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span> <span class="p">)</span>
+</pre></div>
+</div>
 <dl class="attribute">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coordNumDef">
 <code class="descname">coordNumDef</code><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coordNumDef" title="Permalink to this definition">¶</a></dt>
@@ -2171,16 +1825,17 @@ this is optional, if not given it is set automatically to 1.0.</li>
 <div class="section" id="module-fullrmc.Constraints.BondConstraints">
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
-<img src="_images/inheritance-86bd57327d6d6f10ea1750d2f775b439b1e63c7a.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-788e1f33b59d04d37e7eace13c313a02fb44aaeb.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond length defined between 2 defined atoms." alt="" coords="314,29,428,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond length defined between 2 defined atoms." alt="" coords="462,29,575,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.BondConstraints.</code><code class="descname">BondConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>bondsMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.BondConstraints.</code><code class="descname">BondConstraint</code><span class="sig-paren">(</span><em>bondsMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Controls the bond length defined between 2 defined atoms.</p>
 <iframe width="560" height="315" 
@@ -2191,8 +1846,6 @@ frameborder="0" allowfullscreen>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><dl class="first docutils">
 <dt>bondsMap (list): The bonds map definition.</dt>
 <dd><p class="first">Every item must be a list of four items.</p>
@@ -2226,10 +1879,13 @@ and 0 means accepting all steps regardless whether standardError increases or no
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.BondConstraints</span> <span class="kn">import</span> <span class="n">BondConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">BC</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">BC</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">()</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">BC</span><span class="p">)</span>
 
 <span class="c1"># define intra-molecular bonds </span>
@@ -2516,16 +2172,17 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
-<img src="_images/inheritance-84a6c6128f13ae9b3568ad362807831d5097f150.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-c1b77d4c61b5b8797f1f5b655433da5f6cce03cd.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined &#39;bonded&#39; atoms." alt="" coords="314,29,468,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined &#39;bonded&#39; atoms." alt="" coords="462,29,616,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.AngleConstraints.</code><code class="descname">BondsAngleConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.AngleConstraints.</code><code class="descname">BondsAngleConstraint</code><span class="sig-paren">(</span><em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Controls the angle defined between 3 defined &#8216;bonded&#8217; atoms.</p>
 <iframe width="560" height="315" 
@@ -2536,8 +2193,6 @@ frameborder="0" allowfullscreen>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><p class="first">anglesMap (list): The angles map definition.
 Every item must be a list of five items.</p>
 <blockquote>
@@ -2576,10 +2231,13 @@ and 0 means accepting all steps regardless whether standardError increases or no
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.AngleConstraints</span> <span class="kn">import</span> <span class="n">BondsAngleConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">BAC</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">BAC</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">()</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">BAC</span><span class="p">)</span>
 
 <span class="c1"># define intra-molecular angles </span>
@@ -2881,16 +2539,17 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <div class="section" id="module-fullrmc.Constraints.ImproperAngleConstraints">
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
-<img src="_images/inheritance-8bb925936696c198db3adc9bd0602d0513097de2.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-74c7e5ad0866934988e7f381f31939e2e5960532.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="314,29,484,53"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="462,29,631,53"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</code><code class="descname">ImproperAngleConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</code><code class="descname">ImproperAngleConstraint</code><span class="sig-paren">(</span><em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Controls the improper angle formed with 4 defined atoms. It&#8217;s mainly used to 
 keep the improper atom in the plane defined with three other atoms. 
@@ -2907,8 +2566,6 @@ frameborder="0" allowfullscreen>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><dl class="first docutils">
 <dt>anglesMap (list): The angles map definition.</dt>
 <dd><p class="first">Every item must be a list of five items.</p>
@@ -2952,10 +2609,13 @@ and 0 means accepting all steps regardless whether standardError increases or no
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.ImproperAngleConstraints</span> <span class="kn">import</span> <span class="n">ImproperAngleConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">IAC</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">IAC</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">()</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">IAC</span><span class="p">)</span>
 
 <span class="c1"># define intra-molecular improper angles </span>
@@ -3231,15 +2891,16 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <div class="section" id="module-fullrmc.Constraints.PairDistributionConstraints">
 <span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
 <p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
-<img src="_images/inheritance-75b4f0900678c83e46bef3c6982f3e418054a0d4.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
+<img src="_images/inheritance-cac4eb553badf57631665cada7434da8df9702dc.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
 <map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,5,104,29"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="491,5,663,29"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</code><code class="descname">PairDistributionConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</code><code class="descname">PairDistributionConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></code></a></p>
 <p>It controls the total reduced pair distribution function (pdf) of the system noted as G(r). 
 The pair distribution function is directly calculated from powder diffraction experimental
@@ -3287,8 +2948,6 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
 <li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
@@ -3361,10 +3020,13 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">PDC</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">PDC</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;pdf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PDC</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3792,7 +3454,7 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair distribution constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3816,6 +3478,7 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not</li>
+<li>usedFrame(boolean): Whether to show used frame name.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
@@ -3836,16 +3499,17 @@ is accepted.</li>
 <div class="section" id="module-fullrmc.Constraints.PairCorrelationConstraints">
 <span id="paircorrelationconstraints"></span><h2>PairCorrelationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairCorrelationConstraints" title="Permalink to this headline">¶</a></h2>
 <p>PairCorrelationConstraint contains classes for all constraints related experimental pair correlation functions.</p>
-<img src="_images/inheritance-1bbc4573aa0757188ee3b3468bf3dd89aab1c1e5.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
+<img src="_images/inheritance-9e71fbcae330d368fcc7d6f90003a70306856d72.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
 <map id="inheritance225f361433" name="inheritance225f361433">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="343,5,516,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" target="_top" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="564,5,735,29"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,5,104,29"/>
+<area shape="rect" id="node5" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="491,5,663,29"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" target="_top" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="711,5,882,29"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</code><code class="descname">PairCorrelationConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</code><code class="descname">PairCorrelationConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></code></a></p>
 <p>It controls the total pair correlation function (pcf) of the system noted as g(r).
 pcf tells the probability of finding atomic pairs separated by the real space distance r.
@@ -3882,10 +3546,13 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairCorrelationConstraints</span> <span class="kn">import</span> <span class="n">PairCorrelationConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">PCC</span> <span class="o">=</span> <span class="n">PairCorrelationConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">PCC</span> <span class="o">=</span> <span class="n">PairCorrelationConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;pcf.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">PCC</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -3949,7 +3616,7 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>usedFrame=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair correlation constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3969,6 +3636,7 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not</li>
+<li>usedFrame(boolean): Whether to show used frame name.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
@@ -3989,16 +3657,17 @@ is accepted.</li>
 <div class="section" id="module-fullrmc.Constraints.StructureFactorConstraints">
 <span id="structurefactorconstraints"></span><h2>StructureFactorConstraints<a class="headerlink" href="#module-fullrmc.Constraints.StructureFactorConstraints" title="Permalink to this headline">¶</a></h2>
 <p>StructureFactorConstraints contains classes for all constraints related experimental static structure factor functions.</p>
-<img src="_images/inheritance-edbc3532d1907f4f3cc879c688535c8345e393ac.png" alt="Inheritance diagram of fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritancecc47322566" class="inheritance"/>
+<img src="_images/inheritance-5ca48331bdda34a3372a2f6882127a1361b8adac.png" alt="Inheritance diagram of fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritancecc47322566" class="inheritance"/>
 <map id="inheritancecc47322566" name="inheritancecc47322566">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,5,87,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" target="_top" title="It controls the Structure Factor noted as S(Q) and also called" alt="" coords="343,5,517,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" target="_top" title="The Reduced Structure Factor that we will also note S(Q) " alt="" coords="565,5,793,29"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,5,104,29"/>
+<area shape="rect" id="node5" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" target="_top" title="It controls the Structure Factor noted as S(Q) and also called" alt="" coords="491,5,664,29"/>
+<area shape="rect" id="node4" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" target="_top" title="The Reduced Structure Factor that we will also note S(Q) " alt="" coords="712,5,940,29"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">StructureFactorConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">StructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></code></a></p>
 <p>It controls the Structure Factor noted as S(Q) and also called
 total-scattering structure function or Static Structure Factor. 
@@ -4038,8 +3707,6 @@ weighted histograms as the following:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The constraint RMC engine.</p>
-</li>
 <li><p class="first">experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.</p>
 </li>
 <li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
@@ -4095,10 +3762,13 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.StructureFactorConstraints</span> <span class="kn">import</span> <span class="n">StructureFactorConstraint</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># create and add constraint</span>
-<span class="n">SFC</span> <span class="o">=</span> <span class="n">StructureFactorConstraint</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;sq.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
+<span class="n">SFC</span> <span class="o">=</span> <span class="n">StructureFactorConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="s2">&quot;sq.dat&quot;</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">SFC</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4291,7 +3961,7 @@ If None is given, bin is computed as <span class="math">\(2 \pi / (Q_{max}-Q_{mi
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_weighting">
 <code class="descname">set_weighting</code><span class="sig-paren">(</span><em>weighting</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_weighting" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets elements weighting. It must a valid entry of pdbParser atoms database</p>
+<dd><p>Sets elements weighting. It must a valid entry of pdbParser atoms database.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4556,7 +4226,7 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>usedFrame=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot structure factor constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4578,7 +4248,8 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
-<li>title (boolean): Whether to create the title or not</li>
+<li>title (boolean): Whether to create the title or not.</li>
+<li>usedFrame(boolean): Whether to show used frame name.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
 </ol>
@@ -4597,7 +4268,7 @@ is accepted.</li>
 
 <dl class="class">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">ReducedStructureFactorConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">ReducedStructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint</span></code></a></p>
 <p>The Reduced Structure Factor that we will also note S(Q) 
 is exactly the same quantity as the Structure Factor but with 
@@ -4644,8 +4315,8 @@ to manipulate the experimental data every time.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -4675,7 +4346,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

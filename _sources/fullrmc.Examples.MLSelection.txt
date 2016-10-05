@@ -40,15 +40,10 @@ but force 'move accepted' logging file flag to be always True.
 
 :underline:`CREATE ENGINE:` 
 
-Create the engine and the needed constraints.
-
-
-:underline:`CREATE MOVES GENERATORS:` 
-
-Set :class:`.TranslationGenerator` to all groups but 75% of those translation
-generators are given a realistic maximum translation amplitude of :math:`0.3 \AA`
-while the remaining 25% are given an unrealistic maximum amplitude of
-:math:`10 \AA` that will lead to a lot of unaccepted moves. 
+Create the engine and the needed constraints. Set :class:`.TranslationGenerator` 
+to all groups but 75% of those translation generators are given a realistic maximum 
+translation amplitude of :math:`0.3 \AA` while the remaining 25% are given an unrealistic 
+maximum amplitude of :math:`10 \AA` that will lead to a lot of unaccepted moves. 
 
 
 :underline:`DIFFERENT RUNS:` 

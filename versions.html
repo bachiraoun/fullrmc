@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 1.2.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.1',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -157,6 +157,7 @@ and then compiling the extension files in place.</p>
 <li>NumPy (lowest version tested is 1.7.1)</li>
 <li>cython (lowest version tested is 0.21.1)</li>
 <li>matplotlib (lowest version tested is 1.4)</li>
+<li>pyrep (lowest version tested is 1.0.2)</li>
 <li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
 from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
 - 0.1.5 is used starting from fullrmc 1.0.1)</li>
@@ -193,6 +194,7 @@ following python script:</li>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.21.1&#39;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.0.2&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s1">&#39;0.1.5&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;0.2.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s1">&#39;1.4&#39;</span>  <span class="p">)]:</span>
@@ -204,7 +206,7 @@ following python script:</li>
         <span class="k">if</span> <span class="n">PV</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">PV</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
             <span class="k">print</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> installed version </span><span class="si">%s</span><span class="s1"> is below minimum suggested version </span><span class="si">%s</span><span class="s1">.Updating </span><span class="si">%s</span><span class="s1"> is highly recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">print</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is properly installed and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -254,7 +256,7 @@ python setup.py build_ext --inplace
 <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">DirectionalOrderSelector</span></code></a></li>
 <li>Constraints:
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></code></a>
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code></a>
+<code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></code></a>
@@ -495,7 +497,79 @@ compared to the old one.</li>
 </div>
 <div class="section" id="id22">
 <h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.2.1">Version 1.2.1</a>:<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
-<p>No bugs fixed byt some examples corrected.</p>
+<p>No bugs fixed but some examples corrected.</p>
+</div>
+<div class="section" id="id23">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/2.0.0">Version 2.0.0</a>:<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<p>This is a main version change from 1.x.y to 2.x.y. Starting from this version engine 
+is no more a single file but a <a class="reference external" href="http://bachiraoun.github.io/pyrep/">pyrep</a> 
+repository. Using a repository engine instead of a single file has many advantages. 
+The first and more important advantage is the limitation of accessing and saving single 
+big engine files when the simulated atomic system is big. The second advantage 
+is the introduction of the concept of engine frames. Frames can be used to build a 
+fitting history or even better to creating a statistical structural solution rather than 
+a single structure one which is prone primarily to overfitting and other errors.
+Also, repository engine&#8217;s insure a sort of backwards compatibility and files can be 
+retrieved when updating fullrmc&#8217;s versions. Implementation wise, switching from single 
+file to repository is the ground layer to taking fullrmc to the next level of 
+super-computing.
+Engine repository is not a binary black box file but a directory or a folder that one 
+can browse. It&#8217;s advisable not to manually delete or add files or folders to the 
+repository. Interacting with fullrmc.Engine instance is what one should do to creating 
+or updating engine&#8217;s repository.
+The transition to fullrmc 2.x.y. should be done seemlessly at the end of the user 
+except for small modifications that were made and that are listed below.</p>
+<div class="section" id="modifications">
+<h4>Modifications:<a class="headerlink" href="#modifications" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic">
+<li><dl class="first docutils">
+<dt><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code>: Several modification happend to fullrmc.Engine class.</dt>
+<dd><ul class="first last simple">
+<li>Instanciating engine arguments have changed. We found that it&#8217;s a bad practice 
+to set the pdb structure, the constraints, the groups and all other attributes
+at the engine instanciation. Therefore, now engine&#8217;s instanciation takes more 
+appropriate arguments such as the engine&#8217;s repository path, the frames, the
+log file path and whether to delete a found engine at the given path and start 
+fresh using freshStart flag.</li>
+<li>Engine.is_engine method is added to check whether a given path is a 
+fullrmc.Engine repository.</li>
+<li>Engine frames related methods are also added to manipulate and switch between 
+frames.</li>
+<li>Engine.run method takes no more savePath argument, as the path has to be the 
+repository. In case one wants to save in a new repository, he should save the 
+engine first using Engine.save method and then run the engine using 
+Engine.run method.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change 
+engine and therefore Constraint.set_engine method is now deprecated. Also 
+Constraints are now instanciated without engine argument. Constraint&#8217;s engine is 
+set automatically when a constraint is added to an engine.</p>
+</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id24">
+<h4>Fixes and improvements:<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>abs function changed in all compiled files as it was creating rounding issues on
+some operating systems.</li>
+<li>arcos function cliped for floating errors in angles compiled file.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></code></a>: Computing constraint data in function
+single_atomic_distances_dists of compiled atomic_distances fixed.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondConstraint</span></code></a>: bondsMap fixed from causing definition conflicts if set
+multiple times.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></code></a>: anglesMap fixed from causing definition conflicts 
+if set multiple times.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></code></a>: anglesMap fixed from causing definition  
+conflicts if set multiple times.</li>
+</ol>
+</div></blockquote>
+</div>
 </div>
 </div>
 </div>
@@ -559,6 +633,11 @@ compared to the old one.</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id22">Version 1.2.1:</a></li>
+<li><a class="reference internal" href="#id23">Version 2.0.0:</a><ul>
+<li><a class="reference internal" href="#modifications">Modifications:</a></li>
+<li><a class="reference internal" href="#id24">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -568,8 +647,8 @@ compared to the old one.</li>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -593,7 +672,7 @@ compared to the old one.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

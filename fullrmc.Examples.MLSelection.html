@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -137,12 +137,10 @@ therefore increase the number of accepted moves by selecting the right groups.</
 <p>Shut down all standard output logging. Set the level of logging to the maximum
 but force &#8216;move accepted&#8217; logging file flag to be always True.</p>
 <p><span class="underline">CREATE ENGINE:</span></p>
-<p>Create the engine and the needed constraints.</p>
-<p><span class="underline">CREATE MOVES GENERATORS:</span></p>
-<p>Set <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> to all groups but 75% of those translation
-generators are given a realistic maximum translation amplitude of <span class="math">\(0.3 \AA\)</span>
-while the remaining 25% are given an unrealistic maximum amplitude of
-<span class="math">\(10 \AA\)</span> that will lead to a lot of unaccepted moves.</p>
+<p>Create the engine and the needed constraints. Set <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a>
+to all groups but 75% of those translation generators are given a realistic maximum
+translation amplitude of <span class="math">\(0.3 \AA\)</span> while the remaining 25% are given an unrealistic
+maximum amplitude of <span class="math">\(10 \AA\)</span> that will lead to a lot of unaccepted moves.</p>
 <p><span class="underline">DIFFERENT RUNS:</span></p>
 <p>Define functions to run the normal and machine learning enabled selection tests.
 All of the following functions finish running the engine using Engine.run method.</p>
@@ -179,8 +177,8 @@ everything is written to logging files.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -204,7 +202,7 @@ everything is written to logging files.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.0',
+        VERSION:     '2.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -713,10 +713,47 @@ The probability density of the gaussian distribution is:
 </dd></dl>
 
 <dl class="class">
+<dt id="fullrmc.Core.Collection.ListenerBase">
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">ListenerBase</code><a class="headerlink" href="#fullrmc.Core.Collection.ListenerBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>All listeners base class.</p>
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.ListenerBase.listenerId">
+<code class="descname">listenerId</code><a class="headerlink" href="#fullrmc.Core.Collection.ListenerBase.listenerId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listener unique id set at initialization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.ListenerBase.listen">
+<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.ListenerBase.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>arguments (object): Any python object.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="fullrmc.Core.Collection.Broadcaster">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">Broadcaster</code><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>A broadcaster broadcasts a message to all listener throughout execution.</p>
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.Broadcaster.listeners">
+<code class="descname">listeners</code><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster.listeners" title="Permalink to this definition">¶</a></dt>
+<dd><p>listeners list copy.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.Collection.Broadcaster.add_listener">
 <code class="descname">add_listener</code><span class="sig-paren">(</span><em>listener</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster.add_listener" title="Permalink to this definition">¶</a></dt>
@@ -1437,30 +1474,26 @@ If None, unbias gaussian is used as defined.</li>
 <p>Constraint contains parent classes for all constraints.
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
-<img src="_images/inheritance-6b8b15d76b13dc86a214010616f7d2add1e04a3c.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-fda7ecd0798ce5bacb4b846bee45c983e21c2bc6.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
-<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,53,87,77"/>
-<area shape="rect" id="node2" href="#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="135,5,295,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="159,53,272,77"/>
-<area shape="rect" id="node5" href="#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="150,101,281,125"/>
-<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" target="_top" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="343,53,491,77"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,53,235,77"/>
+<area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
+<area shape="rect" id="node5" href="#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="306,53,419,77"/>
+<area shape="rect" id="node6" href="#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="297,101,428,125"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,53,104,77"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" target="_top" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes free above a certain threshold" alt="" coords="491,53,638,77"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.Constraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">Constraint</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">Constraint</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.ListenerBase" title="fullrmc.Core.Collection.ListenerBase"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.ListenerBase</span></code></a></p>
 <p>A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.constraintId">
+<code class="descname">constraintId</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.constraintId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraints unique id.</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.engine">
 <code class="descname">engine</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.engine" title="Permalink to this definition">¶</a></dt>
@@ -1537,24 +1570,6 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dt id="fullrmc.Core.Constraint.Constraint.afterMoveStandardError">
 <code class="descname">afterMoveStandardError</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveStandardError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.listen">
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listen&#8217;s to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -1784,24 +1799,6 @@ and will completely reinitialize the constraint.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.set_engine">
-<code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the constraints fullrmc engine instance.
-&#8216;engine changed&#8217; message will be broadcasted automatically to the constraint&#8217;s listener listen method.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint fullrmc engine.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error">
 <code class="descname">compute_and_set_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes and sets the constraint&#8217;s standardError by calling compute_standard_error and passing the constraint&#8217;s data.</p>
@@ -1856,7 +1853,7 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">ExperimentalConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">ExperimentalConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>An ExperimentalConstraint is any constraint related to experimental data.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2133,19 +2130,19 @@ If None, all data points will be considered as having the same weight.</li>
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.SingularConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">SingularConstraint</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">SingularConstraint</code><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>A singular constraint is a constraint that doesn&#8217;t allow multiple instances in the same engine.</p>
-<dl class="attribute">
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.SingularConstraint.is_singular">
-<code class="descname">is_singular</code><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.is_singular" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_singular</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.is_singular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get whether only one instance of this constraint type is present in the engine.
 True for only itself found, False for other instance of the same __class__.__name__</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.SingularConstraint.assert_singular">
-<code class="descname">assert_singular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.assert_singular" title="Permalink to this definition">¶</a></dt>
+<code class="descname">assert_singular</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.assert_singular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks whether only one instance of this constraint type is present in the engine.
 Raises Exception if multiple instances are present.</p>
 </dd></dl>
@@ -2154,7 +2151,7 @@ Raises Exception if multiple instances are present.</p>
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.RigidConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">RigidConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>rejectProbability</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">RigidConstraint</code><span class="sig-paren">(</span><em>rejectProbability</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>A rigid constraint is a constraint that doesn&#8217;t count into the total standardError of the Engine.
 But it&#8217;s internal standardError must monotonously decrease or remain the same from one engine step to another.
@@ -2370,7 +2367,10 @@ If None is given TranslationGenerator is considered by default.</li>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 
@@ -2558,24 +2558,6 @@ It will always return False because recurrence is a property of RecursiveGroupSe
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.GroupSelector.GroupSelector.listen">
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any type of argument to pass to the listeners.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.set_engine">
 <code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.set_engine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the selector fullrmc engine instance.</p>
@@ -2722,7 +2704,10 @@ frameborder="0" allowfullscreen>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -2993,24 +2978,6 @@ This class can&#8217;t be instantiated but its sub-classes might be.</p>
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.group">
 <code class="descname">group</code><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the group instance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.MoveGenerator.MoveGenerator.listen">
-<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Listens to any message sent from the Broadcaster.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
-<li>arguments (object): Any python object.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -3422,7 +3389,10 @@ This method can be overloaded in all MoveGenerator sub-classes.</p>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -3579,7 +3549,10 @@ If randomize is False, weights list is ignored upon generator selection from col
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
 
 <span class="c1"># create engine </span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
 <span class="c1"># Add constraints ...</span>
 <span class="c1"># Re-define groups if needed ...</span>
@@ -4879,8 +4852,8 @@ lowerLimit array, upperLimit array</li>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -4916,7 +4889,7 @@ lowerLimit array, upperLimit array</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

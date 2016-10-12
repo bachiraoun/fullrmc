@@ -152,6 +152,4 @@ Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
 Authors and developers
 ======================
 * [Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
-* [Jonathan Barnes](https://www.linkedin.com/in/johnathan-barnes-a558b230) (Advisory) 
-
 

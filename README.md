@@ -20,6 +20,7 @@ among other functionalities:
 Next on the list
 ================
 * Super-computing
+* Dynamically atoms removing and adding to creating materials defects
 
 News
 ====

@@ -10,11 +10,17 @@ from Cython.Distutils import build_ext
 # external libraries imports
 import numpy as np
 
-# fullrmc imports
-from fullrmc.Core.Collection import get_path
+# get fullrmc path
+try:
+    from fullrmc.Core.Collection import get_path
+    fullrmc_PATH = get_path("fullrmc")
+# this only means that fullrmc has never been compiled and hopefully 
+# it's been pulled from github and correctly handled.
+except: 
+    setupPath = os.path.split( os.path.abspath(__file__) )[0]
+    fullrmc_PATH = os.path.split( setupPath )[0]
 
 # general variables
-fullrmc_PATH     = get_path("fullrmc")
 EXTENSIONS_PATH  = os.path.abspath(os.path.dirname(__file__))
 DESTINATION_PATH = os.path.join(fullrmc_PATH, "Core")
 

@@ -119,9 +119,7 @@ bonds
 
 .. automodule::   fullrmc.Core.bonds
 
-.. autofunction:: fullrmc.Core.bonds.single_bonds_dists
 .. autofunction:: fullrmc.Core.bonds.full_bonds_coords
-.. autofunction:: fullrmc.Core.bonds.full_bonds_dists
 
 
 angles
@@ -129,8 +127,15 @@ angles
 
 .. automodule::   fullrmc.Core.angles
 
-.. autofunction:: fullrmc.Core.angles.single_angles_diffs
 .. autofunction:: fullrmc.Core.angles.full_angles_coords
+
+
+dihedral angles
+---------------
+
+.. automodule::   fullrmc.Core.dihedral_angles
+
+.. autofunction:: fullrmc.Core.dihedral_angles.full_dihedral_angles_coords
 
 
 improper angles
@@ -138,7 +143,6 @@ improper angles
 
 .. automodule::   fullrmc.Core.improper_angles
 
-.. autofunction:: fullrmc.Core.improper_angles.single_improper_angles_diffs
 .. autofunction:: fullrmc.Core.improper_angles.full_improper_angles_coords
 
 

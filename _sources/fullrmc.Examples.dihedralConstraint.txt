@@ -1,0 +1,76 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+ 
+Relative path
+=============
+../fullrmc/Examples/dihedralConstraint/
+
+
+Description
+===========
+A butane molecule is used to demonstrate how an dihedral angle constraint can 
+be used to force a dihedral angle between two intersecting planes. 
+When running this  example a trajectory file will be generated. If 
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. is installed, the trajectory
+of all moves will be automatically visualized. 
+
+
+Files
+=====
+
+#. system.pdb: The butane pdb file
+#. run.py: The script file used to run the simulation
+
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported.
+
+
+:underline:`SHUT DOWN LOGGING:` 
+
+Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging. 
+
+
+:underline:`CREATE ENGINE:` 
+
+Create the engine and the needed bonds, bond-angles and dihedral-angles constraints. 
+Notice that in the bonds constraint definition huge bonds of 100 angstroms are defined.
+This is done on purpose to constraints minimum intra-molecular distances similar 
+to VDW forces. In fullrmc, dihedral angles can be constrained by three different shells
+set between 0 and 360 deg. at the same time. In this example we can see the initial 
+definition setting the first shell between [30 deg.,90 deg.] and the second shell 
+between [150 deg.,210 deg.] and the third shell between [270 deg.,330 deg.]
+
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run fitting engine. All of the following functions finish 
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.
+
+#. run_first_shell: Set dihedral constraint to a single shell between [150 deg.,210 deg.]
+#. run_second_shell: Set dihedral constraint to a single shell between [10 deg.,30 deg.]
+#. run_third_shell: Set dihedral constraint to a single shell between [90 deg.,100 deg.]
+                                                                
+   
+:underline:`RUN SIMULATION:` 
+
+Run in order all of 'run_first_shell', 'run_second_shell',  and finally  
+'run_third_shell'.
+
+
+:underline:`VISUALIZE SIMULATION:` 
+
+Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+"trajectory.xyz".
+
+

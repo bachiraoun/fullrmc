@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Questions and Answers forum &mdash; fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.1',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,9 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -41,7 +41,7 @@
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
-                <li><a href="forum.html">Q&A Forum</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
                 <li><a href="fullrmc.Selectors.html">Selectors</a></li>
                 <li><a href="fullrmc.Generators.html">Generators</a></li>
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -108,22 +108,56 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="questions-and-answers-forum">
-<h1>Questions and Answers forum<a class="headerlink" href="#questions-and-answers-forum" title="Permalink to this headline">¶</a></h1>
-<iframe id="forum_embed"
-  src="javascript:void(0)"
-  scrolling="no"
-  frameborder="0"
-  width="100%"
-  height="700">
-</iframe>
-
-<script type="text/javascript">
-  document.getElementById('forum_embed').src =
-     'https://groups.google.com/forum/embed/?place=forum/fullrmc'
-     + '&showsearch=true&showpopout=true&showtabs=false'
-     + '&parenturl=' + encodeURIComponent(window.location.href);
-</script></div>
+  <div class="section" id="relative-path">
+<h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
+<p>../fullrmc/Examples/dihedralConstraint/</p>
+</div>
+<div class="section" id="description">
+<h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
+<p>A butane molecule is used to demonstrate how an dihedral angle constraint can
+be used to force a dihedral angle between two intersecting planes.
+When running this  example a trajectory file will be generated. If
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. is installed, the trajectory
+of all moves will be automatically visualized.</p>
+</div>
+<div class="section" id="files">
+<h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li>system.pdb: The butane pdb file</li>
+<li>run.py: The script file used to run the simulation</li>
+</ol>
+</div>
+<div class="section" id="run-py-explained">
+<h1>run.py explained<a class="headerlink" href="#run-py-explained" title="Permalink to this headline">¶</a></h1>
+<p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
+<p>All useful packages, modules and definitions are imported.</p>
+<p><span class="underline">SHUT DOWN LOGGING:</span></p>
+<p>Set logger minimum level to maximum possible integer value. This will mute
+all non-error logging.</p>
+<p><span class="underline">CREATE ENGINE:</span></p>
+<p>Create the engine and the needed bonds, bond-angles and dihedral-angles constraints.
+Notice that in the bonds constraint definition huge bonds of 100 angstroms are defined.
+This is done on purpose to constraints minimum intra-molecular distances similar
+to VDW forces. In fullrmc, dihedral angles can be constrained by three different shells
+set between 0 and 360 deg. at the same time. In this example we can see the initial
+definition setting the first shell between [30 deg.,90 deg.] and the second shell
+between [150 deg.,210 deg.] and the third shell between [270 deg.,330 deg.]</p>
+<p><span class="underline">DIFFERENT RUNS:</span></p>
+<p>Define functions to run fitting engine. All of the following functions finish
+running the engine using Engine.run method. A trajectory of all moves is saved
+to the disk by setting XYZPath argument not to None.</p>
+<ol class="arabic simple">
+<li>run_first_shell: Set dihedral constraint to a single shell between [150 deg.,210 deg.]</li>
+<li>run_second_shell: Set dihedral constraint to a single shell between [10 deg.,30 deg.]</li>
+<li>run_third_shell: Set dihedral constraint to a single shell between [90 deg.,100 deg.]</li>
+</ol>
+<p><span class="underline">RUN SIMULATION:</span></p>
+<p>Run in order all of &#8216;run_first_shell&#8217;, &#8216;run_second_shell&#8217;,  and finally
+&#8216;run_third_shell&#8217;.</p>
+<p><span class="underline">VISUALIZE SIMULATION:</span></p>
+<p>Reset initial pdb to engine instance. Visualize engine along with the saved trajectory
+&#8220;trajectory.xyz&#8221;.</p>
+</div>
 
 
         </div>
@@ -132,17 +166,22 @@
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Relative path</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#run-py-explained">run.py explained</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -163,7 +202,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 1.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

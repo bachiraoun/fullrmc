@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.0',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -216,6 +216,18 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt>
+<code class="descname">amputationData</code></dt>
+<dd><p>Get constraint&#8217;s current calculated data after amputation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">amputationStandardError</code></dt>
+<dd><p>Get constraint&#8217;s current calculated StandardError after amputation.</p>
+</dd></dl>
+
 <dl class="method">
 <dt>
 <code class="descname">set_variance_squared</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
@@ -258,20 +270,8 @@ most costly ones.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">set_used</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets used flag.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (boolean): True to use this constraint in engine run time.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">set_used</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt>
@@ -424,6 +424,40 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 
 <dl class="method">
 <dt>
+<code class="descname">set_amputation_data</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
+<dd><p>Sets constraint&#8217;s after amputation data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): data value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_amputation_standard_error</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span></dt>
+<dd><p>Sets constraint&#8217;s standardError after amputation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): standardError value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
 <code class="descname">reset_constraint</code><span class="sig-paren">(</span><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Resets constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -465,27 +499,57 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">compute_data</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span></dt>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">compute_as_if_inserted</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">accept_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">reject_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1396,20 +1460,19 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -1419,14 +1482,14 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -1437,14 +1500,14 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -1454,14 +1517,66 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reject move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -1746,20 +1861,19 @@ this is optional, if not given it is set automatically to 1.0.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -1769,14 +1883,14 @@ this is optional, if not given it is set automatically to 1.0.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -1787,14 +1901,14 @@ this is optional, if not given it is set automatically to 1.0.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -1804,14 +1918,66 @@ this is optional, if not given it is set automatically to 1.0.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reject move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -1835,9 +2001,22 @@ this is optional, if not given it is set automatically to 1.0.</li>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.BondConstraints.</code><code class="descname">BondConstraint</code><span class="sig-paren">(</span><em>bondsMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.BondConstraints.</code><code class="descname">BondConstraint</code><span class="sig-paren">(</span><em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Controls the bond length defined between 2 defined atoms.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/bondSketch.png"><img alt="_images/bondSketch.png" src="_images/bondSketch.png" style="width: 237px; height: 200px;" /></a>
+<p class="caption"><span class="caption-text">Bond sketch defined between two atoms.</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <iframe width="560" height="315" 
 src="https://www.youtube.com/embed/GxmJae9h78E" 
 frameborder="0" allowfullscreen>
@@ -1845,23 +2024,10 @@ frameborder="0" allowfullscreen>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><dl class="first docutils">
-<dt>bondsMap (list): The bonds map definition.</dt>
-<dd><p class="first">Every item must be a list of four items.</p>
-<ol class="last arabic simple">
-<li>First item is the first atom index.</li>
-<li>Second item the second atom index forming the bond,</li>
-<li>Third item: The lower limit or the minimum bond length allowed.</li>
-<li>Fourth item: The upper limit or the maximum bond length allowed.</li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
 It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-and 0 means accepting all steps regardless whether standardError increases or not.</p>
-</li>
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -1889,26 +2055,20 @@ and 0 means accepting all steps regardless whether standardError increases or no
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">BC</span><span class="p">)</span>
 
 <span class="c1"># define intra-molecular bonds </span>
-<span class="n">BC</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;H2O&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;H1&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">),</span>
-                                                          <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;H2&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">)</span> <span class="p">]}</span> <span class="p">)</span>
+<span class="n">BC</span><span class="o">.</span><span class="n">create_bonds_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;H2O&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;H1&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">),</span>
+                                                         <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;H2&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.02</span><span class="p">)</span> <span class="p">]}</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bondsMap">
-<code class="descname">bondsMap</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bondsMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get bonds map</p>
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bondsList">
+<code class="descname">bondsList</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bondsList" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of defined bonds</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bonds">
 <code class="descname">bonds</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bonds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get bonds dictionary</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.standardError">
-<code class="descname">standardError</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.standardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current standard error.</p>
+<dd><p>Get bonds dictionary map of every and each atom</p>
 </dd></dl>
 
 <dl class="method">
@@ -1930,45 +2090,35 @@ and 0 means accepting all steps regardless whether standardError increases or no
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected">
-<code class="descname">should_step_get_rejected</code><span class="sig-paren">(</span><em>standardError</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not standardError.
-If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>standardError (number): not used in this case</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): True to reject step, False to accept</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.set_bonds">
-<code class="descname">set_bonds</code><span class="sig-paren">(</span><em>bondsMap</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.set_bonds" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the bonds dictionary by parsing the bondsMap list.</p>
+<code class="descname">set_bonds</code><span class="sig-paren">(</span><em>bondsList</em>, <em>tform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.set_bonds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets bonds dictionary by parsing the bondsList list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>bondsMap (list): The bonds map definition.
-Every item must be a list of four items.<ol class="arabic">
-<li>First item is the first atom index.</li>
-<li>Second item the second atom index forming the bond,</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">bondsList (None, list): The bonds map definition. If None is given no
+bonds are defined. Otherwise it can be of any of the following two forms:</p>
+<blockquote>
+<div><p>tuples format: every item must be a list or tuple of four items.</p>
+<ol class="arabic simple">
+<li>First item:  the first atom index.</li>
+<li>Second item: the second atom index forming the bond.</li>
 <li>Third item: The lower limit or the minimum bond length allowed.</li>
 <li>Fourth item: The upper limit or the maximum bond length allowed.</li>
 </ol>
+<p>four vectors format: List of exaclty four lists or numpy.arrays or vectors of the same length.</p>
+<ol class="arabic simple">
+<li>First item: list contains the first atom indexes.</li>
+<li>Second item: list contains the second atom indexes forming the bond.</li>
+<li>Third item: list containing the lower limit or the minimum bond length allowed.</li>
+<li>Fourth item: list containing the upper limit or the maximum bond length allowed.</li>
+</ol>
+</div></blockquote>
+</li>
+<li><p class="first">tform (boolean): set whether given bondsList follows tuples format, If not 
+then it must follow the four vectors one.</p>
 </li>
 </ol>
 </td>
@@ -1987,8 +2137,8 @@ Every item must be a list of four items.<ol class="arabic">
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>bond (list): The bond list of four items.<ol class="arabic">
-<li>First item is the first atom index.</li>
-<li>Second item the second atom index forming the bond,</li>
+<li>First item: the first atom index.</li>
+<li>Second item: the second atom index forming the bond.</li>
 <li>Third item: The lower limit or the minimum bond length allowed.</li>
 <li>Fourth item: The upper limit or the maximum bond length allowed.</li>
 </ol>
@@ -2003,8 +2153,8 @@ Every item must be a list of four items.<ol class="arabic">
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.create_bonds_by_definition">
 <code class="descname">create_bonds_by_definition</code><span class="sig-paren">(</span><em>bondsDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.create_bonds_by_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates bondsMap using bonds definition.
-Calls set_bonds(bondsMap) and generates bonds attribute.</p>
+<dd><p>Creates bondsList using bonds definition.
+Calls set_bonds(bondsList) and generates bonds attribute.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2061,7 +2211,7 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute standardError.</li>
+<li>data (object): The constraint value data to compute standardError.</li>
 </ol>
 </td>
 </tr>
@@ -2093,20 +2243,19 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -2116,14 +2265,14 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -2134,14 +2283,14 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -2151,14 +2300,66 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reject move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -2172,9 +2373,9 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
-<img src="_images/inheritance-c1b77d4c61b5b8797f1f5b655433da5f6cce03cd.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-31919a9d7200c2e60213e7f9b44a490f5cb23d5a.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined &#39;bonded&#39; atoms." alt="" coords="462,29,616,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined atoms, a first atom called central" alt="" coords="462,29,616,53"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
@@ -2184,7 +2385,21 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Constraints.AngleConstraints.</code><code class="descname">BondsAngleConstraint</code><span class="sig-paren">(</span><em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
-<p>Controls the angle defined between 3 defined &#8216;bonded&#8217; atoms.</p>
+<p>Controls the angle defined between 3 defined atoms, a first atom called central
+and the remain two called left and right.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/angleSketch.png"><img alt="_images/angleSketch.png" src="_images/angleSketch.png" style="width: 308px; height: 200px;" /></a>
+<p class="caption"><span class="caption-text">Angle sketch defined between three atoms.</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <iframe width="560" height="315" 
 src="https://www.youtube.com/embed/ezBbbO9IVig" 
 frameborder="0" allowfullscreen>
@@ -2192,25 +2407,10 @@ frameborder="0" allowfullscreen>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">anglesMap (list): The angles map definition.
-Every item must be a list of five items.</p>
-<blockquote>
-<div><ol class="arabic simple">
-<li>First item: The central atom index.</li>
-<li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
-<li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
-<li>Fourth item: The minimum lower limit or the minimum angle allowed 
-in degrees which later will be converted to rad.</li>
-<li>Fifth item: The maximum upper limit or the maximum angle allowed 
-in degrees which later will be converted to rad.</li>
-</ol>
-</div></blockquote>
-</li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
 It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-and 0 means accepting all steps regardless whether standardError increases or not.</p>
-</li>
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -2248,27 +2448,15 @@ and 0 means accepting all steps regardless whether standardError increases or no
 </pre></div>
 </div>
 <dl class="attribute">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesMap">
-<code class="descname">anglesMap</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles map.</p>
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesList">
+<code class="descname">anglesList</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get defined angles list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles">
 <code class="descname">angles</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles dictionary.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.atomsLUAD">
-<code class="descname">atomsLUAD</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.atomsLUAD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central atom angles definition of angles attribute.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.standardError">
-<code class="descname">standardError</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.standardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current standard error.</p>
+<dd><p>Get angles dictionary for every and each atom.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2290,40 +2478,19 @@ and 0 means accepting all steps regardless whether standardError increases or no
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected">
-<code class="descname">should_step_get_rejected</code><span class="sig-paren">(</span><em>standardError</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not standardError.
-If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>standardError (number): not used in this case</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): True to reject step, False to accept</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.set_angles">
-<code class="descname">set_angles</code><span class="sig-paren">(</span><em>anglesMap</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.set_angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the angles dictionary by parsing the anglesMap list.</p>
+<code class="descname">set_angles</code><span class="sig-paren">(</span><em>anglesList</em>, <em>tform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.set_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the angles dictionary by parsing the anglesMap list. All angles are in 
+degrees.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>anglesMap (list): The angles map definition.
-Every item must be a list of five items.<ol class="arabic">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><blockquote class="first">
+<div><ol class="arabic">
+<li><p class="first">anglesList (list): The angles list definition.</p>
+<p>tuples format:  every item must be a list of five items.</p>
+<ol class="arabic simple">
 <li>First item: The central atom index.</li>
 <li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
 <li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
@@ -2332,7 +2499,22 @@ in degrees which later will be converted to rad.</li>
 <li>Fifth item: The maximum upper limit or the maximum angle allowed 
 in degrees which later will be converted to rad.</li>
 </ol>
+<p>five vectors format:  List of exaclty five lists or numpy.arrays or vectors of the same length.</p>
+<ol class="arabic simple">
+<li>First item: List containing central atom indexes.</li>
+<li>Second item: List containing the index of the left atom forming the angle (interchangeable with the right atom).</li>
+<li>Third item: List containing the index of the right atom forming the angle (interchangeable with the left atom).</li>
+<li>Fourth item: List containing the minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: List containing the maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
+</ol>
 </li>
+</ol>
+</div></blockquote>
+<ol class="last arabic simple">
+<li>tform (boolean): set whether given anglesList follows tuples format, If not 
+then it must follow the four vectors one.</li>
 </ol>
 </td>
 </tr>
@@ -2343,7 +2525,7 @@ in degrees which later will be converted to rad.</li>
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle">
 <code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a single angle to the list of constraint angles.</p>
+<dd><p>Add a single angle to the list of constraint angles. All angles are in degrees.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2369,8 +2551,8 @@ in degrees which later will be converted to rad.</li>
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.create_angles_by_definition">
 <code class="descname">create_angles_by_definition</code><span class="sig-paren">(</span><em>anglesDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.create_angles_by_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates anglesMap using angles definition.
-Calls set_angles(anglesMap) and generates angles attribute.</p>
+<dd><p>Creates anglesList using angles definition.
+Calls set_angles(anglesList) and generates angles attribute.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2460,20 +2642,19 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 </ol>
 </td>
 </tr>
@@ -2483,14 +2664,14 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -2501,8 +2682,25 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move">
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2517,15 +2715,467 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move.</p>
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Constraints.DihedralAngleConstraints">
+<span id="dihedralangleconstraints"></span><h2>DihedralAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DihedralAngleConstraints" title="Permalink to this headline">¶</a></h2>
+<p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
+<img src="_images/inheritance-74c7e5ad0866934988e7f381f31939e2e5960532.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
+<area shape="rect" id="node3" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="462,29,631,53"/>
+</map>
+<dl class="class">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint">
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.DihedralAngleConstraints.</code><code class="descname">DihedralAngleConstraint</code><span class="sig-paren">(</span><em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
+<p>Dihedral angle is defined between two intersecting planes formed with four defined 
+atoms. Dihedral angle constraint can control 3 angle shells at the same times.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/dihedralSketch.png"><img alt="_images/dihedralSketch.png" src="_images/dihedralSketch.png" style="width: 312px; height: 200px;" /></a>
+<p class="caption"><span class="caption-text">Dihedral angle sketch defined between two planes formed with four atoms.</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">## Butane (BUT) molecule sketch</span>
+<span class="c1">##         </span>
+<span class="c1">##       H13  H22  H32  H43</span>
+<span class="c1">##        |    |    |    |</span>
+<span class="c1">## H11---C1---C2---C3---C4---H41</span>
+<span class="c1">##        |    |    |    |</span>
+<span class="c1">##       H12  H21  H31  H42</span>
+<span class="c1">##</span>
+
+<span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.DihedralAngleConstraints</span> <span class="kn">import</span> <span class="n">DihedralAngleConstraint</span>
+
+<span class="c1"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># create and add constraint</span>
+<span class="n">DAC</span> <span class="o">=</span> <span class="n">DihedralAngleConstraint</span><span class="p">()</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">DAC</span><span class="p">)</span>
+
+<span class="c1"># define intra-molecular dihedral angles </span>
+<span class="n">DAC</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;BUT&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span> <span class="mi">290</span><span class="p">,</span><span class="mi">330</span><span class="p">),</span> <span class="p">]</span> <span class="p">})</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesList">
+<code class="descname">anglesList</code><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get improper angles list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.angles">
+<code class="descname">angles</code><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get angles dictionary for every and each atom.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.listen">
+<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Listens to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.set_angles">
+<code class="descname">set_angles</code><span class="sig-paren">(</span><em>anglesList</em>, <em>tform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.set_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the angles dictionary by parsing the anglesList list. All angles are in 
+degrees. Dihedral angle can control 3 angle shells at the same times defined using 
+three different lower and upper angle bounds simulating three different dihedral 
+potential energy minimums. Dihedral angles are defined from 0 to 360 degrees. 
+Shell&#8217;s lower and  upper bound defines a dihedral angle clockwise. Therefore in 
+order to take into considerations the limits at 0 and 360 degrees, lower bound 
+is allowed to be higher than the higher bound.</p>
+<p>e.g. (50, 100) is a dihedral shell defined in the angle range between 50 and 
+100 degrees. But (100, 50) dihedral shell is defined between 100 to 360 degrees
+and wraps the range from 0 to 100. (50, 100) and (100, 50) are complementary 
+and cover the whole range from 0 to 360 deg.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><blockquote class="first">
+<div><ol class="arabic">
+<li><p class="first">anglesList (list): The angles list definition.</p>
+<p>tuples format: every item must be a list of ten items.</p>
+<ol class="arabic simple">
+<li>First item: The first atom index of the first plane.</li>
+<li>Second item: The second atom index of the first plane and the first 
+atom index of the second plane.</li>
+<li>Third item: The third atom index of the first plane and the second 
+atom index of the second plane.</li>
+<li>Fourth item: The fourth atom index of the second plane.</li>
+<li>Fifth item: The minimum lower limit of the first shell or the minimum 
+angle allowed in degrees.</li>
+<li>Sixth item: The maximum upper limit of the first shell or the minimum 
+angle allowed in degrees.</li>
+<li>Seventh item: The minimum lower limit of the second shell or the minimum 
+angle allowed in degrees.</li>
+<li>Eights item: The maximum upper limit of the second shell or the minimum 
+angle allowed in degrees.</li>
+<li>Nineth item: The minimum lower limit of the third shell or the minimum 
+angle allowed in degrees.</li>
+<li>Tenth item: The maximum upper limit of the third shell or the minimum 
+angle allowed in degrees.</li>
+</ol>
+<p>ten vectors format: every item must be a list of five items.</p>
+<ol class="arabic simple">
+<li>First item: List containing the first atom indexes of the first plane.</li>
+<li>Second item: List containing indexes of the second atom index of the 
+first plane and the first atom index of the second plane.</li>
+<li>Third item: List containing indexes of the third atom index of the 
+first plane and the second atom index of the second plane.</li>
+<li>Fourth item: List containing indexes of the fourth atom index of the 
+second plane.</li>
+<li>Fifth item: List containing the minimum lower limit of the first shell 
+or the minimum angle allowed in degrees which later will be converted 
+to rad.</li>
+<li>Sixth item: List containing the maximum upper limit of the first shell 
+or the minimum angle allowed in degrees which later will be converted 
+to rad.</li>
+<li>Seventh item: List containing the minimum lower limit of the second 
+shell or the minimum angle allowed in degrees which later will be 
+converted to rad.</li>
+<li>Eights item: List containing the maximum upper limit of the second 
+shell or the minimum angle allowed in degrees which later will be 
+converted to rad.</li>
+<li>Nineth item: List containing the minimum lower limit of the third 
+shell or the minimum angle allowed in degrees which later will be 
+converted to rad.</li>
+<li>Tenth item: List containing the maximum upper limit of the third shell 
+or the minimum angle allowed in degrees which later will be converted 
+to rad.</li>
+</ol>
+</li>
+</ol>
+</div></blockquote>
+<ol class="last arabic simple">
+<li>tform (boolean): set whether given anglesList follows tuples format, If not 
+then it must follow the ten vectors one.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>N.B.</strong> Defining three shells boundaries is mandatory. In case fewer than three
+shells is needed, it suffices to repeat one of the shells boundaries.</p>
+<p>e.g. (&#8216;C1&#8217;,&#8217;C2&#8217;,&#8217;C3&#8217;,&#8217;C4&#8217;, 40,80, 100,140, 40,80), in the herein definition the 
+last shell is a repetition of the first which means only two shells are defined.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.add_angle">
+<code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a single angle to the list of constraint angles. All angles are in degrees.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>angle (list): The angle list of ten items.<ol class="arabic">
+<li>First item: The first atom index of the first plane.</li>
+<li>Second item: The second atom index of the first plane and the first 
+atom index of the second plane.</li>
+<li>Third item: The third atom index of the first plane and the second 
+atom index of the second plane.</li>
+<li>Fourth item: The fourth atom index of the second plane.</li>
+<li>Fifth item: The minimum lower limit of the first shell or the minimum 
+angle allowed in degrees.</li>
+<li>Sixth item: The maximum upper limit of the first shell or the minimum 
+angle allowed in degrees.</li>
+<li>seventh item: The minimum lower limit of the second shell or the minimum 
+angle allowed in degrees.</li>
+<li>eights item: The maximum upper limit of the second shell or the minimum 
+angle allowed in degrees.</li>
+<li>nineth item: The minimum lower limit of the third shell or the minimum 
+angle allowed in degrees.</li>
+<li>tenth item: The maximum upper limit of the third shell or the minimum 
+angle allowed in degrees.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.create_angles_by_definition">
+<code class="descname">create_angles_by_definition</code><span class="sig-paren">(</span><em>anglesDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.create_angles_by_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates anglesList using angles definition.
+Calls set_angles(anglesMap) and generates angles attribute.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>anglesDefinition (dict): The angles definition. 
+Every key must be a molecule name (residue name in pdb file). 
+Every key value must be a list of angles definitions. 
+Every angle definition is a list of ten items where:<ol class="arabic">
+<li>First item: The name of the first dihedral atom.</li>
+<li>Second item: The name of the second dihedral atom of the first plane 
+and the first atom of the second plane.</li>
+<li>Third item: The name of the third dihedral atom of the first plane 
+and the second  atom of the second plane.</li>
+<li>Fourth item: The name of the fourth dihderal atom of the second plane.</li>
+<li>Fifth item: The minimum lower limit of the first shell or the minimum 
+angle allowed in degrees.</li>
+<li>Sixth item: The maximum upper limit of the first or the maximum 
+angle allowed in degrees.</li>
+<li>Seventh item: The minimum lower limit of the second shell or the minimum 
+angle allowed in degrees.</li>
+<li>Eightth item: The maximum upper limit of the second or the maximum 
+angle allowed in degrees.</li>
+<li>Nineth item: The minimum lower limit of the third shell or the minimum 
+angle allowed in degrees.</li>
+<li>Tenth item: The maximum upper limit of the third or the maximum 
+angle allowed in degrees.</li>
+</ol>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="p">(</span><span class="n">Butane</span><span class="p">):</span>  <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;BUT&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span><span class="mi">140</span><span class="p">,</span> <span class="mi">290</span><span class="p">,</span><span class="mi">330</span><span class="p">),</span> <span class="p">]</span> <span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_standard_error">
+<code class="descname">compute_standard_error</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (StdErr) of data not satisfying constraint conditions.</p>
+<div class="math">
+\[StdErr = \sum \limits_{i}^{C} 
+( \theta_{i} - \theta_{i}^{min} ) ^{2} 
+\int_{0}^{\theta_{i}^{min}} \delta(\theta-\theta_{i}) d \theta
++
+( \theta_{i} - \theta_{i}^{max} ) ^{2} 
+\int_{\theta_{i}^{max}}^{\pi} \delta(\theta-\theta_{i}) d \theta\]</div>
+<p>Where:</p>
+<p><span class="math">\(C\)</span> is the total number of defined improper angles constraints.</p>
+<p><span class="math">\(\theta_{i}^{min}\)</span> is the improper angle constraint lower limit set for constraint i.</p>
+<p><span class="math">\(\theta_{i}^{max}\)</span> is the improper angle constraint upper limit set for constraint i.</p>
+<p><span class="math">\(\theta_{i}\)</span> is the improper angle computed for constraint i.</p>
+<p><span class="math">\(\delta\)</span> is the Dirac delta function.</p>
+<p><span class="math">\(\int_{0}^{\theta_{i}^{min}} \delta(\theta-\theta_{i}) d \theta\)</span> 
+is equal to 1 if <span class="math">\(0 \leqslant \theta_{i} \leqslant \theta_{i}^{min}\)</span> and 0 elsewhere.</p>
+<p><span class="math">\(\int_{\theta_{i}^{max}}^{\pi} \delta(\theta-\theta_{i}) d \theta\)</span> 
+is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leqslant \pi\)</span> and 0 elsewhere.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>data (numpy.array): The constraint value data to compute standardError.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>standardError (number): The calculated standardError of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.get_constraint_value">
+<code class="descname">get_constraint_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Mean Pair Distances (MPD) below the defined minimum distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data">
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_before_move">
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint before move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_after_move">
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint after move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.accept_move">
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.reject_move">
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -2549,13 +3199,26 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</code><code class="descname">ImproperAngleConstraint</code><span class="sig-paren">(</span><em>anglesMap=None</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.ImproperAngleConstraints.</code><code class="descname">ImproperAngleConstraint</code><span class="sig-paren">(</span><em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
 <p>Controls the improper angle formed with 4 defined atoms. It&#8217;s mainly used to 
 keep the improper atom in the plane defined with three other atoms. 
 The improper vector is defined as the vector from the first atom of the plane to
 the improper atom. Therefore the improper angle is defined between the improper
 vector and the plane.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-center" id="id4">
+<a class="reference internal image-reference" href="_images/improperSketch.png"><img alt="_images/improperSketch.png" src="_images/improperSketch.png" style="width: 269px; height: 200px;" /></a>
+<p class="caption"><span class="caption-text">Improper angle sketch defined between four atoms.</span></p>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
 <blockquote>
 <div><iframe width="560" height="315" 
 src="https://www.youtube.com/embed/qVATE-9cIBg" 
@@ -2565,27 +3228,10 @@ frameborder="0" allowfullscreen>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><dl class="first docutils">
-<dt>anglesMap (list): The angles map definition.</dt>
-<dd><p class="first">Every item must be a list of five items.</p>
-<ol class="last arabic simple">
-<li>First item: The improper atom index that must be in the plane.</li>
-<li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
-<li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
-<li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
-<li>Fifth item: The minimum lower limit or the minimum angle allowed 
-in degrees which later will be converted to rad.</li>
-<li>Sixth item: The maximum upper limit or the maximum angle allowed 
-in degrees which later will be converted to rad.</li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><p class="first">rejectProbability (Number): rejecting probability of all steps where standardError increases. 
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>rejectProbability (Number): rejecting probability of all steps where standardError increases. 
 It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-and 0 means accepting all steps regardless whether standardError increases or not.</p>
-</li>
+and 0 means accepting all steps regardless whether standardError increases or not.</li>
 </ol>
 </td>
 </tr>
@@ -2624,28 +3270,15 @@ and 0 means accepting all steps regardless whether standardError increases or no
 </pre></div>
 </div>
 <dl class="attribute">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesMap">
-<code class="descname">anglesMap</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesMap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles map.</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesList">
+<code class="descname">anglesList</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get improper angles list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.angles">
 <code class="descname">angles</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get angles dictionary.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD">
-<code class="descname">atomsLUAD</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.atomsLUAD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get look up angles dictionary, connecting every atom&#8217;s index to a central 
-atom angles definition of angles attribute.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.standardError">
-<code class="descname">standardError</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.standardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get constraint&#8217;s current squared deviation.</p>
+<dd><p>Get angles dictionary for every and each atom.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2667,22 +3300,44 @@ atom angles definition of angles attribute.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected">
-<code class="descname">should_step_get_rejected</code><span class="sig-paren">(</span><em>standardError</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Overloads &#8216;RigidConstraint&#8217; should_step_get_rejected method.
-It computes whether to accept or reject a move based on before and after move calculation and not standardError.
-If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Exception will get raised.</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.set_angles">
+<code class="descname">set_angles</code><span class="sig-paren">(</span><em>anglesList</em>, <em>tform=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.set_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the angles dictionary by parsing the anglesList list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>standardError (number): not used in this case</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><blockquote class="first">
+<div><ol class="arabic">
+<li><p class="first">anglesList (list): The angles list definition.</p>
+<p>tuples format: every item must be a list of five items.</p>
+<ol class="arabic simple">
+<li>First item: The improper atom index that must be in the plane.</li>
+<li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
+<li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
+<li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
+<li>Fifth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Sixth item: The maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
 </ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): True to reject step, False to accept</li>
+<p>six vectors format: every item must be a list of five items.</p>
+<ol class="arabic simple">
+<li>First item: List containing improper atom indexes that must be in the plane.</li>
+<li>Second item: List containing indexes of the atom &#8216;O&#8217; considered the origin of the plane.</li>
+<li>Third item: List containing indexes of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
+<li>Fourth item: List containing indexes of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
+<li>Fifth item: List containing the minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Sixth item: List containing the maximum upper limit or the maximum angle allowed 
+in degrees which later will be converted to rad.</li>
+</ol>
+</li>
+</ol>
+</div></blockquote>
+<ol class="last arabic simple">
+<li>tform (boolean): set whether given anglesList follows tuples format, If not 
+then it must follow the six vectors one.</li>
 </ol>
 </td>
 </tr>
@@ -2691,21 +3346,21 @@ If any of activeAtomsDataBeforeMove or activeAtomsDataAfterMove is None an Excep
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.set_angles">
-<code class="descname">set_angles</code><span class="sig-paren">(</span><em>anglesMap</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.set_angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the angles dictionary by parsing the anglesMap list.</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.add_angle">
+<code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a single angle to the list of constraint angles. All angles are in degrees.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>anglesMap (list): The angles map definition.
-Every item must be a list of five items.<ol class="arabic">
-<li>First item: The improper atom index that must be in the plane.</li>
-<li>Second item: The index of the atom &#8216;O&#8217; considered the origin of the plane.</li>
-<li>Third item: The index of the atom &#8216;x&#8217; used to calculated &#8216;Ox&#8217; vector.</li>
-<li>Fourth item: The index of the atom &#8216;y&#8217; used to calculated &#8216;Oy&#8217; vector.</li>
-<li>Fifth item: The minimum lower limit or the minimum angle allowed 
+<li>angle (list): The angle list of five items.<ol class="arabic">
+<li>First item: The central atom index.</li>
+<li>Second item: The index of the left atom forming the angle (interchangeable with the right atom).</li>
+<li>Third item: The index of the right atom forming the angle (interchangeable with the left atom).</li>
+<li>Fourth item: The minimum lower limit or the minimum angle allowed 
+in degrees which later will be converted to rad.</li>
+<li>Fifth item: The maximum upper limit or the maximum angle allowed 
 in degrees which later will be converted to rad.</li>
 <li>Sixth item: The maximum upper limit or the maximum angle allowed 
 in degrees which later will be converted to rad.</li>
@@ -2721,8 +3376,8 @@ in degrees which later will be converted to rad.</li>
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.create_angles_by_definition">
 <code class="descname">create_angles_by_definition</code><span class="sig-paren">(</span><em>anglesDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.create_angles_by_definition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates anglesMap using angles definition.
-Calls set_angles(anglesMap) and generates angles attribute.</p>
+<dd><p>Creates anglesList using angles definition. This calls set_angles(anglesMap) 
+and generates angles attribute. All angles are in degrees.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2812,20 +3467,20 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms relative indexes the move 
+will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -2835,14 +3490,14 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -2853,8 +3508,25 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_move">
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2869,15 +3541,33 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move</p>
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): atom index as a numpy array of a single 
+element.</li>
 </ol>
 </td>
 </tr>
@@ -2916,7 +3606,7 @@ noted as g(r). The relation between G(r) and g(r) is given by</p>
 <div class="math">
 \[G(r) = 4 \pi r (\rho_{r} - \rho_{0})
      = 4 \pi \rho_{0} r (g(r)-1) 
-     = \frac{R(r)}{r} - 4 \pi \rho_{0}\]</div>
+     = \frac{R(r)}{r} - 4 \pi r \rho_{0}\]</div>
 <p><span class="math">\(\rho_{r}\)</span> is the number density fluctuation at distance <span class="math">\(r\)</span>. 
 The computation of g(r) is straightforward from an atomistic model and it is given
 by <span class="math">\(g(r)=\rho_{r} / \rho_{0}\)</span>.</p>
@@ -3379,20 +4069,19 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -3402,14 +4091,14 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -3420,14 +4109,14 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -3437,14 +4126,66 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reject move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputated atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputated atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -3575,20 +4316,19 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -3598,7 +4338,7 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3607,6 +4347,24 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -4151,20 +4909,19 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute data and update engine constraintsData dictionary.</p>
-</dd></dl>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint before move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
 </ol>
 </td>
 </tr>
@@ -4174,14 +4931,14 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint after move is executed</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
 <li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
 </ol>
 </td>
@@ -4192,8 +4949,25 @@ between model computed data and the experimental ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move">
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4208,15 +4982,50 @@ between model computed data and the experimental ones.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reject move</p>
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputated atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputated atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
 </ol>
 </td>
 </tr>
@@ -4301,6 +5110,7 @@ to manipulate the experimental data every time.</p>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.AtomicCoordinationConstraints">CoordinationConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.BondConstraints">BondConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.AngleConstraints">AngleConstraints</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Constraints.DihedralAngleConstraints">DihedralAngleConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.ImproperAngleConstraints">ImproperAngleConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.PairDistributionConstraints">PairDistributionConstraints</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Constraints.PairCorrelationConstraints">PairCorrelationConstraints</a></li>
@@ -4346,7 +5156,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

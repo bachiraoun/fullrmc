@@ -38,3 +38,10 @@ Swap
     :members:
     :undoc-members:
     :show-inheritance:
+     
+Removes
+-------
+.. automodule:: fullrmc.Generators.Removes
+    :members:
+    :undoc-members:
+    :show-inheritance:

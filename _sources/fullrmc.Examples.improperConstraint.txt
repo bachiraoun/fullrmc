@@ -23,7 +23,7 @@ of all moves will be automatically visualized.
 Files
 =====
 
-#. system.pdb: The water molecule pdb file
+#. system.pdb: The pentafluoroxenate molecule pdb file
 #. run.py: The script file used to run the simulation
 
 

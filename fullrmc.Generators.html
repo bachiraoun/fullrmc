@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Generators package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Generators package &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.0',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Constraints package" href="fullrmc.Constraints.html" />
             <link rel="prev" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -126,13 +126,14 @@
 A MoveGenerator sub-class is used at the Engine runtime to generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-c9d5e793bbf652024efa56d53cfb5f80c4ed7ea6.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-c4d177c16016602fee21da3f2b6c226c26d1d480.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,77,119,101"/>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="175,5,342,29"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" target="_top" title="MoveGeneratorCombinator combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="167,53,350,77"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="204,101,313,125"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="201,149,316,173"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on atoms but " alt="" coords="193,149,324,173"/>
+<area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="201,197,316,221"/>
 </map>
 <dl class="class">
 <dt>
@@ -233,6 +234,227 @@ This method must NOT be overloaded in MoveGenerator sub-classes.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>coordinates (np.ndarray): The new coordinates after applying the transformation.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">RemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>allowFittingScaleFactor=False</em>, <em>atomsList=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<p>This is a very particular move generator that will not generate moves on atoms but 
+removes them from the atomic configuration using a general collector mechanism. 
+Remove generators must be used to create defects in the simulated system. 
+When the standard error is high, removing atoms might reduce the total fit standard 
+error but this can be illusional and very limiting because artificial non physical 
+voids can get created in the system which will lead to an impossibility to finding a 
+solution at the end. It&#8217;s strongly recommended to exhaust all ideas and possibilities 
+in finding a good solution prior to start removing atoms unless structural defects 
+is the goal of the simulation.</p>
+<p>All removed or amputated atoms are collected by the engine and will become available
+to be re-inserted in the system if needed. But keep in mind, it might be physically
+easy to remove and atom but an impossibility to add it back especially if the created
+voids are smeared out.</p>
+<p>This class of generators are called generators but they behave like selectors. 
+Instead of applying a certain move to a group of atoms, they normally pick atoms
+from defined atoms list and apply no moves on those. 
+&#8216;move&#8217; and &#8216;transform_coordinates&#8217; methods are not implemented in this class of 
+generators and a usage error will be raised if called. &#8216;pick_from_list&#8217; method
+is used instead and must be overloaded by all RemoveGenerator subclasses.</p>
+<p><strong>N.B. This class can&#8217;t be instantiated but its sub-classes might be.</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): The group instance which is this case must be 
+fullrmc EmptyGroup.</li>
+<li>maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+removed and collected from the engine. This property is general to the 
+system and checks engine&#8217;s collected atoms not the number of removed atoms 
+via this generator. If None is given, the remover will not check for the
+number of already removed atoms before attempting a remove.</li>
+<li>allowFittingScaleFactor (bool): Constraints and especially experimental ones
+have a scale factor constant that can be fit. Fitting a scale factor happens
+at engine&#8217;s runtime at a certain fitting frequency. If this flag set to
+True, then fitting the scale factor will be allowed upon removing atoms, when
+set to False then fitting the constraint scale factor will be forbidden upon 
+removing atoms. By default, allowFittingScaleFactor is set to False because 
+it&#8217;s more logical to allow removing only atoms that enhances the total 
+standard error without rescaling the model&#8217;s data.</li>
+<li>atomsList (None,list,set,tuple,np.ndarray): The list of atom indexes to chose
+and remove from.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt>
+<code class="descname">atomsList</code></dt>
+<dd><p>Atoms list from which atoms will be picked to attempt removal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">allowFittingScaleFactor</code></dt>
+<dd><p>Whether to allow constraints to fit their scale factor upon removing atoms.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">maximumCollected</code></dt>
+<dd><p>Maximum collected atoms allowed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span></dt>
+<dd><p>Checks the generator&#8217;s group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_maximum_collected</code><span class="sig-paren">(</span><em>maximumCollected</em><span class="sig-paren">)</span></dt>
+<dd><p>Set maximum collected number of atoms allowed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+removed and collected from the engine. This property is general to the 
+system and checks engine&#8217;s collected atoms not the number of removed atoms 
+via this generator. If None is given, the remover will not check for the
+number of already removed atoms before attempting a remove.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_allow_fitting_scale_factor</code><span class="sig-paren">(</span><em>allowFittingScaleFactor</em><span class="sig-paren">)</span></dt>
+<dd><p>Set allow fitting scale factor flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>allowFittingScaleFactor (bool): Constraints and especially experimental ones
+have a scale factor constant that can be fit. Fitting a scale factor happens
+at engine&#8217;s runtime at a certain fitting frequency. If this flag set to
+True, then fitting the scale factor will be allowed upon removing atoms, when
+set to False then fitting the constraint scale factor will be forbidden upon 
+removing atoms. By default, allowFittingScaleFactor is set to False because 
+it&#8217;s more logical to allow removing only atoms that enhances the total 
+standard error without rescaling the model&#8217;s data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_atoms_list</code><span class="sig-paren">(</span><em>atomsList</em><span class="sig-paren">)</span></dt>
+<dd><p>Set the atoms list from which atoms will be picked to attempt removal.
+This method must be overloaded and not be called from this class but from its 
+children. Otherwise a usage error will be raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atomsList (None, list,set,tuple,np.ndarray): The list of atom indexes to chose
+and remove from.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">move</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span></dt>
+<dd><p>Moves coordinates. 
+This method must NOT be overloaded in MoveGenerator sub-classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">transform_coordinates</code><span class="sig-paren">(</span><em>coordinates</em>, <em>argument</em><span class="sig-paren">)</span></dt>
+<dd><p>In this particular case it checks and verifies maximumCollected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the translation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the translation.</li>
+<li>argument (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">pick_from_list</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<dd><p>In this particular case it checks and verifies maximumCollected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (Engine): The engine calling the method.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (np.ndarray): The array of indexes that need to be tested for removal.</li>
 </ol>
 </td>
 </tr>
@@ -3275,6 +3497,60 @@ In General it&#8217;s not needed.</li>
 </dd></dl>
 
 </div>
+<div class="section" id="module-fullrmc.Generators.Removes">
+<span id="removes"></span><h2>Removes<a class="headerlink" href="#module-fullrmc.Generators.Removes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="fullrmc.Generators.Removes.AtomsRemoveGenerator">
+<em class="property">class </em><code class="descclassname">fullrmc.Generators.Removes.</code><code class="descname">AtomsRemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>atomsList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.RemoveGenerator</span></code></a></p>
+<p>This generator allows removing single atoms at a time from the system. Atoms are
+randomly picked from atomsList and returned upon calling pick_from_list method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): The group instance which is this case must be 
+fullrmc EmptyGroup.</li>
+<li>maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+removed and collected from the engine. This property is general to the 
+system and checks engine&#8217;s collected atoms not the number of removed atoms 
+via this generator. If None is given, the remover will not check for the
+number of already removed atoms before attempting a remove.</li>
+<li>atomsList (None, list,set,tuple,np.ndarray): The list of atom indexes to chose
+and remove from.  If None, then all atoms in system will be used.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="fullrmc.Generators.Removes.AtomsRemoveGenerator.pick_from_list">
+<code class="descname">pick_from_list</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Removes.AtomsRemoveGenerator.pick_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly picks an atom&#8217;s index from atomsList. This method checks and 
+verifies maximumCollected prior to picking and index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (Engine): The engine calling the method.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (None, np.ndarray): Atom index wrapped in a numpy.ndarray. 
+If None is returned than picking is not allowed.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -3291,6 +3567,7 @@ In General it&#8217;s not needed.</li>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Translations">Translations</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Agitations">Agitations</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Swaps">Swap</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Generators.Removes">Removes</a></li>
 </ul>
 </li>
 </ul>
@@ -3341,7 +3618,7 @@ In General it&#8217;s not needed.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

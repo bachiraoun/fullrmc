@@ -43,6 +43,13 @@ AngleConstraints
     :undoc-members:
     :show-inheritance:
     
+DihedralAngleConstraints
+------------------------
+.. automodule:: fullrmc.Constraints.DihedralAngleConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
 ImproperAngleConstraints
 ------------------------
 .. automodule:: fullrmc.Constraints.ImproperAngleConstraints

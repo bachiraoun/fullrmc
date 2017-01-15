@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.0',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -157,7 +157,8 @@ and then compiling the extension files in place.</p>
 <li>NumPy (lowest version tested is 1.7.1)</li>
 <li>cython (lowest version tested is 0.21.1)</li>
 <li>matplotlib (lowest version tested is 1.4)</li>
-<li>pyrep (lowest version tested is 1.0.2)</li>
+<li>pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting 
+from fullrmc 3.0.0)</li>
 <li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
 from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
 - 0.1.5 is used starting from fullrmc 1.0.1)</li>
@@ -194,7 +195,7 @@ following python script:</li>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.21.1&#39;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.0.2&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.0.3&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s1">&#39;0.1.5&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;0.2.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s1">&#39;1.4&#39;</span>  <span class="p">)]:</span>
@@ -524,7 +525,7 @@ except for small modifications that were made and that are listed below.</p>
 <blockquote>
 <div><ol class="arabic">
 <li><dl class="first docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code>: Several modification happend to fullrmc.Engine class.</dt>
+<dt><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code>: Several modification happened to fullrmc.Engine class definition.</dt>
 <dd><ul class="first last simple">
 <li>Instanciating engine arguments have changed. We found that it&#8217;s a bad practice 
 to set the pdb structure, the constraints, the groups and all other attributes
@@ -567,6 +568,36 @@ multiple times.</li>
 if set multiple times.</li>
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></code></a>: anglesMap fixed from causing definition  
 conflicts if set multiple times.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id25">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.0">Version 3.0.0</a>:<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<p>This is a main version change from 2.x.y to 3.x.y where pyrep (&gt;=1.0.3) is used.
+Thusfar until versions 2.x.y, system&#8217;s number of atoms is fixed throughout the whole 
+simulation. Starting from this version, fullrmc allows dynamically removing atoms 
+from the system upon fitting. This is a revolutionary functionality enabling the 
+reproduction of defects in systems.</p>
+<div class="section" id="id26">
+<h4>New Modules and definitions:<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">DihedralAngleConstraint</span></code></a> implemented to control dihedral angles.</li>
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Collection.AtomsCollector" title="fullrmc.Core.Collection.AtomsCollector"><code class="xref py py-class docutils literal"><span class="pre">AtomsCollector</span></code></a> implemented allowing the ability of dynamically remove
+and add re-insert atoms to the system.</li>
+<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> implemented to generate atoms removing from system
+upon fitting.</li>
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> added to host Removes generators.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id27">
+<h4>Modifications:<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>all cython modules are completely de-pythonized.</li>
+<li>all angle constraints respect the same implementation and interface design.</li>
 </ol>
 </div></blockquote>
 </div>
@@ -638,6 +669,11 @@ conflicts if set multiple times.</li>
 <li><a class="reference internal" href="#id24">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id25">Version 3.0.0:</a><ul>
+<li><a class="reference internal" href="#id26">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id27">Modifications:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -672,7 +708,7 @@ conflicts if set multiple times.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -49,7 +49,8 @@ Examples folder name is used as the click-able items in the following list.
    how angles constraint works.
 *  `improperConstraint <fullrmc.Examples.improperConstraint.html>`__: Used to show 
    how improper angles constraint works.
-
+*  `dihedralConstraint <fullrmc.Examples.dihedralConstraint.html>`__: Used to show 
+   how dyhedral angles constraint works.
 
 :underline:`Generators:`
 

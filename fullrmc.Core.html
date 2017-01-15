@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.0.0',
+        VERSION:     '3.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -131,6 +131,20 @@
 <dt id="fullrmc.Core.Collection.SingletonDecorator">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">SingletonDecorator</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.SingletonDecorator" title="Permalink to this definition">¶</a></dt>
 <dd><p>A class singleton decorator.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.raise_if_collected">
+<code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">raise_if_collected</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.raise_if_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constraints method decorator that raises an error whenever the method is called 
+and the system has atoms that were removed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="fullrmc.Core.Collection.reset_if_collected_out_of_date">
+<code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">reset_if_collected_out_of_date</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.reset_if_collected_out_of_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constraints method decorator that raises an error whenever the method is called 
+and the system has atoms that were removed.</p>
 </dd></dl>
 
 <dl class="function">
@@ -505,6 +519,29 @@ square deviation between and array of vectors and a reference array.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="fullrmc.Core.Collection.generate_random_vector">
+<code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">generate_random_vector</code><span class="sig-paren">(</span><em>minAmp</em>, <em>maxAmp</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.generate_random_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate random vector in 3D.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>minAmp (number): Vector minimum amplitude.</li>
+<li>maxAmp (number): Vector maximum amplitude.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>vector (numpy.ndarray): the vector [X,Y,Z] array</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.generate_points_on_sphere">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">generate_points_on_sphere</code><span class="sig-paren">(</span><em>thetaFrom</em>, <em>thetaTo</em>, <em>phiFrom</em>, <em>phiTo</em>, <em>npoints=1</em>, <em>check=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.generate_points_on_sphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate random points on a sphere of radius 1. Points are generated using spherical coordinates
@@ -734,6 +771,326 @@ The probability density of the gaussian distribution is:
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
 <li>arguments (object): Any python object.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Core.Collection.AtomsCollector">
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">AtomsCollector</code><span class="sig-paren">(</span><em>parent</em>, <em>dataKeys=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Atoms collector manages collecting atoms data whenever they are removed from 
+from system. This mechanism allows storing and recovering atoms data at engine 
+runtime.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dataKeys (None, list): The data keys list promised to store everytime an atom is
+removed from the system. If None is given, dataKeys must be set later using 
+set_data_keys method.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.AtomsCollector.dataKeys">
+<code class="descname">dataKeys</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.dataKeys" title="Permalink to this definition">¶</a></dt>
+<dd><p>get data keys that this collector will collect.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.AtomsCollector.indexes">
+<code class="descname">indexes</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collected atoms indexes.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Collection.AtomsCollector.indexesSortedArray">
+<code class="descname">indexesSortedArray</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.indexesSortedArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collected atoms sorted indexes numpy array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset collector to initial state by releasing all collected atoms and 
+re-initializing all properties. parent._on_collector_reset method is not called.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_collected_data">
+<code class="descname">get_collected_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_collected_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get stored collected data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>collectedData (dict): The collected data dict.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.is_collected">
+<code class="descname">is_collected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.is_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get whether atom is collected given its index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>index (int): The atom index to check whether it is collected or not.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (bool): Whether it is collected or not</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.is_not_collected">
+<code class="descname">is_not_collected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.is_not_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get whether atom is not collected given its index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>index (int): The atom index to check whether it is collected or not.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (bool): Whether it is not collected or it is.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.are_collected">
+<code class="descname">are_collected</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.are_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get whether atoms are collected given their indexes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+they are collected or not.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (list): List of booleans defining whether atoms are collected
+or not.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.are_not_collected">
+<code class="descname">are_not_collected</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.are_not_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get whether atoms are not collected given their indexes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+they are collected or not.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (list): List of booleans defining whether atoms are not collected
+or they are.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.set_data_keys">
+<code class="descname">set_data_keys</code><span class="sig-paren">(</span><em>dataKeys</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.set_data_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set atoms collector data keys. keys can be set only once. This method will 
+throw an error if used to reset dataKeys.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dataKeys (list): The data keys list promised to store everytime an atom is
+removed from the system.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_relative_index">
+<code class="descname">get_relative_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_relative_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute relative atom index considering already collected atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>index (int): Atom index.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>relativeIndex (int): Atom relative index.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_relative_indexes">
+<code class="descname">get_relative_indexes</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_relative_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute relative atoms index considering already collected atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>indexes (list,set,tuple,numpy.ndarray): Atoms index.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>relativeIndexes (list): Atoms relative index.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_real_index">
+<code class="descname">get_real_index</code><span class="sig-paren">(</span><em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_real_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute real index of the given relativeIndex considering already collected indexes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>relativeIndex (int): Atom relative index to already collected indexes.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (int): Atom real index.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_atom_data">
+<code class="descname">get_atom_data</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_atom_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get collected atom data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (int): The atom index to return its collected data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.get_data_by_key">
+<code class="descname">get_data_by_key</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_data_by_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all collected atoms data that is associated with a key.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>key (int): the data.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): dictionary of atoms indexes where values are the collected data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.collect">
+<code class="descname">collect</code><span class="sig-paren">(</span><em>index</em>, <em>dataDict</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.collect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect atom given its index.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (int): The atom index to collect.</li>
+<li>dataDict (dict): The atom data dict to collect.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Collection.AtomsCollector.release">
+<code class="descname">release</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Release atom from list of collected atoms and return its collected data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>index (int): The atom index to release.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dataDict (dict): The released atom collected data.</li>
 </ol>
 </td>
 </tr>
@@ -1572,6 +1929,18 @@ Therefore it has become possible to fully customize and set any possibly imagina
 <dd><p>Get constraint&#8217;s current calculated StandardError after last move.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.amputationData">
+<code class="descname">amputationData</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.amputationData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current calculated data after amputation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.amputationStandardError">
+<code class="descname">amputationStandardError</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.amputationStandardError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint&#8217;s current calculated StandardError after amputation.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_variance_squared">
 <code class="descname">set_variance_squared</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance_squared" title="Permalink to this definition">¶</a></dt>
@@ -1614,20 +1983,8 @@ most costly ones.</p>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_used">
-<code class="descname">set_used</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_used" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets used flag.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (boolean): True to use this constraint in engine run time.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
+<code class="descname">set_used</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_used" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_state">
@@ -1779,6 +2136,40 @@ When constraint&#8217;s state and engine&#8217;s state don&#8217;t match, constr
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.set_amputation_data">
+<code class="descname">set_amputation_data</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_amputation_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s after amputation data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): data value</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.set_amputation_standard_error">
+<code class="descname">set_amputation_standard_error</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_amputation_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets constraint&#8217;s standardError after amputation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (number): standardError value.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reset_constraint">
 <code class="descname">reset_constraint</code><span class="sig-paren">(</span><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets constraint.</p>
@@ -1821,27 +2212,57 @@ and will completely reinitialize the constraint.</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_before_move">
-<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_after_move">
-<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>indexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.accept_move">
-<code class="descname">accept_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accept_move" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reject_move">
-<code class="descname">reject_move</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.compute_as_if_inserted">
+<code class="descname">compute_as_if_inserted</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_as_if_inserted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.accept_insertion">
+<code class="descname">accept_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accept_insertion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.reject_insertion">
+<code class="descname">reject_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_insertion" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2339,9 +2760,10 @@ constraint becomes always free and useless.</li>
 A Group is a set of atoms indexes used to gather atoms and apply actions  such as moves upon them. 
 Therefore it has become possible to fully customize and separate atoms to groups and perform reverse monte carlo actions
 on groups rather than on single atoms.</p>
-<img src="_images/inheritance-546ab7bf11d29e0cb53ed0baaa485c2bd2035319.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
+<img src="_images/inheritance-337759984ad1193b67d61c4f6738018dbade1e5b.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
-<area shape="rect" id="node1" href="#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,77,29"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly used" alt="" coords="125,5,222,29"/>
+<area shape="rect" id="node2" href="#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,77,29"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Core.Group.Group">
@@ -2355,7 +2777,7 @@ on groups rather than on single atoms.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>indexes (np.ndarray, list, set, tuple): list of atoms indexes.</li>
 <li>moveGenerator (None, MoveGenerator): Move generator instance.
-If None is given TranslationGenerator is considered by default.</li>
+If None is given AtomsRemoveGenerator is considered by default.</li>
 <li>refine (bool): The refinement flag used by the Engine.</li>
 </ol>
 </td>
@@ -2378,7 +2800,7 @@ If None is given TranslationGenerator is considered by default.</li>
 <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span><span class="n">Group</span><span class="p">([</span><span class="n">idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups</span><span class="p">(</span> <span class="n">groups</span> <span class="p">)</span>
 
-<span class="c1"># Re-define groups generators as needed ... By default TranslationGenerator is used.</span>
+<span class="c1"># Re-define groups generators as needed ... By default AtomsRemoveGenerator is used.</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -2444,6 +2866,96 @@ If None is given TranslationGenerator is considered by default.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>generator (None, MoveGenerator): Move generator instance.
 If None is given TranslationGenerator is considered by default.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Core.Group.EmptyGroup">
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">EmptyGroup</code><span class="sig-paren">(</span><em>indexes=None</em>, <em>moveGenerator=None</em>, <em>refine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Group.Group" title="fullrmc.Core.Group.Group"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Group.Group</span></code></a></p>
+<p>Empty group is a special group that takes no atoms indexes. It&#8217;s mainly used
+to remove atoms from system upon fitting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (object): list of atoms indexes. This argument will always be
+disregarded in this particular case.</li>
+<li>moveGenerator (None, MoveGenerator): Move generator instance.
+If None is given RemoveGenerator is considered by default.</li>
+<li>refine (bool): The refinement flag used by the Engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">EmptyGroup</span>
+
+<span class="c1"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add constraints ...</span>
+
+<span class="c1"># re-define groups and set a single empty group</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups</span><span class="p">(</span> <span class="n">EmptyGroup</span><span class="p">()</span> <span class="p">)</span>
+
+<span class="c1"># Re-define groups generators as needed ... By default RemoveGenerator is used.</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="fullrmc.Core.Group.EmptyGroup.moveGenerator">
+<code class="descname">moveGenerator</code><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.moveGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the move generator instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Group.EmptyGroup.indexes">
+<code class="descname">indexes</code><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the indexes array.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Group.EmptyGroup.set_move_generator">
+<code class="descname">set_move_generator</code><span class="sig-paren">(</span><em>generator</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.set_move_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set group move generator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>generator (None, MoveGenerator): Move generator instance.
+If None is given TranslationGenerator is considered by default.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Group.EmptyGroup.set_indexes">
+<code class="descname">set_indexes</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.set_indexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the group indexes. For an EmptyGroup, this method will disregard given 
+indexes argument and will always set indexes property to None.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (object): The group atoms indexes. This argument will always be
+disregarded in this particular case.</li>
 </ol>
 </td>
 </tr>
@@ -2949,13 +3461,14 @@ until recurrence expires, then the best position is kept.</li>
 A MoveGenerator sub-class is used at the Engine runtime to generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-64dc8bf93643c019ebb597a7fd8628aad69c2f85.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-dd9d5fc2ead98c503f3819ee2e636bae5d734ea0.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
-<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,77,119,101"/>
+<area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="175,5,342,29"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" target="_top" title="MoveGeneratorCombinator combines all moves of a list of MoveGenerators and applies it at once." alt="" coords="167,53,350,77"/>
 <area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="204,101,313,125"/>
-<area shape="rect" id="node5" href="#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="201,149,316,173"/>
+<area shape="rect" id="node5" href="#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on atoms but " alt="" coords="193,149,324,173"/>
+<area shape="rect" id="node6" href="#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="201,197,316,221"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator">
@@ -3056,6 +3569,227 @@ This method must NOT be overloaded in MoveGenerator sub-classes.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>coordinates (np.ndarray): The new coordinates after applying the transformation.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator">
+<em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">RemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>allowFittingScaleFactor=False</em>, <em>atomsList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<p>This is a very particular move generator that will not generate moves on atoms but 
+removes them from the atomic configuration using a general collector mechanism. 
+Remove generators must be used to create defects in the simulated system. 
+When the standard error is high, removing atoms might reduce the total fit standard 
+error but this can be illusional and very limiting because artificial non physical 
+voids can get created in the system which will lead to an impossibility to finding a 
+solution at the end. It&#8217;s strongly recommended to exhaust all ideas and possibilities 
+in finding a good solution prior to start removing atoms unless structural defects 
+is the goal of the simulation.</p>
+<p>All removed or amputated atoms are collected by the engine and will become available
+to be re-inserted in the system if needed. But keep in mind, it might be physically
+easy to remove and atom but an impossibility to add it back especially if the created
+voids are smeared out.</p>
+<p>This class of generators are called generators but they behave like selectors. 
+Instead of applying a certain move to a group of atoms, they normally pick atoms
+from defined atoms list and apply no moves on those. 
+&#8216;move&#8217; and &#8216;transform_coordinates&#8217; methods are not implemented in this class of 
+generators and a usage error will be raised if called. &#8216;pick_from_list&#8217; method
+is used instead and must be overloaded by all RemoveGenerator subclasses.</p>
+<p><strong>N.B. This class can&#8217;t be instantiated but its sub-classes might be.</strong></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (None, Group): The group instance which is this case must be 
+fullrmc EmptyGroup.</li>
+<li>maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+removed and collected from the engine. This property is general to the 
+system and checks engine&#8217;s collected atoms not the number of removed atoms 
+via this generator. If None is given, the remover will not check for the
+number of already removed atoms before attempting a remove.</li>
+<li>allowFittingScaleFactor (bool): Constraints and especially experimental ones
+have a scale factor constant that can be fit. Fitting a scale factor happens
+at engine&#8217;s runtime at a certain fitting frequency. If this flag set to
+True, then fitting the scale factor will be allowed upon removing atoms, when
+set to False then fitting the constraint scale factor will be forbidden upon 
+removing atoms. By default, allowFittingScaleFactor is set to False because 
+it&#8217;s more logical to allow removing only atoms that enhances the total 
+standard error without rescaling the model&#8217;s data.</li>
+<li>atomsList (None,list,set,tuple,np.ndarray): The list of atom indexes to chose
+and remove from.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.atomsList">
+<code class="descname">atomsList</code><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.atomsList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms list from which atoms will be picked to attempt removal.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.allowFittingScaleFactor">
+<code class="descname">allowFittingScaleFactor</code><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.allowFittingScaleFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to allow constraints to fit their scale factor upon removing atoms.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.maximumCollected">
+<code class="descname">maximumCollected</code><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.maximumCollected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maximum collected atoms allowed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.check_group">
+<code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.check_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the generator&#8217;s group.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>group (Group): the Group instance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.set_maximum_collected">
+<code class="descname">set_maximum_collected</code><span class="sig-paren">(</span><em>maximumCollected</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.set_maximum_collected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set maximum collected number of atoms allowed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+removed and collected from the engine. This property is general to the 
+system and checks engine&#8217;s collected atoms not the number of removed atoms 
+via this generator. If None is given, the remover will not check for the
+number of already removed atoms before attempting a remove.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.set_allow_fitting_scale_factor">
+<code class="descname">set_allow_fitting_scale_factor</code><span class="sig-paren">(</span><em>allowFittingScaleFactor</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.set_allow_fitting_scale_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set allow fitting scale factor flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>allowFittingScaleFactor (bool): Constraints and especially experimental ones
+have a scale factor constant that can be fit. Fitting a scale factor happens
+at engine&#8217;s runtime at a certain fitting frequency. If this flag set to
+True, then fitting the scale factor will be allowed upon removing atoms, when
+set to False then fitting the constraint scale factor will be forbidden upon 
+removing atoms. By default, allowFittingScaleFactor is set to False because 
+it&#8217;s more logical to allow removing only atoms that enhances the total 
+standard error without rescaling the model&#8217;s data.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.set_atoms_list">
+<code class="descname">set_atoms_list</code><span class="sig-paren">(</span><em>atomsList</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.set_atoms_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the atoms list from which atoms will be picked to attempt removal.
+This method must be overloaded and not be called from this class but from its 
+children. Otherwise a usage error will be raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atomsList (None, list,set,tuple,np.ndarray): The list of atom indexes to chose
+and remove from.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves coordinates. 
+This method must NOT be overloaded in MoveGenerator sub-classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the transformation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the transformation.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.transform_coordinates">
+<code class="descname">transform_coordinates</code><span class="sig-paren">(</span><em>coordinates</em>, <em>argument</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.transform_coordinates" title="Permalink to this definition">¶</a></dt>
+<dd><p>In this particular case it checks and verifies maximumCollected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The coordinates on which to apply the translation.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>coordinates (np.ndarray): The new coordinates after applying the translation.</li>
+<li>argument (object): Any python object. Not used in this generator.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.pick_from_list">
+<code class="descname">pick_from_list</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.pick_from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>In this particular case it checks and verifies maximumCollected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (Engine): The engine calling the method.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>indexes (np.ndarray): The array of indexes that need to be tested for removal.</li>
 </ol>
 </td>
 </tr>
@@ -4414,36 +5148,6 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <span id="bonds"></span><h2>bonds<a class="headerlink" href="#module-fullrmc.Core.bonds" title="Permalink to this headline">¶</a></h2>
 <p>This is a C compiled module to compute atomic bonds.</p>
 <dl class="function">
-<dt id="fullrmc.Core.bonds.single_bonds_dists">
-<code class="descclassname">fullrmc.Core.bonds.</code><code class="descname">single_bonds_dists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.bonds.single_bonds_dists" title="Permalink to this definition">¶</a></dt>
-<dd><p>It calculates the bonds constraint of a distances array.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>distances (float32 array): The distances array.</li>
-<li>lowerLimit (float32 array): The (numberOfBondedAtoms) array for lower limit or minimum bond length allowed.</li>
-<li>upperLimit (float32 array): The (numberOfBondedAtoms) array for upper limit or maximum bond length allowed.</li>
-<li>reduceDistanceToUpper (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
-<li>reduceDistanceToLower (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
-<li>bondsLength: The calculated bonds length</li>
-<li>reducedDistances: The reduced bonds length</li>
-</ol>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="fullrmc.Core.bonds.full_bonds_coords">
 <code class="descclassname">fullrmc.Core.bonds.</code><code class="descname">full_bonds_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.bonds.full_bonds_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>It calculates the bonds constraint of box coordinates.</p>
@@ -4452,7 +5156,10 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>bonds (python dictionary): The bonds dictionary. Where keys are atoms indexes and values are dictionary of bondedIndexes array, lowerLimit array, upperLimit array</li>
+<li>idx1 (float32 array): First atoms index array</li>
+<li>idx2 (float32 array): Second atoms index array</li>
+<li>lowerLimit (float32 array): array for lower limit or minimum bond length allowed.</li>
+<li>upperLimit (float32 array): array for upper limit or minimum bond length allowed.</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4463,40 +5170,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
 <li>bondsLength: The calculated bonds length</li>
-<li>reducedDistances: The reduced bonds length</li>
-</ol>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="fullrmc.Core.bonds.full_bonds_dists">
-<code class="descclassname">fullrmc.Core.bonds.</code><code class="descname">full_bonds_dists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.bonds.full_bonds_dists" title="Permalink to this definition">¶</a></dt>
-<dd><p>It calculates the bonds constraint given atomic distances.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>bonds (python dictionary): The bonds dictionary. Where keys are atoms indexes and values are dictionary of bondedIndexes array, lowerLimit array, upperLimit array</li>
-<li>distances (float32 (n,1) numpy.ndarray): The atomic distances array.</li>
-<li>reduceDistanceToUpper (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
-<li>reduceDistanceToLower (bool): Whether to reduce bonds length found out of limits to the difference between the bond length and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
-<li>bondsLength: The calculated bonds length</li>
-<li>reducedDistances: The reduced bonds length</li>
-</ol>
-</li>
+<li>reducedLengths: The calculated reduced bonds length</li>
 </ol>
 </td>
 </tr>
@@ -4509,37 +5184,6 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <span id="angles"></span><h2>angles<a class="headerlink" href="#module-fullrmc.Core.angles" title="Permalink to this headline">¶</a></h2>
 <p>This is a C compiled module to compute bonded atoms angle.</p>
 <dl class="function">
-<dt id="fullrmc.Core.angles.single_angles_diffs">
-<code class="descclassname">fullrmc.Core.angles.</code><code class="descname">single_angles_diffs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.angles.single_angles_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the angles constraint given bonded atoms vectors.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>leftVectors (float32 array): The left vectors array.</li>
-<li>rightVectors (float32 array): The right vectors array.</li>
-<li>lowerLimit (float32 array): The (numberOfLeftIndexes) array for lower limit or minimum bond length allowed.</li>
-<li>upperLimit (float32 array): The (numberOfLeftIndexes) array for upper limit or maximum bond length allowed.</li>
-<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
-<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
-<li>angles: The calculated angles (rad).</li>
-<li>reducedAngles: The reduced angles (rad)</li>
-</ol>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="fullrmc.Core.angles.full_angles_coords">
 <code class="descclassname">fullrmc.Core.angles.</code><code class="descname">full_angles_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.angles.full_angles_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the angles constraint given bonded atoms vectors.</p>
@@ -4550,6 +5194,43 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>anglesDict (python dict): The angles dictionary. Where keys are central atoms indexes and values 
 are dictionary of leftIndexes array, rightIndexes array, lowerLimit array, upperLimit array</li>
+<li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.</li>
+<li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
+<li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
+<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
+<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>angles: The calculated angles (rad).</li>
+<li>reducedAngles: The reduced angles (rad).</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-fullrmc.Core.dihedral_angles">
+<span id="dihedral-angles"></span><h2>dihedral angles<a class="headerlink" href="#module-fullrmc.Core.dihedral_angles" title="Permalink to this headline">¶</a></h2>
+<p>This is a C compiled module to compute improper angles.</p>
+<dl class="function">
+<dt id="fullrmc.Core.dihedral_angles.full_dihedral_angles_coords">
+<code class="descclassname">fullrmc.Core.dihedral_angles.</code><code class="descname">full_dihedral_angles_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.dihedral_angles.full_dihedral_angles_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the improper angles constraint between an improper atom and a plane atoms.
+The plane normal vector is calculated using the right-hand rule where (thumb=ox vector), 
+(index=oy vector) hence (oz=normal=second finger)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
+<li>anglesDict (python dictionary): The angles dictionary. Where keys are the improper atoms indexes 
+and values are dictionary of oAtomIndex array, xAtomIndex array, yAtomIndex array, 
+lowerLimit array, upperLimit array</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4576,40 +5257,6 @@ are dictionary of leftIndexes array, rightIndexes array, lowerLimit array, upper
 <div class="section" id="module-fullrmc.Core.improper_angles">
 <span id="improper-angles"></span><h2>improper angles<a class="headerlink" href="#module-fullrmc.Core.improper_angles" title="Permalink to this headline">¶</a></h2>
 <p>This is a C compiled module to compute improper angles.</p>
-<dl class="function">
-<dt id="fullrmc.Core.improper_angles.single_improper_angles_diffs">
-<code class="descclassname">fullrmc.Core.improper_angles.</code><code class="descname">single_improper_angles_diffs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.improper_angles.single_improper_angles_diffs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the improper angles constraint between an improper atom and a plane atoms.
-The plane normal vector is calculated using the right-hand rule where (thumb=ox vector), 
-(index=oy vector) hence (oz=normal=second finger)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>improperVectors  (float32 array): The improper vectors array.</li>
-<li>oxVectors  (float32 array): The ox vectors array.</li>
-<li>oyVectors  (float32 array): The oy vectors array.</li>
-<li>lowerLimit (float32 array): The (oAtomIndex) array for lower limit or minimum bond length allowed.</li>
-<li>upperLimit (float32 array): The (oAtomIndex) array for upper limit or maximum bond length allowed.</li>
-<li>reduceAngleToUpper (bool): Whether to reduce angle found out of limits to the difference between the angle and the upper limit. When True, this flag has the higher priority. DEFAULT: False</li>
-<li>reduceAngleToLower (bool): Whether to reduce angle found out of limits to the difference between the angle and the lower limit. When True, this flag may lose its priority for reduceAngleToUpper if the later is True. DEFAULT: False</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
-<li>angles: The calculated angles (rad).</li>
-<li>reducedAngles: The reduced angles (rad)</li>
-</ol>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="fullrmc.Core.improper_angles.full_improper_angles_coords">
 <code class="descclassname">fullrmc.Core.improper_angles.</code><code class="descname">full_improper_angles_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.improper_angles.full_improper_angles_coords" title="Permalink to this definition">¶</a></dt>
@@ -4837,6 +5484,7 @@ lowerLimit array, upperLimit array</li>
 <li><a class="reference internal" href="#module-fullrmc.Core.atomic_distances">atomic distances</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.bonds">bonds</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.angles">angles</a></li>
+<li><a class="reference internal" href="#module-fullrmc.Core.dihedral_angles">dihedral angles</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.improper_angles">improper angles</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Core.pairs_histograms">pairs histogram</a></li>
 </ul>
@@ -4889,7 +5537,7 @@ lowerLimit array, upperLimit array</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 2.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

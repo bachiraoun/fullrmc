@@ -75,7 +75,7 @@ pyx = [### boundary conditions collection
                  extra_compile_args = EXTRA_COMPILE_ARGS,
                  extra_link_args    = EXTRA_LINK_ARGS,
                  sources = [os.path.join(EXTENSIONS_PATH,"atomic_distances.pyx")]),
-       #### coordination number
+       ### coordination number
        Extension('atomic_coordination',
                  include_dirs=[np.get_include()],
                  language="c",
@@ -92,6 +92,11 @@ pyx = [### boundary conditions collection
                  language="c",
                  include_dirs=[np.get_include()],
                  sources = [os.path.join(EXTENSIONS_PATH,"angles.pyx")]),
+       ### dihedral angles
+       Extension('dihedral_angles',
+                 include_dirs=[np.get_include()],
+                 language="c",
+                 sources = [os.path.join(EXTENSIONS_PATH,"dihedral_angles.pyx")]),
        ### improper angles
        Extension('improper_angles',
                  include_dirs=[np.get_include()],

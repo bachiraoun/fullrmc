@@ -22,7 +22,7 @@ grFileName     = "SiOx.gr"
 pdbFileName    = "SiOx.pdb"
 engineFileName = "SiOx.rmc"
 NCORES         = 1
-FRESH_START    = True
+FRESH_START    = False
 # engine variables
 grExpPath      = os.path.join(DIR_PATH, grFileName)
 pdbPath        = os.path.join(DIR_PATH, pdbFileName)
@@ -63,11 +63,11 @@ else:
     PDF_CONSTRAINT, EMD_CONSTRAINT, ACNC_CONSTRAINT = ENGINE.constraints
 
 
-#ACNC_CONSTRAINT.set_used(False)
+ACNC_CONSTRAINT.set_used(False)
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ###################################
 def run_normal_rmc(nsteps=150000, saveFreq=10000, ncores=1):
-    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFreq, ncores=ncores, restartPdb=False)
+    ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFreq, ncores=ncores, restartPdb=None)
 
 def run_explore(recur=50, saveFreq=10000, ncores=1):
     gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=False, explore=True)

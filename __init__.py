@@ -1,7 +1,7 @@
 """
-.. inheritance-diagram:: fullrmc.Engine.Engine
+.. inheritance-diagram:: fullrmc.Engine
 
-.. inheritance-diagram:: fullrmc.Core.Group.Group 
+.. inheritance-diagram:: fullrmc.Core.Group 
     
 .. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
                          fullrmc.Selectors.OrderedSelectors
@@ -9,10 +9,12 @@
                          fullrmc.Generators.Rotations 
                          fullrmc.Generators.Swaps 
                          fullrmc.Generators.Agitations
+                         fullrmc.Generators.Removes
                          fullrmc.Constraints.AtomicCoordinationConstraints
                          fullrmc.Constraints.DistanceConstraints
                          fullrmc.Constraints.BondConstraints
                          fullrmc.Constraints.AngleConstraints
+                         fullrmc.Constraints.DihedralAngleConstraints
                          fullrmc.Constraints.ImproperAngleConstraints
                          fullrmc.Constraints.PairDistributionConstraints
                          fullrmc.Constraints.PairCorrelationConstraints
@@ -82,29 +84,35 @@ for Reverse Monte Carlo is a modelling package to solve an inverse problem where
 atomic/molecular model is adjusted until its atoms position have the greatest consistency 
 with a set of experimental data.\n
 fullrmc is a python package with its core and calculation modules optimized and compiled 
-in Cython. fullrmc is not a standard RMC package but it is rather unique in its approach 
-to solving an atomic or molecular structure. fullrmc's Engine sub-module is the main module 
-that contains the definition of 'Engine' which is the main and only class used to launch 
-an RMC calculation. Engine reads only Protein Data Bank formatted atomic configuration 
-`'.pdb' <http://deposit.rcsb.org/adit/docs/pdb_atom_format.html>`_ files and handles  
-other definitions and attributes such as:
+in Cython. fullrmc is not a standard RMC package but it's rather unique in its approach 
+to stochastically solving an atomic or molecular structure. fullrmc's Engine sub-module 
+is the main module that contains the definition of 'Engine' which is the main and only 
+class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
+atomic configuration `'.pdb' <http://deposit.rcsb.org/adit/docs/pdb_atom_format.html>`_ 
+files and handles other definitions and attributes such as:
 
-    #. **Group**: Engine doesn't understand atoms or molecules but group of atom indexes instead. 
-       A group is a set of atom indexes, allowing no indexes redundancy 
-       within the same group definition. A Group instance can contain any set of indexes and as many atom indexes as needed. 
-       Grouping atoms is essential to make clusters of atoms (residues, molecules, etc) evolve and move together. A group of 
-       a single atom index can be used to make a single atom move separately from the others. Engine's 'groups' attribute 
-       is a simple list of group instances containing all the desired and defined groups that one wants to move.
-    #. **Group selector**: Engine requires a GroupSelector instance which is the artist that selects a group from the engine's
-       groups list at every engine runtime step. Among other properties, depending on which group selector is used by the
-       engine, a GroupSelector can allow weighting which means selecting groups more or less frequently than the others, 
-       it can also allow selection recurrence and refinement of a single group, ordered and random selection is also possible.
-    #. **Move generator**: Every group instance has its own MoveGenerator. Therefore every group of atoms when selected by 
-       the engine's group selector at the engine's runtime can perform a customizable and different kind of moves. 
-    #. **Constraint**: A constraint is a rule that controls certain aspect of the configuration upon moving groups. 
-       Engine's 'constraints' attribute is a list of all defined and used constraint instances, it is 
-       the judge that controls the evolution of the system by accepting or rejecting the move of a group. 
-       If engine's constraints list is empty and contains no constraint definition, this will result
+    #. **Group**: Engine doesn't understand atoms or molecules but group of atom indexes 
+       instead. A group is a set of atom indexes, allowing no indexes redundancy 
+       within the same group definition. A Group instance can contain any set of indexes 
+       and as many atom indexes as needed. Grouping atoms is essential to make clusters 
+       of atoms (residues, molecules, etc) evolve and move together. A group of 
+       a single atom index can be used to make a single atom move separately from the 
+       others. Engine's 'groups' attribute is a simple list of group instances containing 
+       all the desired and defined groups that one wants to move.
+    #. **Group selector**: Engine requires a GroupSelector instance which is the artist 
+       that selects a group from the engine's groups list at every engine runtime step. 
+       Among other properties, depending on which group selector is used by the engine, 
+       a GroupSelector can allow weighting which means selecting groups more or less 
+       frequently than the others, it can also allow selection recurrence and refinement 
+       of a single group, ordered and random selection is also possible.
+    #. **Move generator**: Every group instance has its own MoveGenerator. Therefore 
+       every group of atoms when selected by the engine's group selector at the engine's 
+       runtime can perform a customizable and different kind of moves. 
+    #. **Constraint**: A constraint is a rule that controls certain aspect of the 
+       configuration upon moving groups. Engine's 'constraints' attribute is a list of 
+       all defined and used constraint instances, it is the judge that controls the 
+       evolution of the system by accepting or rejecting the move of a group. If engine's 
+       constraints list is empty and contains no constraint definition, this will result 
        in accepting all the generated moves.
 
 Tetrahydrofuran simple example yet complete and straight to the point
@@ -230,7 +238,7 @@ Tetrahydrofuran simple example yet complete and straight to the point
     #   ################################# RUN RMC ON ATOMS ##################################   #
     # set groups as atoms. By default when the engine is constructed, all groups are single atoms.
     ENGINE.set_groups_as_atoms()
-    ENGINE.run(numberOfSteps=100000, saveFrequency=1000, savePath=enginePath)
+    ENGINE.run(numberOfSteps=100000, saveFrequency=1000)
     
     #   #####################################################################################   #
     #   ############################### RUN RMC ON MOLECULES ################################   #
@@ -256,7 +264,7 @@ Tetrahydrofuran simple example yet complete and straight to the point
     BA_CONSTRAINT.set_used(False)
     IA_CONSTRAINT.set_used(False)
     ## run engine and perform RMC on molecules
-    ENGINE.run(numberOfSteps=100000, saveFrequency=1000, savePath=enginePath)
+    ENGINE.run(numberOfSteps=100000, saveFrequency=1000)
         
     #   #####################################################################################   #
     #   ################################### PLOT TOTAL GR ###################################   #

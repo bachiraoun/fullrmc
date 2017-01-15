@@ -42,7 +42,8 @@ For your general understanding, fullrmc requires the following:
    #. NumPy (lowest version tested is 1.7.1)
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
-   #. pyrep (lowest version tested is 1.0.2)
+   #. pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting 
+      from fullrmc 3.0.0)
    #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
       from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
       - 0.1.5 is used starting from fullrmc 1.0.1)
@@ -76,7 +77,7 @@ automatically installed and updated while fullrmc is being installed.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
-                          ('pyrep'      ,'1.0.2') ,
+                          ('pyrep'      ,'1.0.3') ,
                           ('pdbParser'  ,'0.1.5') ,
                           ('pysimplelog','0.2.1') ,
                           ('matplotlib' ,'1.4'  )]:
@@ -161,7 +162,6 @@ Modules and definitions:
     
 `Version 0.2.0 <https://pypi.python.org/pypi/fullrmc/0.2.0>`_:
 --------------------------------------------------------------
-
 This is the first officially published version. 
 
 New Modules and definitions:
@@ -184,7 +184,6 @@ Known bugs and issues:
  
 `Version 0.3.0 <https://pypi.python.org/pypi/fullrmc/0.3.0>`_:
 --------------------------------------------------------------
-
 Starting from this version, pdbParser (>=0.1.3) is used. 
 
 Fixes and improvements:
@@ -260,7 +259,6 @@ Fixes and improvements:
  
 `Version 1.0.0 <https://pypi.python.org/pypi/fullrmc/1.0.0>`_:
 --------------------------------------------------------------
-
 This is a main version change from 0.x.y to 1.x.y and that's because non-periodic 
 boundary conditions are now implemented. Starting from this version shape function 
 correction can be used. For non-periodic boundary conditions, very big box with periodic 
@@ -299,7 +297,6 @@ Fixes and improvements:
  
 `Version 1.0.1 <https://pypi.python.org/pypi/fullrmc/1.0.1>`_:
 --------------------------------------------------------------
-
 Starting from this version, pdbParser (>=0.1.5) is used. There is no bugs
 fixed in this version comparably to version 1.0.0. 
 This version corrects for cell visualization compatibility between fullrmc 
@@ -389,7 +386,7 @@ except for small modifications that were made and that are listed below.
 
 Modifications:
 ~~~~~~~~~~~~~~  
-    #. :class:`.Engine`: Several modification happend to fullrmc.Engine class.
+    #. :class:`.Engine`: Several modification happened to fullrmc.Engine class definition.
         * Instanciating engine arguments have changed. We found that it's a bad practice 
           to set the pdb structure, the constraints, the groups and all other attributes
           at the engine instanciation. Therefore, now engine's instanciation takes more 
@@ -423,9 +420,35 @@ Fixes and improvements:
     #. :class:`.ImproperAngleConstraint`: anglesMap fixed from causing definition  
        conflicts if set multiple times. 
 
+
+
+
+`Version 3.0.0 <https://pypi.python.org/pypi/fullrmc/3.0.0>`_:
+--------------------------------------------------------------
+This is a main version change from 2.x.y to 3.x.y where pyrep (>=1.0.3) is used.
+Thusfar until versions 2.x.y, system's number of atoms is fixed throughout the whole 
+simulation. Starting from this version, fullrmc allows dynamically removing atoms 
+from the system upon fitting. This is a revolutionary functionality enabling the 
+reproduction of defects in systems. 
+
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. :class:`.DihedralAngleConstraint` implemented to control dihedral angles.
+   #. :class:`.AtomsCollector` implemented allowing the ability of dynamically remove
+      and add re-insert atoms to the system.
+   #. :class:`.AtomsRemoveGenerator` implemented to generate atoms removing from system
+      upon fitting.
+   #. :class:`.EmptyGroup` added to host Removes generators.
+      
+Modifications:
+~~~~~~~~~~~~~~  
+    #. all cython modules are completely de-pythonized.
+    #. all angle constraints respect the same implementation and interface design.
+
+
 """
 
-__version__    = '2.0.0'
+__version__    = '3.0.0'
                
 __author__     = "Bachir Aoun"
                

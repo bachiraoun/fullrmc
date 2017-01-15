@@ -36,7 +36,7 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix, generate_random_float
+from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix, generate_random_float, generate_random_vector
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -189,33 +189,38 @@ class DistanceAgitationGenerator(MoveGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # get normalized direction vector
-        vector  = FLOAT_TYPE( coordinates[0,:]-coordinates[1,:] )
-        vector /= FLOAT_TYPE( np.linalg.norm(vector) )
-        # create amplitudes
-        if self.__symmetric:
-            amp0 = amp1 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
+        if coordinates.shape[0]!=2:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
         else:
-            amp0 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
-            amp1 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
-        # create shrink flag
-        if self.__shrink is None:
-            shrink = (1-2*generate_random_float())>0
-        else:
-            shrink = self.__shrink    
-        # create directions
-        if shrink:
-            dir0 = FLOAT_TYPE(-1)
-            dir1 = FLOAT_TYPE( 1)            
-        else:
-            dir0 = FLOAT_TYPE( 1)
-            dir1 = FLOAT_TYPE(-1) 
-        # create translation vectors 
-        translationVectors      = np.empty((2,3), dtype=FLOAT_TYPE)
-        translationVectors[0,:] = self.__agitate[0]*dir0*amp0*vector
-        translationVectors[1,:] = self.__agitate[1]*dir1*amp1*vector
-        # translate and return
-        return coordinates+translationVectors
+            # get normalized direction vector
+            vector  = FLOAT_TYPE( coordinates[0,:]-coordinates[1,:] )
+            vector /= FLOAT_TYPE( np.linalg.norm(vector) )
+            # create amplitudes
+            if self.__symmetric:
+                amp0 = amp1 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
+            else:
+                amp0 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
+                amp1 =  FLOAT_TYPE(generate_random_float()*self.__amplitude)
+            # create shrink flag
+            if self.__shrink is None:
+                shrink = (1-2*generate_random_float())>0
+            else:
+                shrink = self.__shrink    
+            # create directions
+            if shrink:
+                dir0 = FLOAT_TYPE(-1)
+                dir1 = FLOAT_TYPE( 1)            
+            else:
+                dir0 = FLOAT_TYPE( 1)
+                dir1 = FLOAT_TYPE(-1) 
+            # create translation vectors 
+            translationVectors      = np.empty((2,3), dtype=FLOAT_TYPE)
+            translationVectors[0,:] = self.__agitate[0]*dir0*amp0*vector
+            translationVectors[1,:] = self.__agitate[1]*dir1*amp1*vector
+            # translate and return
+            return coordinates+translationVectors
  
 
 class AngleAgitationGenerator(MoveGenerator):
@@ -369,47 +374,52 @@ class AngleAgitationGenerator(MoveGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # get atoms group center
-        center = np.sum(coordinates, 0)/coordinates.shape[0]
-        # translate to origin
-        rotatedCoordinates = coordinates-center
-        # get normalized direction vectors
-        leftVector   = FLOAT_TYPE( rotatedCoordinates[1,:]-rotatedCoordinates[0,:] )
-        leftVector  /= FLOAT_TYPE( np.linalg.norm(leftVector) )
-        rightVector  = FLOAT_TYPE( rotatedCoordinates[2,:]-rotatedCoordinates[0,:] )
-        rightVector /= FLOAT_TYPE( np.linalg.norm(rightVector) )
-        # get rotation axis
-        rotationAxis = np.cross(leftVector, rightVector)
-        if rotationAxis[0]==rotationAxis[1]==rotationAxis[2]==0.:
-            rotationAxis = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
-            rotationAxis /= FLOAT_TYPE( np.linalg.norm(rotationAxis) )
-        # create shrink flag
-        if self.__shrink is None:
-            shrink = (1-2*generate_random_float())>0
-        else:
-            shrink = self.__shrink    
-        # get rotation angles
-        if self.__symmetric:
-            angleLeft  = angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
-        else:
-            angleLeft  = FLOAT_TYPE(generate_random_float()*self.__amplitude)
-            angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
-        # create directions
-        if shrink:
-            angleLeft  *= FLOAT_TYPE(-1)
-            angleRight *= FLOAT_TYPE( 1)            
-        else:
-            angleLeft  *= FLOAT_TYPE( 1)
-            angleRight *= FLOAT_TYPE(-1) 
-        # rotate
-        if self.__agitate[0]:
-            rotationMatrix = get_rotation_matrix(rotationAxis, angleLeft)
-            rotatedCoordinates[1,:] = np.dot( rotationMatrix, rotatedCoordinates[1,:])
-        if self.__agitate[1]:
-            rotationMatrix = get_rotation_matrix(rotationAxis, angleRight)
-            rotatedCoordinates[2,:] = np.dot( rotationMatrix, rotatedCoordinates[2,:])
-        # translate back from center and return
-        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
+        if coordinates.shape[0]!=3:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
+        else:                                                      
+            # get atoms group center
+            center = np.sum(coordinates, 0)/coordinates.shape[0]
+            # translate to origin
+            rotatedCoordinates = coordinates-center
+            # get normalized direction vectors
+            leftVector   = FLOAT_TYPE( rotatedCoordinates[1,:]-rotatedCoordinates[0,:] )
+            leftVector  /= FLOAT_TYPE( np.linalg.norm(leftVector) )
+            rightVector  = FLOAT_TYPE( rotatedCoordinates[2,:]-rotatedCoordinates[0,:] )
+            rightVector /= FLOAT_TYPE( np.linalg.norm(rightVector) )
+            # get rotation axis
+            rotationAxis = np.cross(leftVector, rightVector)
+            if rotationAxis[0]==rotationAxis[1]==rotationAxis[2]==0.:
+                rotationAxis = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+                rotationAxis /= FLOAT_TYPE( np.linalg.norm(rotationAxis) )
+            # create shrink flag
+            if self.__shrink is None:
+                shrink = (1-2*generate_random_float())>0
+            else:
+                shrink = self.__shrink    
+            # get rotation angles
+            if self.__symmetric:
+                angleLeft  = angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+            else:
+                angleLeft  = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+                angleRight = FLOAT_TYPE(generate_random_float()*self.__amplitude)
+            # create directions
+            if shrink:
+                angleLeft  *= FLOAT_TYPE(-1)
+                angleRight *= FLOAT_TYPE( 1)            
+            else:
+                angleLeft  *= FLOAT_TYPE( 1)
+                angleRight *= FLOAT_TYPE(-1) 
+            # rotate
+            if self.__agitate[0]:
+                rotationMatrix = get_rotation_matrix(rotationAxis, angleLeft)
+                rotatedCoordinates[1,:] = np.dot( rotationMatrix, rotatedCoordinates[1,:])
+            if self.__agitate[1]:
+                rotationMatrix = get_rotation_matrix(rotationAxis, angleRight)
+                rotatedCoordinates[2,:] = np.dot( rotationMatrix, rotatedCoordinates[2,:])
+            # translate back from center and return
+            return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
         
         
         

@@ -18,6 +18,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path
+from fullrmc.Core.Collection import AtomsCollector, reset_if_collected_out_of_date
 
    
 class Constraint(ListenerBase):
@@ -31,22 +32,30 @@ class Constraint(ListenerBase):
         self.__engine = None
         # set used flag
         self.set_used(True)
+        # initialize variance squared
+        self.__varianceSquared = 1
+        # initialize atoms collector with datakeys to None. so it must be set in all subclasses.
+        self._atomsCollector = AtomsCollector(self, dataKeys=None)
         # initialize data
         self.__initialize_constraint()
         # computation cost 
         #self.__computationCost = 0
         self.set_computation_cost(0)
         # set frame data
-        FRAME_DATA  = ('_Constraint__state', '_Constraint__used',
+        FRAME_DATA  = ('_Constraint__state', '_Constraint__used', 
                        '_Constraint__tried', '_Constraint__accepted',
                        '_Constraint__varianceSquared','_Constraint__standardError',
                        '_Constraint__originalData', '_Constraint__data',
                        '_Constraint__activeAtomsDataBeforeMove', '_Constraint__activeAtomsDataAfterMove',
-                       '_Constraint__afterMoveStandardError','_Constraint__computationCost')
+                       '_Constraint__amputationData', '_Constraint__afterMoveStandardError', 
+                       '_Constraint__amputationStandardError', '_Constraint__computationCost',
+                       '_atomsCollector')
         RUNTIME_DATA = ('_Constraint__state','_Constraint__tried', '_Constraint__accepted',
-                        '_Constraint__varianceSquared','_Constraint__standardError','_Constraint__data',)
+                        '_Constraint__varianceSquared','_Constraint__standardError','_Constraint__data',
+                        '_atomsCollector',)
         object.__setattr__(self, 'FRAME_DATA',  FRAME_DATA   )
         object.__setattr__(self, 'RUNTIME_DATA',RUNTIME_DATA )
+                                  
     
     def __setattr__(self, name, value):
         if name in ('FRAME_DATA','RUNTIME_DATA',):
@@ -86,18 +95,25 @@ class Constraint(ListenerBase):
         
     def __initialize_constraint(self):
         # initialize flags
-        self.__state           = None
-        self.__tried           = 0
-        self.__accepted        = 0
-        self.__varianceSquared = 1
+        self.__state     = None
+        self.__tried     = 0
+        self.__accepted  = 0
         # initialize data
         self.__originalData              = None
         self.__data                      = None
         self.__activeAtomsDataBeforeMove = None
         self.__activeAtomsDataAfterMove  = None
+        self.__amputationData            = None
         # initialize standard error
         self.__standardError           = None
         self.__afterMoveStandardError  = None
+        self.__amputationStandardError = None
+        # reset atoms collector # ADDED 2017-JAN-08
+        self._atomsCollector.reset()
+        self._on_collector_reset()
+        if self.engine is not None and len(self._atomsCollector.dataKeys):
+            for realIndex in self.engine._atomsCollector.indexes:
+                self._on_collector_collect_atom(realIndex=realIndex)
         # dunp to repository
         self._dump_to_repository({'_Constraint__state'                    : self.__state,
                                   '_Constraint__tried'                    : self.__tried,
@@ -107,8 +123,11 @@ class Constraint(ListenerBase):
                                   '_Constraint__data'                     : self.__data,
                                   '_Constraint__activeAtomsDataBeforeMove': self.__activeAtomsDataBeforeMove,
                                   '_Constraint__activeAtomsDataAfterMove' : self.__activeAtomsDataAfterMove,
+                                  '_Constraint__amputationData'           : self.__amputationData,
                                   '_Constraint__standardError'            : self.__standardError,
-                                  '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError})
+                                  '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError,
+                                  '_Constraint__amputationStandardError'  : self.__amputationStandardError,
+                                  '_atomsCollector'                       : self._atomsCollector})
     
     @property
     def constraintId(self):
@@ -179,6 +198,16 @@ class Constraint(ListenerBase):
     def afterMoveStandardError(self):
         """ Get constraint's current calculated StandardError after last move."""
         return self.__afterMoveStandardError
+    
+    @property
+    def amputationData(self):
+        """ Get constraint's current calculated data after amputation."""
+        return self.__amputationData
+        
+    @property
+    def amputationStandardError(self):
+        """ Get constraint's current calculated StandardError after amputation."""
+        return self.__amputationStandardError
        
     def _get_repository(self):
         if self.engine is None:
@@ -244,6 +273,7 @@ class Constraint(ListenerBase):
         # dump to repository
         self._dump_to_repository({'_Constraint__computationCost' :self.__computationCost})
    
+    @reset_if_collected_out_of_date # ADDED 2017-JAN-12
     def set_used(self, value):
         """
         Sets used flag.
@@ -349,7 +379,25 @@ class Constraint(ListenerBase):
             #. value (number): standardError value.
         """
         self.__afterMoveStandardError = value
+      
+    def set_amputation_data(self, value):
+        """
+        Sets constraint's after amputation data.
         
+        :Parameters:
+            #. value (number): data value
+        """
+        self.__amputationData = value
+    
+    def set_amputation_standard_error(self, value):
+        """
+        Sets constraint's standardError after amputation.
+        
+        :Parameters:
+            #. value (number): standardError value.
+        """
+        self.__amputationStandardError = value
+      
     def reset_constraint(self, reinitialize=True, flags=False, data=False):
         """ 
         Resets constraint.
@@ -400,29 +448,56 @@ class Constraint(ListenerBase):
         self.set_standard_error(self.compute_standard_error(data = self.data))
         
     def get_constraint_value(self):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
     
     def get_constraint_original_value(self):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
     def compute_standard_error(self):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def compute_data(self, indexes):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    def compute_data(self):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def compute_before_move(self, indexes):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    def compute_before_move(self, realIndexes, relativeIndexes):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def compute_after_move(self, indexes, movedBoxCoordinates):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def accept_move(self, indexes):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    def accept_move(self, realIndexes, relativeIndexes):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
-    def reject_move(self, indexes):
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    def reject_move(self, realIndexes, relativeIndexes):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
     
+    def compute_as_if_amputated(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def compute_as_if_inserted(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def accept_amputation(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def reject_amputation(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def accept_insertion(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def reject_insertion(self, realIndex, relativeIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        
+    def _on_collector_collect_atom(self, realIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+    
+    def _on_collector_release_atom(self, realIndex):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        
+    def _on_collector_reset(self):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        
     def plot(self, *args, **kwargs):
         LOGGER.warn("%s plot method is not implemented"%(self.__class__.__name__))
     
@@ -568,6 +643,11 @@ class ExperimentalConstraint(Constraint):
                                   '_ExperimentalConstraint__adjustScaleFactorMaximum'  : self.__adjustScaleFactorMaximum})
         # reset constraint
         self.reset_constraint()
+        
+    def _set_adjust_scale_factor_frequency(self, freq):
+        """This must never be used externally. It's added to serve RemoveGenerators
+         and only used internally upon calling compute_as_if_amputated """
+        self.__adjustScaleFactorFrequency = freq
         
     def set_experimental_data(self, experimentalData):
         """
@@ -790,6 +870,8 @@ class RigidConstraint(Constraint):
         :Return:
             #. result (boolean): True to reject step, False to accept
         """
+        if self.standardError is None:
+            raise Exception(LOGGER.error("must compute data first"))
         if standardError<=self.standardError:
             return False
         return randfloat() < self.__rejectProbability

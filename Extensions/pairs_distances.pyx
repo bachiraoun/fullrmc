@@ -42,6 +42,34 @@ cdef inline C_FLOAT32 round(C_FLOAT32 num) nogil:
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
+cdef void _from_to_boxpoint_realdifference_PBC( C_FLOAT32[:]   boxPointFrom,
+                                                C_FLOAT32[:]   boxPointTo,
+                                                C_FLOAT32[:]   difference,
+                                                C_FLOAT32[:,:] basis):
+    # declare variables
+    cdef C_INT32 i
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
+    cdef C_FLOAT32 box_dx, box_dy, box_dz
+    # calculate difference
+    diff_x = boxPointTo[0]-boxPointFrom[0]
+    diff_y = boxPointTo[1]-boxPointFrom[1]
+    diff_z = boxPointTo[2]-boxPointFrom[2]
+    box_dx = diff_x-round(diff_x)
+    box_dy = diff_y-round(diff_y)
+    box_dz = diff_z-round(diff_z)
+    # get real difference
+    difference[0] = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+    difference[1] = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+    difference[2] = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+
+
+
+
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
 cdef void _from_to_boxpoints_realdifferences_PBC( C_FLOAT32[:,:] boxPointsFrom,
                                                   C_FLOAT32[:,:] boxPointsTo,
                                                   C_FLOAT32[:,:] basis,
@@ -68,6 +96,21 @@ cdef void _from_to_boxpoints_realdifferences_PBC( C_FLOAT32[:,:] boxPointsFrom,
         differences[i,2] = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
 
 
+
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+cdef void _from_to_realpoint_realdifference_PBC( C_FLOAT32[:] realPointFrom,
+                                                 C_FLOAT32[:] realPointTo,
+                                                 C_FLOAT32[:] difference):
+    # calculate difference
+    difference[0] = realPointTo[0]-realPointFrom[0]
+    difference[1] = realPointTo[1]-realPointFrom[1]
+    difference[2] = realPointTo[2]-realPointFrom[2]
+    
+    
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -229,7 +272,35 @@ cdef void _realcoords_realdifferences_to_indexcoords_IBC( C_INT32        atomInd
 
    
 ############################################################################################        
-################################## C DISTANCE DEFINITIONS ##################################        
+################################## C DISTANCE DEFINITIONS ##################################
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+cdef C_FLOAT32 _boxcoords_realdistance_to_boxpoint_PBC( C_FLOAT32[:]   boxPoint1,
+                                                        C_FLOAT32[:]   boxPoint2,
+                                                        C_FLOAT32[:,:] basis) nogil:
+    # declare variables
+    cdef C_FLOAT32 diff_x, diff_y, diff_z
+    cdef C_FLOAT32 box_dx, box_dy, box_dz
+    cdef C_FLOAT32 real_dx, real_dy, real_dz,
+    # compute difference    
+    diff_x = boxPoint1[0] - boxPoint2[0]
+    diff_y = boxPoint1[1] - boxPoint2[1]
+    diff_z = boxPoint1[2] - boxPoint2[2]
+    box_dx = diff_x - round(diff_x)
+    box_dy = diff_y - round(diff_y)
+    box_dz = diff_z - round(diff_z)
+    # get real difference
+    real_dx = box_dx*basis[0,0] + box_dy*basis[1,0] + box_dz*basis[2,0]
+    real_dy = box_dx*basis[0,1] + box_dy*basis[1,1] + box_dz*basis[2,1]
+    real_dz = box_dx*basis[0,2] + box_dy*basis[1,2] + box_dz*basis[2,2]
+    # compute and return return distance
+    return <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz)
+
+     
+                
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -314,6 +385,26 @@ cdef void _boxcoords_realdistances_to_indexcoords_PBC( C_INT32        atomIndex,
         # calculate distance         
         distances[i] = <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz)                                                    
                                                     
+
+
+
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+cdef C_FLOAT32 _realcoords_realdistance_to_realpoint_IBC( C_FLOAT32[:]   realPoint1,
+                                                          C_FLOAT32[:]   realPoint2) nogil:
+    # declare variables
+    cdef C_FLOAT32 real_dx, real_dy, real_dz
+    # loop
+    real_dx = realPoint1[0]-realPoint2[0]
+    real_dy = realPoint1[1]-realPoint2[1]
+    real_dz = realPoint1[2]-realPoint2[2]
+    # calculate and return distance         
+    return <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz)
+
+
                                      
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -431,7 +522,56 @@ def from_to_points_differences( ndarray[C_FLOAT32, ndim=2] pointsFrom not None,
     # return differences
     return differences
 
+
+
+# 
     
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+def pair_difference_to_point( ndarray[C_FLOAT32, ndim=1] point1  not None,
+                              ndarray[C_FLOAT32, ndim=1] point2 not None,
+                              C_FLOAT32[:,:]             basis not None,
+                              bint                       isPBC, 
+                              C_INT32                    ncores = 1):                        
+    """
+    Compute differences between one atomic coordinates arrays to a point coordinates  
+    taking into account periodic or infinite boundary conditions. Difference is 
+    calculated as the following:
+    
+    .. math::
+            differences[i,:] = boundaryConditions( point[0,:] - coords[i,:] )
+    
+    :Arguments:
+       #. point (float32 (1,3) numpy.ndarray): The atomic coordinates point.
+       #. coords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.
+       #. basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.
+       #. isPBC (bool): Whether it is a periodic boundary conditions or infinite.
+       #. ncores (int32) [default=1]: The number of cores to use. 
+       
+    :Returns:
+       #. differences (float32 (n,3) numpy.ndarray): The computed differences array.   
+    """
+    # if periodic boundary conditions, coords must be in box
+    cdef ndarray[C_FLOAT32,  mode="c", ndim=1] difference = np.empty((3), dtype=NUMPY_FLOAT32)
+    if isPBC:
+        _from_to_boxpoint_realdifference_PBC( boxPointFrom = point1,
+                                              boxPointTo   = point2,
+                                              difference   = difference,
+                                              basis        = basis)
+    # if infinite boundary conditions coords must be in Cartesian normal space
+    else:
+        _from_to_realpoint_realdifference_PBC( realPointFrom  = point1,
+                                               realPointTo    = point2,
+                                               difference     = difference)
+    # return difference
+    return difference
+
+
+
+ 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -638,6 +778,47 @@ def pairs_differences_to_multi_indexcoords( ndarray[C_INT32, ndim=1]   indexes,
     
 ############################################################################################        
 ############################### PYTHON DISTANCE DEFINITIONS ################################
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+def point_to_point_distance( ndarray[C_FLOAT32, ndim=1] point1  not None,
+                             ndarray[C_FLOAT32, ndim=1] point2 not None,
+                             C_FLOAT32[:,:]             basis not None,
+                             bint                       isPBC, 
+                             C_INT32                    ncores = 1):                       
+    
+    """
+    Compute distances between one atomic coordinates arrays to a point coordinates  
+    taking into account periodic or infinite boundary conditions. Distances is 
+    calculated as the following:
+    
+    .. math::
+            distances[i] = \sqrt{ \sum_{d}^{3}{ boundaryConditions( point[0,d] - coords[i,d] )^{2}} }
+    
+    :Arguments:
+       #. point (float32 (1,3) numpy.ndarray): The atomic coordinates point.
+       #. coords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.
+       #. basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.
+       #. isPBC (bool): Whether it is a periodic boundary conditions or infinite.
+       #. ncores (int32) [default=1]: The number of cores to use. 
+       
+    :Returns:
+       #. distances (float32 (n,) numpy.ndarray): The computed distances array.   
+    """
+    # if periodic boundary conditions, coords must be in box
+    if isPBC:
+       return _boxcoords_realdistance_to_boxpoint_PBC( boxPoint1 = point1,
+                                                       boxPoint2 = point2,
+                                                       basis     = basis)
+    # if infinite boundary conditions coords must be in Cartesian normal space
+    else:
+        return _realcoords_realdistance_to_realpoint_IBC( realPoint1  = point1,
+                                                          realPoint2  = point2)
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)

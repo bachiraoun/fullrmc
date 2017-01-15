@@ -48,7 +48,7 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, generate_random_float, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle
+from fullrmc.Core.Collection import is_number, is_integer, get_path, generate_random_float, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle, generate_random_vector
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -133,25 +133,30 @@ class RotationGenerator(MoveGenerator):
         :Returns:
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
-        # get rotation axis
-        n = 0
-        while n<PRECISION:
-            rotationAxis = 1-2*np.random.random(3)
-            n = np.linalg.norm(rotationAxis)
-        rotationAxis /= n
-        # get rotation angle
-        rotationAngle = (1-2*generate_random_float())*self.amplitude
-        # get rotation matrix
-        rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
-        # get atoms group center
-        center = np.sum(coordinates, 0)/coordinates.shape[0]
-        # translate to origin
-        rotatedCoordinates = coordinates-center
-        # rotate
-        for idx in range(rotatedCoordinates.shape[0]):
-            rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
-        # translate back to center and return rotated coordinates
-        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
+        else:
+            # get rotation axis
+            n = 0
+            while n<PRECISION:
+                rotationAxis = 1-2*np.random.random(3)
+                n = np.linalg.norm(rotationAxis)
+            rotationAxis /= n
+            # get rotation angle
+            rotationAngle = (1-2*generate_random_float())*self.amplitude
+            # get rotation matrix
+            rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
+            # get atoms group center
+            center = np.sum(coordinates, 0)/coordinates.shape[0]
+            # translate to origin
+            rotatedCoordinates = coordinates-center
+            # rotate
+            for idx in range(rotatedCoordinates.shape[0]):
+                rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
+            # translate back to center and return rotated coordinates
+            return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
         
   
 class RotationAboutAxisGenerator(RotationGenerator):    
@@ -318,20 +323,25 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         :Returns:
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
-        # get rotation angle
-        rotationAngle = (1-2*generate_random_float())*self.amplitude
-        # get atoms group center and rotation axis
-        center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        rotationAxis = [X,Y,Z][self.__axis]
-        # get rotation matrix
-        rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
-        # translate to origin
-        rotatedCoordinates = coordinates-center
-        # rotate
-        for idx in range(rotatedCoordinates.shape[0]):
-            rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
-        # translate back to center and return rotated coordinates
-        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE) 
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
+        else:
+            # get rotation angle
+            rotationAngle = (1-2*generate_random_float())*self.amplitude
+            # get atoms group center and rotation axis
+            center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+            rotationAxis = [X,Y,Z][self.__axis]
+            # get rotation matrix
+            rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
+            # translate to origin
+            rotatedCoordinates = coordinates-center
+            # rotate
+            for idx in range(rotatedCoordinates.shape[0]):
+                rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
+            # translate back to center and return rotated coordinates
+            return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE) 
       
         
 class RotationAboutSymmetryAxisPath(PathGenerator):    
@@ -446,19 +456,24 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         :Returns:
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
-        # get atoms group center and rotation axis
-        center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        rotationAxis = [X,Y,Z][self.__axis]
-        # get rotation matrix
-        rotationMatrix = get_rotation_matrix(rotationAxis, argument)
-        # translate to origin
-        rotatedCoordinates = coordinates-center
-        # rotate
-        for idx in range(rotatedCoordinates.shape[0]):
-            rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
-        # translate back to center and return rotated coordinates
-        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE) 
-
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
+        else:
+            # get atoms group center and rotation axis
+            center,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+            rotationAxis = [X,Y,Z][self.__axis]
+            # get rotation matrix
+            rotationMatrix = get_rotation_matrix(rotationAxis, argument)
+            # translate to origin
+            rotatedCoordinates = coordinates-center
+            # rotate
+            for idx in range(rotatedCoordinates.shape[0]):
+                rotatedCoordinates[idx,:] = np.dot( rotationMatrix, rotatedCoordinates[idx,:])
+            # translate back to center and return rotated coordinates
+            return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE) 
+    
 
 
 class OrientationGenerator(MoveGenerator):
@@ -695,28 +710,33 @@ class OrientationGenerator(MoveGenerator):
         :Returns:
             #. coordinates (np.ndarray): The new coordinates after applying the rotation.
         """
-         # create flip flag
-        if self.__flip is None:
-            flip = FLOAT_TYPE( np.sign(1-2*generate_random_float()) )
-        elif self.__flip:
-            flip = FLOAT_TYPE(-1)
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
         else:
-            flip = FLOAT_TYPE(1)
-        # get group axis
-        groupAxis = self.__get_group_axis__(coordinates)
-        # get align axis within offset angle
-        orientationAxis = flip*self.__get_orientation_axis__()
-        orientationAxis = generate_vectors_in_solid_angle(direction=orientationAxis,
-                                                          maxAngle=self.__maximumOffsetAngle,
-                                                          numberOfVectors=1)[0]  
-        # get coordinates center
-        center = np.array(np.sum(coordinates, 0)/coordinates.shape[0] , dtype=FLOAT_TYPE)
-        # translate to origin
-        rotatedCoordinates = coordinates-center
-        # align coordinates
-        rotatedCoordinates = orient(rotatedCoordinates, groupAxis, orientationAxis)
-        # translate back to center and return rotated coordinates
-        return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
+           # create flip flag
+            if self.__flip is None:
+                flip = FLOAT_TYPE( np.sign(1-2*generate_random_float()) )
+            elif self.__flip:
+                flip = FLOAT_TYPE(-1)
+            else:
+                flip = FLOAT_TYPE(1)
+            # get group axis
+            groupAxis = self.__get_group_axis__(coordinates)
+            # get align axis within offset angle
+            orientationAxis = flip*self.__get_orientation_axis__()
+            orientationAxis = generate_vectors_in_solid_angle(direction=orientationAxis,
+                                                              maxAngle=self.__maximumOffsetAngle,
+                                                              numberOfVectors=1)[0]  
+            # get coordinates center
+            center = np.array(np.sum(coordinates, 0)/coordinates.shape[0] , dtype=FLOAT_TYPE)
+            # translate to origin
+            rotatedCoordinates = coordinates-center
+            # align coordinates
+            rotatedCoordinates = orient(rotatedCoordinates, groupAxis, orientationAxis)
+            # translate back to center and return rotated coordinates
+            return np.array(rotatedCoordinates+center, dtype=FLOAT_TYPE)
         
         
         

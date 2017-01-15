@@ -68,7 +68,7 @@ import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle, generate_random_float
+from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle, generate_random_float, generate_random_vector
 from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
@@ -160,23 +160,9 @@ class TranslationGenerator(MoveGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # generate random vector and ensure it is not zero
-        vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
-        norm   = np.linalg.norm(vector) 
-        if norm == 0:
-            while norm == 0:
-                vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
-                norm   = np.linalg.norm(vector)  
-        # normalize vector
-        vector /= FLOAT_TYPE( norm )
-        # compute baseVector
-        baseVector = FLOAT_TYPE(vector*self.__amplitude[0])
-        # amplify vector
-        maxAmp  = FLOAT_TYPE(self.__amplitude[1]-self.__amplitude[0])
-        vector *= FLOAT_TYPE(generate_random_float()*maxAmp)
-        vector += baseVector
         # translate and return
-        return coordinates+vector
+        return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                  maxAmp=self.__amplitude[1])
         
         
 class TranslationAlongAxisGenerator(TranslationGenerator):    
@@ -488,23 +474,28 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # get translation amplitude
-        maxAmp = self.amplitude[1]-self.amplitude[0]
-        if self.direction is None:
-            amplitude = (1-2*generate_random_float())*maxAmp
-        elif self.direction:
-            amplitude = generate_random_float()*maxAmp
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
         else:
-            amplitude = -generate_random_float()*maxAmp
-        # get axis of translation
-        _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        translationAxis = [X,Y,Z][self.__axis]
-        # compute baseVector
-        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
-        # compute translation vector
-        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
-        # translate and return
-        return coordinates+vector
+            # get translation amplitude
+            maxAmp = self.amplitude[1]-self.amplitude[0]
+            if self.direction is None:
+                amplitude = (1-2*generate_random_float())*maxAmp
+            elif self.direction:
+                amplitude = generate_random_float()*maxAmp
+            else:
+                amplitude = -generate_random_float()*maxAmp
+            # get axis of translation
+            _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+            translationAxis = [X,Y,Z][self.__axis]
+            # compute baseVector
+            baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+            # compute translation vector
+            vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
+            # translate and return
+            return coordinates+vector
     
 
 class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenerator):    
@@ -582,27 +573,32 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (object): Any python object. Not used in this generator.
         """
-        # get axis
-        _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        axis = [X,Y,Z][self.axis]
-        # generate translation axis
-        translationAxis = generate_vectors_in_solid_angle(direction=axis,
-                                                          maxAngle=self.__angle,
-                                                          numberOfVectors=1)[0]  
-        # get translation amplitude
-        maxAmp = self.amplitude[1]-self.amplitude[0]
-        if self.direction is None:
-            amplitude = (1-2*generate_random_float())*maxAmp
-        elif self.direction:
-            amplitude = generate_random_float()*maxAmp
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
         else:
-            amplitude = -generate_random_float()*maxAmp
-        # compute baseVector
-        baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
-        # compute translation vector
-        vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
-        # translate and return
-        return coordinates+vector
+            # get axis
+            _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+            axis = [X,Y,Z][self.axis]
+            # generate translation axis
+            translationAxis = generate_vectors_in_solid_angle(direction=axis,
+                                                              maxAngle=self.__angle,
+                                                              numberOfVectors=1)[0]  
+            # get translation amplitude
+            maxAmp = self.amplitude[1]-self.amplitude[0]
+            if self.direction is None:
+                amplitude = (1-2*generate_random_float())*maxAmp
+            elif self.direction:
+                amplitude = generate_random_float()*maxAmp
+            else:
+                amplitude = -generate_random_float()*maxAmp
+            # compute baseVector
+            baseVector = FLOAT_TYPE(np.sign(amplitude)*translationAxis*self.amplitude[0])
+            # compute translation vector
+            vector = baseVector + translationAxis*FLOAT_TYPE(amplitude)
+            # translate and return
+            return coordinates+vector
         
         
 class TranslationAlongSymmetryAxisPath(PathGenerator):    
@@ -716,15 +712,20 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
             #. coordinates (np.ndarray): The new coordinates after applying the translation.
             #. argument (float): The move distance.
         """
-        # get translation amplitude
-        amplitude = FLOAT_TYPE(argument)
-        # get vector of translation
-        _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
-        vector = [X,Y,Z][self.__axis]
-        # amplify vector
-        vector *= FLOAT_TYPE(amplitude)
-        # translate and return
-        return coordinates+vector
+        if coordinates.shape[0]<=1:
+            # atoms where removed, fall back to random translation
+            return coordinates+generate_random_vector(minAmp=self.__amplitude[0], 
+                                                      maxAmp=self.__amplitude[1])
+        else:
+            # get translation amplitude
+            amplitude = FLOAT_TYPE(argument)
+            # get vector of translation
+            _,_,_,_,X,Y,Z =get_principal_axis(coordinates)
+            vector = [X,Y,Z][self.__axis]
+            # amplify vector
+            vector *= FLOAT_TYPE(amplitude)
+            # translate and return
+            return coordinates+vector
     
 
 class TranslationTowardsCenterGenerator(TranslationGenerator):    

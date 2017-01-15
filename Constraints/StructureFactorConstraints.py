@@ -15,7 +15,7 @@ from pdbParser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path
+from fullrmc.Core.Collection import is_number, is_integer, get_path, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
 from fullrmc.Core.pairs_histograms import multiple_pairs_histograms_coords, full_pairs_histograms_coords
 
@@ -259,6 +259,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset sq matrix
         self.__set_Gr_2_Sq_matrix()
         
+    def _on_collector_reset(self):
+        pass  
+        
     @property
     def rmin(self):
         """ Get the given histogram minimum distance. """
@@ -367,6 +370,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             # reset histogram
             if self.engine is not None:
                 self.__set_histogram()
+            self.reset_constraint() # ADDED 2017-JAN-08
         elif message in("update boundary conditions",):
             self.reset_constraint()
             
@@ -393,7 +397,6 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset histogram
         self.__set_histogram()
          
-
     def set_rmax(self, rmax):
         """
         Set rmax value.
@@ -628,7 +631,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
     def _get_Sq_from_Gr(self, Gr):
         return np.sum(Gr.reshape((-1,1))*self.__Gr2SqMatrix, axis=0)+1
     
-    def __get_total_Sq(self, data):
+    def __get_total_Sq(self, data, rho0):
         """
         This method is created just to speed up the computation of the total Sq upon fitting.
         """
@@ -658,7 +661,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # Devide by shells volume
         Gr /= self.shellVolumes
         # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
+        #rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
         Gr   = (FLOAT_TYPE(4.)*PI*self.__shellCenters*rho0)*( Gr-1)
         # Compute S(q) from G(r)
         Sq = self._get_Sq_from_Gr(Gr)
@@ -752,6 +755,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             return {}
         return self._get_constraint_value(self.originalData)
         
+    @reset_if_collected_out_of_date
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
@@ -770,17 +774,20 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set standardError
-        totalPDF = self.__get_total_Sq(self.data)
+        totalPDF = self.__get_total_Sq(self.data, rho0=self.engine.numberDensity)
         self.set_standard_error(self.compute_standard_error(modelData = totalPDF))
+        # set original data
+        if self.originalData is None:
+            self._set_original_data(self.data)
     
-    def compute_before_move(self, indexes):
+    def compute_before_move(self, realIndexes, relativeIndexes):
         """ 
         Compute constraint before move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
+        intraM,interM = multiple_pairs_histograms_coords( indexes          = relativeIndexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
@@ -793,11 +800,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
                                                           ncores           = self.engine._runtime_ncores )  
-        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
+        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[indexes],
-                                                      elementIndex     = self.engine.elementsIndexes[indexes],
+                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
@@ -807,19 +814,19 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
     
-    def compute_after_move(self, indexes, movedBoxCoordinates):
+    def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
         """ 
         Compute constraint after move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
             #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
         """
         # change coordinates temporarily
-        boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
-        self.engine.boxCoordinates[indexes] = movedBoxCoordinates
+        boxData = np.array(self.engine.boxCoordinates[relativeIndexes], dtype=FLOAT_TYPE)
+        self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # calculate pair distribution function
-        intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
+        intraM,interM = multiple_pairs_histograms_coords( indexes          = relativeIndexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
@@ -832,11 +839,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
                                                           ncores           = self.engine._runtime_ncores )  
-        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
+        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[indexes],
-                                                      elementIndex     = self.engine.elementsIndexes[indexes],
+                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
@@ -846,19 +853,19 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set active atoms data
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
-        self.engine.boxCoordinates[indexes] = boxData
+        self.engine.boxCoordinates[relativeIndexes] = boxData
         # compute standardError after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
-        totalPDF = self.__get_total_Sq({"intra":dataIntra, "inter":dataInter})
-        self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPDF) )
+        totalSQ = self.__get_total_Sq({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
+        self.set_after_move_standard_error( self.compute_standard_error(modelData = totalSQ) )
     
-    def accept_move(self, indexes):
+    def accept_move(self, realIndexes, relativeIndexes):
         """ 
         Accept move
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
@@ -873,7 +880,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
     
-    def reject_move(self, indexes):
+    def reject_move(self, realIndexes, relativeIndexes):
         """ 
         Reject move
         
@@ -886,6 +893,66 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # update standardError
         self.set_after_move_standard_error( None )
    
+    def compute_as_if_amputated(self, realIndex, relativeIndex):
+        """ 
+        Compute and return constraint's data and standard error as if atom given its 
+        its was amputated.
+        
+        :Parameters:
+            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
+        """
+        # compute data
+        self.compute_before_move(realIndexes=realIndex, relativeIndexes=relativeIndex)
+        dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]
+        dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]
+        data      = {"intra":dataIntra, "inter":dataInter}
+        # compute standard error
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
+            SF = self.adjustScaleFactorFrequency
+            self._set_adjust_scale_factor_frequency(0)
+        rho0          = ((self.engine.numberOfAtoms-1)/self.engine.volume).astype(FLOAT_TYPE)
+        totalSQ       = self.__get_total_Sq(data, rho0=rho0)
+        standardError = self.compute_standard_error(modelData = totalSQ)
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
+            self._set_adjust_scale_factor_frequency(SF)
+        # reset activeAtoms data
+        self.set_active_atoms_data_before_move(None)
+        # set amputation
+        self.set_amputation_data( data )
+        self.set_amputation_standard_error( standardError )
+    
+    def accept_amputation(self, realIndex, relativeIndex):
+        """ 
+        Accept amputated atom and sets constraints data and standard error accordingly.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+
+        """
+        self.set_data( self.amputationData )
+        self.set_standard_error( self.amputationStandardError )
+        self.set_amputation_data( None )
+        self.set_amputation_standard_error( None )
+        # set new scale factor
+        self._set_fitted_scale_factor_value(self._fittedScaleFactor)
+    
+    def reject_amputation(self, realIndex, relativeIndex):
+        """ 
+        Reject amputated atom and sets constraints data and standard error accordingly.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+
+        """
+        self.set_amputation_data( None )
+        self.set_amputation_standard_error( None )
+            
+    def _on_collector_collect_atom(self, realIndex):
+        pass
+    
+    def _on_collector_release_atom(self, realIndex):
+        pass
+        
     def plot(self, ax=None, intra=True, inter=True, 
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,

@@ -346,7 +346,6 @@ def shrink(ENGINE, newDim, exportPdb=False):
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
-
 # set short limits
 PDF_CONSTRAINT.set_limits((None,5))
 # fit bonds

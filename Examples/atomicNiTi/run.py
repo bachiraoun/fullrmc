@@ -103,26 +103,27 @@ def run_swap(nsteps, saveFrequency, engineFilePath, exportPdb=True):
 if EXPORT_PDB:
     ENGINE.export_pdb( os.path.join("pdbFiles","%i.pdb"%(ENGINE.generated)) )
     
-# run normal 10 times for 100 step each time
+# run normal 10 times for 10000 step each time
 for _ in range(10):
-    run_normal(nsteps=100, saveFrequency=100, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
-    
-# run normal 100 times for 1000 step each time
-for _ in range(99):
-    run_normal(nsteps=1000, saveFrequency=1000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
     
 # start fitting scale factors each 10 accepted moves
 PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
 RSF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2))
 
 # run normal 100 times for 9000 step each time 
-for _ in range(100):
-    run_normal(nsteps=9000, saveFrequency=9000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+for _ in range(50):
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
     
 # run swaping 100 times for 1000 step each time
 ACN_CONSTRAINT.set_used(False)  
 for _ in range(100):
     run_swap(nsteps=1000, saveFrequency=1000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+
+
+# run normal 100 times for 9000 step each time 
+for _ in range(10):
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
 
     
 ##########################################################################################

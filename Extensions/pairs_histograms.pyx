@@ -99,6 +99,7 @@ def single_pairs_histograms( C_INT32                    atomIndex,
        #. maxDistance (float32): The maximum distance to be counted in the histogram.
        #. bin (float32): The histogram bin size.
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
+       #. ncores (int32) [default=1]: The number of cores to use. 
                                   
     :Returns:
        #. hintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.
@@ -246,6 +247,7 @@ def multiple_pairs_histograms_dists( ndarray[C_INT32, ndim=1]      indexes not N
        #. bin (float32): The histogram bin size.
        #. histSize(int32): The histograms size.
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
+       #. ncores (int32) [default=1]: The number of cores to use. 
        
     :Returns:
        #. hintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.
@@ -359,6 +361,7 @@ def full_pairs_histograms_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
        #. maxDistance (float32): The maximum distance to be counted in the histogram.
        #. bin (float32): The histogram bin size.
        #. histSize(int32): The histograms size.
+       #. ncores (int32) [default=1]: The number of cores to use. 
        
     :Returns:
        #. hintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.

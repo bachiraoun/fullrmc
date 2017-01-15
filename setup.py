@@ -127,16 +127,19 @@ Operating System :: MacOS
 ##########################################################################################
 ######################################  DESCRIPION  ###################################### 
 # create descriptions
-LONG_DESCRIPTION = ["fullrmc is a Reverse Monte Carlo (RMC) modelling package.",
-                    "RMC is probably best known for its applications in condensed matter physics and solid state chemistry.",
-                    "RMC is used to solve an inverse problem whereby an atomic/molecular model is adjusted until its atoms position have the greatest consistency with a set of experimental data.",
-                    "fullrmc is a python package with its core and calculation modules optimized and compiled in Cython.",
-                    "fullrmc is not a standard RMC package but it is rather unique in its approach to solving an atomic or molecular structure."
-                    "fullrmc's Engine sub-module is the main module that contains the definition of 'Engine' which is the main and only class used to launch an RMC calculation.",
-                    "Engine reads only Protein Data Bank formatted atomic configuration files '.pdb' and handles other definitions and attributes.",
-                    "Starting from version 1.x.y fitting non-periodic boundary conditions or isolated molecules is added.",
-                    "fullrmc >= 1.2.x can be compiled with 'openmp' allowing multithreaded fitting."
-                    "fullrmc >= 2.x.x engine is a single file no more but apyrep repository."]               
+LONG_DESCRIPTION = ["FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/atomic stochastic fitting platform to reverse modeling experimental data. ",
+                    "fullrmc is not a standard RMC software but exceeds in its capabilities and functionalities traditional RMC and Metropolis-Hastings algoritm. ",
+                    "Therefore RMC appellation in fullrmc, is not accurate but it's retained to respecting the community terminology. ",
+                    "RMC is probably best known for its applications in condensed matter physics and solid state chemistry. ",
+                    "RMC is used to solve an inverse problem whereby an atomic model is adjusted until its atoms position have the greatest consistency with a set of experimental data.",
+                    "fullrmc is a python package with its core and calculation modules optimized and compiled in Cython. ",
+                    "fullrmc's Engine sub-module is the main module that contains the definition of 'Engine' which is the main and only class used to launch the stochastic calculation. ",
+                    "Engine reads only Protein Data Bank formatted atomic configuration files '.pdb' and handles other definitions and attributes. ",
+                    "Starting from version 1.x.y fitting non-periodic boundary conditions or isolated molecules is added. ",
+                    "fullrmc >= 1.2.y can be compiled with 'openmp' allowing multithreaded fitting. ",
+                    "fullrmc >= 2.x.y engine is a single file no more but a pyrep repository. ",
+                    "fullrmc >= 3.x.y dynamically removing atoms uppon fitting is enabled. ",]
+DESCRIPTION      = [ LONG_DESCRIPTION[0] ]             
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 
 # get package info
@@ -224,10 +227,12 @@ def find_package_data(where='.', package='', relativePath='',
 EXTENSIONS = [# boundary conditions collection
               Extension('fullrmc.Core.boundary_conditions_collection',
                         include_dirs=[np.get_include()],
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"boundary_conditions_collection.pyx")]),
               # reciprocal space
               Extension('fullrmc.Core.reciprocal_space',
                         include_dirs=[np.get_include()],
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"reciprocal_space.pyx")]),
               # pairs distances
               Extension('fullrmc.Core.pairs_distances',
@@ -247,19 +252,27 @@ EXTENSIONS = [# boundary conditions collection
               # atomic coordination number
               Extension('fullrmc.Core.atomic_coordination',
                         include_dirs=[np.get_include()],
-                        language="c++",
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"atomic_coordination.pyx")]),
               # bonds
               Extension('fullrmc.Core.bonds',
                         include_dirs=[np.get_include()],
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"bonds.pyx")]),
               # angles
               Extension('fullrmc.Core.angles',
                         include_dirs=[np.get_include()],
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"angles.pyx")]),
+              # dihedral angles
+              Extension('fullrmc.Core.dihedral_angles',
+                        include_dirs=[np.get_include()],
+                        language="c",
+                        sources = [os.path.join(EXTENSIONS_PATH,"dihedral_angles.pyx")]),
               # improper angles
               Extension('fullrmc.Core.improper_angles',
                         include_dirs=[np.get_include()],
+                        language="c",
                         sources = [os.path.join(EXTENSIONS_PATH,"improper_angles.pyx")]),
               ]
 CMDCLASS = {'build_ext' : build_ext}
@@ -305,7 +318,7 @@ metadata = dict(# package
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=0.2.1",
                                     "pdbParser>=0.1.5",
-                                    "pyrep>=1.0.2",
+                                    "pyrep>=1.0.3",
                                     "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

@@ -5,18 +5,15 @@ AtomicCoordinationConstraints contains classes for all constraints related to co
     :parts: 1
     
 """
-
 # standard libraries imports
-import itertools
-import copy
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
+from fullrmc.Core.Constraint import SingularConstraint, RigidConstraint
 from fullrmc.Core.atomic_coordination import all_atoms_coord_number_coords, multi_atoms_coord_number_coords
 
 
@@ -86,13 +83,15 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
     def __init__(self, coordNumDef=None, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, rejectProbability=rejectProbability)
+        # set atomsColletors data keys
+        self._atomsCollector.set_data_keys( ('coresIndexes', 'shellsIndexes', 
+                                             'asCoreDefIdxs', 'inShellDefIdxs') )
         # initialize data
         self.__initialize_constraint_data()
         # set coordination number definition
         self.set_coordination_number_definition(coordNumDef)
         # set computation cost
         self.set_computation_cost(5.0)
-        
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
         FRAME_DATA.extend(['_AtomicCoordinationNumberConstraint__coordNumDef',
@@ -108,7 +107,11 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                            '_AtomicCoordinationNumberConstraint__asCoreDefIdxs',
                            '_AtomicCoordinationNumberConstraint__inShellDefIdxs',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
-        RUNTIME_DATA.extend( ['_AtomicCoordinationNumberConstraint__coordNumData',] )
+        RUNTIME_DATA.extend( ['_AtomicCoordinationNumberConstraint__coordNumData',
+                              '_AtomicCoordinationNumberConstraint__coresIndexes',
+                              '_AtomicCoordinationNumberConstraint__shellsIndexes',
+                              '_AtomicCoordinationNumberConstraint__asCoreDefIdxs',
+                              '_AtomicCoordinationNumberConstraint__inShellDefIdxs'] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
     
@@ -131,6 +134,9 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         self.__inShellDefIdxs = []
         # no need to dump to repository because all of those attributes will be written 
         # at the point of setting the definition. 
+
+    def _on_collector_reset(self):
+        pass
 
     @property
     def coordNumDef(self):
@@ -205,9 +211,11 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         """
         if message in("engine set", "update molecules indexes"):
             self.set_coordination_number_definition(self.__coordNumDef)
+            # reset constraint is called in set_coordination_number_definition
         elif message in("update boundary conditions",):
             self.reset_constraint()        
     
+    #@raise_if_collected
     def set_coordination_number_definition(self, coordNumDef):
         """
         Set the coordination number definition.
@@ -255,6 +263,11 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             coordNumDef = []
         ########## check definitions, create coordination number data ########## 
         self.__initialize_constraint_data()
+        ALL_NAMES       = self.engine.get_original_data("allNames")
+        NAMES           = self.engine.get_original_data("names")
+        ALL_ELEMENTS    = self.engine.get_original_data("allElements")
+        ELEMENTS        = self.engine.get_original_data("elements")
+        NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
         for CNDef in coordNumDef:
             assert isinstance(CNDef, (list, tuple)), LOGGER.error("coordNumDef item must be a list or a tuple")
             if len(CNDef) == 6:
@@ -267,17 +280,17 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             # core definition
             if isinstance(coreDef, basestring):
                 coreDef = str(coreDef)
-                assert coreDef in self.engine.elements, LOGGER.error("core atom definition '%s' is not a valid element"%coreDef)
-                coreIndexes = [idx for idx, el in enumerate(self.engine.allElements) if el==coreDef]
+                assert coreDef in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%coreDef)
+                coreIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==coreDef]
             elif isnstance(coreDef, dict):
                 assert len(coreDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
                 key, value = coreDef.keys()[0], coreDef.values()[0]
                 if key is "name":
-                    assert value in self.engine.names, LOGGER.error("core atom definition '%s' is not a valid name"%coreDef)
-                    coreIndexes = [idx for idx, el in enumerate(self.engine.allNames) if el==coreDef]
+                    assert value in NAMES, LOGGER.error("core atom definition '%s' is not a valid name"%coreDef)
+                    coreIndexes = [idx for idx, el in enumerate(ALL_NAMES) if el==coreDef]
                 elif key is "element":
-                    assert value in self.engine.elements, LOGGER.error("core atom definition '%s' is not a valid element"%coreDef)
-                    coreIndexes = [idx for idx, el in enumerate(self.engine.allElements) if el==coreDef]
+                    assert value in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%coreDef)
+                    coreIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==coreDef]
                 else:
                     raise LOGGER.error("core atom definition dictionary key must be either 'name' or 'element'")
             elif isnstance(coreDef, (list, tuple, set, np.ndarray)):
@@ -288,22 +301,22 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                     assert is_integer(c), LOGGER.error("core atom definition index must be integer")
                     c = INT_TYPE(c)
                     assert c>=0, LOGGER.error("core atom definition index must be >=0")
-                    assert c<len(self.engine.pdb), LOGGER.error("core atom definition index must be smaler than number of atoms in system")
+                    assert c<NUMBER_OF_ATOMS, LOGGER.error("core atom definition index must be smaler than number of atoms in system")
                     coreIndexes.append(c)
             # shell definition
             if isinstance(shellDef, basestring):
                 shellDef = str(shellDef)
-                assert shellDef in self.engine.elements, LOGGER.error("core atom definition '%s' is not a valid element"%shellDef)
-                shellIndexes = [idx for idx, el in enumerate(self.engine.allElements) if el==shellDef]
+                assert shellDef in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%shellDef)
+                shellIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==shellDef]
             elif isnstance(shellDef, dict):
                 assert len(shellDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
                 key, value = shellDef.keys()[0], shellDef.values()[0]
                 if key is "name":
-                    assert value in self.engine.names, LOGGER.error("core atom definition '%s' is not a valid name"%shellDef)
-                    shellIndexes = [idx for idx, el in enumerate(self.engine.allNames) if el==shellDef]
+                    assert value in NAMES, LOGGER.error("core atom definition '%s' is not a valid name"%shellDef)
+                    shellIndexes = [idx for idx, el in enumerate(ALL_NAMES) if el==shellDef]
                 elif key is "element":
-                    assert value in self.engine.elements, LOGGER.error("core atom definition '%s' is not a valid element"%shellDef)
-                    shellIndexes = [idx for idx, el in enumerate(self.engine.allElements) if el==shellDef]
+                    assert value in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%shellDef)
+                    shellIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==shellDef]
                 else:
                     raise LOGGER.error("core atom definition dictionary key must be either 'name' or 'element'")
             elif isnstance(shellDef, (list, tuple, set, np.ndarray)):
@@ -314,7 +327,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                     assert is_integer(c), LOGGER.error("core atom definition index must be integer")
                     c = INT_TYPE(c)
                     assert c>=0, LOGGER.error("core atom definition index must be >=0")
-                    assert c<len(self.engine.pdb), LOGGER.error("core atom definition index must be smaler than number of atoms in system")
+                    assert c<NUMBER_OF_ATOMS, LOGGER.error("core atom definition index must be smaler than number of atoms in system")
                     shellIndexes.append(c)
             # lower and upper shells definition
             assert is_number(lowerShell), LOGGER.error("Coordination number lower shell '%s' must be a number."%lowerShell)       
@@ -344,7 +357,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             self.__coordNumData.append( FLOAT_TYPE(0) ) 
             self.__weights.append( weight ) 
         ########## set asCoreDefIdxs and inShellDefIdxs points ##########  
-        for _ in xrange(self.engine.numberOfAtoms):
+        for _ in xrange(NUMBER_OF_ATOMS):
             self.__asCoreDefIdxs.append( [] )
             self.__inShellDefIdxs.append( [] )
         for defIdx, indexes in enumerate(self.__coresIndexes):
@@ -355,7 +368,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             self.__shellsIndexes[defIdx] = np.array( indexes, dtype=INT_TYPE )
             for atIdx in indexes:
                 self.__inShellDefIdxs[atIdx].append( defIdx )
-        for atIdx in xrange(self.engine.numberOfAtoms):
+        for atIdx in xrange(NUMBER_OF_ATOMS):
             self.__asCoreDefIdxs[atIdx]  = np.array( self.__asCoreDefIdxs[atIdx], dtype=INT_TYPE )
             self.__inShellDefIdxs[atIdx] = np.array( self.__inShellDefIdxs[atIdx], dtype=INT_TYPE )
         # set all to arrays
@@ -375,6 +388,8 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                                   '_AtomicCoordinationNumberConstraint__upperShells'  :self.__upperShells,
                                   '_AtomicCoordinationNumberConstraint__minAtoms'     :self.__minAtoms,
                                   '_AtomicCoordinationNumberConstraint__maxAtoms'     :self.__maxAtoms})
+        # reset constraint
+        self.reset_constraint() # ADDED 2017-JAN-08
 
     def compute_standard_error(self, data):
         """ 
@@ -427,6 +442,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
             log.LocalLogger("fullrmc").logger.warn("data must be computed first using 'compute_data' method.")
             return None
         
+    @reset_if_collected_out_of_date
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
         all_atoms_coord_number_coords(boxCoords      = self.engine.boxCoordinates,
@@ -448,16 +464,19 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # set standardError
         stdErr = self.compute_standard_error(data = self.__coordNumData)
         self.set_standard_error(stdErr)
+        # set original data
+        if self.originalData is None:
+            self._set_original_data(self.data)
 
-    def compute_before_move(self, indexes):
+    def compute_before_move(self, realIndexes, relativeIndexes):
         """ 
         Compute constraint before move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         beforeMoveData = np.zeros(self.__coordNumData.shape, dtype=self.__coordNumData.dtype)
-        multi_atoms_coord_number_coords( indexes        = indexes,
+        multi_atoms_coord_number_coords( indexes        = relativeIndexes,
                                          boxCoords      = self.engine.boxCoordinates,
                                          basis          = self.engine.basisVectors,
                                          isPBC          = self.engine.isPBC,
@@ -473,20 +492,20 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_before_move( beforeMoveData )
         self.set_active_atoms_data_after_move(None)                                                   
            
-    def compute_after_move(self, indexes, movedBoxCoordinates):
+    def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
         """ 
         Compute constraint after move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
             #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
         """
         # change coordinates temporarily
-        boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
-        self.engine.boxCoordinates[indexes] = movedBoxCoordinates
+        boxData = np.array(self.engine.boxCoordinates[relativeIndexes], dtype=FLOAT_TYPE)
+        self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # compute after move data
         afterMoveData = np.zeros(self.__coordNumData.shape, dtype=self.__coordNumData.dtype)
-        multi_atoms_coord_number_coords( indexes        = indexes,
+        multi_atoms_coord_number_coords( indexes        = relativeIndexes,
                                          boxCoords      = self.engine.boxCoordinates,
                                          basis          = self.engine.basisVectors,
                                          isPBC          = self.engine.isPBC,
@@ -499,21 +518,22 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                                          coordNumData   = afterMoveData,
                                          ncores         = self.engine._runtime_ncores)
         # reset coordinates
-        self.engine.boxCoordinates[indexes] = boxData
+        self.engine.boxCoordinates[relativeIndexes] = boxData
         # set active atoms data after move
         self.set_active_atoms_data_after_move( afterMoveData )
         # compute after move standard error
         self.__coordNumDataAfterMove = self.__coordNumData-self.activeAtomsDataBeforeMove+self.activeAtomsDataAfterMove
         self.set_after_move_standard_error( self.compute_standard_error(data = self.__coordNumDataAfterMove) )
 
-    def accept_move(self, indexes):
+    def accept_move(self, realIndexes, relativeIndexes):
         """ 
         Accept move.
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         self.__coordNumData = self.__coordNumDataAfterMove
+        self.set_data( self.__coordNumData ) # ADDED LATER 2016-11-27 to be verified.
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
@@ -521,12 +541,12 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         self.set_standard_error(self.afterMoveStandardError)
         self.set_after_move_standard_error( None )
         
-    def reject_move(self, indexes):
+    def reject_move(self, realIndexes, relativeIndexes):
         """ 
         Reject move.
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
@@ -534,7 +554,75 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # update standardError
         self.set_after_move_standard_error( None )
 
+    def compute_as_if_amputated(self, realIndex, relativeIndex):
+        """ 
+        Compute and return constraint's data and standard error as if atom given its 
+        its was amputated.
+        
+        :Parameters:
+            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
+        """
+        pass
+    
+    def accept_amputation(self, realIndex, relativeIndex):
+        """ 
+        Accept amputation of atom and sets constraints data and standard error accordingly.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
 
+        """
+        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM 
+        # WHEN IMPLEMENTING ATOMS RELEASING. MAYBE WE NEED TO COLLECT DATA INSTEAD, REMOVE
+        # AND ADD UPON RELEASE
+        self.compute_before_move(indexes = relativeIndex )
+        #self.compute_before_move(indexes = np.array([index], dtype=INT_TYPE) )
+        # change permanently data attribute
+        self.__coordNumData = self.__coordNumData-self.activeAtomsDataBeforeMove
+        self.set_data( self.__coordNumData )
+        self.set_active_atoms_data_before_move(None)
+        self.set_standard_error( self.compute_standard_error(data = self.__coordNumData) )
     
-    
+    def reject_amputation(self, realIndex, relativeIndex):
+        """ 
+        Reject amputation of atom.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+        """
+        pass
+           
+    def _on_collector_collect_atom(self, realIndex):
+        # get relative index
+        relativeIndex = self._atomsCollector.get_relative_index(realIndex)
+        # create data dict
+        dataDict = {}
+        # cores indexes
+        coresIndexes = []
+        for idx, ci in enumerate(self.__coresIndexes):
+            coresIndexes.append( np.where(ci==relativeIndex)[0] )
+            ci = np.delete(ci, coresIndexes[-1], axis=0)
+            ci[np.where(ci>relativeIndex)[0]] -= 1
+            self.__coresIndexes[idx] = ci
+        dataDict['coresIndexes'] = coresIndexes
+        # shells indexes
+        shellsIndexes = []
+        for idx, si in enumerate(self.__shellsIndexes):
+            shellsIndexes.append( np.where(si==relativeIndex)[0] )
+            si = np.delete(si, shellsIndexes[-1], axis=0)
+            si[np.where(si>relativeIndex)[0]] -= 1
+            self.__shellsIndexes[idx] = si
+        dataDict['shellsIndexes'] = shellsIndexes
+        # asCorDefIdxs and inShellDefIdxs
+        dataDict['asCoreDefIdxs']  = self.__asCoreDefIdxs.pop(relativeIndex)
+        dataDict['inShellDefIdxs'] = self.__inShellDefIdxs.pop(relativeIndex)
+        # correct number of cores without collecting
+        for idx, ci in enumerate(coresIndexes):
+            self.__numberOfCores[idx] -= len(ci)
+        # collect atom
+        self._atomsCollector.collect(realIndex, dataDict=dataDict)
+        
+    def _on_collector_release_atom(self, realIndex):
+        pass
+            
             

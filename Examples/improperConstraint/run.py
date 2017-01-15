@@ -1,3 +1,5 @@
+
+
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
@@ -95,19 +97,3 @@ ENGINE.visualize( commands = ["trajectory.xyz"],
                                  "label textsize 1.5",
                                  "label textthickness 2",
                                  "color Labels Atoms black"] )    
-    
- 
-
-
-
-
-
- 
-    
- 
-
-
-
-
-
-

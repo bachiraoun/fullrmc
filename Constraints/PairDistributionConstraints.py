@@ -7,6 +7,7 @@ PairDistributionConstraints contains classes for all constraints related experim
 
 # standard libraries imports
 import itertools
+import copy
 
 # external libraries imports
 import numpy as np
@@ -15,7 +16,7 @@ from pdbParser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path
+from fullrmc.Core.Collection import is_number, is_integer, get_path, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
 from fullrmc.Core.pairs_histograms import multiple_pairs_histograms_coords, full_pairs_histograms_coords
 from fullrmc.Constraints.Collection import ShapeFunction
@@ -43,7 +44,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         
         G(r) = 4 \\pi r (\\rho_{r} - \\rho_{0})
              = 4 \\pi \\rho_{0} r (g(r)-1) 
-             = \\frac{R(r)}{r} - 4 \\pi \\rho_{0}
+             = \\frac{R(r)}{r} - 4 \\pi r \\rho_{0}
         
     :math:`\\rho_{r}` is the number density fluctuation at distance :math:`r`. 
     The computation of g(r) is straightforward from an atomistic model and it is given
@@ -177,6 +178,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                            '_PairDistributionConstraint__weightingScheme',
                            '_PairDistributionConstraint__windowFunction',
                            '_PairDistributionConstraint__limits',
+                           '_elementsWeights',
                            '_usedDataWeights',
                            '_shapeFuncParams',
                            '_shapeUpdateFreq',
@@ -202,7 +204,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
             self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
         # dump to repository
         self._dump_to_repository({'_usedDataWeights': self._usedDataWeights})   
-                                  
+     
+    def _on_collector_reset(self):
+        pass                            
+        
     def _update_shape_array(self):
         rmin = self._shapeFuncParams['rmin']
         rmax = self._shapeFuncParams['rmax']
@@ -235,7 +240,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
     def _reset_standard_error(self):
         # recompute squared deviation
         if self.data is not None:
-            totalPDF = self.__get_total_Gr(self.data)
+            totalPDF = self.__get_total_Gr(self.data, rho0=self.engine.numberDensity)
             self.set_standard_error(self.compute_standard_error(modelData = totalPDF))        
  
     def _runtime_initialize(self):
@@ -341,6 +346,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
         """Get shape function update frequency."""
         return self._shapeUpdateFreq
         
+    def _set_weighting_scheme(self, weightingScheme):
+        """To be only used internally by PairCorrelationConstraint"""
+        self.__weightingScheme = weightingScheme
+        
     def listen(self, message, argument=None):
         """   
         Listens to any message sent from the Broadcaster.
@@ -352,16 +361,18 @@ class PairDistributionConstraint(ExperimentalConstraint):
         if message in("engine set", "update molecules indexes"):
             if self.engine is not None:
                 self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
-                elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
-                self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=elementsWeights)
+                self._elementsWeights  = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
+                self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights)
                 for k, v in self.__weightingScheme.items():
                     self.__weightingScheme[k] = FLOAT_TYPE(v)
             else:
                 self.__elementsPairs   = None
+                self._elementsWeights  = None
                 self.__weightingScheme = None
             # dump to repository
             self._dump_to_repository({'_PairDistributionConstraint__elementsPairs'  : self.__elementsPairs,
                                       '_PairDistributionConstraint__weightingScheme': self.__weightingScheme}) 
+            self.reset_constraint() # ADDED 2017-JAN-08
         elif message in("update boundary conditions",):
             self.reset_constraint()
             
@@ -432,7 +443,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self._dump_to_repository({'_shapeFuncParams': self._shapeFuncParams,
                                   '_shapeUpdateFreq': self._shapeUpdateFreq}) 
 
-        
     def set_weighting(self, weighting):
         """
         Sets elements weighting. It must a valid entry of pdbParser atoms database
@@ -642,7 +652,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         else:
             return np.add.reduce(self._usedDataWeights*((diff)**2))
     
-    def __get_total_Gr(self, data):
+    def __get_total_Gr(self, data, rho0):
         """
         This method is created just to speed up the computation of the total gr upon fitting.
         """
@@ -675,7 +685,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # Divide by shells volume
         Gr /= self.shellVolumes
         # compute total G(r)
-        rho0 = self.engine.numberDensity #(self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
+        #rho0 = self.engine.numberDensity #(self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
         Gr   = (4.*PI*self.__shellCenters*rho0)*( Gr-1)
         # remove shape function
         if self._shapeArray is not None:
@@ -737,7 +747,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             ## compute g(r) equivalent to earlier gr += wij*dij/Dij
             #gr += output["rdf_total_%s-%s" % pair] 
         # compute total G(r)
-        rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
+        rho0 = self.engine.numberDensity #(self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
         output["pdf_total"] = (4.*PI*self.__shellCenters*rho0) * (gr-1)
         # remove shape function
         if self._shapeArray is not None:
@@ -778,6 +788,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             return {}
         return self._get_constraint_value(self.originalData)
         
+    @reset_if_collected_out_of_date
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
@@ -796,17 +807,20 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set standardError
-        totalPDF = self.__get_total_Gr(self.data)
+        totalPDF = self.__get_total_Gr(self.data, rho0=self.engine.numberDensity)
         self.set_standard_error(self.compute_standard_error(modelData = totalPDF))
+        # set original data
+        if self.originalData is None:
+            self._set_original_data(self.data)
     
-    def compute_before_move(self, indexes):
+    def compute_before_move(self, realIndexes, relativeIndexes):
         """ 
         Compute constraint before move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
+        intraM,interM = multiple_pairs_histograms_coords( indexes          = relativeIndexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
@@ -819,11 +833,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
                                                           ncores           = self.engine._runtime_ncores)
-        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
+        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[indexes],
-                                                      elementIndex     = self.engine.elementsIndexes[indexes],
+                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
@@ -834,19 +848,19 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
     
-    def compute_after_move(self, indexes, movedBoxCoordinates):
+    def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
         """ 
         Compute constraint after move is executed
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
             #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
         """
         # change coordinates temporarily
-        boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
-        self.engine.boxCoordinates[indexes] = movedBoxCoordinates
+        boxData = np.array(self.engine.boxCoordinates[relativeIndexes], dtype=FLOAT_TYPE)
+        self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # calculate pair distribution function
-        intraM,interM = multiple_pairs_histograms_coords( indexes          = indexes,
+        intraM,interM = multiple_pairs_histograms_coords( indexes          = relativeIndexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
@@ -859,11 +873,11 @@ class PairDistributionConstraint(ExperimentalConstraint):
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
                                                           ncores           = self.engine._runtime_ncores )         
-        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[indexes],
+        intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[indexes],
-                                                      elementIndex     = self.engine.elementsIndexes[indexes],
+                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
@@ -873,19 +887,19 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set ative atoms data 
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
-        self.engine.boxCoordinates[indexes] = boxData
+        self.engine.boxCoordinates[relativeIndexes] = boxData
         # compute and set standardError after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
-        totalPDF  = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter})
+        totalPDF  = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPDF) )
-    
-    def accept_move(self, indexes):
+        
+    def accept_move(self, realIndexes, relativeIndexes):
         """ 
         Accept move
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
@@ -900,12 +914,12 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
     
-    def reject_move(self, indexes):
+    def reject_move(self, realIndexes, relativeIndexes):
         """ 
         Reject move
         
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
@@ -913,6 +927,79 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # update standardError
         self.set_after_move_standard_error( None )
 
+    def compute_as_if_amputated(self, realIndex, relativeIndex):
+        """ 
+        Compute and return constraint's data and standard error as if atom given its 
+        its was amputated.
+        
+        :Parameters:
+            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
+        """
+        # compute data 
+        self.compute_before_move(realIndexes=realIndex, relativeIndexes=relativeIndex)
+        dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]
+        dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]
+        data      = {"intra":dataIntra, "inter":dataInter}
+        # temporarily adjust self.__weightingScheme
+        weightingScheme = self.__weightingScheme
+        #relativeIndex   = self.engine._atomsCollector.get_relative_index(relativeIndex[0])
+        relativeIndex = relativeIndex[0]
+        selectedElement = self.engine.allElements[relativeIndex]
+        self.engine.numberOfAtomsPerElement[selectedElement] -= 1
+        #elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
+        self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights )
+        for k, v in self.__weightingScheme.items():
+            self.__weightingScheme[k] = FLOAT_TYPE(v)
+        # compute standard error  
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor:          
+            SF = self.adjustScaleFactorFrequency
+            self._set_adjust_scale_factor_frequency(0)
+        rho0          = ((self.engine.numberOfAtoms-1)/self.engine.volume).astype(FLOAT_TYPE)
+        totalPDF      = self.__get_total_Gr(data, rho0=rho0)        
+        standardError = self.compute_standard_error(modelData = totalPDF)
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
+            self._set_adjust_scale_factor_frequency(SF)
+        # reset activeAtoms data
+        self.set_active_atoms_data_before_move(None)
+        # set data
+        self.set_amputation_data( {'data':data, 'weightingScheme':self.__weightingScheme} )
+        self.set_amputation_standard_error( standardError )
+        # reset weightingScheme
+        self.__weightingScheme = weightingScheme
+        self.engine.numberOfAtomsPerElement[selectedElement] += 1
+    
+    def accept_amputation(self, realIndex, relativeIndex):
+        """ 
+        Accept amputated atom and sets constraints data and standard error accordingly.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+
+        """
+        self.set_data( self.amputationData['data'] )
+        self.__weightingScheme = self.amputationData['weightingScheme']
+        self.set_standard_error( self.amputationStandardError )
+        self.set_amputation_data( None )
+        self.set_amputation_standard_error( None )
+        # set new scale factor
+        self._set_fitted_scale_factor_value(self._fittedScaleFactor)
+        
+    def reject_amputation(self, realIndex, relativeIndex):
+        """ 
+        Reject amputated atom and sets constraints data and standard error accordingly.
+        
+        :Parameters:
+            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+        """
+        self.set_amputation_data( None )
+        self.set_amputation_standard_error( None )
+        
+    def _on_collector_collect_atom(self, realIndex):
+        pass
+    
+    def _on_collector_release_atom(self, realIndex):
+        pass
+        
     def plot(self, ax=None, intra=True, inter=True, shapeFunc=True,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,

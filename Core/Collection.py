@@ -21,7 +21,31 @@ def SingletonDecorator(cls):
     """ A class singleton decorator. """
     instance = cls()
     instance.__call__ = lambda: instance
-    return instance
+    return instance    
+    
+def raise_if_collected(func):
+    """ Constraints method decorator that raises an error whenever the method is called 
+    and the system has atoms that were removed.
+    """
+    def wrapper(self, *args, **kwargs):
+        assert not len(self._atomsCollector), LOGGER.error("Calling '%s.%s' is not allowed when system has collected atoms."%(self.__class__.__name__,func.__name__))
+        return func(self, *args, **kwargs)
+    return wrapper
+
+def reset_if_collected_out_of_date(func):
+    """ Constraints method decorator that raises an error whenever the method is called 
+    and the system has atoms that were removed.
+    """
+    def wrapper(self, *args, **kwargs):
+        if self.engine is not None:
+            if set(self.engine._atomsCollector.indexes) != set(self._atomsCollector.indexes): 
+                # reset constraints
+                self.reset_constraint()
+                # collect atoms
+                for realIndex in self.engine._atomsCollector.indexes:
+                    self._on_collector_collect_atom(realIndex=realIndex)
+        return func(self, *args, **kwargs)
+    return wrapper
     
 def is_number(number):
     """
@@ -508,22 +532,52 @@ def get_superposition_transformation(refArray, array, check=False):
 
 def superpose_array(refArray, array, check=False):
     """
-        Calculates the rotation matrix and the translations that minimizes the root mean 
-        square deviation between and array of vectors and a reference array.\n   
-        
-        :Parameters:
-            #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
-            #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
-            #. check (boolean): whether to check arguments before generating points.
-        
-        :Returns:
-            #. superposedArray (numpy.ndarray): the NX3 array to superposed array.
+    Calculates the rotation matrix and the translations that minimizes the root mean 
+    square deviation between and array of vectors and a reference array.\n   
+    
+    :Parameters:
+        #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
+        #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
+        #. check (boolean): whether to check arguments before generating points.
+    
+    :Returns:
+        #. superposedArray (numpy.ndarray): the NX3 array to superposed array.
     """ 
     rotationMatrix, _,_,_ = get_superposition_transformation(refArray=refArray, array=array, check=check)     
     return np.dot( rotationMatrix, np.transpose(array).\
                    reshape(1,3,-1)).transpose().reshape(-1,3)
     
+
+def generate_random_vector(minAmp, maxAmp):
+    """
+    Generate random vector in 3D.   
     
+    :Parameters:
+        #. minAmp (number): Vector minimum amplitude.
+        #. maxAmp (number): Vector maximum amplitude.
+    
+    :Returns:
+        #. vector (numpy.ndarray): the vector [X,Y,Z] array
+    """ 
+    # generate random vector and ensure it is not zero
+    vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+    norm   = np.linalg.norm(vector) 
+    if norm == 0:
+        while norm == 0:
+            vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
+            norm   = np.linalg.norm(vector)  
+    # normalize vector
+    vector /= FLOAT_TYPE( norm )
+    # compute baseVector
+    baseVector = FLOAT_TYPE(vector*minAmp)
+    # amplify vector
+    maxAmp  = FLOAT_TYPE(maxAmp-minAmp)
+    vector *= FLOAT_TYPE(generate_random_float()*maxAmp)
+    vector += baseVector
+    # return vector
+    return vector
+    
+           
 def generate_points_on_sphere(thetaFrom, thetaTo,
                               phiFrom, phiTo,
                               npoints=1,
@@ -864,6 +918,245 @@ class ListenerBase(object):
         """
         pass
         
+
+class AtomsCollector(object):
+    """
+    Atoms collector manages collecting atoms data whenever they are removed from 
+    from system. This mechanism allows storing and recovering atoms data at engine 
+    runtime.
+    
+    :Parameters:
+        #. dataKeys (None, list): The data keys list promised to store everytime an atom is
+           removed from the system. If None is given, dataKeys must be set later using 
+           set_data_keys method.
+    """
+    def __init__(self, parent, dataKeys=None):
+        # set parent
+        assert callable( getattr(parent, "_on_collector_collect_atom", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_collect_atom' method")
+        assert callable( getattr(parent, "_on_collector_release_atom", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_release_atom' method")
+        assert callable( getattr(parent, "_on_collector_reset", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_reset' method")
+        self.__parent = parent
+        # set data keys tuple
+        self.__dataKeys = ()
+        if dataKeys is not None:
+            self.set_data_keys(dataKeys)
+        # set all properties
+        self.reset()
+    
+    def __len__(self):
+        return len(self.__collectedData.keys())    
+        
+    @property
+    def dataKeys(self):
+        """get data keys that this collector will collect."""
+        return self.__dataKeys
+        
+    @property
+    def indexes(self):
+        """Collected atoms indexes."""
+        return self.__collectedData.keys()
+    
+    @property
+    def indexesSortedArray(self):
+        """Collected atoms sorted indexes numpy array."""
+        return self.__indexesSortedArray
+        
+    def reset(self):
+        """
+        Reset collector to initial state by releasing all collected atoms and 
+        re-initializing all properties. parent._on_collector_reset method is not called.
+        """
+        # init indexes sorted array
+        self.__indexesSortedArray = np.array([])
+        # initialize collected data dictionary
+        self.__collectedData = {}
+        # set random data that can be used to collect random data at any time.
+        # must be used only internally.
+        self._randomData = None
+        
+    def get_collected_data(self):
+        """
+        Get stored collected data.
+        
+        :Returns:
+            #. collectedData (dict): The collected data dict.
+        """
+        return self.__collectedData
+        
+    def is_collected(self, index):
+        """
+        Get whether atom is collected given its index.
+    
+        :Parameters:
+            #. index (int): The atom index to check whether it is collected or not.
+        
+        :Returns:
+            #. result (bool): Whether it is collected or not
+        """
+        return self.__collectedData.has_key(index)
+    
+    def is_not_collected(self, index):
+        """
+        Get whether atom is not collected given its index.
+    
+        :Parameters:
+            #. index (int): The atom index to check whether it is collected or not.
+        
+        :Returns:
+            #. result (bool): Whether it is not collected or it is.
+        """
+        return not self.__collectedData.has_key(index)
+    
+    def are_collected(self, indexes):
+        """
+        Get whether atoms are collected given their indexes.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (list): List of booleans defining whether atoms are collected
+               or not.
+        """
+        return [self.__collectedData.has_key(idx) for idx in indexes]
+    
+    def are_not_collected(self, indexes):
+        """
+        Get whether atoms are not collected given their indexes.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (list): List of booleans defining whether atoms are not collected
+               or they are.
+        """
+        return [not self.__collectedData.has_key(idx) for idx in indexes]
+        
+    def set_data_keys(self, dataKeys):
+        """
+        Set atoms collector data keys. keys can be set only once. This method will 
+        throw an error if used to reset dataKeys. 
+    
+        :Parameters:
+            #. dataKeys (list): The data keys list promised to store everytime an atom is
+               removed from the system.
+        """
+        assert not len(self.__dataKeys), LOGGER.error("resetting dataKeys is not allowed")
+        assert isinstance(dataKeys, (list, set, tuple)), LOGGER.error("dataKeys must be a list")
+        assert len(set(dataKeys))==len(dataKeys),  LOGGER.error("Redundant keys in dataKeys list are found")
+        assert len(dataKeys)>0,  LOGGER.error("dataKeys must not be empty")
+        self.__dataKeys = tuple(sorted(dataKeys))
+        
+    def get_relative_index(self, index):
+        """
+        Compute relative atom index considering already collected atoms.
+    
+        :Parameters:
+            #. index (int): Atom index.
+        
+        :Returns:
+            #. relativeIndex (int): Atom relative index.
+        """
+        position = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left').astype(INT_TYPE)
+        return index-position
+    
+    def get_relative_indexes(self, indexes):
+        """
+        Compute relative atoms index considering already collected atoms.
+    
+        :Parameters:
+            #. indexes (list,set,tuple,numpy.ndarray): Atoms index.
+        
+        :Returns:
+            #. relativeIndexes (list): Atoms relative index.
+        """
+        positions = np.searchsorted(a=self.__indexesSortedArray, v=indexes, side='left').astype(INT_TYPE)
+        return indexes-positions
+        
+    def get_real_index(self, relativeIndex):
+        """
+        Compute real index of the given relativeIndex considering already collected indexes.
+    
+        :Parameters:
+            #. relativeIndex (int): Atom relative index to already collected indexes.
+        
+        :Parameters:
+            #. index (int): Atom real index.
+        """
+        ### THIS IS NOT TESTED YET.
+        indexes = np.array( sorted(self.indexes) )
+        shift   = np.searchsorted(a=indexes, v=relativeIndex, side='left')
+        index   = relativeIndex+shift
+        for idx in indexes[shift:]:
+            if idx > index:
+                break
+            index += 1
+        return index
+            
+    def get_atom_data(self, index):
+        """
+        Get collected atom data.
+        
+        :Parameters:
+            #. index (int): The atom index to return its collected data.
+        """
+        return self.__collectedData[index]
+        
+    def get_data_by_key(self, key):
+        """
+        Get all collected atoms data that is associated with a key.
+    
+        :Parameters:
+            #. key (int): the data.
+        
+        :Parameters:
+            #. data (dict): dictionary of atoms indexes where values are the collected data.
+        """
+        data = {}
+        for k,d in self.__collectedData.items():
+            data[k] = d[key]
+        return data
+        
+    def collect(self, index, dataDict):
+        """
+        Collect atom given its index.
+        
+        :Parameters:
+            #. index (int): The atom index to collect.
+            #. dataDict (dict): The atom data dict to collect.
+        """
+        assert isinstance(dataDict, dict), LOGGER.error("dataDict must be a dictionary of data where keys are dataKeys")
+        assert not self.is_collected(index), LOGGER.error("attempting to collect and already collected atom of index '%i'"%index)
+        # add data
+        assert tuple(sorted(dataDict.keys())) == self.__dataKeys, LOGGER.error("dataDict keys don't match promised dataKeys")
+        self.__collectedData[index] = dataDict
+        # set indexes sorted array
+        idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')
+        self.__indexesSortedArray = np.insert(self.__indexesSortedArray, idx, index)
+
+    def release(self, index):
+        """
+        Release atom from list of collected atoms and return its collected data.
+        
+        :Parameters:
+            #. index (int): The atom index to release.
+            
+        :Returns:
+            #. dataDict (dict): The released atom collected data.           
+        """
+        if not self.is_collected(index):
+            LOGGER.warn("Attempting to release atom %i that is not collected."%index)
+            return
+        index = self.__collectedData.pop(index)
+        # set indexes sorted array
+        idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')
+        self.__indexesSortedArray = np.insert(self.__indexesSortedArray, idx, index)
+        # return
+        return index
+    
             
 class Broadcaster(object):
     """ 

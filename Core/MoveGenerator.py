@@ -63,7 +63,7 @@ class MoveGenerator(object):
         :Parameters:
             #. group (Group): the Group instance
         """
-        raise Exception(LOGGER.error("MovesGenerator '%s' method must be overloaded"%inspect.stack()[0][3]))
+        raise Exception(LOGGER.impl("MovesGenerator '%s' method must be overloaded"%inspect.stack()[0][3]))
         
     def transform_coordinates(self, coordinates, argument=None):
         """
@@ -78,7 +78,7 @@ class MoveGenerator(object):
         :Returns:
             #. coordinates (np.ndarray): The new coordinates after applying the move.
         """
-        raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
     def move(self, coordinates):
         """
@@ -94,6 +94,186 @@ class MoveGenerator(object):
         return self.transform_coordinates(coordinates=coordinates)
 
 
+class RemoveGenerator(MoveGenerator):
+    """   
+    This is a very particular move generator that will not generate moves on atoms but 
+    removes them from the atomic configuration using a general collector mechanism. 
+    Remove generators must be used to create defects in the simulated system. 
+    When the standard error is high, removing atoms might reduce the total fit standard 
+    error but this can be illusional and very limiting because artificial non physical 
+    voids can get created in the system which will lead to an impossibility to finding a 
+    solution at the end. It's strongly recommended to exhaust all ideas and possibilities 
+    in finding a good solution prior to start removing atoms unless structural defects 
+    is the goal of the simulation.\n
+    All removed or amputated atoms are collected by the engine and will become available
+    to be re-inserted in the system if needed. But keep in mind, it might be physically
+    easy to remove and atom but an impossibility to add it back especially if the created
+    voids are smeared out.\n
+    This class of generators are called generators but they behave like selectors. 
+    Instead of applying a certain move to a group of atoms, they normally pick atoms
+    from defined atoms list and apply no moves on those. 
+    'move' and 'transform_coordinates' methods are not implemented in this class of 
+    generators and a usage error will be raised if called. 'pick_from_list' method
+    is used instead and must be overloaded by all RemoveGenerator subclasses.
+    
+    **N.B. This class can't be instantiated but its sub-classes might be.**
+    
+    :Parameters:
+        #. group (None, Group): The group instance which is this case must be 
+           fullrmc EmptyGroup.
+        #. maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+           removed and collected from the engine. This property is general to the 
+           system and checks engine's collected atoms not the number of removed atoms 
+           via this generator. If None is given, the remover will not check for the
+           number of already removed atoms before attempting a remove.
+        #. allowFittingScaleFactor (bool): Constraints and especially experimental ones
+           have a scale factor constant that can be fit. Fitting a scale factor happens
+           at engine's runtime at a certain fitting frequency. If this flag set to
+           True, then fitting the scale factor will be allowed upon removing atoms, when
+           set to False then fitting the constraint scale factor will be forbidden upon 
+           removing atoms. By default, allowFittingScaleFactor is set to False because 
+           it's more logical to allow removing only atoms that enhances the total 
+           standard error without rescaling the model's data.
+        #. atomsList (None,list,set,tuple,np.ndarray): The list of atom indexes to chose
+           and remove from.
+    """
+    def __init__(self, group=None, maximumCollected=None, allowFittingScaleFactor=False, atomsList=None):
+        if self.__class__.__name__ == "RemoveGenerator":
+            raise Exception(LOGGER.usage("%s instanciation is not allowed"%(self.__class__.__name__)))
+        super(RemoveGenerator, self).__init__(group=group)
+        # set maximum collected
+        self.set_maximum_collected(maximumCollected)
+        # set maximum collected
+        self.set_allow_fitting_scale_factor(allowFittingScaleFactor)
+        # set maximum collected
+        self.set_atoms_list(atomsList)
+        
+    @property
+    def atomsList(self):
+        """Atoms list from which atoms will be picked to attempt removal."""
+        return self.__atomsList
+    
+    @property
+    def allowFittingScaleFactor(self):
+        """Whether to allow constraints to fit their scale factor upon removing atoms."""
+        return self.__allowFittingScaleFactor
+        
+    @property
+    def maximumCollected(self):
+        """Maximum collected atoms allowed."""
+        return self.__maximumCollected
+        
+    def check_group(self, group):
+        """
+        Checks the generator's group.
+        
+        :Parameters:
+            #. group (Group): the Group instance.
+        """
+        from fullrmc.Core.Group import EmptyGroup
+        if isinstance(group, EmptyGroup):
+            return True, "" 
+        else:
+            return False, "Only fullrmc EmptyGroup is allowed for CollectorGenerator"
+
+    def set_maximum_collected(self, maximumCollected):
+        """
+        Set maximum collected number of atoms allowed.
+        
+        :Parameters:
+            #. maximumCollected (None, Integer): The maximum number allowed of atoms to be 
+               removed and collected from the engine. This property is general to the 
+               system and checks engine's collected atoms not the number of removed atoms 
+               via this generator. If None is given, the remover will not check for the
+               number of already removed atoms before attempting a remove.
+        """
+        if maximumCollected is not None:
+            assert is_integer(maximumCollected), LOGGER.error("maximumCollected must be an integer")
+            maximumCollected = INT_TYPE(maximumCollected)
+            assert maximumCollected>0, LOGGER.error("maximumCollected must be bigger than 0")
+        self.__maximumCollected = maximumCollected
+     
+    def set_allow_fitting_scale_factor(self, allowFittingScaleFactor):
+        """
+        Set allow fitting scale factor flag.
+        
+        :Parameters:
+           #. allowFittingScaleFactor (bool): Constraints and especially experimental ones
+              have a scale factor constant that can be fit. Fitting a scale factor happens
+              at engine's runtime at a certain fitting frequency. If this flag set to
+              True, then fitting the scale factor will be allowed upon removing atoms, when
+              set to False then fitting the constraint scale factor will be forbidden upon 
+              removing atoms. By default, allowFittingScaleFactor is set to False because 
+              it's more logical to allow removing only atoms that enhances the total 
+              standard error without rescaling the model's data.
+        """   
+        assert isinstance(allowFittingScaleFactor, bool), LOGGER.error("allowFittingScaleFactor must be boolean")       
+        self.__allowFittingScaleFactor = allowFittingScaleFactor
+        
+    def set_atoms_list(self, atomsList):
+        """
+        Set the atoms list from which atoms will be picked to attempt removal.
+        This method must be overloaded and not be called from this class but from its 
+        children. Otherwise a usage error will be raised. 
+        
+        :Parameters:
+            #. atomsList (None, list,set,tuple,np.ndarray): The list of atom indexes to chose
+               and remove from.
+        """
+        if atomsList is not None:
+            assert isinstance(atomsList, (list,set,tuple,np.ndarray)), LOGGER.error("atomsList must be either a list or a numpy.array")       
+            CL = []
+            for idx in list(atomsList):
+                assert is_integer(idx), LOGGER.error("atomsList items must be integers")
+                assert idx>=0, LOGGER.error("atomsList item must equal or bigger than 0")
+                CL.append(INT_TYPE(idx))
+            setCL = set(CL) 
+            assert len(setCL) == len(CL), LOGGER.error("atomsList redundancy is not allowed")
+            atomsList = np.array(CL, dtype=INT_TYPE) 
+        self.__atomsList = atomsList
+        #if self.__class__.__name__ == "RemoveGenerator":
+        #    raise Exception(LOGGER.usage("%s '%s' method must not be used directly"%(self.__class__.__name__,inspect.stack()[0][3])))
+        #self.__atomsList = tuple(atomsList)
+    
+    def move(self, coordinates):
+        """
+        Moves coordinates. 
+        This method must NOT be overloaded in MoveGenerator sub-classes.
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the transformation.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the transformation.
+        """
+        raise Exception(LOGGER.usage("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
+    
+    def transform_coordinates(self, coordinates, argument):
+        """
+        In this particular case it checks and verifies maximumCollected 
+        
+        :Parameters:
+            #. coordinates (np.ndarray): The coordinates on which to apply the translation.
+            
+        :Returns:
+            #. coordinates (np.ndarray): The new coordinates after applying the translation.
+            #. argument (object): Any python object. Not used in this generator.
+        """
+        raise Exception(LOGGER.usage("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
+
+    def pick_from_list(self, engine):
+        """
+        In this particular case it checks and verifies maximumCollected 
+        
+        :Parameters:
+            #. engine (Engine): The engine calling the method.
+            
+        :Returns:
+            #. indexes (np.ndarray): The array of indexes that need to be tested for removal.
+        """
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+        
+        
 class SwapGenerator(MoveGenerator):
     """ 
     It is a particular move generator that instead of generating a 
@@ -574,7 +754,7 @@ class MoveGeneratorCollector(MoveGenerator):
         """ Generators selection weights list."""
         return self.__generatorsWeight
         
-    @property    
+    @property
     def selectionScheme(self):
         return self.__selectionScheme
     

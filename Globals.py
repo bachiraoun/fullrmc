@@ -60,11 +60,13 @@ class Logger(LOG):
         logFile = os.path.join(os.getcwd(), "fullrmc")
         self.set_log_file_basename(logFile)
         # set new log types
-        self.add_log_type("move not tried", name="INFO",  level=-15)
-        self.add_log_type("move rejected",  name="INFO",  level=-10)
-        self.add_log_type("move accepted",  name="INFO",  level= 15)
-        self.add_log_type("engine saved",   name="INFO",  level= 17)
-        self.add_log_type("argument fixed", name="FIXED", level= 20)
+        self.add_log_type("move not tried", name="INFO",           level=-15)
+        self.add_log_type("move rejected",  name="INFO",           level=-10)
+        self.add_log_type("move accepted",  name="INFO",           level= 15)
+        self.add_log_type("engine saved",   name="INFO",           level= 17)
+        self.add_log_type("argument fixed", name="FIXED",          level= 20)
+        self.add_log_type("implement",      name="IMPLEMENTATION", level= 1000)
+        self.add_log_type("usage",          name="USAGE",          level= 1000)
         # set parameters
         self.__set_logger_params_from_file()
         
@@ -74,7 +76,9 @@ class Logger(LOG):
         # force error and critical logging no matter what logging level is
         self.force_log_type_flags(logType="error",    stdoutFlag=True, fileFlag=True)
         self.force_log_type_flags(logType="critical", stdoutFlag=True, fileFlag=True)
-    
+        self.force_log_type_flags(logType="implement",stdoutFlag=True, fileFlag=True)
+        self.force_log_type_flags(logType="usage",    stdoutFlag=True, fileFlag=True)
+        
     def fixed(self, message):
         """alias to message at fixed level"""
         self.log("argument fixed", message)
@@ -87,13 +91,21 @@ class Logger(LOG):
         """alias to message at move rejected level"""
         self.log("move rejected", message)
 
-    def untried(self, message):
+    def nottried(self, message):
         """alias to message at move not tried level"""
         self.log("move not tried", message)
     
     def saved(self, message):
         """alias to message at save engine level"""
         self.log("engine saved", message)
+    
+    def impl(self, message):
+        """alias to message at implement engine level"""
+        self.log("implement", message)
+        
+    def usage(self, message):
+        """alias to message at usage engine level"""
+        self.log("usage", message)
         
 LOGGER = Logger(name="fullrmc")  
 

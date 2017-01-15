@@ -277,6 +277,7 @@ def single_atomic_distances_dists( C_INT32                       atomIndex,
        #. reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
+       #. ncores (int32) [default=1]: The number of cores to use.
 
     :Returns:
        #. dintra (float32 array): The updated (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.
@@ -448,6 +449,7 @@ def multiple_atomic_distances_dists( ndarray[C_INT32, ndim=1]      indexes not N
        #. reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
+       #. ncores (int32) [default=1]: The number of cores to use.
        
     :Returns:
        #. dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.

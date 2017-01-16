@@ -2,13 +2,7 @@
 
 fullrmc
 =======
-It's a Reverse Monte Carlo (RMC) python/Cython/C package, especially designed to solve an inverse 
-problem whereby an atomic/molecular model is adjusted until its atoms positions have the greatest 
-consistency with a set of experimental data. RMC is probably best known for its applications in 
-condensed matter physics and solid state chemistry. fullrmc is a fully object-oriented package 
-where everything can be overloaded allowing easy development, implementation and maintenance of the code. 
-It's core sub-package and modules are fully optimized written in cython/C. fullrmc is unique in its approach, 
-among other functionalities:
+FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/atomic stochastic fitting platform to reverse modeling experimental data. fullrmc is not a standard RMC software but exceeds in its capabilities and functionalities traditional RMC and Metropolis-Hastings algoritm. Therefore RMC appellation in fullrmc, is not accurate but it’s retained to respecting the community terminology. RMC is probably best known for its applications in condensed matter physics and solid state chemistry. RMC is used to solve an inverse problem whereby an atomic model is adjusted until its atoms position have the greatest consistency with a set of experimental data. fullrmc is a python package with its core and calculation modules optimized and compiled in Cython/c. fullrmc’s Engine sub-module is the main module that contains the definition of ‘Engine’ which is the main and only class used to launch the stochastic calculation. fullrmc is a fully object-oriented package where everything can be overloaded allowing easy development, implementation and maintenance of the code. It's core sub-package and modules are fully optimized written in cython/C. fullrmc is unique in its approach, among other functionalities:
 
 1. Atomic and molecular systems are supported.
 2. All types (not limited to cubic) of periodic boundary conditions systems are supported.
@@ -20,12 +14,12 @@ among other functionalities:
 Next on the list
 ================
 * Super-computing
-* Dynamically atoms removing and adding to creating materials defects
 
 News
 ====
 * fullrmc engine is now a repository instead of a single file
 * fullrmc supports frames.
+* Dynamically removing atoms upon fitting to creating materials defects
 
 Ask your questions
 ==================
@@ -41,7 +35,7 @@ Installation
 * pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
   0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
 * pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
-* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0)
+* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is used starting from fullrmc 3.0.0 - )
 
 ##### Installation using pip:
 numpy and cython must be installed and updated manually. 

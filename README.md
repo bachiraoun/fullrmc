@@ -54,7 +54,7 @@ following python script:
 from pkg_resources import parse_version as PV
 for name, ver in [('numpy'      ,'1.7.1') ,
                   ('cython'     ,'0.21.1'),
-                  ('pyrep'      ,'1.0.2') ,
+                  ('pyrep'      ,'1.0.3') ,
                   ('pdbParser'  ,'0.1.5') ,
                   ('pysimplelog','0.2.1') ,
                   ('matplotlib' ,'1.4'  )]:

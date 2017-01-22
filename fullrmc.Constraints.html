@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.0',
+        VERSION:     '3.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -2367,6 +2367,77 @@ its was amputated.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot bonds constraint distribution histogram.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
+<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
+parameters will be omitted. If None is given a new plot figure will be 
+created and the figue will be rendered and drawn.</p>
+</li>
+<li><p class="first">nbins (int): number of bins in histogram.</p>
+</li>
+<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</p>
+</li>
+<li><p class="first">hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</p>
+</li>
+<li><dl class="first docutils">
+<dt>histtype (string): the histogram type. optional among</dt>
+<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">xlabel (boolean): Whether to create x label.</p>
+</li>
+<li><p class="first">xlabelSize (number): The x label font size.</p>
+</li>
+<li><p class="first">ylabel (boolean): Whether to create y label.</p>
+</li>
+<li><p class="first">ylabelSize (number): The y label font size.</p>
+</li>
+<li><p class="first">legend (boolean): Whether to create the legend or not</p>
+</li>
+<li><p class="first">legendCols (integer): Legend number of columns.</p>
+</li>
+<li><p class="first">legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</p>
+</li>
+<li><p class="first">title (boolean): Whether to create the title or not</p>
+</li>
+<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+</li>
+<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -2741,6 +2812,77 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot angles constraint distribution histogram.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
+<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
+parameters will be omitted. If None is given a new plot figure will be 
+created and the figue will be rendered and drawn.</p>
+</li>
+<li><p class="first">nbins (int): number of bins in histogram.</p>
+</li>
+<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</p>
+</li>
+<li><p class="first">hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</p>
+</li>
+<li><dl class="first docutils">
+<dt>histtype (string): the histogram type. optional among</dt>
+<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">xlabel (boolean): Whether to create x label.</p>
+</li>
+<li><p class="first">xlabelSize (number): The x label font size.</p>
+</li>
+<li><p class="first">ylabel (boolean): Whether to create y label.</p>
+</li>
+<li><p class="first">ylabelSize (number): The y label font size.</p>
+</li>
+<li><p class="first">legend (boolean): Whether to create the legend or not</p>
+</li>
+<li><p class="first">legendCols (integer): Legend number of columns.</p>
+</li>
+<li><p class="first">legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</p>
+</li>
+<li><p class="first">title (boolean): Whether to create the title or not</p>
+</li>
+<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+</li>
+<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
 </ol>
 </td>
 </tr>
@@ -3183,6 +3325,77 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=20</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot dihedral angles constraint distribution histogram.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
+<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
+parameters will be omitted. If None is given a new plot figure will be 
+created and the figue will be rendered and drawn.</p>
+</li>
+<li><p class="first">nbins (int): number of bins in histogram.</p>
+</li>
+<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</p>
+</li>
+<li><p class="first">hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</p>
+</li>
+<li><dl class="first docutils">
+<dt>histtype (string): the histogram type. optional among</dt>
+<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">xlabel (boolean): Whether to create x label.</p>
+</li>
+<li><p class="first">xlabelSize (number): The x label font size.</p>
+</li>
+<li><p class="first">ylabel (boolean): Whether to create y label.</p>
+</li>
+<li><p class="first">ylabelSize (number): The y label font size.</p>
+</li>
+<li><p class="first">legend (boolean): Whether to create the legend or not</p>
+</li>
+<li><p class="first">legendCols (integer): Legend number of columns.</p>
+</li>
+<li><p class="first">legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</p>
+</li>
+<li><p class="first">title (boolean): Whether to create the title or not</p>
+</li>
+<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+</li>
+<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -3568,6 +3781,77 @@ will be applied to</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>realIndexes (numpy.ndarray): atom index as a numpy array of a single 
 element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot improper angles constraint distribution histogram.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
+<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
+parameters will be omitted. If None is given a new plot figure will be 
+created and the figue will be rendered and drawn.</p>
+</li>
+<li><p class="first">nbins (int): number of bins in histogram.</p>
+</li>
+<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</p>
+</li>
+<li><p class="first">hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</p>
+</li>
+<li><dl class="first docutils">
+<dt>histtype (string): the histogram type. optional among</dt>
+<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
+value will be given.</p>
+</li>
+<li><p class="first">xlabel (boolean): Whether to create x label.</p>
+</li>
+<li><p class="first">xlabelSize (number): The x label font size.</p>
+</li>
+<li><p class="first">ylabel (boolean): Whether to create y label.</p>
+</li>
+<li><p class="first">ylabelSize (number): The y label font size.</p>
+</li>
+<li><p class="first">legend (boolean): Whether to create the legend or not</p>
+</li>
+<li><p class="first">legendCols (integer): Legend number of columns.</p>
+</li>
+<li><p class="first">legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</p>
+</li>
+<li><p class="first">title (boolean): Whether to create the title or not</p>
+</li>
+<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+</li>
+<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
 </ol>
 </td>
 </tr>
@@ -5156,7 +5440,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

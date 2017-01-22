@@ -88,8 +88,11 @@ commands = [# include MANIFEST.in
             'global-exclude %s/Examples/*/plotFigures.py'%PACKAGE_NAME, 
             'global-exclude %s/Examples/*/extractTrajectory.py'%PACKAGE_NAME, 
             'global-exclude %s/Examples/*/exportTrajectoryFigures.py'%PACKAGE_NAME, 
-            'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME,
+            'global-exclude %s/Examples/*/restart.pdb'%PACKAGE_NAME,
             ]         
+
+
 with open('MANIFEST.in','w') as fd:
     for l in commands:
         fd.write(l)
@@ -138,7 +141,7 @@ LONG_DESCRIPTION = ["FUndamental Library Language for Reverse Monte Carlo or ful
                     "Starting from version 1.x.y fitting non-periodic boundary conditions or isolated molecules is added. ",
                     "fullrmc >= 1.2.y can be compiled with 'openmp' allowing multithreaded fitting. ",
                     "fullrmc >= 2.x.y engine is a single file no more but a pyrep repository. ",
-                    "fullrmc >= 3.x.y dynamically removing atoms uppon fitting is enabled. ",]
+                    "fullrmc >= 3.x.y dynamically removing atoms upon fitting is enabled. ",]
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]             
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 
@@ -173,7 +176,7 @@ def get_packages(path, base="", exclude=None):
     return packages
 
 DATA_EXCLUDE = ('*.rmc','*.data','*.png','*.xyz','*.log','*.pyc', '*~', '.*', '*.so', '*.pyd')
-EXCLUDE_DIRECTORIES = ('*svn','*git','dist', 'EGG-INFO', '*.egg-info',)
+EXCLUDE_DIRECTORIES = ('*svn','*git','dist', 'EGG-INFO', '*.egg-info',"*.rmc")
 def find_package_data(where='.', package='', relativePath='',
                       exclude=DATA_EXCLUDE, excludeDirectories=EXCLUDE_DIRECTORIES, 
                       onlyInPackages=True, showIgnored=False):
@@ -184,15 +187,14 @@ def find_package_data(where='.', package='', relativePath='',
         for name in os.listdir(where):
             fn = os.path.join(where, name)
             if os.path.isdir(fn):
-                bad_name = False
+                excludeThis = False
                 for pattern in excludeDirectories:
-                    if (fnmatch.fnmatchcase(name, pattern)
-                        or fn.lower() == pattern.lower()):
-                        bad_name = True
+                    if (fnmatch.fnmatchcase(name, pattern) or fn.lower() == pattern.lower()):
+                        excludeThis = True
                         if showIgnored:
                             print >> sys.stderr, ("Directory %s ignored by pattern %s" % (fn, pattern))
                         break
-                if bad_name:
+                if excludeThis:
                     continue
                 if (os.path.isfile(os.path.join(fn, '__init__.py')) and not prefix):
                     if not package:
@@ -282,7 +284,8 @@ CMDCLASS = {'build_ext' : build_ext}
 ##########################################################################################
 #####################################  PACKAGE DATA  #####################################        
 # get packages and remove everything that is not fullrmc
-PACKAGES = get_packages(path=PACKAGE_PATH, exclude=(os.path.join(PACKAGE_NAME,"docs"),))
+docs = os.path.join(PACKAGE_NAME,"docs")
+PACKAGES = get_packages(path=PACKAGE_PATH, exclude=(docs, ) )
 for package in PACKAGES.keys():
     if PACKAGE_NAME not in package:
         PACKAGES.pop(package)

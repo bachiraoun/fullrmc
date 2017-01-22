@@ -446,9 +446,25 @@ Modifications:
     #. all angle constraints respect the same implementation and interface design.
 
 
+
+
+`Version 3.0.1 <https://pypi.python.org/pypi/fullrmc/3.0.1>`_:
+--------------------------------------------------------------
+
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. Plot method added to all of :class:`.BondConstraint`,
+      :class:`.BondsAngleConstraint`, :class:`.DihedralAngleConstraint` and
+      :class:`.ImproperAngleConstraint`.     
+      
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+    #. :class:`.DihedralAngleConstraint` FRAME_DATA fixed which was preventing  
+       constraint from saving to pyrep repository.
+
 """
 
-__version__    = '3.0.0'
+__version__    = '3.0.1'
                
 __author__     = "Bachir Aoun"
                

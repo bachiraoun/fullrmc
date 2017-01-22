@@ -84,7 +84,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
         FRAME_DATA.extend(['_DihedralAngleConstraint__anglesList',
-                           '_DihedralAngleConstraint___angles',] )
+                           '_DihedralAngleConstraint__angles',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA) )
@@ -800,7 +800,214 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                                                           'otherMap'   :self.__angles[realIndex]['otherMap']})
 
         
+    def plot(self, ax=None, nbins=20, subplots=True, 
+                   wspace=0.3, hspace=0.3,
+                   histtype='bar', lineWidth=None, lineColor=None,
+                   xlabel=True, xlabelSize=16,
+                   ylabel=True, ylabelSize=16,
+                   legend=True, legendCols=1, legendLoc='best',
+                   title=True, titleStdErr=True, usedFrame=True,):
+        """ 
+        Plot dihedral angles constraint distribution histogram.
         
+        :Parameters:
+            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+               If ax is given, the figure won't be rendered and drawn and subplots 
+               parameters will be omitted. If None is given a new plot figure will be 
+               created and the figue will be rendered and drawn.
+            #. nbins (int): number of bins in histogram.
+            #. subplots (boolean): Whether to add plot constraint on multiple axes.
+            #. wspace (float): The amount of width reserved for blank space between 
+               subplots, expressed as a fraction of the average axis width.
+            #. hspace (float): The amount of height reserved for white space between 
+               subplots, expressed as a fraction of the average axis height.
+            #. histtype (string): the histogram type. optional among
+                ['bar', 'barstacked', 'step', 'stepfilled']
+            #. lineWidth (None, integer): bars contour line width. If None then default
+               value will be given.
+            #. lineColor (None, integer): bars contour line color. If None then default
+               value will be given.
+            #. xlabel (boolean): Whether to create x label.
+            #. xlabelSize (number): The x label font size.
+            #. ylabel (boolean): Whether to create y label.
+            #. ylabelSize (number): The y label font size.
+            #. legend (boolean): Whether to create the legend or not
+            #. legendCols (integer): Legend number of columns.
+            #. legendLoc (string): The legend location. Anything among
+               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
+               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
+               is accepted.
+            #. title (boolean): Whether to create the title or not
+            #. usedFrame(boolean): Whether to show used frame name.
+            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
+        
+        :Returns:
+            #. axes (matplotlib Axes, List): The matplotlib axes or a list of axes.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if output is None:
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # compute categories 
+        categories = {}
+        lower1 = self.__anglesList[4]
+        upper1 = self.__anglesList[5]
+        lower2 = self.__anglesList[6]
+        upper2 = self.__anglesList[7]
+        lower3 = self.__anglesList[8]
+        upper3 = self.__anglesList[9]
+        for idx in xrange(self.__anglesList[0].shape[0]):
+            if self._atomsCollector.is_collected(idx):
+                continue
+            l1 = lower1[idx]
+            u1 = upper1[idx]
+            l2 = lower2[idx]
+            u2 = upper2[idx]
+            l3 = lower3[idx]
+            u3 = upper3[idx]
+            k = (l1,u1,l2,u2,l3,u3)
+            L = categories.get(k, [])
+            L.append(idx)
+            categories[k] = L
+        ncategories = len(categories.keys())
+        # import matplotlib
+        import matplotlib.pyplot as plt
+        # get axes
+        if ax is None:
+            if subplots and ncategories>1:
+                x = np.ceil(np.sqrt(ncategories))
+                y = np.ceil(ncategories/x)
+                _, N_AXES = plt.subplots(int(x), int(y) )
+                N_AXES = N_AXES.flatten()
+                plt.subplots_adjust(wspace=wspace, hspace=hspace)
+                FIG = N_AXES[0].get_figure()
+            else:
+                AXES = plt.gca()
+                FIG = AXES.get_figure()
+                subplots = False 
+        else:
+            AXES = ax  
+            FIG = AXES.get_figure()
+            subplots = False 
+        # start plotting
+        COLORS = ["b",'g','r','c','y','m']
+        if subplots:
+            for idx, key in enumerate(categories.keys()): 
+                LU = sorted(set( [(key[0],key[1]),(key[2],key[3]),(key[4],key[5])] ))
+                label = " ".join( ["(%.2f,%.2f)"%(l,u) for l,u in LU] )
+                COL  = COLORS[idx%len(COLORS)]
+                AXES = N_AXES[idx]
+                idxs = categories[key]
+                data = self.data["angles"][idxs]
+                # plot histogram
+                D, E, P = AXES.hist(x=data, bins=nbins, 
+                                    color=COL, label=label,
+                                    histtype=histtype)
+                # vertical lines
+                Y = max(D)
+                for idx, (l,u) in enumerate(LU):
+                    AXES.plot([l,l],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([u,u],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                # legend
+                if legend:
+                    AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+                # set axis labels
+                if xlabel:
+                    AXES.set_xlabel("$deg.$", size=xlabelSize)
+                if ylabel:
+                    AXES.set_ylabel("$number$"  , size=ylabelSize)
+                if lineWidth is not None:
+                    [p.set_linewidth(lineWidth) for p in P]
+                if lineColor is not None:
+                    [p.set_edgecolor(lineColor) for p in P]
+                # set limits if ax not given
+                if ax is None:
+                    degMin = [min(E)]
+                    degMin.extend( [l for l,u in LU]  )
+                    degMin = min(degMin)
+                    degMax = [max(E)]
+                    degMax.extend( [u for l,u in LU]  )
+                    degMax = max(degMax)
+                    degPer = 0.1*(degMax-degMin)
+                    degMin = np.floor(degMin-degPer)
+                    degMax = np.ceil( degMax+degPer)
+                    AXES.set_xlim(degMin,degMax)
+                    numMin = 0
+                    numMax = max(D)
+                    numMax += 0.1*numMax
+                    AXES.set_ylim(numMin,numMax)
+        else:
+            degMin = degMax = numMax = 0
+            for idx, key in enumerate(categories.keys()): 
+                LU = sorted(set([(key[0],key[1]),(key[2],key[3]),(key[4],key[5])]))
+                label = " ".join( ["(%.2f,%.2f)"%(l,u) for l,u in LU] )
+                COL  = COLORS[idx%len(COLORS)]
+                idxs = categories[key]
+                data = self.data["angles"][idxs]
+                # plot histogram
+                D, E, P = AXES.hist(x=data, bins=nbins, 
+                                    color=COL, label=label,
+                                    histtype=histtype)
+                # vertical lines
+                Y = max(D)
+                for idx, (l,u) in enumerate(LU):
+                    AXES.plot([l,l],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([u,u],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                if lineWidth is not None:
+                    [p.set_linewidth(lineWidth) for p in P]
+                if lineColor is not None:
+                    [p.set_edgecolor(lineColor) for p in P]
+                AXES.autoscale()
+                # set limits if ax not given
+                degMin_ = [min(E)]
+                degMin_.extend( [l for l,u in LU]  )
+                degMin_ = min(degMin_)
+                degMax_ = [max(E)]
+                degMax_.extend( [u for l,u in LU]  )
+                degMax_ = max(degMax_)
+                degPer = 0.1*(degMax_-degMin_)
+                degMin_ = np.floor(degMin_-degPer_)
+                degMax_ = np.ceil( degMax_+degPer_)
+                mins.extend( [degMin,degMin_] )
+                maxs.extend( [degMax,degMax_] )
+                degMax = min(maxs)
+                numMax_ = max(D)
+                numMax_ += 0.1*numMax_
+                numMax = min([numMax,numMax_])  
+            # set limits if ax not given
+            if ax is None:    
+                AXES.set_xlim(degMin,degMax)
+                AXES.set_ylim(0,numMax)
+            # legend
+            if legend:
+                AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+            # set axis labels
+            if xlabel:
+                AXES.set_xlabel("$deg.$", size=xlabelSize)
+            if ylabel:
+                AXES.set_ylabel("$number$"  , size=ylabelSize)
+        # set title
+        if title:
+            if usedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
+            if titleStdErr and self.standardError is not None:
+                t += "$std$ $error=%.6f$ "%(self.standardError)
+            if len(t):
+                FIG.suptitle(t, fontsize=14)
+        
+        # set background color
+        FIG.patch.set_facecolor('white')
+        #show
+        if ax is None:
+            plt.show()
+        # return axes
+        if subplots:
+            return N_AXES
+        else:
+            return AXES  
         
         
         

@@ -13,7 +13,9 @@ ENGINE = Engine(path=None)
 result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if result:
     ENGINE = ENGINE.load(engineFilePath)
-    ENGINE.constraints[0].plot()
+    PDF, EMD, B, BA, IA = ENGINE.constraints
+    BA.plot(lineWidth=2, nbins=20)
+    #PDF.plot()
 else:
     print mes
  

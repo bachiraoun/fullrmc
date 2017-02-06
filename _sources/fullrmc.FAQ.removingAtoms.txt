@@ -1,0 +1,85 @@
+:orphan:
+
+Dynamically removing atoms
+==========================
+Starting from version 3.0.0 dynamically removing atoms from system in fullrmc is enabled.
+This is another feature that makes fullrmc unique in its approach to reverse modelling
+atomic/molecular systems. Removing atoms in fullrmc is straightforward thanks to a very
+elegant implementation of a new type of move generators called :class:`.RemoveGenerator`.
+Remove generators are like any other move generators with the following few exceptions 
+and rules:
+
+* :class:`.RemoveGenerator` test removing atoms from the system instead of testing
+  a geometrical move or energy minimization move upon an atom.
+* Removing multiple atoms at a time is not allowed. Even though it's not complicated to 
+  implement multiple atoms removal but removing atoms is very invasive to the structure
+  and to the chemical stability of the system. therefore it must be done very delicately
+  because unwanted voids can be created in the system leading to wrong fits and 
+  conclusions. 
+* Like any move generator, :class:`.RemoveGenerator` must be set to a group. But in this
+  particular case only :class:`.EmptyGroup` accept this type of generators.
+* An :class:`.EmptyGroup` is a group that takes no atoms. But instead, atoms are picked 
+  dynamically upon engine runtime. This way, remove generator such as 
+  :class:`.AtomsRemoveGenerator` randomly picks an atom from its assigned atoms list
+  and tests whether removing this particular atom improves the global standard error 
+  of the system.
+
+How it works
+============
+When an atom is removed from the system, the total number of atoms is reduced by one. 
+**But atom indexes are maintained** because all original definitions are set when the  
+system was complete. In more details, Bonds, angles, interatomic distance, etc definitions 
+are set when the system was not missing atoms. This is extremely important to know and 
+to remember. Removing atoms is done via a collector that will collect all removed atoms
+from the system and propagates the removal to all engine's entities. As an example, let's 
+assume a system with 10 atoms. Than atom indexes are a series of integers ranging from
+0 to 9. Let's also assume removing atom index 3 from the system. The final system at this
+point contains the remaining 9 atoms. But system atom indexes will remain as before the
+series of integers ranging from 0 to 9 with index 3 missing. In practice when atom index
+3 is present in a group, fullrmc's engine is smart enough to know that this atom is 
+removed and therefore this will be handled properly. **Very important to know**, 
+properties and definitions must always be set as no atoms were removed. For this 
+particular reason engine :func:`.Engine.get_original_data` method is introduced to 
+allow users retrieving original system properties and data with no additional efforts 
+just like in the example below.
+
+Usage
+=====
+
+.. code-block:: python
+
+    # import fullrmc modules
+    from fullrmc.Engine import Engine
+    from fullrmc.Core.Group import EmptyGroup
+    
+    # create engine 
+    ENGINE = Engine(path='my_engine.rmc')
+    
+    # set pdb file
+    ENGINE.set_pdb('system.pdb')
+    
+    # Add constraints ...
+    
+    # Create indexes0, indexes1 and indexes2 atoms indexes lists
+    ALL_ELEMENTS = ENGINE.get_original_data('allElements')
+    indexes0 = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('O','o')]
+    indexes2 = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('C','c')]
+    indexes1 = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('H','h')]
+    
+    # Define empty groups. By default AtomsRemoveGenerator is the move generator
+    RO  = EmptyGroup()
+    RO.moveGenerator.set_maximum_collected( 20 )
+    RO.moveGenerator.set_atoms_list( indexes0 )
+    R1  = EmptyGroup()
+    R1.moveGenerator.set_maximum_collected( 100 )
+    R1.moveGenerator.set_atoms_list( indexes1 )
+    R2  = EmptyGroup()
+    R2.moveGenerator.set_maximum_collected( 500 )
+    R2.moveGenerator.set_atoms_list( indexes2 )
+    
+    # set all three defined groups as the only groups in the engine
+    ENGINE.set_groups([RO,R1,R2])
+    
+    
+    
+    

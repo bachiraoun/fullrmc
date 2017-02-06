@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Dynamically removing atoms &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="dynamically-removing-atoms">
+<h1>Dynamically removing atoms<a class="headerlink" href="#dynamically-removing-atoms" title="Permalink to this headline">¶</a></h1>
+<p>Starting from version 3.0.0 dynamically removing atoms from system in fullrmc is enabled.
+This is another feature that makes fullrmc unique in its approach to reverse modelling
+atomic/molecular systems. Removing atoms in fullrmc is straightforward thanks to a very
+elegant implementation of a new type of move generators called <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a>.
+Remove generators are like any other move generators with the following few exceptions
+and rules:</p>
+<ul class="simple">
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a> test removing atoms from the system instead of testing
+a geometrical move or energy minimization move upon an atom.</li>
+<li>Removing multiple atoms at a time is not allowed. Even though it&#8217;s not complicated to
+implement multiple atoms removal but removing atoms is very invasive to the structure
+and to the chemical stability of the system. therefore it must be done very delicately
+because unwanted voids can be created in the system leading to wrong fits and
+conclusions.</li>
+<li>Like any move generator, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a> must be set to a group. But in this
+particular case only <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> accept this type of generators.</li>
+<li>An <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> is a group that takes no atoms. But instead, atoms are picked
+dynamically upon engine runtime. This way, remove generator such as
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> randomly picks an atom from its assigned atoms list
+and tests whether removing this particular atom improves the global standard error
+of the system.</li>
+</ul>
+</div>
+<div class="section" id="how-it-works">
+<h1>How it works<a class="headerlink" href="#how-it-works" title="Permalink to this headline">¶</a></h1>
+<p>When an atom is removed from the system, the total number of atoms is reduced by one.
+<strong>But atom indexes are maintained</strong> because all original definitions are set when the
+system was complete. In more details, Bonds, angles, interatomic distance, etc definitions
+are set when the system was not missing atoms. This is extremely important to know and
+to remember. Removing atoms is done via a collector that will collect all removed atoms
+from the system and propagates the removal to all engine&#8217;s entities. As an example, let&#8217;s
+assume a system with 10 atoms. Than atom indexes are a series of integers ranging from
+0 to 9. Let&#8217;s also assume removing atom index 3 from the system. The final system at this
+point contains the remaining 9 atoms. But system atom indexes will remain as before the
+series of integers ranging from 0 to 9 with index 3 missing. In practice when atom index
+3 is present in a group, fullrmc&#8217;s engine is smart enough to know that this atom is
+removed and therefore this will be handled properly. <strong>Very important to know</strong>,
+properties and definitions must always be set as no atoms were removed. For this
+particular reason engine <code class="xref py py-func docutils literal"><span class="pre">Engine.get_original_data()</span></code> method is introduced to
+allow users retrieving original system properties and data with no additional efforts
+just like in the example below.</p>
+</div>
+<div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">EmptyGroup</span>
+
+<span class="c1"># create engine</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add constraints ...</span>
+
+<span class="c1"># Create indexes0, indexes1 and indexes2 atoms indexes lists</span>
+<span class="n">ALL_ELEMENTS</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">get_original_data</span><span class="p">(</span><span class="s1">&#39;allElements&#39;</span><span class="p">)</span>
+<span class="n">indexes0</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ALL_ELEMENTS</span><span class="p">))</span> <span class="k">if</span> <span class="n">ALL_ELEMENTS</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;o&#39;</span><span class="p">)]</span>
+<span class="n">indexes2</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ALL_ELEMENTS</span><span class="p">))</span> <span class="k">if</span> <span class="n">ALL_ELEMENTS</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">)]</span>
+<span class="n">indexes1</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ALL_ELEMENTS</span><span class="p">))</span> <span class="k">if</span> <span class="n">ALL_ELEMENTS</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">)]</span>
+
+<span class="c1"># Define empty groups. By default AtomsRemoveGenerator is the move generator</span>
+<span class="n">RO</span>  <span class="o">=</span> <span class="n">EmptyGroup</span><span class="p">()</span>
+<span class="n">RO</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_maximum_collected</span><span class="p">(</span> <span class="mi">20</span> <span class="p">)</span>
+<span class="n">RO</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_atoms_list</span><span class="p">(</span> <span class="n">indexes0</span> <span class="p">)</span>
+<span class="n">R1</span>  <span class="o">=</span> <span class="n">EmptyGroup</span><span class="p">()</span>
+<span class="n">R1</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_maximum_collected</span><span class="p">(</span> <span class="mi">100</span> <span class="p">)</span>
+<span class="n">R1</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_atoms_list</span><span class="p">(</span> <span class="n">indexes1</span> <span class="p">)</span>
+<span class="n">R2</span>  <span class="o">=</span> <span class="n">EmptyGroup</span><span class="p">()</span>
+<span class="n">R2</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_maximum_collected</span><span class="p">(</span> <span class="mi">500</span> <span class="p">)</span>
+<span class="n">R2</span><span class="o">.</span><span class="n">moveGenerator</span><span class="o">.</span><span class="n">set_atoms_list</span><span class="p">(</span> <span class="n">indexes2</span> <span class="p">)</span>
+
+<span class="c1"># set all three defined groups as the only groups in the engine</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups</span><span class="p">([</span><span class="n">RO</span><span class="p">,</span><span class="n">R1</span><span class="p">,</span><span class="n">R2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Dynamically removing atoms</a></li>
+<li><a class="reference internal" href="#how-it-works">How it works</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

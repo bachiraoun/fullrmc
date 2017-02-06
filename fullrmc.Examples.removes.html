@@ -110,50 +110,76 @@
         
   <div class="section" id="relative-path">
 <h1>Relative path<a class="headerlink" href="#relative-path" title="Permalink to this headline">¶</a></h1>
-<p>../fullrmc/Examples/rotations/</p>
+<p>../fullrmc/Examples/removes/</p>
 </div>
 <div class="section" id="description">
 <h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
-<p>Here a single molecule is used to demonstrate how to use certain rotation
-move generators. This example was used to generate the <a class="reference external" href="https://youtu.be/-clLvYiaC8w?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco">rotation video example</a>
-as seen in the online documentation. When running this example several files
-will be generated where all moved are saved. If
-<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. is installed, the trajectory
-of all moves will be automatically visualized.</p>
+<p>A box of 8100 atoms oxide composite of Nickel, Manganese, Cobalt and Lithium
+and Oxygen. In this example, we show how to use a <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> and
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> in order to reproduce defects in the system.</p>
 </div>
 <div class="section" id="files">
 <h1>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h1>
 <ol class="arabic simple">
-<li>molecule.pdb: The single molecule structure</li>
-<li>run.py: The script file used to run the simulation</li>
+<li>system.pdb: The initial configuration input file.</li>
+<li>pdf.exp: The x-rays experimental pair distribution function data.</li>
+<li>run.py: The script file used to run the simulation.</li>
+<li>plot.py: The script file to plot the last saved engine state of
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a>.</li>
+<li>visualize.py: The script file to visualize the last save configuration
+using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. if installed.</li>
 </ol>
 </div>
 <div class="section" id="run-py-explained">
 <h1>run.py explained<a class="headerlink" href="#run-py-explained" title="Permalink to this headline">¶</a></h1>
 <p><span class="underline">IMPORTING USEFUL DEFINITIONS:</span></p>
 <p>All useful packages, modules and definitions are imported.</p>
-<p><span class="underline">SHUT DOWN LOGGING:</span></p>
-<p>Set logger minimum level to maximum possible integer value. This will mute
-all non-error logging.</p>
+<p><span class="underline">DECLARE USEFUL VARIABLES:</span></p>
+<p>Initialize and declare useful variables in all the script.</p>
 <p><span class="underline">CREATE ENGINE:</span></p>
-<p>Create the engine and set the only molecule as a rigid body. This is done
-automatically because set_groups_as_molecules will only find one molecule.</p>
+<p>Check if engine already saved on disk. In the affirmative load it to continue
+fitting from last saved configuration. Otherwise, build the engine and the needed
+constraints.</p>
 <p><span class="underline">DIFFERENT RUNS:</span></p>
-<p>Define functions to run fitting engine. All of the following functions finish
-running the engine using Engine.run method. A trajectory of all moves is saved
-to the disk by setting XYZPath argument not to None.</p>
+<p>Define functions to run the fitting engine. All of the following functions finish
+running the engine using Engine.run method.</p>
 <ol class="arabic simple">
-<li>about_axis_0: Used to rotate the molecule about its principal axis</li>
-<li>about_axis_1: Used to rotate the molecule about its secondary axis</li>
-<li>about_axis_2: Used to rotate the molecule about its tertiary axis</li>
-<li>about_111_axis: Used to rotate the molecule about [x=1, y=1, z=1] axis</li>
-<li>random: Used to rotate the molecule randomly</li>
+<li>normal_run: use set_groups_as_atoms to create groups of single atom.
+Here the engine runs traditional RMC with random selection of groups
+using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></code></a> and random atomic translations using
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> move generator.</li>
+<li>swaps_run: use set_groups_as_atoms to create groups of single atom.
+Create two swapping lists. The first one containing only Lithium atoms
+indexes and the second all of Cobalt, Nickel and Manganese atom indexes. Create two
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> for swapping Lithium atoms with
+Cobalt, Nickel and Manganese and vice-versa.</li>
+<li>removes_run: Create remove lists that are lists of atom indexes. First list for
+oxygen atoms, another one for lithium atoms and a third one for all of nickel,
+manganese and cobalt. <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> is a especial generator that
+can only be set to an <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a>. Create three <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a>
+where by default their move generators are <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> instances.
+use set_maximum_collected for each and every one to limit the maximum number of
+allowed removed atoms per generator. The use set_atoms_list to set list of atoms
+to remove from. If set_maximum_collected is not used, then theres is no boundaries to
+how many atoms are allowed to be removed and <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> can remove
+atoms without any control. The same way, if set_maximum_collected is not used the
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> will remove any atom from the system. Finally, use
+set_groups method to set only the three defined <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a>.</li>
 </ol>
 <p><span class="underline">RUN SIMULATION:</span></p>
-<p>All five functions are called consecutively.</p>
-<p><span class="underline">VISUALIZE SIMULATION:</span></p>
-<p>Reset initial pdb to engine instance. Visualize engine along with all saved
-four trajectories &#8220;about0.xyz&#8221;, &#8220;about1.xyz&#8221;, &#8220;about2.xyz&#8221;, &#8220;about111.xyz&#8221;, &#8220;random.xyz&#8221;.</p>
+<p>launch normal_run then allow experimental constraint to fit its scale factor then
+launch normal_run again. At this point, one can notice that the fit is not perfect yet.
+Create &#8216;swap_1&#8217; frame and set it as used. Launch swaps_run to swap between atoms then
+launch normal_run again. Then, create and use &#8216;removes_2&#8217; frame. And Finally, loop for
+many times all of removes_run, normal_run and swaps_run. Notice that the number of steps
+for removes_run is as little as 100. It&#8217;s very important to remove as little atoms as
+possible and try to fit again. Excessive atoms removal is irreversible, and even though
+it decreases total error on the short run but it will drive the system to an
+impossibility to finding a solution. Removing a lot of atoms can create artificial
+defects and voids in the system that can&#8217;t be explained physically.
+Notice here the usage of frame is very important. At any time if one thinks that
+for instance a lot of atoms were removed, then one can simply revert to a previous frame
+prior to starting atoms removal.</p>
 </div>
 
 

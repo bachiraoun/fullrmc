@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Generators package &mdash; fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Generators package &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Constraints package" href="fullrmc.Constraints.html" />
             <link rel="prev" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -597,7 +597,7 @@ sub-list length must be equal to swapLength.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">get_ready_for_move</code><span class="sig-paren">(</span><em>groupAtomsIndexes</em><span class="sig-paren">)</span></dt>
+<code class="descname">get_ready_for_move</code><span class="sig-paren">(</span><em>engine</em>, <em>groupAtomsIndexes</em><span class="sig-paren">)</span></dt>
 <dd><p>Set the swap generator ready to perform a move. Unlike a normal move generator,
 swap generators will affect not only the selected atoms but other atoms as well.
 Therefore at engine runtime, selected atoms will be extended to all affected 
@@ -609,6 +609,7 @@ to ensure that all affect atoms with the swap are updated.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (fullrmc.Engine): The engine calling for the move.</li>
 <li>groupAtomsIndexes (numpy.ndarray): The atoms indexes to swap.</li>
 </ol>
 </td>
@@ -3390,12 +3391,6 @@ are randomly selected from swapList and vice-versa.</p>
 swapLength is not required for this generator.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.swapList">
-<code class="descname">swapList</code><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.swapList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get swap list.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_length">
 <code class="descname">set_swap_length</code><span class="sig-paren">(</span><em>swapLength</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_length" title="Permalink to this definition">¶</a></dt>
@@ -3409,26 +3404,6 @@ does not require a fixed length.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>swapLength (None): The swap length.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_list">
-<code class="descname">set_swap_list</code><span class="sig-paren">(</span><em>swapList</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.set_swap_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the swap-list to swap groups centers.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">swapList (None, List): The list of atoms.</p>
-<p>If None is given, no swapping or exchanging will be performed.</p>
-<p>If List is given, it must contain lists of atom indexes.</p>
-</li>
 </ol>
 </td>
 </tr>
@@ -3618,7 +3593,7 @@ If None is returned than picking is not allowed.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -96,6 +96,9 @@ Examples folder name is used as the click-able items in the following list.
    electrolyte system fitting.
 *  `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon 
    oxide nanosphere fitting. 
+*  `NiMnCoLiO <fullrmc.Examples.removes.html>`__: This is a fake Nickel Manganese Cobalt
+   Lithium oxide composite used to demonstrate how to remove atoms from system.
+
    
 :underline:`Frames:`   
 

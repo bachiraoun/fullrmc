@@ -1,0 +1,113 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+   
+   
+Relative path
+=============
+../fullrmc/Examples/removes/
+
+
+Description
+===========
+A box of 8100 atoms oxide composite of Nickel, Manganese, Cobalt and Lithium
+and Oxygen. In this example, we show how to use a :class:`.EmptyGroup` and 
+:class:`.AtomsRemoveGenerator` in order to reproduce defects in the system.
+
+
+Files
+=====
+
+#. system.pdb: The initial configuration input file.
+#. pdf.exp: The x-rays experimental pair distribution function data.
+#. run.py: The script file used to run the simulation.
+#. plot.py: The script file to plot the last saved engine state of
+   :class:`.PairDistributionConstraint`.
+#. visualize.py: The script file to visualize the last save configuration
+   using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_. if installed.
+
+run.py explained
+================
+
+:underline:`IMPORTING USEFUL DEFINITIONS:` 
+
+All useful packages, modules and definitions are imported. 
+
+
+:underline:`DECLARE USEFUL VARIABLES:` 
+
+Initialize and declare useful variables in all the script.
+
+
+:underline:`CREATE ENGINE:` 
+
+Check if engine already saved on disk. In the affirmative load it to continue
+fitting from last saved configuration. Otherwise, build the engine and the needed
+constraints.
+
+
+:underline:`DIFFERENT RUNS:` 
+
+Define functions to run the fitting engine. All of the following functions finish 
+running the engine using Engine.run method.
+
+#. normal_run: use set_groups_as_atoms to create groups of single atom. 
+   Here the engine runs traditional RMC with random selection of groups 
+   using :class:`.RandomSelector` and random atomic translations using 
+   :class:`.TranslationGenerator` move generator.
+#. swaps_run: use set_groups_as_atoms to create groups of single atom. 
+   Create two swapping lists. The first one containing only Lithium atoms 
+   indexes and the second all of Cobalt, Nickel and Manganese atom indexes. Create two 
+   :class:`.SwapPositionsGenerator` for swapping Lithium atoms with
+   Cobalt, Nickel and Manganese and vice-versa.
+#. removes_run: Create remove lists that are lists of atom indexes. First list for
+   oxygen atoms, another one for lithium atoms and a third one for all of nickel, 
+   manganese and cobalt. :class:`.AtomsRemoveGenerator` is a especial generator that 
+   can only be set to an :class:`.EmptyGroup`. Create three :class:`.EmptyGroup` 
+   where by default their move generators are :class:`.AtomsRemoveGenerator` instances.
+   use set_maximum_collected for each and every one to limit the maximum number of 
+   allowed removed atoms per generator. The use set_atoms_list to set list of atoms
+   to remove from. If set_maximum_collected is not used, then theres is no boundaries to 
+   how many atoms are allowed to be removed and :class:`.AtomsRemoveGenerator` can remove
+   atoms without any control. The same way, if set_maximum_collected is not used the 
+   :class:`.AtomsRemoveGenerator` will remove any atom from the system. Finally, use
+   set_groups method to set only the three defined :class:`.EmptyGroup`. 
+      
+:underline:`RUN SIMULATION:` 
+
+launch normal_run then allow experimental constraint to fit its scale factor then
+launch normal_run again. At this point, one can notice that the fit is not perfect yet.
+Create 'swap_1' frame and set it as used. Launch swaps_run to swap between atoms then 
+launch normal_run again. Then, create and use 'removes_2' frame. And Finally, loop for  
+many times all of removes_run, normal_run and swaps_run. Notice that the number of steps
+for removes_run is as little as 100. It's very important to remove as little atoms as
+possible and try to fit again. Excessive atoms removal is irreversible, and even though 
+it decreases total error on the short run but it will drive the system to an 
+impossibility to finding a solution. Removing a lot of atoms can create artificial 
+defects and voids in the system that can't be explained physically.
+Notice here the usage of frame is very important. At any time if one thinks that 
+for instance a lot of atoms were removed, then one can simply revert to a previous frame 
+prior to starting atoms removal.
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

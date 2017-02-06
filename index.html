@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc package &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package" href="#" />
+            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="#" />
             <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="#">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -937,6 +937,28 @@ be the given logFile appended &#8216;.log&#8217; extension automatically.</li>
 
 <dl class="method">
 <dt>
+<code class="descname">is_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<dd><p>Check whether a given frame exists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): Frame name</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): whether frame exists.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
 <code class="descname">add_frames</code><span class="sig-paren">(</span><em>frames</em><span class="sig-paren">)</span></dt>
 <dd><p>Add a single or multiple frames to engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -946,6 +968,23 @@ be the given logFile appended &#8216;.log&#8217; extension automatically.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>frames (string, list): Frames name. It can be a string to add a single
 frame or a list of strings to add multiple frames.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">add_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<dd><p>Add a single frame to engine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>frame (string): Frames name.</li>
 </ol>
 </td>
 </tr>
@@ -1694,7 +1733,7 @@ effective if fullrmc is compiled with openmp.</li>
              |
         
         </li>
-        <li><a href="#">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

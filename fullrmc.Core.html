@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -127,12 +127,6 @@
 <div class="section" id="module-fullrmc.Core.Collection">
 <span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Core.Collection" title="Permalink to this headline">¶</a></h2>
 <p>It contains a collection of methods and classes that are useful for the package.</p>
-<dl class="function">
-<dt id="fullrmc.Core.Collection.SingletonDecorator">
-<code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">SingletonDecorator</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.SingletonDecorator" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class singleton decorator.</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="fullrmc.Core.Collection.raise_if_collected">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">raise_if_collected</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.raise_if_collected" title="Permalink to this definition">¶</a></dt>
@@ -243,7 +237,8 @@ When psutils is not installed, None is returned.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">key (None, string): the path to return. If not None, it can take any of the following:</p>
+<li><p class="first">key (None, string): the path to return. If not None, it can take any of the 
+following:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>cwd:                 current working directory</li>
@@ -260,8 +255,8 @@ When psutils is not installed, None is returned.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>path (dictionary, value): If key is not None it returns the value of paths dictionary key.
-Otherwise all the dictionary is returned.</li>
+<li>path (dictionary, value): If key is not None it returns the value of paths 
+dictionary key. Otherwise all the dictionary is returned.</li>
 </ol>
 </td>
 </tr>
@@ -329,7 +324,8 @@ Otherwise all the dictionary is returned.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>vector (numpy.ndarray, list, set, tuple): the vector to compute a random perpendicular vector to it</li>
+<li>vector (numpy.ndarray, list, set, tuple): the vector to compute a random 
+perpendicular vector to it</li>
 </ol>
 </td>
 </tr>
@@ -350,16 +346,11 @@ Otherwise all the dictionary is returned.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">coordinates (np.ndarray): The atoms coordinates.</p>
-</li>
-<li><dl class="first docutils">
-<dt>weights (numpy.ndarray, None): the list of weights for the COM calculation. </dt>
-<dd><p class="first last">Must be a numpy.ndarray of numbers of the same length as indexes.
-None is accepted for equivalent weighting.</p>
-</dd>
-</dl>
-</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>coordinates (np.ndarray): The atoms coordinates.</li>
+<li>weights (numpy.ndarray, None): the list of weights for the COM calculation. 
+Must be a numpy.ndarray of numbers of the same length as indexes.
+None is accepted for equivalent weighting.</li>
 </ol>
 </td>
 </tr>
@@ -368,9 +359,12 @@ None is accepted for equivalent weighting.</p>
 <li>eval1 (fullrmc.Globals.FLOAT_TYPE): the biggest eigen value.</li>
 <li>eval2 (fullrmc.Globals.FLOAT_TYPE): the second biggest eigen value.</li>
 <li>eval3 (fullrmc.Globals.FLOAT_TYPE): the smallest eigen value.</li>
-<li>axis1 (numpy.ndarray): the principal axis corresponding to the biggest eigen value.</li>
-<li>axis2 (numpy.ndarray): the principal axis corresponding to the second biggest eigen value.</li>
-<li>axis3 (numpy.ndarray): the principal axis corresponding to the smallest eigen value.</li>
+<li>axis1 (numpy.ndarray): the principal axis corresponding to the biggest eigen 
+value.</li>
+<li>axis2 (numpy.ndarray): the principal axis corresponding to the second biggest 
+eigen value.</li>
+<li>axis3 (numpy.ndarray): the principal axis corresponding to the smallest
+eigen value.</li>
 </ol>
 </td>
 </tr>
@@ -388,7 +382,8 @@ None is accepted for equivalent weighting.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>rotationVector (list, tuple, numpy.ndarray): the rotation vector coordinates.</li>
+<li>rotationVector (list, tuple, numpy.ndarray): the rotation vector 
+coordinates.</li>
 <li>angle (float): the rotation angle in rad.</li>
 </ol>
 </td>
@@ -449,7 +444,8 @@ The array itself will be rotated and not a copy of it.</p>
 <dl class="function">
 <dt id="fullrmc.Core.Collection.orient">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">orient</code><span class="sig-paren">(</span><em>xyzArray</em>, <em>arrayAxis</em>, <em>alignToAxis</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.orient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis to alignToAXis.</p>
+<dd><p>Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis 
+to alignToAXis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -616,7 +612,8 @@ It can be a single peak or a list of peaks to compute the mean slope instead.</l
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>minimas (numpy.ndarray): The minimas array found using minIndex and used to compute the slope and therefore <span class="math">\(\rho_{0}\)</span>.</li>
+<li>minimas (numpy.ndarray): The minimas array found using minIndex and used to 
+compute the slope and therefore <span class="math">\(\rho_{0}\)</span>.</li>
 <li>slope (float): The computed slope from the minimas.</li>
 <li>rho0 (float): The number density of the material.</li>
 <li>g(r) (numpy.ndarray): the computed g(r).</li>
@@ -691,7 +688,8 @@ separation of 100 degrees.</span></p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated vectors.</li>
+<li>vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated 
+vectors.</li>
 </ol>
 </td>
 </tr>
@@ -707,7 +705,8 @@ The probability density of the gaussian distribution is:
 <span class="math">\(f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}\)</span></p>
 <p>Where:</p>
 <ul class="simple">
-<li><span class="math">\(\mu\)</span> is the center of the gaussian, it is the mean or expectation of the distribution it is called the distribution&#8217;s median or mode.</li>
+<li><span class="math">\(\mu\)</span> is the center of the gaussian, it is the mean or expectation of the 
+distribution it is called the distribution&#8217;s median or mode.</li>
 <li><span class="math">\(\sigma\)</span> is its standard deviation.</li>
 <li><span class="math">\(FWHM=2\sqrt{2 ln 2} \sigma\)</span> is the Full Width at Half Maximum of the gaussian.</li>
 </ul>
@@ -719,7 +718,8 @@ The probability density of the gaussian distribution is:
 <li>x (numpy.ndarray): The vector to compute the gaussian</li>
 <li>center (number): The center of the gaussian.</li>
 <li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
-<li>normalize(boolean): Whether to normalize the generated gaussian by <span class="math">\(\frac{1}{\sigma\sqrt{2\pi}}\)</span> so the integral is equal to 1.</li>
+<li>normalize(boolean): Whether to normalize the generated gaussian by 
+<span class="math">\(\frac{1}{\sigma\sqrt{2\pi}}\)</span> so the integral is equal to 1.</li>
 <li>check (boolean): whether to check arguments before generating vectors.</li>
 </ol>
 </td>
@@ -738,7 +738,8 @@ The probability density of the gaussian distribution is:
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>x (numpy.ndarray): The vector to compute the gaussian</li>
-<li>center (number): The center of the step function which is the the center of the gaussian.</li>
+<li>center (number): The center of the step function which is the the center of 
+the gaussian.</li>
 <li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
 <li>height (number): The height of the step function.</li>
 <li>check (boolean): whether to check arguments before generating vectors.</li>
@@ -771,326 +772,6 @@ The probability density of the gaussian distribution is:
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
 <li>arguments (object): Any python object.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="fullrmc.Core.Collection.AtomsCollector">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">AtomsCollector</code><span class="sig-paren">(</span><em>parent</em>, <em>dataKeys=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Atoms collector manages collecting atoms data whenever they are removed from 
-from system. This mechanism allows storing and recovering atoms data at engine 
-runtime.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>dataKeys (None, list): The data keys list promised to store everytime an atom is
-removed from the system. If None is given, dataKeys must be set later using 
-set_data_keys method.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="fullrmc.Core.Collection.AtomsCollector.dataKeys">
-<code class="descname">dataKeys</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.dataKeys" title="Permalink to this definition">¶</a></dt>
-<dd><p>get data keys that this collector will collect.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Core.Collection.AtomsCollector.indexes">
-<code class="descname">indexes</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.indexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collected atoms indexes.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Core.Collection.AtomsCollector.indexesSortedArray">
-<code class="descname">indexesSortedArray</code><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.indexesSortedArray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collected atoms sorted indexes numpy array.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.reset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reset collector to initial state by releasing all collected atoms and 
-re-initializing all properties. parent._on_collector_reset method is not called.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_collected_data">
-<code class="descname">get_collected_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_collected_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get stored collected data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>collectedData (dict): The collected data dict.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.is_collected">
-<code class="descname">is_collected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.is_collected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether atom is collected given its index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>index (int): The atom index to check whether it is collected or not.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (bool): Whether it is collected or not</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.is_not_collected">
-<code class="descname">is_not_collected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.is_not_collected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether atom is not collected given its index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>index (int): The atom index to check whether it is collected or not.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (bool): Whether it is not collected or it is.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.are_collected">
-<code class="descname">are_collected</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.are_collected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether atoms are collected given their indexes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-they are collected or not.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (list): List of booleans defining whether atoms are collected
-or not.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.are_not_collected">
-<code class="descname">are_not_collected</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.are_not_collected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get whether atoms are not collected given their indexes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-they are collected or not.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (list): List of booleans defining whether atoms are not collected
-or they are.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.set_data_keys">
-<code class="descname">set_data_keys</code><span class="sig-paren">(</span><em>dataKeys</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.set_data_keys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set atoms collector data keys. keys can be set only once. This method will 
-throw an error if used to reset dataKeys.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>dataKeys (list): The data keys list promised to store everytime an atom is
-removed from the system.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_relative_index">
-<code class="descname">get_relative_index</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_relative_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute relative atom index considering already collected atoms.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>index (int): Atom index.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>relativeIndex (int): Atom relative index.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_relative_indexes">
-<code class="descname">get_relative_indexes</code><span class="sig-paren">(</span><em>indexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_relative_indexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute relative atoms index considering already collected atoms.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>indexes (list,set,tuple,numpy.ndarray): Atoms index.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>relativeIndexes (list): Atoms relative index.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_real_index">
-<code class="descname">get_real_index</code><span class="sig-paren">(</span><em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_real_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute real index of the given relativeIndex considering already collected indexes.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>relativeIndex (int): Atom relative index to already collected indexes.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (int): Atom real index.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_atom_data">
-<code class="descname">get_atom_data</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_atom_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get collected atom data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (int): The atom index to return its collected data.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.get_data_by_key">
-<code class="descname">get_data_by_key</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.get_data_by_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all collected atoms data that is associated with a key.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>key (int): the data.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>data (dict): dictionary of atoms indexes where values are the collected data.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.collect">
-<code class="descname">collect</code><span class="sig-paren">(</span><em>index</em>, <em>dataDict</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.collect" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collect atom given its index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (int): The atom index to collect.</li>
-<li>dataDict (dict): The atom data dict to collect.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Collection.AtomsCollector.release">
-<code class="descname">release</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.AtomsCollector.release" title="Permalink to this definition">¶</a></dt>
-<dd><p>Release atom from list of collected atoms and return its collected data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>index (int): The atom index to release.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>dataDict (dict): The released atom collected data.</li>
 </ol>
 </td>
 </tr>
@@ -1393,8 +1074,9 @@ It must be a positive number.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
-The length of weights array defines the resolution of the biased numbers generation.
+<li>weights (None, list, numpy.ndarray): The weights scheme. The length  
+defines the number of bins and the edges. The length of weights array 
+defines the resolution of the biased numbers generation.
 If None is given, ones array of length 10000 is automatically generated.</li>
 </ol>
 </td>
@@ -1413,8 +1095,9 @@ If None is given, ones array of length 10000 is automatically generated.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>biasRange(None, number): The bias gaussian range. 
-It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-If None, it will be automatically set to (upperLimit-lowerLimit)/5</li>
+It must be smaller than half of limits range which is equal to 
+(upperLimit-lowerLimit)/2. If None, it will be automatically set to 
+(upperLimit-lowerLimit)/5.</li>
 <li>biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
 It must be smaller than half of biasRange.
 If None, it will be automatically set to biasRange/10</li>
@@ -1436,15 +1119,16 @@ If None, it will be automatically set to biasRange/10</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>unbiasRange(None, number): The bias gaussian range. 
-It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-If None, it will be automatically set to biasRange.</li>
+It must be smaller than half of limits range which is equal to 
+(upperLimit-lowerLimit)/2. If None, it will be automatically set to biasRange.</li>
 <li>unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
 It must be smaller than half of biasRange.
 If None, it will be automatically set to biasFWHM.</li>
 <li>unbiasHeight(number): The unbias gaussian maximum intensity.
 If None, it will be automatically set to biasHeight.</li>
-<li>unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
-It must be a positive number.</li>
+<li>unbiasThreshold(number): unbias is only applied at a certain position 
+only when the position weight is above unbiasThreshold. It must be a 
+positive number.</li>
 </ol>
 </td>
 </tr>
@@ -1462,8 +1146,8 @@ It must be a positive number.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index(integer): The index of the position to bias</li>
-<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-If None, bias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before 
+biasing the scheme. If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1482,8 +1166,8 @@ If None, bias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>position(number): The number to bias.</li>
-<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-If None, bias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before 
+biasing the scheme. If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1502,8 +1186,8 @@ If None, bias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index(integer): The index of the position to unbias</li>
-<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-If None, unbias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before 
+unbiasing the scheme. If None, unbias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1522,8 +1206,8 @@ If None, unbias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>position(number): The number to unbias.</li>
-<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-If None, unbias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before 
+unbiasing the scheme. If None, unbias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1672,10 +1356,19 @@ It must be a positive number.</li>
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator.set_weights">
 <code class="descname">set_weights</code><span class="sig-paren">(</span><em>weights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator.set_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the generator integer numbers weights.</p>
-<ol class="arabic simple">
-<li>weights (None, list, numpy.ndarray): The weights scheme. The length must be equal to the range between lowerLimit and upperLimit.
-If None is given, ones array of length upperLimit-lowerLimit+1 is automatically generated.</li>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>weights (None, list, numpy.ndarray): The weights scheme. The length must 
+be equal to the range between lowerLimit and upperLimit. If None is given, 
+ones array of length upperLimit-lowerLimit+1 is automatically generated.</li>
 </ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1741,8 +1434,8 @@ It must be a positive number.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index(integer): The index of the position to bias</li>
-<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-If None, bias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before 
+biasing the scheme. If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1761,8 +1454,8 @@ If None, bias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>position(number): The number to bias.</li>
-<li>scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-If None, bias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the bias gaussian before 
+biasing the scheme. If None, bias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1781,8 +1474,8 @@ If None, bias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>index(integer): The index of the position to unbias</li>
-<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-If None, unbias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before 
+unbiasing the scheme. If None, unbias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -1801,8 +1494,8 @@ If None, unbias gaussian is used as defined.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>position(number): The number to unbias.</li>
-<li>scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-If None, unbias gaussian is used as defined.</li>
+<li>scaleFactor(None, number): Whether to scale the unbias gaussian before 
+unbiasing the scheme. If None, unbias gaussian is used as defined.</li>
 <li>check(boolean): Whether to check arguments.</li>
 </ol>
 </td>
@@ -2419,11 +2112,7 @@ If 0 frequency is given, it means that the scale factor is fixed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-<ol class="arabic">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint&#8217;s standard error computation.
 Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
@@ -2433,6 +2122,10 @@ total constraint&#8217;s standard error. At least a single weight point is requi
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 </ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3932,7 +3625,7 @@ sub-list length must be equal to swapLength.</p>
 
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.SwapGenerator.get_ready_for_move">
-<code class="descname">get_ready_for_move</code><span class="sig-paren">(</span><em>groupAtomsIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.get_ready_for_move" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_ready_for_move</code><span class="sig-paren">(</span><em>engine</em>, <em>groupAtomsIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator.get_ready_for_move" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the swap generator ready to perform a move. Unlike a normal move generator,
 swap generators will affect not only the selected atoms but other atoms as well.
 Therefore at engine runtime, selected atoms will be extended to all affected 
@@ -3944,6 +3637,7 @@ to ensure that all affect atoms with the swap are updated.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (fullrmc.Engine): The engine calling for the move.</li>
 <li>groupAtomsIndexes (numpy.ndarray): The atoms indexes to swap.</li>
 </ol>
 </td>
@@ -5537,7 +5231,7 @@ lowerLimit array, upperLimit array</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.1',
+        VERSION:     '3.0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -584,7 +584,7 @@ reproduction of defects in systems.</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">DihedralAngleConstraint</span></code></a> implemented to control dihedral angles.</li>
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Collection.AtomsCollector" title="fullrmc.Core.Collection.AtomsCollector"><code class="xref py py-class docutils literal"><span class="pre">AtomsCollector</span></code></a> implemented allowing the ability of dynamically remove
+<li><code class="xref py py-class docutils literal"><span class="pre">AtomsCollector</span></code> implemented allowing the ability of dynamically remove
 and add re-insert atoms to the system.</li>
 <li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> implemented to generate atoms removing from system
 upon fitting.</li>
@@ -620,6 +620,32 @@ upon fitting.</li>
 <div><ol class="arabic simple">
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">DihedralAngleConstraint</span></code></a> FRAME_DATA fixed which was preventing  
 constraint from saving to pyrep repository.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id31">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.2">Version 3.0.2</a>:<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id32">
+<h4>New Modules and definitions:<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Redundant objects global container mechanism added. This will sometimes reduce 
+some engine&#8217;s attributes size, allowing fast saving and loading of data.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id33">
+<h4>Fixes and improvements:<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator"><code class="xref py py-class docutils literal"><span class="pre">MoveGeneratorCombinator</span></code></a> bug from latest update fixed.</li>
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapGenerator</span></code></a> is not allowed to be collected or combined with other 
+generators. Also swapList will update automatically upon removing and
+releasing atoms.</li>
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a> is not allowed to be collected or combined with other 
+generators.</li>
+<li>MLSelection, refine and explore examples BiasedEngine fixed</li>
 </ol>
 </div></blockquote>
 </div>
@@ -701,6 +727,11 @@ constraint from saving to pyrep repository.</li>
 <li><a class="reference internal" href="#id30">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id31">Version 3.0.2:</a><ul>
+<li><a class="reference internal" href="#id32">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id33">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -735,7 +766,7 @@ constraint from saving to pyrep repository.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

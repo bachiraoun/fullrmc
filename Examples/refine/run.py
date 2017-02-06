@@ -107,9 +107,9 @@ class BiasedEngine(Engine):
             rejectMove = False
             for c in _rigidConstraints:
                 # compute before move
-                c.compute_before_move(indexes = groupAtomsIndexes)
+                c.compute_before_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes)
                 # compute after move
-                c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
+                c.compute_after_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
                 # get rejectMove
                 rejectMove = c.should_step_get_rejected(c.afterMoveStandardError)
                 if rejectMove:
@@ -119,7 +119,7 @@ class BiasedEngine(Engine):
             if rejectMove:
                 # enhanceOnlyConstraints reject move
                 for c in _rigidConstraints:
-                    c.reject_move(indexes=groupAtomsIndexes)
+                    c.reject_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes)
                 # log generated move rejected before getting tried
                 LOGGER.log("move not tried","Generated move %i is not tried"%self.tried)
             ###################################### try move #######################################
@@ -127,9 +127,9 @@ class BiasedEngine(Engine):
                 self.__tried += 1
                 for c in _constraints:
                     # compute before move
-                    c.compute_before_move(indexes = groupAtomsIndexes)
+                    c.compute_before_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes)
                     # compute after move
-                    c.compute_after_move(indexes = groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
+                    c.compute_after_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes, movedBoxCoordinates=movedBoxCoordinates)
             ################################ compute new biasedStdErr ################################
                 newStdErr = self.compute_total_standard_error(_constraints, current=False)
                 #if len(_constraints) and (newStdErr >= self.biasedStdErr):
@@ -148,7 +148,7 @@ class BiasedEngine(Engine):
                 if _moveTried:
                     # constraints reject move
                     for c in _constraints:
-                        c.reject_move(indexes=groupAtomsIndexes)
+                        c.reject_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes)
                     # log tried move rejected
                     LOGGER.log("move rejected","Tried move %i is rejected"%self.__generated)
             ##################################### accept move #####################################
@@ -158,7 +158,7 @@ class BiasedEngine(Engine):
                 self.groupSelector.move_accepted(self.__lastSelectedGroupIndex)
                 # constraints reject move
                 for c in _usedConstraints:
-                    c.accept_move(indexes=groupAtomsIndexes)
+                    c.accept_move(realIndexes=groupAtomsIndexes, relativeIndexes=groupAtomsIndexes)
                 # set new coordinates
                 self.__realCoords[groupAtomsIndexes] = movedRealCoordinates
                 self.__boxCoords[groupAtomsIndexes]  = movedBoxCoordinates

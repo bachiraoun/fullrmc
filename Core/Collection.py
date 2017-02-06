@@ -16,12 +16,12 @@ import numpy as np
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
 
-
-def SingletonDecorator(cls):
-    """ A class singleton decorator. """
-    instance = cls()
-    instance.__call__ = lambda: instance
-    return instance    
+# should not be used because this makes a class un-picklable as it's type will look like a function
+#def SingletonDecorator(cls):
+#    """ A class singleton decorator. """
+#    instance = cls()
+#    instance.__call__ = lambda: instance
+#    return instance    
     
 def raise_if_collected(func):
     """ Constraints method decorator that raises an error whenever the method is called 
@@ -132,8 +132,8 @@ def get_path(key=None):
     get all information needed about the script, the current, and the python executable path.
     
     :Parameters:
-        #. key (None, string): the path to return. If not None, it can take any of the following:
-        
+        #. key (None, string): the path to return. If not None, it can take any of the 
+           following:\n
             #. cwd:                 current working directory
             #. script:              the script's total path
             #. exe:                 python executable path
@@ -143,8 +143,8 @@ def get_path(key=None):
             #. fullrmc:             fullrmc package path
                    
     :Returns:
-        #. path (dictionary, value): If key is not None it returns the value of paths dictionary key.
-           Otherwise all the dictionary is returned.
+        #. path (dictionary, value): If key is not None it returns the value of paths 
+           dictionary key. Otherwise all the dictionary is returned.
     """
     import fullrmc
     # check key type
@@ -246,7 +246,8 @@ def get_random_perpendicular_vector(vector):
     Get random normalized perpendicular vector to a given vector.
     
     :Parameters:
-        #. vector (numpy.ndarray, list, set, tuple): the vector to compute a random perpendicular vector to it
+        #. vector (numpy.ndarray, list, set, tuple): the vector to compute a random 
+           perpendicular vector to it
         
     :Returns:
         #. perpVector (numpy.ndarray): the perpendicular vector  of type fullrmc.Globals.FLOAT_TYPE 
@@ -276,17 +277,20 @@ def get_principal_axis(coordinates, weights=None):
     :Parameters:
         #. coordinates (np.ndarray): The atoms coordinates. 
         #. weights (numpy.ndarray, None): the list of weights for the COM calculation. 
-                                          Must be a numpy.ndarray of numbers of the same length as indexes.
-                                          None is accepted for equivalent weighting.
+           Must be a numpy.ndarray of numbers of the same length as indexes.
+           None is accepted for equivalent weighting.
         
     :Returns:
         #. center (numpy.ndarray): the geometric center of the records.
         #. eval1 (fullrmc.Globals.FLOAT_TYPE): the biggest eigen value.
         #. eval2 (fullrmc.Globals.FLOAT_TYPE): the second biggest eigen value.
         #. eval3 (fullrmc.Globals.FLOAT_TYPE): the smallest eigen value.
-        #. axis1 (numpy.ndarray): the principal axis corresponding to the biggest eigen value.
-        #. axis2 (numpy.ndarray): the principal axis corresponding to the second biggest eigen value.
-        #. axis3 (numpy.ndarray): the principal axis corresponding to the smallest eigen value.
+        #. axis1 (numpy.ndarray): the principal axis corresponding to the biggest eigen 
+           value.
+        #. axis2 (numpy.ndarray): the principal axis corresponding to the second biggest 
+           eigen value.
+        #. axis3 (numpy.ndarray): the principal axis corresponding to the smallest
+           eigen value.
     """
     # multiply by weights
     if weights is not None:
@@ -327,7 +331,8 @@ def get_rotation_matrix(rotationVector, angle):
         Calculates the rotation (3X3) matrix about an axis by a rotation angle.\n
         
         :Parameters:
-            #. rotationVector (list, tuple, numpy.ndarray): the rotation vector coordinates.
+            #. rotationVector (list, tuple, numpy.ndarray): the rotation vector 
+               coordinates.
             #. angle (float): the rotation angle in rad.
            
        :Returns:
@@ -393,7 +398,8 @@ def get_orientation_matrix(arrayAxis, alignToAxis):
   
 def orient(xyzArray, arrayAxis, alignToAxis):
     """
-    Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis to alignToAXis.
+    Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis 
+    to alignToAXis.
     
     :Parameters:
         #. xyzArray (numpy.ndarray): the xyz (N,3) array to rotate.
@@ -695,15 +701,16 @@ def convert_Gr_to_gr(Gr, minIndex):
     following :math:`g(r)=1+(\\frac{G(r)}{4 \\pi \\rho_{0} r})`
     
     :Parameters:
-       #. Gr (numpy.ndarray): The G(r) numpy array of shape (number of points, 2)
-       #. minIndex (int, tuple): The minima indexes to compute the number density rho0.
-          It can be a single peak or a list of peaks to compute the mean slope instead.
+        #. Gr (numpy.ndarray): The G(r) numpy array of shape (number of points, 2)
+        #. minIndex (int, tuple): The minima indexes to compute the number density rho0.
+           It can be a single peak or a list of peaks to compute the mean slope instead.
     
     :Returns:
-       #. minimas (numpy.ndarray): The minimas array found using minIndex and used to compute the slope and therefore :math:`\\rho_{0}`.
-       #. slope (float): The computed slope from the minimas.
-       #. rho0 (float): The number density of the material.
-       #. g(r) (numpy.ndarray): the computed g(r).
+        #. minimas (numpy.ndarray): The minimas array found using minIndex and used to 
+           compute the slope and therefore :math:`\\rho_{0}`.
+        #. slope (float): The computed slope from the minimas.
+        #. rho0 (float): The number density of the material.
+        #. g(r) (numpy.ndarray): the computed g(r).
        
     
     **To visualize convertion**
@@ -793,7 +800,8 @@ def generate_vectors_in_solid_angle(direction,
         #. check (boolean): whether to check arguments before generating vectors.
                    
     :Returns:
-        #. vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated vectors.
+        #. vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated 
+           vectors.
     """
     if check:
         assert isinstance(direction, (list,set,tuple,np.array)), LOGGER.error("direction must be a vector like list or array of length 3")
@@ -851,7 +859,8 @@ def gaussian(x, center=0, FWHM=1, normalize=True, check=True):
     :math:`f(x,\\mu,\\sigma) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{\\frac{-(x-\\mu)^{2}}{2\\sigma^2}}`
      
     Where:\n
-    * :math:`\\mu` is the center of the gaussian, it is the mean or expectation of the distribution it is called the distribution's median or mode. 
+    * :math:`\\mu` is the center of the gaussian, it is the mean or expectation of the 
+      distribution it is called the distribution's median or mode. 
     * :math:`\\sigma` is its standard deviation.
     * :math:`FWHM=2\\sqrt{2 ln 2} \\sigma` is the Full Width at Half Maximum of the gaussian. 
     
@@ -859,7 +868,8 @@ def gaussian(x, center=0, FWHM=1, normalize=True, check=True):
         #. x (numpy.ndarray): The vector to compute the gaussian
         #. center (number): The center of the gaussian.
         #. FWHM (number): The Full Width at Half Maximum of the gaussian.
-        #. normalize(boolean): Whether to normalize the generated gaussian by :math:`\\frac{1}{\\sigma\\sqrt{2\\pi}}` so the integral is equal to 1. 
+        #. normalize(boolean): Whether to normalize the generated gaussian by 
+           :math:`\\frac{1}{\\sigma\\sqrt{2\\pi}}` so the integral is equal to 1. 
         #. check (boolean): whether to check arguments before generating vectors.
     """
     if check:
@@ -884,7 +894,8 @@ def step_function(x, center=0, FWHM=0.1, height=1, check=True):
     
     :Parameters:
         #. x (numpy.ndarray): The vector to compute the gaussian
-        #. center (number): The center of the step function which is the the center of the gaussian.
+        #. center (number): The center of the step function which is the the center of 
+           the gaussian.
         #. FWHM (number): The Full Width at Half Maximum of the gaussian.
         #. height (number): The height of the step function.
         #. check (boolean): whether to check arguments before generating vectors.
@@ -917,24 +928,203 @@ class ListenerBase(object):
             #. arguments (object): Any python object.
         """
         pass
-        
 
-class AtomsCollector(object):
+
+    
+class _Container(object):
+    """
+    This is a general objects container that is used by the engine to contain a unique
+    instance for all objects that are prone for redundancy such as swapLists in 
+    SwapGenerators.
+    """
+    # This is for internal usage only
+    __FIRST_INIT = True
+    
+    def __new__(cls, *args, **kwargs):
+        #Singleton interface
+        thisSingleton = cls.__dict__.get("__thisSingleton__")
+        if thisSingleton is not None:
+            return thisSingleton
+        cls.__thisSingleton__ = thisSingleton = object.__new__(cls,  *args, **kwargs)
+        return thisSingleton
+        
+    def __init__(self):
+        # this if statment insures initializing _Container only once.
+        if _Container.__FIRST_INIT:
+            self.__containers = {}
+            self.__hints      = {}
+            _Container.__FIRST_INIT = False
+
+    def __getstate__(self):
+        """no need to store hints dict"""
+        self.__hints = {}
+        return self.__dict__
+    
+    @property
+    def containersName(self):
+        """The containers name list."""
+        return self.__containers.keys()
+    
+    @property
+    def containers(self):
+        """The containers dictionary"""
+        return self.__containers
+    
+    @property
+    def hints(self):
+        """The containers dictionary"""
+        return self.__hints
+    
+    def get_location_by_hint(self, hint):
+        """
+        Get stored object in container using a hint.
+        
+        :Parameters:
+           #. hint (object): hint used to fetch for stored object. Sometimes objects 
+              are parsed and modified before being set. In this particular 
+              case, those object will be passed as hint and then later used to find
+              stored object after modification.
+        
+        :Returns:
+            #. location (None, tuple): The object location given a hint.
+               If hint not found, the None is returned
+        """
+        for location, h in self.__hints.items():
+            if h is hint:
+                return location
+        # return None when nothing is found
+        return None
+        
+    def is_container(self, name):
+        """
+        Check whether container exists given its name
+        
+        :Parameters:
+            #. name (string): The container's name.
+        """
+        return self.__containers.has_key(name)
+    
+    def assert_location(self, location):
+        """
+        Checks location exists. If it doesn't, an error will be raised
+        
+        :Parameters:
+            #. location (tuple): Location tuple as (name, key) that points to the value.
+               It's typically implemented as such containers[name][key]
+        """
+        assert isinstance(location, (list, tuple)), LOGGER.error("location must be a tuple")
+        assert len(location) == 2, LOGGER.error("location must contain 2 items")
+        name, uniqueKey = location
+        assert self.is_container(name), LOGGER.error("container name '%s' doesn't exists"%name)
+        assert self.__containers[name].has_key(uniqueKey), LOGGER.error("container name '%s' key '%s' doesn't exist"%(name,uniqueKey))
+        
+    def add_container(self, name):
+        """
+        Add a container to the containers dict. 
+        
+        :Parameters:
+            #. name (string): The container's name.
+        """
+        assert isinstance(name, basestring), "name must be a string"
+        assert not self.is_container(name), LOGGER.error("container name '%s' already exists"%name)
+        self.__containers[name] = {}
+    
+    def pop_container(self, name):
+        """
+        pop and return a containerfrom containers dict. 
+        
+        :Parameters:
+            #. name (string): The container's name.
+        
+        :Returns:
+            #. value (list): The container value.
+        """
+        assert isinstance(name, basestring), "name must be a string"
+        assert self.is_container(name), LOGGER.error("container name '%s' doesn't exists"%name)
+        return self.__containers.pop(name)
+    
+    def add_to_container(self, container, value, hint=None):
+        """
+        Add a value to a container. If stored correctly a location tuple (name, uuid) 
+        will be returned. This location tuple is needed to locate and get the data when
+        needed.
+        
+        :Parameters:
+            #. container (string): The container's name.
+            #. value (object): the value object to add to the container's.
+            #. hint (object): hint used to fetch for stored object. Sometimes objects 
+               are parsed and modified before being set. In this particular 
+               case, those object will be passed as hint and then later used to find
+               stored object after modification.
+        
+        :Returns:
+            #. location (tuple): Location tuple as (container, key) that points to the 
+               value. It's typically implemented as such containers[container][key]
+        """
+        assert self.is_container(container), LOGGER.error("container name '%s' doesn't exists"%container)
+        uniqueKey = str(uuid.uuid1())
+        self.__containers[container][uniqueKey] = value
+        # create location
+        location = (container, uniqueKey)
+        # add hint
+        if hint is not None:
+            self.__hints[location] = hint
+        # return location
+        return location
+    
+    def set_value(self, *args, **kwargs):
+        """alias to add_to_container"""
+        return self.add_to_container(*args, **kwargs)
+    
+    def get_value(self, location):
+        """
+        Get stored value in container.
+        
+        :Parameters:
+            #. location (tuple): Location tuple as (name, key) that points to the value.
+               It's typically implemented as such containers[name][key]
+              
+        :Returns:
+            #. value (object): the value object to add to the container's list.
+        
+        """
+        self.assert_location(location)
+        name, uniqueKey = location
+        return self.__containers[name][uniqueKey]
+    
+    def update_value(self, location, value):
+        """
+        Udpdate an existing value.
+        
+        :Parameters:
+            #. location (tuple): Location tuple as (name, key) that points to the value.
+               It's typically implemented as such containers[name][key]
+            #. value (object): the value object to add to the container's.
+        """
+        self.assert_location(location)
+        name, uniqueKey = location
+        self.__containers[name][uniqueKey] = value
+_Container()                    
+        
+        
+    
+class _AtomsCollector(object):
     """
     Atoms collector manages collecting atoms data whenever they are removed from 
     from system. This mechanism allows storing and recovering atoms data at engine 
     runtime.
     
     :Parameters:
-        #. dataKeys (None, list): The data keys list promised to store everytime an atom is
-           removed from the system. If None is given, dataKeys must be set later using 
+        #. dataKeys (None, list): The data keys list promised to store everytime an atom 
+           is removed from the system. If None is given, dataKeys must be set later using 
            set_data_keys method.
     """
+    # internal usage only
     def __init__(self, parent, dataKeys=None):
         # set parent
-        assert callable( getattr(parent, "_on_collector_collect_atom", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_collect_atom' method")
-        assert callable( getattr(parent, "_on_collector_release_atom", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_release_atom' method")
-        assert callable( getattr(parent, "_on_collector_reset", None) ), LOGGER.error("AtomsCollector parent must have '_on_collector_reset' method")
+        assert callable( getattr(parent, "_on_collector_collect_atom", None) ), LOGGER.error("_AtomsCollector parent must have '_on_collector_collect_atom' method")
+        assert callable( getattr(parent, "_on_collector_release_atom", None) ), LOGGER.error("_AtomsCollector parent must have '_on_collector_release_atom' method")
+        assert callable( getattr(parent, "_on_collector_reset", None) ), LOGGER.error("_AtomsCollector parent must have '_on_collector_reset' method")
         self.__parent = parent
         # set data keys tuple
         self.__dataKeys = ()
@@ -960,6 +1150,12 @@ class AtomsCollector(object):
     def indexesSortedArray(self):
         """Collected atoms sorted indexes numpy array."""
         return self.__indexesSortedArray
+    
+    @property
+    def state(self):
+        """Current collector state that will only change upon reseting, 
+        collecting or releasing atoms."""
+        return self.__state
         
     def reset(self):
         """
@@ -973,6 +1169,8 @@ class AtomsCollector(object):
         # set random data that can be used to collect random data at any time.
         # must be used only internally.
         self._randomData = None
+        # set state
+        self.__state = str(uuid.uuid1())
         
     def get_collected_data(self):
         """
@@ -1021,6 +1219,70 @@ class AtomsCollector(object):
         """
         return [self.__collectedData.has_key(idx) for idx in indexes]
     
+    def any_collected(self, indexes):
+        """
+        Get whether any atom in indexes is collected.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (boolean): Whether any collected atom is found collected.
+        """
+        for idx in indexes:
+            if self.__collectedData.has_key(idx):
+                return True
+        return False
+    
+    def any_not_collected(self, indexes):
+        """
+        Get whether any atom in indexes is not collected.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (boolean): Whether any collected atom is not found collecte.
+        """
+        for idx in indexes:
+            if not self.__collectedData.has_key(idx):
+                return True
+        return False
+    
+    def all_collected(self, indexes):
+        """
+        Get whether all atoms in indexes are collected.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (boolean): Whether all atoms are collected.
+        """
+        for idx in indexes:
+            if not self.__collectedData.has_key(idx):
+                return False
+        return True
+    
+    def all_not_collected(self, indexes):
+        """
+        Get whether all atoms in indexes are not collected.
+    
+        :Parameters:
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
+               they are collected or not.
+        
+        :Returns:
+            #. result (boolean): Whether all atoms are not collected.
+        """
+        for idx in indexes:
+            if self.__collectedData.has_key(idx):
+                return False
+        return True
+        
     def are_not_collected(self, indexes):
         """
         Get whether atoms are not collected given their indexes.
@@ -1136,6 +1398,8 @@ class AtomsCollector(object):
         # set indexes sorted array
         idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')
         self.__indexesSortedArray = np.insert(self.__indexesSortedArray, idx, index)
+        # set state
+        self.__state = str(uuid.uuid1())
 
     def release(self, index):
         """
@@ -1154,6 +1418,8 @@ class AtomsCollector(object):
         # set indexes sorted array
         idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')
         self.__indexesSortedArray = np.insert(self.__indexesSortedArray, idx, index)
+        # set state
+        self.__state = str(uuid.uuid1())
         # return
         return index
     
@@ -1405,8 +1671,9 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         Set generator's weights.
         
         :Parameters:
-            #. weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
-               The length of weights array defines the resolution of the biased numbers generation.
+            #. weights (None, list, numpy.ndarray): The weights scheme. The length  
+               defines the number of bins and the edges. The length of weights array 
+               defines the resolution of the biased numbers generation.
                If None is given, ones array of length 10000 is automatically generated.
         """
         # set original weights
@@ -1438,8 +1705,9 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. biasRange(None, number): The bias gaussian range. 
-               It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-               If None, it will be automatically set to (upperLimit-lowerLimit)/5
+               It must be smaller than half of limits range which is equal to 
+               (upperLimit-lowerLimit)/2. If None, it will be automatically set to 
+               (upperLimit-lowerLimit)/5.
             #. biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
                It must be smaller than half of biasRange.
                If None, it will be automatically set to biasRange/10
@@ -1484,15 +1752,16 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. unbiasRange(None, number): The bias gaussian range. 
-               It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-               If None, it will be automatically set to biasRange.
+               It must be smaller than half of limits range which is equal to 
+               (upperLimit-lowerLimit)/2. If None, it will be automatically set to biasRange.
             #. unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
                It must be smaller than half of biasRange.
                If None, it will be automatically set to biasFWHM.
             #. unbiasHeight(number): The unbias gaussian maximum intensity.
                If None, it will be automatically set to biasHeight.
-            #. unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
-               It must be a positive number.
+            #. unbiasThreshold(number): unbias is only applied at a certain position 
+               only when the position weight is above unbiasThreshold. It must be a 
+               positive number.
         """
         # check biasRange
         if unbiasRange is None:
@@ -1539,8 +1808,8 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. index(integer): The index of the position to bias
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-               If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
+               biasing the scheme. If None, bias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__biasHeight>0: return
@@ -1583,8 +1852,8 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. position(number): The number to bias.
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-               If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
+               biasing the scheme. If None, bias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -1602,8 +1871,8 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. index(integer): The index of the position to unbias
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-               If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
+               unbiasing the scheme. If None, unbias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__unbiasHeight>0: return
@@ -1650,8 +1919,8 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         
         :Parameters:
             #. position(number): The number to unbias.
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-               If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
+               unbiasing the scheme. If None, unbias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -1795,8 +2064,10 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         """
         Set the generator integer numbers weights.
         
-        #. weights (None, list, numpy.ndarray): The weights scheme. The length must be equal to the range between lowerLimit and upperLimit.
-           If None is given, ones array of length upperLimit-lowerLimit+1 is automatically generated.
+        :Parameters:
+            #. weights (None, list, numpy.ndarray): The weights scheme. The length must 
+               be equal to the range between lowerLimit and upperLimit. If None is given, 
+               ones array of length upperLimit-lowerLimit+1 is automatically generated.
         """
         if weights is None:
             self.__originalWeights = np.ones(self.upperLimit-self.lowerLimit+1)
@@ -1860,8 +2131,8 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         
         :Parameters:
             #. index(integer): The index of the position to bias
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-               If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
+               biasing the scheme. If None, bias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__biasHeight>0: return
@@ -1888,8 +2159,8 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         
         :Parameters:
             #. position(number): The number to bias.
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before biasing the scheme.
-               If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
+               biasing the scheme. If None, bias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -1907,8 +2178,8 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         
         :Parameters:
             #. index(integer): The index of the position to unbias
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-               If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
+               unbiasing the scheme. If None, unbias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__unbiasHeight>0: return
@@ -1940,8 +2211,8 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         
         :Parameters:
             #. position(number): The number to unbias.
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before unbiasing the scheme.
-               If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
+               unbiasing the scheme. If None, unbias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:

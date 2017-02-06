@@ -33,7 +33,7 @@ from __pkginfo__ import __version__
 from Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from Core.boundary_conditions_collection import transform_coordinates
 from Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
-from Core.Collection import AtomsCollector
+from Core.Collection import _AtomsCollector, _Container
 from Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from Core.Group import Group, EmptyGroup
 from Core.MoveGenerator import SwapGenerator, RemoveGenerator
@@ -110,6 +110,7 @@ class Engine(object):
                          '_Engine__allNames', '_Engine__names',
                          '_Engine__namesIndexes', '_Engine__numberOfAtomsPerName',
                          '_atomsCollector',) 
+                         #'_atomsCollector', '_Container') 
         RUNTIME_DATA  = ('_Engine__realCoordinates','_Engine__boxCoordinates',
                          '_Engine__state', '_Engine__generated', '_Engine__tried', 
                          '_Engine__accepted','_Engine__tolerated', '_Engine__removed', 
@@ -160,8 +161,11 @@ class Engine(object):
                     'moleculesIndexes', 'moleculesNames',
                     'elementsIndexes',  'allElements',
                     'namesIndexes',     'allNames')
-        self._atomsCollector = AtomsCollector(self, dataKeys=dataKeys)
-
+        self._atomsCollector = _AtomsCollector(self, dataKeys=dataKeys)
+        
+        ## initialize objects container
+        #self._container = _Container()
+        
         # initialize engine attributes
         self.__broadcaster   = Broadcaster()
         self.__constraints   = []
@@ -810,25 +814,19 @@ class Engine(object):
         engine._set_repository(REP)
         engine._set_path(path)
         # pull engine's ENGINE_DATA
-        for dname in engine.ENGINE_DATA:
-            #name  = dname.split('_Engine__')[1]
-            name = dname
+        for name in engine.ENGINE_DATA:
             value = REP.pull(relativePath='.', name=name)
-            object.__setattr__(engine, dname, value)   
+            object.__setattr__(engine, name, value)   
         # pull engine's FRAME_DATA
-        for dname in engine.FRAME_DATA:
-            #name  = dname.split('_Engine__')[1]
-            name = dname
+        for name in engine.FRAME_DATA:
             value = REP.pull(relativePath=engine.usedFrame, name=name)
-            object.__setattr__(engine, dname, value)             
+            object.__setattr__(engine, name, value)             
         # pull constraints' used frame FRAME_DATA
         for c in engine.constraints:
             cp = os.path.join(engine.usedFrame, 'constraints', c.constraintId)
-            for dname in c.FRAME_DATA:
-                #name  = dname.split('__')[1]
-                name = dname
+            for name in c.FRAME_DATA: 
                 value = REP.pull(relativePath=cp, name=name)
-                object.__setattr__(c, dname, value) 
+                object.__setattr__(c, name, value) 
         # set engine must save to false
         object.__setattr__(engine, '_Engine__mustSave', False)
         # set engine group selector
@@ -841,8 +839,8 @@ class Engine(object):
         Set the log file basename.
     
         :Parameters:
-           #. logFile (None, string): Logging file basename. A logging file full name will
-              be the given logFile appended '.log' extension automatically.
+            #. logFile (None, string): Logging file basename. A logging file full name will
+               be the given logFile appended '.log' extension automatically.
         """
         assert isinstance(logFile, basestring), LOGGER.error("logFile must be a string, '%s' is given"%logFile)
         LOGGER.set_log_file_basename(logFile)
@@ -883,6 +881,18 @@ class Engine(object):
         for c in self.__constraints:
             cp = os.path.join(frame, 'constraints', c.constraintId)
             check_set_or_raise(this=c, relativePath=cp)
+    
+    def is_frame(self, frame):
+        """
+        Check whether a given frame exists.
+        
+        :Parameters:
+            #. frame (string): Frame name
+        
+        :Returns:
+            #. result (boolean): whether frame exists.
+        """
+        return frame in self.__frames
         
     def add_frames(self, frames):
         """
@@ -907,7 +917,16 @@ class Engine(object):
         # save frames
         if self.__repository is not None:
             self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
-
+    
+    def add_frame(self, frame):
+        """
+        Add a single frame to engine.
+        
+        :Parameters:
+            #. frame (string): Frames name.
+        """
+        self.add_frames([frame])
+        
     def reinit_frame(self, frame):
         """
         Reset frame data to initial pdb coordinates.
@@ -1272,6 +1291,8 @@ class Engine(object):
         if self.__repository is not None:
             self.__repository.dump(value=self.__pdb, relativePath=self.__usedFrame, name='_Engine__pdb', replace=True)    
             self.__repository.dump(value=self.__realCoordinates, relativePath=self.__usedFrame, name='_Engine__realCoordinates', replace=True)    
+        # reset AtomsCollector
+        self._atomsCollector.reset()
         # set boundary conditions
         if boundaryConditions is None:
             boundaryConditions = pdb.boundaryConditions
@@ -1352,7 +1373,7 @@ class Engine(object):
             self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_original__volume', replace=True)    
             self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_original__numberDensity', replace=True)    
             self.__frameOriginalData['_original__numberOfAtoms'] = None
-            self.__frameOriginalData['_original__volume'] = None
+            self.__frameOriginalData['_original__volume']        = None
             self.__frameOriginalData['_original__numberDensity'] = None
         else:
             self.__frameOriginalData['_original__numberOfAtoms'] = self.numberOfAtoms
@@ -1893,7 +1914,7 @@ class Engine(object):
         """
         Parses all engine constraints and returns different lists of the active ones.
         
-        :parameters:
+        :Parameters:
             #. sortConstraints (boolean): Whether to sort used constraints according 
                to their computation cost property. This is can minimize computations
                and enhance performance by computing less costly constraints first.
@@ -1935,7 +1956,7 @@ class Engine(object):
         Calls get_used_constraints method, re-initializes constraints when needed and 
         return them all.
         
-        :parameters:
+        :Parameters:
             #. force (boolean): Whether to force initializing constraints regardless 
                of their state.
             #. sortConstraints (boolean): Whether to sort used constraints according 
@@ -2016,7 +2037,7 @@ class Engine(object):
         self._RT_selectedGroup = self.__groups[self.__lastSelectedGroupIndex]
         # get move generator
         self._RT_moveGenerator = self._RT_selectedGroup.moveGenerator
-        # remover generator
+        # remove generator
         if isinstance(self._RT_moveGenerator, RemoveGenerator):
             movedRealCoordinates = None 
             movedBoxCoordinates  = None
@@ -2024,20 +2045,29 @@ class Engine(object):
             notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
             self._RT_groupAtomsIndexes    = self._RT_groupAtomsIndexes[ notCollectedAtomsIndexes ]
             self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
-            _coordsBeforeMove    = None
+            _coordsBeforeMove             = None
         # move generator
         else:
             # get atoms indexes
             self._RT_groupAtomsIndexes = self._RT_selectedGroup.indexes
             notCollectedAtomsIndexes   = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
             self._RT_groupAtomsIndexes = self._RT_groupAtomsIndexes[ notCollectedAtomsIndexes ]
+            # check if all group atoms are collected
+            if not len(self._RT_groupAtomsIndexes):
+                self._RT_groupRelativeIndexes = self._RT_groupAtomsIndexes
+                _coordsBeforeMove             = np.array([], dtype=self.__realCoordinates.dtype).reshape((0,3))
             # get group atoms coordinates before applying move 
             if isinstance(self._RT_moveGenerator, SwapGenerator):
-                self._RT_groupAtomsIndexes    = self._RT_moveGenerator.get_ready_for_move(self._RT_groupAtomsIndexes)
-                notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
-                self._RT_groupAtomsIndexes    = self._RT_groupAtomsIndexes[ notCollectedAtomsIndexes ]
-                self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
-                _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
+                if len(self._RT_groupAtomsIndexes) == self._RT_moveGenerator.swapLength:
+                    self._RT_groupAtomsIndexes    = self._RT_moveGenerator.get_ready_for_move(engine=self,  groupAtomsIndexes=self._RT_groupAtomsIndexes)
+                    notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
+                    self._RT_groupAtomsIndexes    = self._RT_groupAtomsIndexes[ notCollectedAtomsIndexes ]
+                    self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
+                    _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
+                else:
+                    self._RT_groupAtomsIndexes    = np.array([], dtype=self._RT_selectedGroup.indexes.dtype)
+                    self._RT_groupRelativeIndexes = self._RT_groupAtomsIndexes
+                    _coordsBeforeMove             = np.array([], dtype=self.__realCoordinates.dtype).reshape((0,3))
             elif _coordsBeforeMove is None or not self.__groupSelector.isRecurring:
                 self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
                 _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
@@ -2048,11 +2078,15 @@ class Engine(object):
             elif not self.__groupSelector.refine:
                 self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
                 _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
-            #else:
-            #    raise Exception(LOGGER.critical("Unknown recurrence mode, unable to get coordinates before applying move."))
+            else:
+                raise Exception(LOGGER.critical("Unknown fitting mode, unable to get coordinates before applying move."))
             # compute moved coordinates
-            movedRealCoordinates = self._RT_moveGenerator.move(_coordsBeforeMove)
-            movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
+            if len(_coordsBeforeMove):
+                movedRealCoordinates = self._RT_moveGenerator.move(_coordsBeforeMove)
+                movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
+            else:
+                movedRealCoordinates = _coordsBeforeMove
+                movedBoxCoordinates  = _coordsBeforeMove
         # return
         return _coordsBeforeMove, movedRealCoordinates, movedBoxCoordinates
     
@@ -2282,7 +2316,7 @@ class Engine(object):
                                                 movedRealCoordinates = movedRealCoordinates,
                                                 _moveTried           = _moveTried)
             if not len(self._RT_groupAtomsIndexes):
-                LOGGER.nottried("Generated remove %i reached maximum allowed and therefore it's not tried"%self.__generated)
+                LOGGER.nottried("Generated move %i can't be tried because all atoms are collected."%self.__generated)
             else:
                 # try move atom
                 if movedRealCoordinates is None:

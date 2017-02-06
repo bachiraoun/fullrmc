@@ -462,9 +462,30 @@ Fixes and improvements:
     #. :class:`.DihedralAngleConstraint` FRAME_DATA fixed which was preventing  
        constraint from saving to pyrep repository.
 
+
+
+
+`Version 3.0.2 <https://pypi.python.org/pypi/fullrmc/3.0.2>`_:
+--------------------------------------------------------------
+  
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. Redundant objects global container mechanism added. This will sometimes reduce 
+      some engine's attributes size, allowing fast saving and loading of data.
+         
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+    #. :class:`.MoveGeneratorCombinator` bug from latest update fixed.
+    #. :class:`.SwapGenerator` is not allowed to be collected or combined with other 
+       generators. Also swapList will update automatically upon removing and
+       releasing atoms.
+    #. :class:`.RemoveGenerator` is not allowed to be collected or combined with other 
+       generators.
+    #. MLSelection, refine and explore examples BiasedEngine fixed
+
 """
 
-__version__    = '3.0.1'
+__version__    = '3.0.2'
                
 __author__     = "Bachir Aoun"
                

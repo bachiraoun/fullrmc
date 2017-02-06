@@ -402,8 +402,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         Set rmax value.
         
         :Parameters:
-           #. rmax (None, number): The maximum distance value to compute G(r) histogram.
-              If None is given, rmax is computed as :math:`2 \\pi / dQ`.
+            #. rmax (None, number): The maximum distance value to compute G(r) histogram.
+               If None is given, rmax is computed as :math:`2 \\pi / dQ`.
         """
         if rmax is None:
             dq = self.__experimentalQValues[1]-self.__experimentalQValues[0]
@@ -554,14 +554,13 @@ class StructureFactorConstraint(ExperimentalConstraint):
         Set experimental data points weight.
         
         :Parameters: 
-        
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-           important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
+            #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
+               Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+               important in order to get a reasonable and plausible modal.\n
+               If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
+               If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
+               total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
+               array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         """
         super(StructureFactorConstraint, self).set_data_weights(dataWeights=dataWeights)
         self.__set_used_data_weights()

@@ -18,6 +18,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path, generate_random_float
+from fullrmc.Core.Collection import _Container
 
 
 #class MoveGenerator(ListenerBase):
@@ -141,6 +142,8 @@ class RemoveGenerator(MoveGenerator):
         if self.__class__.__name__ == "RemoveGenerator":
             raise Exception(LOGGER.usage("%s instanciation is not allowed"%(self.__class__.__name__)))
         super(RemoveGenerator, self).__init__(group=group)
+        # set collectorState
+        self._collectorState = None 
         # set maximum collected
         self.set_maximum_collected(maximumCollected)
         # set maximum collected
@@ -221,19 +224,31 @@ class RemoveGenerator(MoveGenerator):
                and remove from.
         """
         if atomsList is not None:
-            assert isinstance(atomsList, (list,set,tuple,np.ndarray)), LOGGER.error("atomsList must be either a list or a numpy.array")       
-            CL = []
-            for idx in list(atomsList):
-                assert is_integer(idx), LOGGER.error("atomsList items must be integers")
-                assert idx>=0, LOGGER.error("atomsList item must equal or bigger than 0")
-                CL.append(INT_TYPE(idx))
-            setCL = set(CL) 
-            assert len(setCL) == len(CL), LOGGER.error("atomsList redundancy is not allowed")
-            atomsList = np.array(CL, dtype=INT_TYPE) 
+            C = _Container()
+            # add container
+            if not C.is_container('removeAtomsList'):
+                C.add_container('removeAtomsList')
+            # check if atomsList already defined
+            loc = C.get_location_by_hint(atomsList)
+            if loc is not None:
+                atomsList = C.get_value(loc)  
+            else:
+                assert isinstance(atomsList, (list,tuple,np.ndarray)), LOGGER.error("atomsList must be either a list or a numpy.array")       
+                CL = []
+                for idx in atomsList:
+                    assert is_integer(idx), LOGGER.error("atomsList items must be integers")
+                    assert idx>=0, LOGGER.error("atomsList item must equal or bigger than 0")
+                    CL.append(INT_TYPE(idx))
+                setCL = set(CL) 
+                assert len(setCL) == len(CL), LOGGER.error("atomsList redundancy is not allowed")
+                AL = np.array(CL, dtype=INT_TYPE) 
+                # add swapList to container
+                C.set_value(container='removeAtomsList', value=AL, hint=atomsList)
+                atomsList = AL
+        # set atomsList attribute
         self.__atomsList = atomsList
-        #if self.__class__.__name__ == "RemoveGenerator":
-        #    raise Exception(LOGGER.usage("%s '%s' method must not be used directly"%(self.__class__.__name__,inspect.stack()[0][3])))
-        #self.__atomsList = tuple(atomsList)
+        # reset collector state
+        self._collectorState = None 
     
     def move(self, coordinates):
         """
@@ -306,7 +321,9 @@ class SwapGenerator(MoveGenerator):
         self.set_swap_list(swapList)
         #  initialize swapping variables
         self.__groupAtomsIndexes = None
-        self.__swapAtomsIndexes  = None        
+        self.__swapAtomsIndexes  = None  
+        # reset collector state
+        self._collectorState = None      
     
     @property
     def swapLength(self):
@@ -341,6 +358,10 @@ class SwapGenerator(MoveGenerator):
         assert swapLength>0, LOGGER.error("swapLength must be bigger than 0")
         self.__swapLength = swapLength
         self.__swapList   = ()
+        # set uncollected atoms swapList
+        self._remainingAtomsSwapList  = self.__swapList
+        # reset collector state
+        self._collectorState = None    
         
     def set_group(self, group):
         """
@@ -363,8 +384,16 @@ class SwapGenerator(MoveGenerator):
                If List is given, it must contain lists of atom indexes where every 
                sub-list length must be equal to swapLength.
         """
-        if swapList is None:
-            self.__swapList = ()
+        C = _Container()
+        # add container
+        if not C.is_container('swapList'):
+            C.add_container('swapList')
+        # check if swapList already defined
+        loc = C.get_location_by_hint(swapList)
+        if loc is not None:
+            self.__swapList = C.get_value(loc) 
+        elif swapList is None:
+            self.__swapList = ()            
         else:
             SL = []
             assert isinstance(swapList, (list,tuple)), LOGGER.error("swapList must be a list")
@@ -377,9 +406,16 @@ class SwapGenerator(MoveGenerator):
                     assert num>=0, LOGGER.error("swapList sub-list items must be positive")
                     subSL.append(num)
                 assert len(set(subSL))==len(subSL), LOGGER.error("swapList items must not have any redundancy")
-                assert len(subSL) == self.__swapLength, LOGGER.error("swapList item length must be equal to swapLength")
+                if self.swapLength is not None:
+                    assert len(subSL) == self.swapLength, LOGGER.error("swapList item length must be equal to swapLength")
                 SL.append(np.array(subSL, dtype=INT_TYPE))
             self.__swapList = tuple(SL)
+            # add swapList to container
+            C.set_value(container='swapList', value=self.__swapList, hint=swapList)
+        # set uncollected atoms swapList
+        self._remainingAtomsSwapList  = self.__swapList
+        # reset collector state
+        self._collectorState = None  
     
     def append_to_swap_list(self, subList):
         """
@@ -399,10 +435,57 @@ class SwapGenerator(MoveGenerator):
         assert len(subSL) == self.__swapLength, LOGGER.error("swapList item length must be equal to swapLength")
         # append
         self.__swapList = list(self.__swapList)
+        subSL = np.array(subSL, dtype=INT_TYPE)
         self.__swapList.append(subSL)
         self.__swapList = tuple(self.__swapList)
+        # set uncollected atoms swapList
+        self._remainingAtomsSwapList  = self.__swapList
+        # reset collector state
+        self._collectorState = None  
     
-    def get_ready_for_move(self, groupAtomsIndexes):  
+    def _set_remaining_atoms_swap_list(self, engine):
+        collectorState = engine._atomsCollector.state
+        # check engine's atomsCollector state
+        if collectorState == self._collectorState or not len(engine._atomsCollector):
+            self._collectorState = collectorState
+            return
+        C = _Container()
+        # add container
+        if not C.is_container('swapList'):
+            C.add_container('swapList')
+        # get swapList location
+        loc = C.get_location_by_hint(self.swapList)
+        # if location exists
+        if loc is not None:
+            remainingAtomsSwapList = C.get_value(loc) 
+            # it must be a dict
+            if not isinstance(remainingAtomsSwapList, dict):
+                remainingAtomsSwapList = None
+            # collector state must be the same as engineCollectorState
+            elif remainingAtomsSwapList['collectorState'] != collectorState:
+                remainingAtomsSwapList = None
+            # if same as engineCollectorState 
+            else:
+                remainingAtomsSwapList = remainingAtomsSwapList['remainingAtomsSwapList']
+        # if location doesn't exit
+        else:
+            remainingAtomsSwapList = None
+        # in case swapList needs to be rebuilt
+        if remainingAtomsSwapList is None:
+            remainingAtomsSwapList = []
+            for sl in self.swapList:
+                if engine._atomsCollector.any_collected(sl):
+                    continue
+                remainingAtomsSwapList.append(sl)
+            # add to container
+            value = {'remainingAtomsSwapList':remainingAtomsSwapList, 'collectorState':collectorState}
+            C.set_value(container='swapList', value=value, hint=self.swapList)
+        # set remainingAtomsSwapList
+        self._remainingAtomsSwapList = remainingAtomsSwapList
+        # update collectorState
+        self._collectorState = collectorState
+        
+    def get_ready_for_move(self, engine, groupAtomsIndexes):  
         """
         Set the swap generator ready to perform a move. Unlike a normal move generator,
         swap generators will affect not only the selected atoms but other atoms as well.
@@ -412,18 +495,25 @@ class SwapGenerator(MoveGenerator):
         to ensure that all affect atoms with the swap are updated.
         
         :Parameters: 
+            #. engine (fullrmc.Engine): The engine calling for the move.
             #. groupAtomsIndexes (numpy.ndarray): The atoms indexes to swap.
         
         :Returns: 
             #. indexes (numpy.ndarray): All the atoms involved in the swap move 
                including the given groupAtomsIndexes.
         """
+        # update and set _remainingAtomsSwapList and _collectorState
+        self._set_remaining_atoms_swap_list(engine=engine)
+        # select        
         self.__groupAtomsIndexes = groupAtomsIndexes
-        self.__swapAtomsIndexes  = self.swapList[ randint(0,len(self.swapList)-1) ]
+        # check if existing atoms swap list is not empty. if not swap with itself.
+        if len(self._remainingAtomsSwapList):
+            self.__swapAtomsIndexes  = self._remainingAtomsSwapList[ randint(0,len(self._remainingAtomsSwapList)-1) ]
+        else:
+            self.__swapAtomsIndexes = self.__groupAtomsIndexes
         return np.concatenate( (self.__groupAtomsIndexes,self.__swapAtomsIndexes) )
-        
-        
-        
+
+     
 class PathGenerator(MoveGenerator):
     """ 
     PathGenerator is a MoveGenerator sub-class where moves definitions are pre-stored in a path 
@@ -582,9 +672,9 @@ class MoveGeneratorCombinator(MoveGenerator):
         # initialize
         super(MoveGeneratorCombinator, self).__init__(group=group) 
         # set path
-        self.set_combination(path)
+        self.set_combination(combination=combination)
         # set randomize
-        self.set_shuffle(shuffle)
+        self.set_shuffle(shuffle=shuffle)
         
     @property
     def shuffle(self):
@@ -629,6 +719,8 @@ class MoveGeneratorCombinator(MoveGenerator):
         combination = list(combination)
         for c in combination:
             assert isinstance(c, MoveGenerator), LOGGER.error("every item in combination list must be a MoveGenerator instance")
+            assert not isinstance(c, SwapGenerator), LOGGER.error("SwapGenerator is not allowed to be combined")
+            assert not isinstance(c, SwapGenerator), LOGGER.error("RemoveGenerator is not allowed to be combined")
             c.set_group(self.group)
         self.__combination = combination
         
@@ -791,6 +883,8 @@ class MoveGeneratorCollector(MoveGenerator):
         collection = list(collection)
         for c in collection:
             assert isinstance(c, MoveGenerator), LOGGER.error("every item in collection list must be a MoveGenerator instance")
+            assert not isinstance(c, SwapGenerator), LOGGER.error("SwapGenerator is not allowed to be collected")
+            assert not isinstance(c, SwapGenerator), LOGGER.error("RemoveGenerator is not allowed to be collected")
             c.set_group(self.group)
         self.__collection = collection
         # reset generator

@@ -830,9 +830,9 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         Sets center value.
         
         :Parameters:
-           #. center (dict): The center value dictionary. Must have a single key and this can only be 'fixed' or 'indexes'.
-              If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
-              If key is indexes, value must be a list or a numpy array of indexes.
+            #. center (dict): The center value dictionary. Must have a single key and this can only be 'fixed' or 'indexes'.
+               If key is fixed, value must be a list or a numpy.array of a point coordinates such as [X,Y,Z]
+               If key is indexes, value must be a list or a numpy array of indexes.
         """
         assert isinstance(center, dict), LOGGER.error("center must be a dictionary")
         assert len(center) == 1, LOGGER.error("center must have a single key")       

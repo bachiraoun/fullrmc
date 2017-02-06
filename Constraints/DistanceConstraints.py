@@ -291,6 +291,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
                A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
                First defined elements pair distance will cancel all redundant. 
                If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value 
+               
                ::
                
                    e.g. [('h','h',1.5), ('h','c',2.015), ...] 
@@ -384,7 +385,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Parameters:
             #. standardError (number): The standardError to compare with the Constraint standardError
         
-        :Return:
+        :Returns:
             #. result (boolean): True to reject step, False to accept
         """
         if not self.__flexible:

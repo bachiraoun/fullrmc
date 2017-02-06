@@ -15,7 +15,7 @@ import numpy as np
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer
 from fullrmc.Core.MoveGenerator import  MoveGenerator, SwapGenerator
-
+from fullrmc.Core.Collection import _Container
 
 class SwapPositionsGenerator(SwapGenerator):
     """
@@ -159,11 +159,6 @@ class SwapCentersGenerator(SwapGenerator):
         """ Get swap length. In this Case it is always None as 
         swapLength is not required for this generator."""
         return self.__swapLength 
-    
-    @property
-    def swapList(self):
-        """ Get swap list."""
-        return self.__swapList
         
     def set_swap_length(self, swapLength):
         """
@@ -177,33 +172,11 @@ class SwapCentersGenerator(SwapGenerator):
         """   
         self.__swapLength = None
         self.__swapList   = ()
-        
-    def set_swap_list(self, swapList):
-        """
-        Set the swap-list to swap groups centers.
-        
-        :Parameters: 
-            #. swapList (None, List): The list of atoms.\n 
-               If None is given, no swapping or exchanging will be performed.\n
-               If List is given, it must contain lists of atom indexes.
-        """
-        if swapList is None:
-            self.__swapList = ()
-        else:
-            SL = []
-            assert isinstance(swapList, (list,tuple)), LOGGER.error("swapList must be a list")
-            for sl in swapList:
-                assert isinstance(sl, (list,tuple)), LOGGER.error("swapList items must be a list")
-                subSL = []
-                for num in sl:
-                    assert is_integer(num), LOGGER.error("swapList sub-list items must be integers")
-                    num = INT_TYPE(num)
-                    assert num>=0, LOGGER.error("swapList sub-list items must be positive")
-                    subSL.append(num)
-                assert len(set(subSL))==len(subSL), LOGGER.error("swapList items must not have any redundancy")
-                SL.append(np.array(subSL, dtype=INT_TYPE))
-            self.__swapList = tuple(SL)
-            
+        # set uncollected atoms swapList
+        self._remainingAtomsSwapList = self.__swapList
+        # reset collector state
+        self._collectorState = None  
+ 
     def set_group(self, group):
         """
         Set the MoveGenerator group.

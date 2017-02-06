@@ -637,11 +637,11 @@ class OrientationGenerator(MoveGenerator):
         Sets orientation axis value.
         
         :Parameters:
-           #. orientationAxis (dict): The axis to align the group axis with.
-              If key is fixed, value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
-              if Key is symmetry, in this case the the value must be a list of two items, the first one is a list
-              of atoms indexes to compute symmetry axis and the second item must be even 0, 1 or 2 for respectively 
-              the first, second and tertiary symmetry axis. 
+            #. orientationAxis (dict): The axis to align the group axis with.
+               If key is fixed, value must be a list, tuple or a numpy.array of a vector such as [X,Y,Z]
+               if Key is symmetry, in this case the the value must be a list of two items, the first one is a list
+               of atoms indexes to compute symmetry axis and the second item must be even 0, 1 or 2 for respectively 
+               the first, second and tertiary symmetry axis. 
         """
         assert isinstance(orientationAxis, dict), LOGGER.error("orientationAxis must be a dictionary")
         assert len(orientationAxis) == 1, LOGGER.error("orientationAxis must have a single key")       

@@ -18,7 +18,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path
-from fullrmc.Core.Collection import AtomsCollector, reset_if_collected_out_of_date
+from fullrmc.Core.Collection import _AtomsCollector, reset_if_collected_out_of_date
 
    
 class Constraint(ListenerBase):
@@ -35,7 +35,7 @@ class Constraint(ListenerBase):
         # initialize variance squared
         self.__varianceSquared = 1
         # initialize atoms collector with datakeys to None. so it must be set in all subclasses.
-        self._atomsCollector = AtomsCollector(self, dataKeys=None)
+        self._atomsCollector = _AtomsCollector(self, dataKeys=None)
         # initialize data
         self.__initialize_constraint()
         # computation cost 
@@ -613,12 +613,12 @@ class ExperimentalConstraint(Constraint):
         Sets adjust scale factor.
         
         :Parameters:
-             #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
-                It must be a list of exactly three entries.\n
-                1. The frequency in number of accepted moves of finding the best scale factor. 
-                   If 0 frequency is given, it means that the scale factor is fixed.
-                2. The minimum allowed scale factor value.
-                3. The maximum allowed scale factor value.
+            #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+               It must be a list of exactly three entries.\n
+               1. The frequency in number of accepted moves of finding the best scale factor. 
+                  If 0 frequency is given, it means that the scale factor is fixed.
+               2. The minimum allowed scale factor value.
+               3. The maximum allowed scale factor value.
         """
         assert isinstance(adjustScaleFactor, (list, tuple)), LOGGER.error('adjustScaleFactor must be a list.')
         assert len(adjustScaleFactor) == 3, LOGGER.error('adjustScaleFactor must be a list of exactly three items.')
@@ -677,14 +677,13 @@ class ExperimentalConstraint(Constraint):
         Set experimental data points weight.
         
         :Parameters: 
-        
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-           important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
+            #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
+               Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+               important in order to get a reasonable and plausible modal.\n
+               If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
+               If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
+               total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
+               array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         """
         if dataWeights is not None:
             assert isinstance(dataWeights, (list, tuple, np.ndarray)), LOGGER.error("dataWeights must be None or a numpy array of weights")

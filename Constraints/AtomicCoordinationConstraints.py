@@ -575,7 +575,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM 
         # WHEN IMPLEMENTING ATOMS RELEASING. MAYBE WE NEED TO COLLECT DATA INSTEAD, REMOVE
         # AND ADD UPON RELEASE
-        self.compute_before_move(indexes = relativeIndex )
+        self.compute_before_move(realIndexes=realIndex, relativeIndexes=relativeIndex )
         #self.compute_before_move(indexes = np.array([index], dtype=INT_TYPE) )
         # change permanently data attribute
         self.__coordNumData = self.__coordNumData-self.activeAtomsDataBeforeMove

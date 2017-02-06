@@ -6,7 +6,6 @@ import os, sys
 # external libraries imports
 import wx
 import numpy as np
-import matplotlib.pyplot as plt
 
 # fullrmc library imports
 from fullrmc.Globals import LOGGER
@@ -20,16 +19,16 @@ from fullrmc.Generators.Translations import TranslationGenerator
 from fullrmc.Selectors.RandomSelectors import RandomSelector, SmartRandomSelector
 
 
-##########################################################################################
-###################################  SHUT DOWN LOGGING  ##################################
-LOGGER.set_log_to_stdout_flag(False)
-# set very high logging level and force 'move accepted'.
-LOGGER.set_minimum_level(sys.maxint)
-LOGGER.force_log_type_flags("move accepted", stdoutFlag=False, fileFlag=True)
-
-##########################################################################################
-#####################################  CREATE ENGINE  ####################################
-# set log files name and turn off stout logging
+###########################################################################################
+####################################  SHUT DOWN LOGGING  ##################################
+#LOGGER.set_log_to_stdout_flag(False)
+## set very high logging level and force 'move accepted'.
+#LOGGER.set_minimum_level(sys.maxint)
+#LOGGER.force_log_type_flags("move accepted", stdoutFlag=False, fileFlag=True)
+#
+###########################################################################################
+######################################  CREATE ENGINE  ####################################
+## set log files name and turn off stout logging
 normalSelLog = "normal"
 MLSelLog     = "ML"
 
@@ -151,8 +150,8 @@ for log in MLSelLog:
     fd = open(log,'r')
     mlLines = fd.readlines()
     fd.close()
-    mlGenerated.extend([float(l.split("Generated:")[1].split("-")[0]) for l in mlLines])
-    mlAccepted.extend([float(l.split("Accepted:")[1].split("(")[0]) for l in mlLines])    
+    mlGenerated.extend([float(l.split("Gen:")[1].split("-")[0]) for l in mlLines])
+    mlAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])    
 mlGenerated = np.array(mlGenerated)
 mlAccepted = np.array(mlAccepted)
 mlAccepted = 100.*mlAccepted/mlGenerated
@@ -168,8 +167,8 @@ for log in normalLogs:
     fd = open(log,'r')
     mlLines = fd.readlines()
     fd.close()
-    nGenerated.extend([float(l.split("Generated:")[1].split("-")[0]) for l in mlLines])
-    nAccepted.extend([float(l.split("Accepted:")[1].split("(")[0]) for l in mlLines])    
+    nGenerated.extend([float(l.split("Gen:")[1].split("-")[0]) for l in mlLines])
+    nAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])    
 nGenerated = np.array(nGenerated)
 nAccepted = np.array(nAccepted)
 nAccepted = 100.*nAccepted/nGenerated
@@ -181,6 +180,7 @@ np.savetxt(X=np.transpose([nGenerated,nAccepted]),
 
 ##########################################################################################
 ##################################  PLOT LOGGING DATA ####################################    
+import matplotlib.pyplot as plt
 plt.plot(mlGenerated, mlAccepted, 'black',linewidth=3, label="machine learning selection")
 plt.plot(nGenerated, nAccepted, 'red', linewidth=3, label="traditional selection")
 plt.xlabel("Generated moves")

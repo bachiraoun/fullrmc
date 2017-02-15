@@ -319,9 +319,9 @@ metadata = dict(# package
                 classifiers      = [_f for _f in CLASSIFIERS.split('\n') if _f],
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
-                install_requires = ["pysimplelog>=0.2.1",
+                install_requires = ["pysimplelog>=0.3.0",
                                     "pdbParser>=0.1.5",
-                                    "pyrep>=1.0.3",
+                                    "pyrep>=1.0.4",
                                     "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''], 
                 )

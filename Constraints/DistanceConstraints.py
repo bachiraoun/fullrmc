@@ -15,67 +15,21 @@ import numpy as np
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
 from fullrmc.Core.Collection import is_number, is_integer, get_path, raise_if_collected, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.atomic_distances import multiple_atomic_distances_coords, full_atomic_distances_coords
+from fullrmc.Core.atomic_distances import multiple_atomic_distances_coords, full_atomic_distances_coords, pair_elements_stats
 
-class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
+class _DistanceConstraint(RigidConstraint, SingularConstraint):
     """
-    .. py:class::InterMolecularDistanceConstraint
-
-    Its controls the inter-molecular distances between atoms.
-    
-    :Parameters:
-        #. defaultDistance (number): The minimum distance allowed set by default for all 
-           atoms type.
-        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules 
-           about how to differentiate between atoms and how to parse pairsLimits.
-        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
-           every pair of elements. 
-           A list of tuples must be given, all missing pairs will get automatically 
-           assigned the given defaultMinimumDistance value.
-           First defined elements pair distance will cancel all redundant. 
-           If None is given all pairs will be automatically generated and assigned the 
-           given defaultMinimumDistance value .
-           ::
-           
-               e.g. [('h','h',1.5), ('h','c',2.015), ...] 
-           
-        #. flexible (boolean): Whether to allow atoms to break constraint's definition 
-           under the condition of decreasing total standardError of the constraint. 
-           If flexible is set to False, atoms will never be allowed to cross from above 
-           to below minimum allowed distance. Even if the later will decrease some other 
-           unsatisfying atoms distances, and therefore the total standardError of the 
-           constraint. 
-        #. rejectProbability (Number): rejecting probability of all steps where 
-           standardError increases. It must be between 0 and 1 where 1 means 
-           rejecting all steps where standardError increases and 0 means accepting 
-           all steps regardless whether standardError increases or not.
-    
-    
-    .. code-block:: python
-    
-        # import fullrmc modules
-        from fullrmc.Engine import Engine
-        from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
-        
-        # create engine 
-        ENGINE = Engine(path='my_engine.rmc')
-        
-        # set pdb file
-        ENGINE.set_pdb('system.pdb')
-        
-        # create and add constraint
-        EMD = InterMolecularDistanceConstraint()
-        ENGINE.add_constraints(EMD)
-        
-        # create definition
-        EMD.set_pairs_distance([('Si','Si',1.75), ('O','O',1.10), ('Si','O',1.30)])
+    This is the design class for all distance related constraints. 
+    It contains all common methods and definitions but it's forbiden to be instantiated.
     """
-    def __init__(self, defaultDistance=1.5, typeDefinition='element', 
-                       pairsDistanceDefinition=None, flexible=True, rejectProbability=1):
+    def __init__(self, defaultDistance, typeDefinition, 
+                       pairsDistanceDefinition, flexible, rejectProbability):
+        # disable instantiation
+        assert not self.__class__.__name__ == "_DistanceConstraint", LOGGER.error("Instantiating '_DistanceConstraint' is forbidden.")
         # initialize constraint
         RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set atoms collector data keys
-        self._atomsCollector.set_data_keys( ('typesIndexes', 'allTypes') )  
+        self._atomsCollector.set_data_keys( ('typeIndexes', 'allTypes') )  
         # set defaultDistance
         self.set_default_distance(defaultDistance)
         # set flexible
@@ -87,26 +41,27 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         self.set_computation_cost(4.0)
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
-        FRAME_DATA.extend(['_InterMolecularDistanceConstraint__defaultDistance',
-                           '_InterMolecularDistanceConstraint__pairsDistanceDefinition',
-                           '_InterMolecularDistanceConstraint__pairsDistance',
-                           '_InterMolecularDistanceConstraint__flexible',
-                           '_InterMolecularDistanceConstraint__lowerLimitArray',
-                           '_InterMolecularDistanceConstraint__upperLimitArray',
-                           '_InterMolecularDistanceConstraint__typesPairs',
-                           '_InterMolecularDistanceConstraint__typeDefinition',
-                           '_InterMolecularDistanceConstraint__types',
-                           '_InterMolecularDistanceConstraint__allTypes',
-                           '_InterMolecularDistanceConstraint__numberOfTypes',
-                           '_InterMolecularDistanceConstraint__typesIndexes',
-                           '_InterMolecularDistanceConstraint__numberOfAtomsPerType',] )
+        FRAME_DATA.extend(['_DistanceConstraint__defaultDistance',
+                           '_DistanceConstraint__pairsDistanceDefinition',
+                           '_DistanceConstraint__pairsDistance',
+                           '_DistanceConstraint__flexible',
+                           '_DistanceConstraint__lowerLimitArray',
+                           '_DistanceConstraint__upperLimitArray',
+                           '_DistanceConstraint__typePairs',
+                           '_DistanceConstraint__typePairsIndexes',
+                           '_DistanceConstraint__typeDefinition',
+                           '_DistanceConstraint__types',
+                           '_DistanceConstraint__allTypes',
+                           '_DistanceConstraint__numberOfTypes',
+                           '_DistanceConstraint__typeIndexes',
+                           '_DistanceConstraint__numberOfAtomsPerType',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
-        RUNTIME_DATA.extend( ['_InterMolecularDistanceConstraint__typesIndexes',
-                              '_InterMolecularDistanceConstraint__allTypes',
-                              '_InterMolecularDistanceConstraint__numberOfAtomsPerType'] )
+        RUNTIME_DATA.extend( ['_DistanceConstraint__typeIndexes',
+                              '_DistanceConstraint__allTypes',
+                              '_DistanceConstraint__numberOfAtomsPerType'] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
-                  
+       
     @property
     def defaultDistance(self):
         """ Gets the experimental data distances minimum. """
@@ -144,35 +99,40 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         return self.__upperLimitArray
         
     @property
-    def typesPairs(self):
-        """ Get types pairs """
-        return self.__typesPairs
+    def typePairs(self):
+        """ Atoms type pairs sorted list"""
+        return self.__typePairs
         
     @property
     def typeDefinition(self):
-        """ Get the type definition. """
+        """ atoms type definition. """
         return self.__typeDefinition
         
     @property
     def types(self):
-        """ Get the defined types set. """
+        """ Defined atom types set. """
         return self.__types
     
     @property
     def allTypes(self):
-        """ Get all atoms types. """
+        """ All atom types. """
         return self.__allTypes 
         
     @property
     def numberOfTypes(self):
-        """ Get the number of defined types in the configuration. """
+        """ Number of defined atom types in the configuration. """
         return self.__numberOfTypes
         
     @property
-    def typesIndexes(self):
-        """ Get types indexes list. """
-        return self.__typesIndexes
-
+    def typeIndexes(self):
+        """ Type indexes list. """
+        return self.__typeIndexes
+    
+    @property
+    def typePairsIndexes(self):
+        """numpy array look up for pairs types indexes."""
+        return self.__typePairsIndexes
+        
     @property
     def numberOfAtomsPerType(self):
         """ Get number of atoms per type dict. """
@@ -210,7 +170,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         assert isinstance(flexible, bool), LOGGER.error("flexible must be boolean")
         self.__flexible = flexible
         # dump to repository
-        self._dump_to_repository({'_InterMolecularDistanceConstraint__flexible' :self.__flexible})
+        self._dump_to_repository({'_DistanceConstraint__flexible' :self.__flexible})
         
     def set_default_distance(self, defaultDistance):
         """ 
@@ -224,7 +184,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         assert defaultDistance>=0, LOGGER.error("defaultDistance must be positive")
         self.__defaultDistance = defaultDistance
         # dump to repository
-        self._dump_to_repository({'_InterMolecularDistanceConstraint__defaultDistance' :self.__defaultDistance})
+        self._dump_to_repository({'_DistanceConstraint__defaultDistance' :self.__defaultDistance})
            
     def set_type_definition(self, typeDefinition, pairsDistanceDefinition=None):
         """ 
@@ -241,41 +201,50 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             types                = None
             allTypes             = None
             numberOfTypes        = None
-            typesIndexes         = None
+            typeIndexes          = None
             numberOfAtomsPerType = None
         elif typeDefinition == "name":
             # copying because after loading and deserializing engine, pointer to
             # original data is lost and this will generate ambiguity in atoms collection 
             types                = self.engine.get_original_data("names")
             allTypes             = self.engine.get_original_data("allNames")
-            numberOfTypes        = len(names)
-            typesIndexes         = self.engine.get_original_data("namesIndexes")
+            numberOfTypes        = len(types)
+            typeIndexes          = self.engine.get_original_data("namesIndexes")
             numberOfAtomsPerType = self.engine.get_original_data("numberOfAtomsPerName")
         elif typeDefinition == "element":
             types                = self.engine.get_original_data("elements")
             allTypes             = self.engine.get_original_data("allElements")
             numberOfTypes        = len(types)
-            typesIndexes         = self.engine.get_original_data("elementsIndexes")
+            typeIndexes          = self.engine.get_original_data("elementsIndexes")
             numberOfAtomsPerType = self.engine.get_original_data("numberOfAtomsPerElement")
         # set type definition
         self.__typeDefinition       = typeDefinition
         self.__types                = types
         self.__allTypes             = allTypes
         self.__numberOfTypes        = numberOfTypes
-        self.__typesIndexes         = typesIndexes 
+        self.__typeIndexes          = typeIndexes 
         self.__numberOfAtomsPerType = numberOfAtomsPerType
         if self.__types is None:
-            self.__typesPairs = None
+            self.__typePairs        = None
+            self.__typePairsIndexes = [[],[]]
         else:
-            self.__typesPairs = sorted(itertools.combinations_with_replacement(self.__types,2))
+            self.__typePairs = sorted(itertools.combinations_with_replacement(self.__types,2))
+            self.__typePairsIndexes = [[],[]]
+            for pair in self.__typePairs:
+                idi = self.__types.index(pair[0])
+                idj = self.__types.index(pair[1])
+                self.__typePairsIndexes[0].append(idi)
+                self.__typePairsIndexes[1].append(idj)
+            self.__typePairsIndexes = np.transpose(self.__typePairsIndexes).astype(INT_TYPE)
         # dump to repository
-        self._dump_to_repository({'_InterMolecularDistanceConstraint__typeDefinition'      :self.__typeDefinition,
-                                  '_InterMolecularDistanceConstraint__types'               :self.__types,
-                                  '_InterMolecularDistanceConstraint__allTypes'            :self.__allTypes,
-                                  '_InterMolecularDistanceConstraint__numberOfTypes'       :self.__numberOfTypes,
-                                  '_InterMolecularDistanceConstraint__typesIndexes'        :self.__typesIndexes,
-                                  '_InterMolecularDistanceConstraint__numberOfAtomsPerType':self.__numberOfAtomsPerType,
-                                  '_InterMolecularDistanceConstraint__typesPairs'          :self.__typesPairs})
+        self._dump_to_repository({'_DistanceConstraint__typeDefinition'      :self.__typeDefinition,
+                                  '_DistanceConstraint__types'               :self.__types,
+                                  '_DistanceConstraint__allTypes'            :self.__allTypes,
+                                  '_DistanceConstraint__numberOfTypes'       :self.__numberOfTypes,
+                                  '_DistanceConstraint__typeIndexes'         :self.__typeIndexes,
+                                  '_DistanceConstraint__numberOfAtomsPerType':self.__numberOfAtomsPerType,
+                                  '_DistanceConstraint__typePairs'           :self.__typePairs,
+                                  '_DistanceConstraint__typePairsIndexes'    :self.__typePairsIndexes})
         # set pair distance
         if pairsDistanceDefinition is None:
             pairsDistanceDefinition = self.__pairsDistanceDefinition
@@ -368,10 +337,10 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             self.__lowerLimitArray = None     
             self.__upperLimitArray = None   
         # dump to repository
-        self._dump_to_repository({'_InterMolecularDistanceConstraint__pairsDistanceDefinition': self.__pairsDistanceDefinition,
-                                  '_InterMolecularDistanceConstraint__pairsDistance'          : self.__pairsDistance,
-                                  '_InterMolecularDistanceConstraint__lowerLimitArray'        : self.__lowerLimitArray,
-                                  '_InterMolecularDistanceConstraint__upperLimitArray'        : self.__upperLimitArray})  
+        self._dump_to_repository({'_DistanceConstraint__pairsDistanceDefinition': self.__pairsDistanceDefinition,
+                                  '_DistanceConstraint__pairsDistance'          : self.__pairsDistance,
+                                  '_DistanceConstraint__lowerLimitArray'        : self.__lowerLimitArray,
+                                  '_DistanceConstraint__upperLimitArray'        : self.__upperLimitArray})  
         # reset constraint
         self.reset_constraint() # ADDED 2017-JAN-08
     
@@ -388,14 +357,18 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Returns:
             #. result (boolean): True to reject step, False to accept
         """
-        if not self.__flexible:
+        if self.__flexible:
+            # compute if step should get rejected as a RigidConstraint
+            return super(_DistanceConstraint, self).should_step_get_rejected(standardError)
+        else:
             cond = self.activeAtomsDataAfterMove["number"]>self.activeAtomsDataBeforeMove["number"]
             if np.any(cond):
                 return True
-        # compute if step should get rejected normally
-        return super(InterMolecularDistanceConstraint, self).should_step_get_rejected(standardError)
-        
+            return False
     
+    def _compute_standard_error(self, distances):          
+        return FLOAT_TYPE( np.sum(distances) )
+        
     def compute_standard_error(self, data):
         """ 
         Compute the standard error (stdErr) of data not satisfying constraint conditions. 
@@ -414,13 +387,27 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         is equal to 1 if :math:`0 \\leqslant d_{ij} \\leqslant D_{ij}` and 0 elsewhere.\n 
     
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute standardError.
+            #. data (dict): The constraint value data returned using 
+               get_constraint_value.
             
         :Returns:
             #. standardError (number): The calculated standardError of the constraint.
         """
         standardError = np.sum(data.values())
         return FLOAT_TYPE(standardError)
+    
+    def _get_constraint_value(self):
+        if self.data is None:
+            LOGGER.warn("data must be computed first using 'compute_data' method.")
+            return np.array([], dtype=FLOAT_TYPE)
+        # compute distances
+        idi = self.__typePairsIndexes[:,0]
+        idj = self.__typePairsIndexes[:,1]
+        numbers   = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1)
+        distances = (self.data["distanceSum"][idi,idj] + self.data["distanceSum"][idj,idi]).reshape(-1)
+        nonZero   = np.where(numbers)
+        distances[nonZero] /= numbers[nonZero]
+        return distances
         
     def get_constraint_value(self):
         """
@@ -432,44 +419,129 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         if self.data is None:
             LOGGER.warn("data must be computed first using 'compute_data' method.")
             return {}
+        # compute distances
+        distances = self._get_constraint_value()
+        # compute output
         output = {}
-        for pair in self.__typesPairs:
-            output["intermd_%s-%s" % pair] = FLOAT_TYPE(0.0)
-        for pair in self.__typesPairs:
-            # get index of element
-            idi = self.__types.index(pair[0])
-            idj = self.__types.index(pair[1])
-            # get mean value
-            number = FLOAT_TYPE(self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0])
-            if number != 0:
-                distanceSum   = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
-                output["intermd_%s-%s" % pair] += FLOAT_TYPE(distanceSum/number) 
-        return output    
+        for idx, pair in enumerate(self.__typePairs):
+            key = "md_%s-%s"% pair
+            output[key] = distances[idx]
+        # return
+        return output
     
+    def _on_collector_collect_atom(self, realIndex):
+        # get relative index
+        relativeIndex = self._atomsCollector.get_relative_index(realIndex)
+        # create dataDict
+        dataDict = {}
+        dataDict['typeIndexes'] = self.typeIndexes[relativeIndex]
+        dataDict['allTypes']    = self.allTypes[relativeIndex]
+        # reduce all indexes above relativeIndex in typeIndexes
+        # delete data
+        self.__typeIndexes = np.delete(self.__typeIndexes, relativeIndex, axis=0)
+        self.__allTypes    = np.delete(self.__allTypes,     relativeIndex, axis=0)
+        self.__numberOfAtomsPerType[dataDict['allTypes']] -= 1
+        # collect atom
+        self._atomsCollector.collect(realIndex, dataDict=dataDict)
+            
+    def _on_collector_release_atom(self, realIndex):
+        pass
+        
+        
+class _MolecularDistanceConstraint(_DistanceConstraint):  
+    """
+    This is the design class for all molecular distance related constraints. 
+    It contains all common methods and definitions but it's forbiden to be instantiated.
+    """ 
+    def __init__(self, *args, **kwargs):
+        assert not self.__class__.__name__ == "_MolecularDistanceConstraint", LOGGER.error("Instantiating '_MolecularDistanceConstraint' is forbidden.")
+        # check customizable flags
+        assert self._interMolecular or self._intraMolecular, LOGGER.error("In _MolecularDistanceConstraint either '_interMolecular' or '_intraMolecular' must be set to True")
+        assert not (self._interMolecular and self._intraMolecular), LOGGER.error("In _MolecularDistanceConstraint both '_interMolecular' and '_intraMolecular' can't be set to True")
+        # initialize constraint
+        super(_MolecularDistanceConstraint, self).__init__(*args, **kwargs) 
+        # creating fixed flags
+        object.__setattr__(self, '_countWithinLimits', True)
+        object.__setattr__(self, '_reduceDistance', False)
+        object.__setattr__(self, '_reduceDistanceToUpper', True)
+        object.__setattr__(self, '_reduceDistanceToLower', False)
+        # set frame data
+        FRAME_DATA = [d for d in self.FRAME_DATA]
+        FRAME_DATA.extend(['_MolecularDistanceConstraint__typesStats', ] )
+        object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
+    
+    
+    def __setattr__(self, name, value):
+        if name in ('_interMolecular','_intraMolecular','_countWithinLimits','_reduceDistance','_reduceDistanceToUpper','_reduceDistanceToLower'):
+            raise Exception( LOGGER.error("setting '%'s is forbiden"%name) )
+        object.__setattr__(self, name, value)
+        
+    
+    def set_type_definition(self, typeDefinition, pairsDistanceDefinition=None):
+        """ 
+        Its an alias to set_pairs_distance used when typeDefinition needs to be re-defined.
+        
+        :Parameters:
+            #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
+            #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
+               If None is given the already defined pairsDistanceDefinition will be used and passed to set_pairs_distance method.
+        """
+        super(_MolecularDistanceConstraint, self).set_type_definition(typeDefinition          = typeDefinition, 
+                                                                      pairsDistanceDefinition = pairsDistanceDefinition) 
+        # create stats
+        stats = None
+        if self.types is None:
+            stats = None
+        elif self._interMolecular:
+            _, stats = pair_elements_stats(elementIndex     = self.typeIndexes,
+                                           numberOfElements = self.numberOfTypes,
+                                           moleculeIndex    = self.engine.moleculesIndexes)
+        else:
+            stats, _ = pair_elements_stats(elementIndex     = self.typeIndexes,
+                                           numberOfElements = self.numberOfTypes,
+                                           moleculeIndex    = self.engine.moleculesIndexes)
+        # set types stats
+        self.__typesStats = stats
+        # dump to repository
+        self._dump_to_repository({'_MolecularDistanceConstraint__typesStats' :self.__typesStats})
+
+    @property
+    def typesStats(self):
+        """numpy array of number of found pairs in system"""
+        return self.__typesStats
+        
     @reset_if_collected_out_of_date
     def compute_data(self):
         """ Compute data and update engine constraintsData dictionary. """
-        _,_,number,distanceSum = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates,
-                                                               basis                 = self.engine.basisVectors,
-                                                               isPBC                 = self.engine.isPBC,
-                                                               moleculeIndex         = self.engine.moleculesIndexes,
-                                                               elementIndex          = self.__typesIndexes,
-                                                               numberOfElements      = self.__numberOfTypes,
-                                                               lowerLimit            = self.__lowerLimitArray,
-                                                               upperLimit            = self.__upperLimitArray,
-                                                               interMolecular        = True,
-                                                               intraMolecular        = False,
-                                                               reduceDistance        = False,
-                                                               reduceDistanceToUpper = True,
-                                                               reduceDistanceToLower = False,
-                                                               countWithinLimits     = True,
-                                                               ncores                = self.engine._runtime_ncores) 
+        # compute data
+        nintra,dintra, ninter,dinter = \
+        full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates,
+                                      basis                 = self.engine.basisVectors,
+                                      isPBC                 = self.engine.isPBC,
+                                      moleculeIndex         = self.engine.moleculesIndexes,
+                                      elementIndex          = self.typeIndexes,
+                                      numberOfElements      = self.numberOfTypes,
+                                      lowerLimit            = self.lowerLimitArray,
+                                      upperLimit            = self.upperLimitArray,
+                                      interMolecular        = self._interMolecular,
+                                      intraMolecular        = self._intraMolecular,
+                                      reduceDistance        = self._reduceDistance,
+                                      reduceDistanceToUpper = self._reduceDistanceToUpper,
+                                      reduceDistanceToLower = self._reduceDistanceToLower,
+                                      countWithinLimits     = self._countWithinLimits,
+                                      ncores                = self.engine._runtime_ncores) 
+        if self._interMolecular:
+            number      = ninter
+            distanceSum = dinter
+        else:
+            number      = nintra
+            distanceSum = dintra
         # update data
         self.set_data( {"number":number, "distanceSum":distanceSum} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set standardError
-        self.set_standard_error( self.compute_standard_error(data = self.get_constraint_value()) )
+        self.set_standard_error( self._compute_standard_error(distances = self._get_constraint_value()) )
         # set original data
         if self.originalData is None:
             self._set_original_data(self.data)
@@ -481,38 +553,51 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         :Parameters:
             #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
         """
-        _,_,numberM,distanceSumM = multiple_atomic_distances_coords( indexes               = relativeIndexes,
-                                                                     boxCoords             = self.engine.boxCoordinates,
-                                                                     basis                 = self.engine.basisVectors,
-                                                                     isPBC                 = self.engine.isPBC,
-                                                                     moleculeIndex         = self.engine.moleculesIndexes,
-                                                                     elementIndex          = self.__typesIndexes,
-                                                                     numberOfElements      = self.__numberOfTypes,
-                                                                     lowerLimit            = self.__lowerLimitArray,
-                                                                     upperLimit            = self.__upperLimitArray,
-                                                                     allAtoms              = True,
-                                                                     countWithinLimits     = True,
-                                                                     reduceDistance        = False,
-                                                                     reduceDistanceToUpper = True,
-                                                                     reduceDistanceToLower = False,
-                                                                     interMolecular        = True,
-                                                                     intraMolecular        = False,
-                                                                     ncores                = self.engine._runtime_ncores)               
-        _,_,numberF,distanceSumF = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[relativeIndexes],
-                                                                 basis                 = self.engine.basisVectors,
-                                                                 isPBC                 = self.engine.isPBC,
-                                                                 moleculeIndex         = self.engine.moleculesIndexes[relativeIndexes],
-                                                                 elementIndex          = self.__typesIndexes[relativeIndexes],
-                                                                 numberOfElements      = self.__numberOfTypes,
-                                                                 lowerLimit            = self.__lowerLimitArray,
-                                                                 upperLimit            = self.__upperLimitArray,
-                                                                 interMolecular        = True,
-                                                                 intraMolecular        = False,
-                                                                 reduceDistance        = False,
-                                                                 reduceDistanceToUpper = True,
-                                                                 reduceDistanceToLower = False,
-                                                                 countWithinLimits     = True,
-                                                                 ncores                = self.engine._runtime_ncores)
+        nintraM,dintraM, ninterM,dinterM = \
+        multiple_atomic_distances_coords( indexes               = relativeIndexes,
+                                          boxCoords             = self.engine.boxCoordinates,
+                                          basis                 = self.engine.basisVectors,
+                                          isPBC                 = self.engine.isPBC,
+                                          moleculeIndex         = self.engine.moleculesIndexes,
+                                          elementIndex          = self.typeIndexes,
+                                          numberOfElements      = self.numberOfTypes,
+                                          lowerLimit            = self.lowerLimitArray,
+                                          upperLimit            = self.upperLimitArray,
+                                          allAtoms              = True,
+                                          countWithinLimits     = self._countWithinLimits,
+                                          reduceDistance        = self._reduceDistance,
+                                          reduceDistanceToUpper = self._reduceDistanceToUpper,
+                                          reduceDistanceToLower = self._reduceDistanceToLower,
+                                          interMolecular        = self._interMolecular,
+                                          intraMolecular        = self._intraMolecular,
+                                          ncores                = self.engine._runtime_ncores)    
+        nintraF,dintraF, ninterF,dinterF = \
+        full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[relativeIndexes],
+                                      basis                 = self.engine.basisVectors,
+                                      isPBC                 = self.engine.isPBC,
+                                      moleculeIndex         = self.engine.moleculesIndexes[relativeIndexes],
+                                      elementIndex          = self.typeIndexes[relativeIndexes],
+                                      numberOfElements      = self.numberOfTypes,
+                                      lowerLimit            = self.lowerLimitArray,
+                                      upperLimit            = self.upperLimitArray,
+                                      interMolecular        = self._interMolecular,
+                                      intraMolecular        = self._intraMolecular,
+                                      reduceDistance        = self._reduceDistance,
+                                      reduceDistanceToUpper = self._reduceDistanceToUpper,
+                                      reduceDistanceToLower = self._reduceDistanceToLower,
+                                      countWithinLimits     = self._countWithinLimits,
+                                      ncores                = self.engine._runtime_ncores)
+        # check if inter or intra
+        if self._interMolecular:
+            numberM      = ninterM
+            distanceSumM = dinterM
+            numberF      = ninterF
+            distanceSumF = dinterF
+        else:
+            numberM      = nintraM
+            distanceSumM = dintraM
+            numberF      = nintraF
+            distanceSumF = dintraF
         # set active atoms data
         self.set_active_atoms_data_before_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         self.set_active_atoms_data_after_move(None)
@@ -529,38 +614,51 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         boxData = np.array(self.engine.boxCoordinates[relativeIndexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # calculate pair distribution function
-        _,_,numberM,distanceSumM = multiple_atomic_distances_coords( indexes               = relativeIndexes,
-                                                                     boxCoords             = self.engine.boxCoordinates,
-                                                                     basis                 = self.engine.basisVectors,
-                                                                     isPBC                 = self.engine.isPBC,
-                                                                     moleculeIndex         = self.engine.moleculesIndexes,
-                                                                     elementIndex          = self.__typesIndexes,
-                                                                     numberOfElements      = self.__numberOfTypes,
-                                                                     lowerLimit            = self.__lowerLimitArray,
-                                                                     upperLimit            = self.__upperLimitArray,
-                                                                     allAtoms              = True,
-                                                                     countWithinLimits     = True,
-                                                                     reduceDistance        = False,
-                                                                     reduceDistanceToUpper = True,
-                                                                     reduceDistanceToLower = False,
-                                                                     interMolecular        = True,
-                                                                     intraMolecular        = False,
-                                                                     ncores                = self.engine._runtime_ncores)               
-        _,_,numberF,distanceSumF = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[relativeIndexes],
-                                                                 basis                 = self.engine.basisVectors,
-                                                                 isPBC                 = self.engine.isPBC,
-                                                                 moleculeIndex         = self.engine.moleculesIndexes[relativeIndexes],
-                                                                 elementIndex          = self.__typesIndexes[relativeIndexes],
-                                                                 numberOfElements      = self.__numberOfTypes,
-                                                                 lowerLimit            = self.__lowerLimitArray,
-                                                                 upperLimit            = self.__upperLimitArray,
-                                                                 interMolecular        = True,
-                                                                 intraMolecular        = False,
-                                                                 reduceDistance        = False,
-                                                                 reduceDistanceToUpper = True,
-                                                                 reduceDistanceToLower = False,
-                                                                 countWithinLimits     = True,
-                                                                 ncores                = self.engine._runtime_ncores)
+        nintraM,dintraM, ninterM,dinterM = \
+        multiple_atomic_distances_coords( indexes               = relativeIndexes,
+                                          boxCoords             = self.engine.boxCoordinates,
+                                          basis                 = self.engine.basisVectors,
+                                          isPBC                 = self.engine.isPBC,
+                                          moleculeIndex         = self.engine.moleculesIndexes,
+                                          elementIndex          = self.typeIndexes,
+                                          numberOfElements      = self.numberOfTypes,
+                                          lowerLimit            = self.lowerLimitArray,
+                                          upperLimit            = self.upperLimitArray,
+                                          allAtoms              = True,
+                                          countWithinLimits     = self._countWithinLimits,
+                                          reduceDistance        = self._reduceDistance,
+                                          reduceDistanceToUpper = self._reduceDistanceToUpper,
+                                          reduceDistanceToLower = self._reduceDistanceToLower,
+                                          interMolecular        = self._interMolecular,
+                                          intraMolecular        = self._intraMolecular,
+                                          ncores                = self.engine._runtime_ncores)               
+        nintraF,dintraF, ninterF,dinterF = \
+        full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[relativeIndexes],
+                                      basis                 = self.engine.basisVectors,
+                                      isPBC                 = self.engine.isPBC,
+                                      moleculeIndex         = self.engine.moleculesIndexes[relativeIndexes],
+                                      elementIndex          = self.typeIndexes[relativeIndexes],
+                                      numberOfElements      = self.numberOfTypes,
+                                      lowerLimit            = self.lowerLimitArray,
+                                      upperLimit            = self.upperLimitArray,
+                                      interMolecular        = self._interMolecular,
+                                      intraMolecular        = self._intraMolecular,
+                                      reduceDistance        = self._reduceDistance,
+                                      reduceDistanceToUpper = self._reduceDistanceToUpper,
+                                      reduceDistanceToLower = self._reduceDistanceToLower,
+                                      countWithinLimits     = self._countWithinLimits,
+                                      ncores                = self.engine._runtime_ncores)
+        # check if inter or intra
+        if self._interMolecular:
+            numberM      = ninterM
+            distanceSumM = dinterM
+            numberF      = ninterF
+            distanceSumF = dinterF
+        else:
+            numberM      = nintraM
+            distanceSumM = dintraM
+            numberF      = nintraF
+            distanceSumF = dintraF
         # set active atoms data
         self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
         # reset coordinates
@@ -571,7 +669,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         data = self.data
         # change temporarily data attribute
         self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_after_move_standard_error( self.compute_standard_error(data = self.get_constraint_value()) )
+        self.set_after_move_standard_error( self._compute_standard_error(distances = self._get_constraint_value()) )
         # change back data attribute
         self.set_data( data )
     
@@ -636,7 +734,7 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         # update standardError
-        SE = self.compute_standard_error(data = self.get_constraint_value()) 
+        SE = self._compute_standard_error(distances = self._get_constraint_value()) 
         self.set_standard_error( SE )
     
     def reject_amputation(self, realIndex, relativeIndex):
@@ -647,540 +745,357 @@ class InterMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
             #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
         """
         pass
-           
-    def _on_collector_collect_atom(self, realIndex):
-        # get relative index
-        relativeIndex = self._atomsCollector.get_relative_index(realIndex)
-        # create dataDict
-        dataDict = {}
-        dataDict['typesIndexes'] = self.__typesIndexes[relativeIndex]
-        dataDict['allTypes']     = self.__allTypes[relativeIndex]
-        # reduce all indexes above relativeIndex in typesIndexes
-        # delete data
-        self.__typesIndexes = np.delete(self.__typesIndexes, relativeIndex, axis=0)
-        self.__allTypes     = np.delete(self.__allTypes,     relativeIndex, axis=0)
-        self.__numberOfAtomsPerType[dataDict['allTypes']] -= 1
-        # collect atom
-        self._atomsCollector.collect(realIndex, dataDict=dataDict)
-            
-    def _on_collector_release_atom(self, realIndex):
-        pass
+    
+    def plot(self, ax=None, width=0.6,
+                   correctColor = '#0066ff',
+                   erroneousColor = '#d62728',
+                   xlabel=True, xlabelSize=16,
+                   ylabel=True, ylabelSize=16,
+                   legend=True, legendCols=1, legendLoc='best', legendText=('correct','erroneous'),
+                   title=True, titleStdErr=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
+        """ 
+        Plot pair distribution constraint.
         
+        :Parameters:
+            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+               If None is given a new plot figure will be created.
+            #. width (number): Bars width, must be >0 and <=1
+            #. correctColor (color): correct data bars color.
+            #. erroneousColor (color): erroneous data bars color.
+            #. xlabel (boolean): Whether to create x label.
+            #. xlabelSize (number): The x label font size.
+            #. ylabel (boolean): Whether to create y label.
+            #. ylabelSize (number): The y label font size.
+            #. legend (boolean): Whether to create the legend or not
+            #. legendCols (integer): Legend number of columns.
+            #. legendLoc (string): The legend location. Anything among
+               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
+               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
+               is accepted.
+            #. legendText (list): The legend of number of correct pairs satisfying
+               constraint and number of erroneous pairs unsatisfying constraint
+               condition.
+            #. title (boolean): Whether to create the title or not
+            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
+        
+        :Returns:
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes): matplotlib used axes.
 
-
-# MUST BE ADAPTED TO REPOSITORY, NOTHING DIFFICULT BUT NOT USED NOW.
-
-#class IntraMolecularDistanceConstraint(RigidConstraint, SingularConstraint):
-#    """
-#    Its controls the intra-molecular distances between atoms.
-#    
-#    :Parameters:
-#        #. engine (None, fullrmc.Engine): The constraint RMC engine.
-#        #. defaultMinDistance (number): The minimum distance allowed set by default for all atoms type.
-#        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.
-#        #. pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
-#           A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
-#           First defined elements pair distance will cancel all redundant. 
-#           If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value 
-#           ::
-#           
-#               e.g. [('c','h',0.9, 1.2), ...] 
-#           
-#        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-#           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-#           and 0 means accepting all steps regardless whether standardError increases or not.
-#        #. mode (string): Defines the way standardError is calculated. In such constraints the definition of standardError
-#           can be confusing because many parameters play different roles in this type of calculation. The number of
-#           unsatisfied constraint conditions is an important parameter and the reduced unsatisfied distances is another one.
-#           Choosing a mode of calculation puts more weight and importance on a parameter. Allowed modes are:
-#            
-#            #. distance (Default): standardError is simply calculated as the square summation of the reduced out of limits distances.
-#               This mode ensures minimizing the global unsatisfied distance of the constraint while additional atom-pairs unsatisfying constraint conditions can be created.
-#            #. number: standardError is calculated such as the number of non-satisfied constraints must decrease 
-#               from one step to another while the square summation of the reduced out of limits distances might increase.             
-#    """
-#    def __init__(self, defaultMinDistance=0.67, typeDefinition="name", pairsLimitsDefinition=None, rejectProbability=1, mode="distance"):
-#        # create modes
-#        self.__standardErrorModes = {"distance":"__distance_standard_error__",
-#                                         "number"  :"__number_standard_error__"}
-#        # initialize constraint
-#        RigidConstraint.__init__(self, rejectProbability=rejectProbability)
-#        # set defaultDistance
-#        self.set_default_minimum_distance(defaultMinDistance)
-#        # set pairs type definition and pairsLimitsDefinition
-#        self.__pairsLimitsDefinition = None
-#        self.set_type_definition(typeDefinition, pairsLimitsDefinition)
-#        self.set_mode(mode)
-#    
-#    @property
-#    def typeDefinition(self):
-#        """Get types definition."""    
-#        return self.__typeDefinition
-#        
-#    @property
-#    def existingStandardErrorModes(self):
-#        """ Get list of defined standardError modes of calculation"""
-#        return self.__standardErrorModes.keys()
-#        
-#    @property
-#    def mode(self):
-#        """ Get the mode of standardError calculation. """
-#        return self.__mode
-#        
-#    @property
-#    def types(self):
-#        """ Get the defined types set. """
-#        return self.__types
-#    
-#    @property
-#    def allTypes(self):
-#        """ Get all atoms types. """
-#        return self.__allTypes 
-#        
-#    @property
-#    def numberOfTypes(self):
-#        """ Get the number of defined types in the configuration. """
-#        if self.__types is not None:
-#            return len(self.__types)
-#        else:
-#            return None
-#        
-#    @property
-#    def defaultMinDistance(self):
-#        """ Gets the experimental data distances minimum. """
-#        return self.__defaultMinDistance
-#             
-#    @property
-#    def pairsLimitsDefinition(self):
-#        """ Get the pairs limits definition as defined by user"""
-#        return self.__pairsLimitsDefinition    
-#        
-#    @property
-#    def pairsLimits(self):
-#        """ Get the normalized pairs limits definition"""
-#        return self.__pairsLimits 
-#
-#    @property
-#    def typesPairs(self):
-#        """ Get the list of pairs of types"""
-#        return self.__typesPairs        
-#    
-#    @property
-#    def typesIndexes(self):
-#        """ Get defined types indexes"""
-#        return self.__typesIndexes  
-#        
-#    @property
-#    def numberOfAtomsPerType(self):
-#        """ Get the number of atoms per type dictionary."""
-#        return self.__numberOfAtomsPerType
-#        
-#    @property
-#    def lowerLimitArray(self):
-#        """ Get lowerLimitArray used in distances calculation. """
-#        return self.__lowerLimitArray
-#    
-#    @property
-#    def upperLimitArray(self):
-#        """ Get upperLimitArray used in distances calculation. """
-#        return self.__upperLimitArray
-#        
-#    def listen(self, message, argument=None):
-#        """   
-#        listen to any message sent from the Broadcaster.
-#        
-#        :Parameters:
-#            #. message (object): Any python object to send to constraint's listen method.
-#            #. arguments (object): Any type of argument to pass to the listeners.
-#        """
-#        if message in("engine set", "update molecules indexes"):
-#            self.set_type_definition(typeDefinition=self.__typeDefinition)
-#
-#        elif message in("update boundary conditions",):
-#            self.reset_constraint()        
-#                
-#    def set_mode(self, mode):
-#        """ 
-#        Sets the standardError mode of calculation. 
-#        
-#        :Parameters:
-#            #. mode (object): The mode of calculation
-#        """
-#        assert mode in self.__standardErrorModes.keys(), LOGGER.error("allowed modes are %s"%self.__standardErrorModes.keys())
-#        self.__mode = mode
-#        # reinitialize constraint
-#        self.reset_constraint()
-#        
-#    def set_default_minimum_distance(self, defaultMinDistance):
-#        """ 
-#        Sets the default intermolecular minimum distance. 
-#        
-#        :Parameters:
-#            #. defaultMinDistance (number): The default minimum distance.
-#        """
-#        assert is_number(defaultMinDistance), LOGGER.error("defaultMinDistance must be a number")
-#        defaultMinDistance = FLOAT_TYPE(defaultMinDistance)
-#        assert defaultMinDistance>=0, LOGGER.error("defaultMinDistance must be positive")
-#        self.__defaultMinDistance = defaultMinDistance
-#    
-#    def set_type_definition(self, typeDefinition, pairsLimitsDefinition=None):
-#        """
-#        Its an alias to set_pairs_limits with pairsLimits argument passed as the already defined pairsLimitsDefinitions
-#        """
-#        # set typeDefinition
-#        assert typeDefinition in ("name", "element"), LOGGER.error("typeDefinition must be either 'name' or 'element'")
-#        if self.engine is None:
-#            self.__types                = None
-#            self.__allTypes             = None
-#            self.__numberOfTypes        = None
-#            self.__typesIndexes         = None
-#            self.__numberOfAtomsPerType = None
-#        elif typeDefinition == "name":
-#            self.__types                = self.engine.names
-#            self.__allTypes             = self.engine.allNames
-#            self.__numberOfTypes        = self.engine.numberOfNames
-#            self.__typesIndexes         = self.engine.namesIndexes
-#            self.__numberOfAtomsPerType = self.engine.numberOfAtomsPerName
-#        elif typeDefinition == "element":
-#            self.__types                = self.engine.elements
-#            self.__allTypes             = self.engine.allElements
-#            self.__numberOfTypes        = self.engine.numberOfElements
-#            self.__typesIndexes         = self.engine.elementsIndexes
-#            self.__numberOfAtomsPerType = self.engine.numberOfAtomsPerElement
-#        self.__typeDefinition = typeDefinition
-#        # check pdb atoms
-#        if self.engine is not None:
-#            lastMolIdx = None
-#            lut = {}
-#            for idx in range(len(self.__allTypes)):
-#                molIdx = self.engine.moleculesIndexes[idx]
-#                name   = self.__allTypes[idx]
-#                if lastMolIdx != molIdx:
-#                    lut = {}
-#                    lastMolIdx = molIdx
-#                if lut.has_key(name):
-#                    raise Exception( LOGGER.error("molecule index '%i' is found to have the same atom %s '%s', This is not allowed for '%s' constraint"%(lastMolIdx, self.__typeDefinition, name, self.__class__.__name__)) )
-#                else:
-#                    lut[name] = 1
-#        # set pairs limits
-#        if pairsLimitsDefinition is None:
-#            pairsLimitsDefinition = self.__pairsLimitsDefinition
-#        self.set_pairs_limits(pairsLimitsDefinition)
-#        
-#    def set_pairs_limits(self, pairsLimitsDefinition):
-#        """ 
-#        Sets the pairs intermolecular minimum distance. 
-#        
-#        :Parameters:
-#            #. pairsLimitsDefinition (None, list, set, tuple): The lower and upper limits distance set to every pair of elements. 
-#               A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinDistance to infinity value.
-#               First defined elements pair distance will cancel all redundant. 
-#               If None is given all pairs will be automatically generated and assigned the given defaultMinDistance to infinity value.
-#               ::
-#               
-#                   e.g. [('c','h',0.9, 1.2), ...] 
-#        
-#        """
-#        # set types pairs
-#        if self.__types is not None:
-#            self.__typesPairs = sorted(itertools.combinations_with_replacement(self.__types,2))
-#        else:
-#            self.__typesPairs = None
-#        # get pairs limits
-#        pairsLimitsDict = {}
-#        if self.engine is None:
-#            pairsLimitsDict = None
-#        elif pairsLimitsDefinition is not None:
-#            pairsLimitsDict = {}
-#            assert isinstance(pairsLimitsDefinition, (list, set, tuple)), LOGGER.error("pairsLimitsDefinition must be a list")
-#            for pair in pairsLimitsDefinition:
-#                assert isinstance(pair, (list, set, tuple)), LOGGER.error("pairsLimitsDefinition list items must be lists as well")
-#                pair = list(pair)
-#                assert len(pair)==4, LOGGER.error("pairsLimitsDefinition list pair item list must have four items")
-#                if pair[0] not in self.__types:
-#                    LOGGER.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[0])
-#                    continue
-#                if pair[1] not in self.__types: 
-#                    LOGGER.warn("pairsLimitsDefinition list pair item '%s' is not a valid type, definition item omitted"%pair[1])
-#                    continue
-#                # create type keys
-#                if not pairsLimitsDict.has_key(pair[0]):
-#                    pairsLimitsDict[pair[0]] = {}
-#                if not pairsLimitsDict.has_key(pair[1]):
-#                    pairsLimitsDict[pair[1]] = {}
-#                assert is_number(pair[2]), LOGGER.error("pairsLimitsDefinition list pair item list third item must be a number")
-#                lower = FLOAT_TYPE(pair[2])
-#                assert is_number(pair[3]), LOGGER.error("pairsLimitsDefinition list pair item list foruth item must be a number")
-#                upper = FLOAT_TYPE(pair[3])
-#                assert lower>=0, LOGGER.error("pairsLimitsDefinition list pair item list third item must be bigger than 0")
-#                assert upper>lower, LOGGER.error("pairsLimitsDefinition list pair item list fourth item must be bigger than the third item")
-#                # set minimum distance
-#                if pairsLimitsDict[pair[0]].has_key(pair[1]):
-#                    LOGGER.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
-#                else:
-#                    pairsLimitsDict[pair[0]][pair[1]] = (lower, upper)
-#                if pairsLimitsDict[pair[1]].has_key(pair[0]):
-#                    LOGGER.warn("elements pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
-#                else:
-#                    pairsLimitsDict[pair[1]][pair[0]] = (lower, upper)
-#        # complete pairsLimitsDict to all elements
-#        if self.engine is not None:
-#            for el1 in self.__types:
-#                if not pairsLimitsDict.has_key(el1):
-#                    pairsLimitsDict[el1] = {}
-#                for el2 in self.__types:
-#                    if not pairsLimitsDict[el1].has_key(el2):
-#                        pairsLimitsDict[el1][el2] = (self.__defaultMinDistance, FLOAT_PLUS_INFINITY)
-#        # set new pairsLimitsDefinition value
-#        self.__pairsLimitsDefinition = pairsLimitsDefinition
-#        self.__pairsLimits = pairsLimitsDict
-#        # set limits arrays
-#        if self.__pairsLimits is not None:
-#            self.__lowerLimitArray = np.zeros((self.__numberOfTypes, self.__numberOfTypes, 1), dtype=FLOAT_TYPE) 
-#            self.__upperLimitArray = np.zeros((self.__numberOfTypes, self.__numberOfTypes, 1), dtype=FLOAT_TYPE) 
-#            for idx1 in range(self.__numberOfTypes):
-#                el1 = self.__types[idx1]
-#                for idx2 in range(self.__numberOfTypes): 
-#                    el2  = self.__types[idx2]
-#                    l,u = self.__pairsLimits[el1][el2]
-#                    sl,su = self.__pairsLimits[el2][el1]
-#                    assert l==sl and u==su, "pairsDistance must be symmetric"
-#                    self.__lowerLimitArray[idx1,idx2,0] = FLOAT_TYPE(l)
-#                    self.__upperLimitArray[idx1,idx2,0] = FLOAT_TYPE(u)
-#                    self.__lowerLimitArray[idx2,idx1,0] = FLOAT_TYPE(l)
-#                    self.__upperLimitArray[idx2,idx1,0] = FLOAT_TYPE(u)
-#        else:
-#            self.__lowerLimitArray = None  
-#            self.__upperLimitArray = None            
-#            
-#    def __distance_standard_error__(self, data):
-#        """
-#        calculates the squared total distanceSum
-#        """
-#        return FLOAT_TYPE( np.sum(data["distanceSum"]**2) )
-#    
-#    def __number_standard_error__(self, data):
-#        """
-#        standardError = SUM_j(SUM_i( meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2 ))
-#        where meanDistance = SUM_ji( reducedDistance )**2 / Ni_total
-#        """
-#        standardError = 0
-#        for idx1 in range(len(self.__types)):
-#            Nj_total = FLOAT_TYPE(self.__numberOfAtomsPerType[self.__types[idx1]])
-#            if Nj_total == 0: continue
-#            for idx2 in range(idx1,len(self.__types)):
-#                Ni_total       = FLOAT_TYPE(self.__numberOfAtomsPerType[self.__types[idx2]])
-#                if Ni_total == 0: continue
-#                Ni_unsatisfied = FLOAT_TYPE(data["number"][idx1][idx2][0])
-#                if Ni_unsatisfied == 0: continue
-#                meanDistance   = FLOAT_TYPE(data["distanceSum"][idx1][idx2][0]**2)/Ni_unsatisfied
-#                standardError     += meanDistance * (1.0/Nj_total) * (Ni_total/(2*Ni_total-Ni_unsatisfied))**2
-#        return FLOAT_TYPE(standardError)
-#    
-#    def compute_standard_error(self, data):
-#        """ 
-#        Compute the squared deviation of data not satisfying constraint conditions. 
-#        
-#        .. math::
-#            SD = \\sum \\limits_{i}^{N} \\sum \\limits_{i+1}^{N} (d_{ij}-D_{ij})^{2} \\bigg( 1-\\int_{0}^{d_{ij}} \\delta(x-D_{ij}) dx \\bigg) 
-#                                   
-#        Where:\n
-#        :math:`N` is the total number of atoms in the system. \n
-#        :math:`D_{ij}` is the distance constraint set for atoms pair (i,j). \n
-#        :math:`d_{ij}` is the distance between atom i and atom j. \n
-#        :math:`\\delta` is the Dirac delta function. \n
-#        :math:`\\int_{0}^{d_{ij}}\\delta(x-D_{ij})dx` is equal to 0 if :math:`d_{ij}<D_{ij}` and 1 when :math:`d_{ij} \\geqslant D_{ij}`.
-# 
-#        :Parameters:
-#            #. data (numpy.array): The constraint value data to compute standardError.
-#            
-#        :Returns:
-#            #. standardError (number): The calculated standardError of the constraint.
-#        """
-#        return getattr(self, self.__standardErrorModes[self.__mode])(data)
-#
-#    def get_constraint_value(self):
-#        """
-#        Compute all partial Mean Pair Distances (MPD) below the defined minimum distance. 
-#        
-#        :Returns:
-#            #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
-#        """
-#        if self.data is None:
-#            LOGGER.warn("data must be computed first using 'compute_data' method.")
-#            return {}
-#        output = {}
-#        for pair in self.__typesPairs:
-#            output["intramd_%s-%s" % pair] = FLOAT_TYPE(0.0)
-#        for pair in self.__typesPairs:
-#            # get index of element
-#            idi = self.__types.index(pair[0])
-#            idj = self.__types.index(pair[1])
-#            # get mean value
-#            number = self.data["number"][idi,idj][0] + self.data["number"][idj,idi][0]
-#            distanceSum = self.data["distanceSum"][idi,idj][0] + self.data["distanceSum"][idj,idi][0]
-#            if number != 0:
-#                output["intramd_%s-%s" % pair] += FLOAT_TYPE(distanceSum/number) 
-#        return output    
-#        
-#    def compute_data(self):
-#        """ Compute data and update engine constraintsData dictionary. """
-#        number,distanceSum,_,_ = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates,
-#                                                               basis                 = self.engine.basisVectors,
-#                                                               isPBC                 = self.engine.isPBC,
-#                                                               moleculeIndex         = self.engine.moleculesIndexes,
-#                                                               elementIndex          = self.__typesIndexes,
-#                                                               numberOfElements      = self.__numberOfTypes,
-#                                                               lowerLimit            = self.__lowerLimitArray,
-#                                                               upperLimit            = self.__upperLimitArray,
-#                                                               countWithinLimits     = False,
-#                                                               reduceDistance        = True,
-#                                                               reduceDistanceToUpper = False,
-#                                                               reduceDistanceToLower = False,
-#                                                               interMolecular        = False,
-#                                                               intraMolecular        = True,
-#                                                               ncores                = self.engine._runtime_ncores) 
-#        # update data
-#        self.set_data( {"number":number, "distanceSum":distanceSum} )
-#        self.set_active_atoms_data_before_move(None)
-#        self.set_active_atoms_data_after_move(None)
-#        # set standardError
-#        self.set_standard_error( self.compute_standard_error(data = self.data) )
-#    
-#    def compute_before_move(self, indexes):
-#        """ 
-#        Compute constraint before move is executed
-#        
-#        :Parameters:
-#            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
-#        """
-#        numberM,distanceSumM,_,_ = multiple_atomic_distances_coords( indexes               = indexes,
-#                                                                     boxCoords             = self.engine.boxCoordinates,
-#                                                                     basis                 = self.engine.basisVectors,
-#                                                                     isPBC                 = self.engine.isPBC,
-#                                                                     moleculeIndex         = self.engine.moleculesIndexes,
-#                                                                     elementIndex          = self.__typesIndexes,
-#                                                                     numberOfElements      = self.__numberOfTypes,
-#                                                                     lowerLimit            = self.__lowerLimitArray,
-#                                                                     upperLimit            = self.__upperLimitArray,
-#                                                                     allAtoms              = True,
-#                                                                     countWithinLimits     = False,
-#                                                                     reduceDistance        = True,
-#                                                                     reduceDistanceToUpper = False,
-#                                                                     reduceDistanceToLower = False,
-#                                                                     interMolecular        = False,
-#                                                                     intraMolecular        = True,
-#                                                                     ncores                = self.engine._runtime_ncores) 
-#        numberF,distanceSumF,_,_ = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[indexes],
-#                                                                 basis                 = self.engine.basisVectors,
-#                                                                 isPBC                 = self.engine.isPBC,
-#                                                                 moleculeIndex         = self.engine.moleculesIndexes[indexes],
-#                                                                 elementIndex          = self.__typesIndexes[indexes],
-#                                                                 numberOfElements      = self.__numberOfTypes,
-#                                                                 lowerLimit            = self.__lowerLimitArray,
-#                                                                 upperLimit            = self.__upperLimitArray,
-#                                                                 countWithinLimits     = False,
-#                                                                 reduceDistance        = True,
-#                                                                 reduceDistanceToUpper = False,
-#                                                                 reduceDistanceToLower = False,
-#                                                                 interMolecular        = False,
-#                                                                 intraMolecular        = True,
-#                                                                 ncores                = self.engine._runtime_ncores) 
-#
-#        self.set_active_atoms_data_before_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
-#        self.set_active_atoms_data_after_move(None)
-#    
-#    def compute_after_move(self, indexes, movedBoxCoordinates):
-#        """ 
-#        Compute constraint after move is executed
-#        
-#        :Parameters:
-#            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
-#            #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
-#        """
-#        # change coordinates temporarily
-#        boxData = np.array(self.engine.boxCoordinates[indexes], dtype=FLOAT_TYPE)
-#        self.engine.boxCoordinates[indexes] = movedBoxCoordinates
-#        # calculate pair distribution function
-#        numberM,distanceSumM,_,_ = multiple_atomic_distances_coords( indexes               = indexes,
-#                                                                     boxCoords             = self.engine.boxCoordinates,
-#                                                                     basis                 = self.engine.basisVectors,
-#                                                                     isPBC                 = self.engine.isPBC,
-#                                                                     moleculeIndex         = self.engine.moleculesIndexes,
-#                                                                     elementIndex          = self.__typesIndexes,
-#                                                                     numberOfElements      = self.__numberOfTypes,
-#                                                                     lowerLimit            = self.__lowerLimitArray,
-#                                                                     upperLimit            = self.__upperLimitArray,
-#                                                                     allAtoms              = True,
-#                                                                     countWithinLimits     = False,
-#                                                                     reduceDistance        = True,
-#                                                                     reduceDistanceToUpper = False,
-#                                                                     reduceDistanceToLower = False,
-#                                                                     interMolecular        = False,
-#                                                                     intraMolecular        = True,
-#                                                                     ncores                = self.engine._runtime_ncores) 
-#        numberF,distanceSumF,_,_ = full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates[indexes],
-#                                                                 basis                 = self.engine.basisVectors,
-#                                                                 isPBC                 = self.engine.isPBC,
-#                                                                 moleculeIndex         = self.engine.moleculesIndexes[indexes],
-#                                                                 elementIndex          = self.__typesIndexes[indexes],
-#                                                                 numberOfElements      = self.__numberOfTypes,
-#                                                                 lowerLimit            = self.__lowerLimitArray,
-#                                                                 upperLimit            = self.__upperLimitArray,
-#                                                                 countWithinLimits     = False,
-#                                                                 reduceDistance        = True,
-#                                                                 reduceDistanceToUpper = False,
-#                                                                 reduceDistanceToLower = False,
-#                                                                 interMolecular        = False,
-#                                                                 intraMolecular        = True,
-#                                                                 ncores                = self.engine._runtime_ncores) 
-#        self.set_active_atoms_data_after_move( {"number":numberM-numberF, "distanceSum":distanceSumM-distanceSumF} )
-#        # reset coordinates
-#        self.engine.boxCoordinates[indexes] = boxData
-#        # compute standardError after move
-#        number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
-#        distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
-#        data = self.data
-#        # change temporarily data attribute
-#        self.set_data( {"number":number, "distanceSum":distanceSum} )
-#        self.set_after_move_standard_error( self.compute_standard_error(data = {"number":number, "distanceSum":distanceSum}) )
-#        # change back data attribute
-#        self.set_data( data )
-#    
-#    def accept_move(self, indexes):
-#        """ 
-#        Accept move
-#        
-#        :Parameters:
-#            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
-#        """
-#        number = self.data["number"]-self.activeAtomsDataBeforeMove["number"]+self.activeAtomsDataAfterMove["number"]
-#        distanceSum = self.data["distanceSum"]-self.activeAtomsDataBeforeMove["distanceSum"]+self.activeAtomsDataAfterMove["distanceSum"]
-#        # change permanently data attribute
-#        self.set_data( {"number":number, "distanceSum":distanceSum} )
-#        # reset activeAtoms data
-#        self.set_active_atoms_data_before_move(None)
-#        self.set_active_atoms_data_after_move(None)
-#        # update standardError
-#        self.set_standard_error( self.afterMoveStandardError )
-#        self.set_after_move_standard_error( None )
-#    
-#    def reject_move(self, indexes):
-#        """ 
-#        Reject move
-#        
-#        :Parameters:
-#            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
-#        """
-#        # reset activeAtoms data
-#        self.set_active_atoms_data_before_move(None)
-#        self.set_active_atoms_data_after_move(None)
-#        # update standardError
-#        self.set_after_move_standard_error( None )
-#
-
+        +------------------------------------------------------------------------------+ 
+        |.. figure:: molecular_distances_constraint_plot_method.png                    | 
+        |   :width: 530px                                                              | 
+        |   :height: 400px                                                             |
+        |   :align: left                                                               | 
+        +------------------------------------------------------------------------------+
+        """
+        # get constraint value
+        if self.data is None:
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # check width
+        assert 0<width<=1, LOGGER.error("width must be a number between 0 and 1")
+        # import matplotlib
+        import matplotlib.pyplot as plt
+        # get axes
+        if ax is None:  
+            FIG  = plt.figure()
+            AXES = plt.gca()
+        else:
+            AXES = ax   
+            FIG  = AXES.get_figure()
+        # get numbers and differences
+        idi = self.typePairsIndexes[:,0]
+        idj = self.typePairsIndexes[:,1]
+        numbers = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        stats   = (self.typesStats[idi,idj] + self.typesStats[idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        diff    = stats-numbers
+        # plot bars  
+        ind   = np.arange(1,len(numbers)+1)  # the x locations for the groups
+        p1 = AXES.bar(ind, diff, width, color=correctColor, label=legendText[0])
+        p2 = AXES.bar(ind, numbers, width, bottom=diff, color=erroneousColor, label=legendText[1])
+        AXES.set_xlim(0,len(numbers)+1.5)
+        AXES.set_ylim(0, max(stats)+0.15*max(stats))
+        # set ticks
+        plt.xticks(ind+width/2., ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs])
+        # ratio labels
+        data = self._get_constraint_value()
+        for d, rect in zip(data, AXES.patches):
+            height = rect.get_height()
+            t = AXES.text(x     = rect.get_x() + rect.get_width()/2, 
+                          y     = height + 5, 
+                          s     = " "+str(d), 
+                          color = 'black',
+                          rotation = 90,
+                          horizontalalignment = 'center', 
+                          verticalalignment   = 'bottom')
+        # set axis labels
+        if xlabel:
+            AXES.set_xlabel("Type pairs", size=xlabelSize)
+        if ylabel:
+            AXES.set_ylabel("Number of pairs"  , size=ylabelSize)
+        # set title
+        if title:
+            FIG.canvas.set_window_title('Molecular Distances Constraint')
+            if titleUsedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
+            if titleAtRem:
+                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
+            if titleStdErr and self.standardError is not None:
+                t += "$std$ $error=%.6f$ "%(self.standardError)
+            if len(t):
+                AXES.set_title(t)  
+        # set background color
+        FIG.patch.set_facecolor('white')
+        # plot legend
+        if legend:
+            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
+        #show
+        if show:
+            plt.show()
+        # return axes
+        return FIG, AXES
+    
+    def export(self, fname, delimiter='     ', comments='# '):
+        """
+        Export pair distribution constraint.
+        
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # get numbers and differences
+        idi = self.typePairsIndexes[:,0]
+        idj = self.typePairsIndexes[:,1]
+        numbers = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        stats   = (self.typesStats[idi,idj] + self.typesStats[idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        diff    = stats-numbers
+        # set data as strings
+        stats   = [str(i) for i in stats]
+        diff    = [str(i) for i in diff]
+        numbers = [str(i) for i in numbers]
+        pairs   = ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs]
+        stdErr  = self._get_constraint_value()
+        # start creating header and data
+        header = ["description","num_pairs","correct","erroneous","standard_error"]
+        data   = [pairs,stats,diff,numbers,stdErr]
+        # save
+        data = np.transpose(data)
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = '%s', 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)
+        
+        
+class InterMolecularDistanceConstraint(_MolecularDistanceConstraint):
+    """
+    Its controls the inter-molecular distances between atoms.
+    
+    :Parameters:
+        #. defaultDistance (number): The minimum distance allowed set by default for all 
+           atoms type.
+        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules 
+           about how to differentiate between atoms and how to parse pairsLimits.
+        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
+           every pair of elements. 
+           A list of tuples must be given, all missing pairs will get automatically 
+           assigned the given defaultMinimumDistance value.
+           First defined elements pair distance will cancel all redundant. 
+           If None is given all pairs will be automatically generated and assigned the 
+           given defaultMinimumDistance value .
+           ::
+           
+               e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+           
+        #. flexible (boolean): Whether to allow atoms to break constraint's definition 
+           under the condition of decreasing total standardError of the constraint. 
+           If flexible is set to False, atoms will never be allowed to cross from above 
+           to below minimum allowed distance. Even if the later will decrease some other 
+           unsatisfying atoms distances, and therefore the total standardError of the 
+           constraint. 
+        #. rejectProbability (Number): rejecting probability of all steps where 
+           standardError increases. It must be between 0 and 1 where 1 means 
+           rejecting all steps where standardError increases and 0 means accepting 
+           all steps regardless whether standardError increases or not.
     
     
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
+        
+        # create engine 
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
+        
+        # create and add constraint
+        EMD = InterMolecularDistanceConstraint()
+        ENGINE.add_constraints(EMD)
+        
+        # create definition
+        EMD.set_pairs_distance([('Si','Si',1.75), ('O','O',1.10), ('Si','O',1.30)])
+    
+    
+    .. autoattribute:: defaultDistance
+    .. autoattribute:: pairsDistanceDefinition
+    .. autoattribute:: pairsDistance
+    .. autoattribute:: flexible
+    .. autoattribute:: lowerLimitArray
+    .. autoattribute:: upperLimitArray
+    .. autoattribute:: typePairs
+    .. autoattribute:: typeDefinition
+    .. autoattribute:: types
+    .. autoattribute:: allTypes
+    .. autoattribute:: numberOfTypes    
+    .. autoattribute:: typeIndexes
+    .. autoattribute:: numberOfAtomsPerType
+    .. automethod:: listen
+    .. automethod:: set_flexible
+    .. automethod:: set_default_distance
+    .. automethod:: set_type_definition
+    .. automethod:: set_pairs_distance
+    .. automethod:: should_step_get_rejected    
+    .. automethod:: compute_standard_error
+    .. automethod:: get_constraint_value
+    .. automethod:: compute_data
+    .. automethod:: compute_before_move
+    .. automethod:: compute_after_move
+    .. automethod:: accept_move
+    .. automethod:: reject_move
+    .. automethod:: compute_as_if_amputated    
+    .. automethod:: accept_amputation
+    .. automethod:: reject_amputation
+    .. automethod:: plot
+    .. automethod:: export
+    """
+    def __init__(self, defaultDistance=1.5, typeDefinition='element', 
+                       pairsDistanceDefinition=None, flexible=True, rejectProbability=1):
+        # creating customizable flags
+        object.__setattr__(self, '_interMolecular', True)
+        object.__setattr__(self, '_intraMolecular', False)
+        # initialize constraint
+        super(InterMolecularDistanceConstraint, self).__init__(defaultDistance         = defaultDistance, 
+                                                               typeDefinition          = typeDefinition,
+                                                               pairsDistanceDefinition = pairsDistanceDefinition,
+                                                               flexible                = flexible,
+                                                               rejectProbability       = rejectProbability) 
+
+
+
+class IntraMolecularDistanceConstraint(_MolecularDistanceConstraint):
+    """
+    .. py:class::IntraMolecularDistanceConstraint
+
+    Its controls the intra-molecular distances between atoms.
+    
+    :Parameters:
+        #. defaultDistance (number): The minimum distance allowed set by default for all 
+           atoms type.
+        #. typeDefinition (string): Can be either 'element' or 'name'. It sets the rules 
+           about how to differentiate between atoms and how to parse pairsLimits.
+        #. pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
+           every pair of elements. 
+           A list of tuples must be given, all missing pairs will get automatically 
+           assigned the given defaultMinimumDistance value.
+           First defined elements pair distance will cancel all redundant. 
+           If None is given all pairs will be automatically generated and assigned the 
+           given defaultMinimumDistance value .
+           ::
+           
+               e.g. [('h','h',1.5), ('h','c',2.015), ...] 
+           
+        #. flexible (boolean): Whether to allow atoms to break constraint's definition 
+           under the condition of decreasing total standardError of the constraint. 
+           If flexible is set to False, atoms will never be allowed to cross from above 
+           to below minimum allowed distance. Even if the later will decrease some other 
+           unsatisfying atoms distances, and therefore the total standardError of the 
+           constraint. 
+        #. rejectProbability (Number): rejecting probability of all steps where 
+           standardError increases. It must be between 0 and 1 where 1 means 
+           rejecting all steps where standardError increases and 0 means accepting 
+           all steps regardless whether standardError increases or not.
+    
+    
+    .. code-block:: python
+    
+        # import fullrmc modules
+        from fullrmc.Engine import Engine
+        from fullrmc.Constraints.DistanceConstraints import IntraMolecularDistanceConstraint
+        
+        # create engine 
+        ENGINE = Engine(path='my_engine.rmc')
+        
+        # set pdb file
+        ENGINE.set_pdb('system.pdb')
+        
+        # create and add constraint
+        EMD = IntraMolecularDistanceConstraint()
+        ENGINE.add_constraints(EMD)
+        
+        # create definition
+        EMD.set_pairs_distance([('Si','Si',1.75), ('O','O',1.10), ('Si','O',1.30)])
+    
+
+    .. autoattribute:: defaultDistance
+    .. autoattribute:: pairsDistanceDefinition
+    .. autoattribute:: pairsDistance
+    .. autoattribute:: flexible
+    .. autoattribute:: lowerLimitArray
+    .. autoattribute:: upperLimitArray
+    .. autoattribute:: typePairs
+    .. autoattribute:: typeDefinition
+    .. autoattribute:: types
+    .. autoattribute:: allTypes
+    .. autoattribute:: numberOfTypes    
+    .. autoattribute:: typeIndexes
+    .. autoattribute:: numberOfAtomsPerType
+    .. automethod:: listen
+    .. automethod:: set_flexible
+    .. automethod:: set_default_distance
+    .. automethod:: set_type_definition
+    .. automethod:: set_pairs_distance
+    .. automethod:: should_step_get_rejected    
+    .. automethod:: compute_standard_error
+    .. automethod:: get_constraint_value
+    .. automethod:: compute_data
+    .. automethod:: compute_before_move
+    .. automethod:: compute_after_move
+    .. automethod:: accept_move
+    .. automethod:: reject_move
+    .. automethod:: compute_as_if_amputated    
+    .. automethod:: accept_amputation
+    .. automethod:: reject_amputation
+    .. automethod:: plot
+    .. automethod:: export
+    """
+    def __init__(self, defaultDistance=1.5, typeDefinition='name', 
+                       pairsDistanceDefinition=None, flexible=True, rejectProbability=1):
+        # creating customizable flags
+        object.__setattr__(self, '_interMolecular', False)
+        object.__setattr__(self, '_intraMolecular', True)
+        # initialize constraint
+        super(IntraMolecularDistanceConstraint, self).__init__(defaultDistance         = defaultDistance, 
+                                                               typeDefinition          = typeDefinition,
+                                                               pairsDistanceDefinition = pairsDistanceDefinition,
+                                                               flexible                = flexible,
+                                                               rejectProbability       = rejectProbability) 
     
 
 

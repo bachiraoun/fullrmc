@@ -626,3 +626,174 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         pass
             
             
+    def plot(self, ax=None, width=0.6,
+                   barColor = '#99ccff',
+                   cnColor  = '#ffcc00',
+                   cnPtSize   = 20,
+                   stdErrors = True,
+                   xlabel=True, xlabelSize=16,
+                   ylabel=True, ylabelSize=16,
+                   legend=True, legendCols=1, legendLoc='best', 
+                   title=True, titleStdErr=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
+        """ 
+        Plot pair distribution constraint.
+        
+        :Parameters:
+            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+               If ax is given, the figure won't be rendered and drawn.
+               If None is given a new plot figure will be created and the figue will be rendered and drawn.
+            #. width (number): Bars width, must be >0 and <=1
+            #. barColor (color): boundaries bar color.
+            #. cnColor (color): coordination number data points color.
+            #. cnPtSize (number): coordination number data points size.
+            #. stdErrors (boolean): Whether to show bars standard error.
+            #. xlabel (boolean): Whether to create x label.
+            #. xlabelSize (number): The x label font size.
+            #. ylabel (boolean): Whether to create y label.
+            #. ylabelSize (number): The y label font size.
+            #. legend (boolean): Whether to create the legend or not
+            #. legendCols (integer): Legend number of columns.
+            #. legendLoc (string): The legend location. Anything among
+               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
+               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
+               is accepted.
+            #. title (boolean): Whether to create the title or not
+            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
+            
+        :Returns:
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes): matplotlib used axes.
+
+        +------------------------------------------------------------------------------+ 
+        |.. figure:: atomic_coordination_number_constraint_plot_method.png             | 
+        |   :width: 530px                                                              | 
+        |   :height: 400px                                                             |
+        |   :align: left                                                               | 
+        +------------------------------------------------------------------------------+
+        """
+        # get constraint value
+        if not len(self.data):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # check width
+        assert 0<width<=1, LOGGER.error("width must be a number between 0 and 1")
+        # import matplotlib
+        import matplotlib.pyplot as plt
+        # get axes
+        if ax is None:
+            FIG  = plt.figure()
+            AXES = plt.gca()
+        else:
+            AXES = ax   
+            FIG  = AXES.get_figure()
+        # plot bars  
+        ind    = np.arange(1,len(self.data)+1)  # the x locations for the groups
+        bottom = self.minAtoms
+        height = [self.maxAtoms[idx]-self.minAtoms[idx] for idx in xrange(len(self.maxAtoms))]
+        p = AXES.bar(ind, height, width, bottom=self.minAtoms, color=barColor, label="boundaries")
+        # add coordination number points
+        CN = self.data/self.__numberOfCores
+        AXES.plot(ind+width/2., CN, 'o', label="mean coord num", color=cnColor, markersize=cnPtSize, markevery=1 )
+        # set ticks
+        plt.xticks(ind+width/2., ["%s-%s"%(e[:2]) for e in self.__coordNumDef])
+        # compute standard errors
+        if stdErrors:
+            StdErrs  = []
+            for idx, cn in enumerate( CN ):
+                if cn < self.__minAtoms[idx]:
+                    StdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
+                elif cn > self.__maxAtoms[idx]:
+                    StdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
+                else:
+                    StdErrs.append( 0. )
+            for mi,ma, std, rect in zip(self.__minAtoms,self.__maxAtoms,StdErrs, AXES.patches):
+                height = rect.get_height()
+                t = AXES.text(x     = rect.get_x() + rect.get_width()/2, 
+                              y     = float(ma+mi)/2.,
+                              s     = " "+str(std), 
+                              color = 'black',
+                              rotation = 90,
+                              horizontalalignment = 'center', 
+                              verticalalignment   = 'center')      
+        # set limits
+        minY = min([min(CN),min(self.minAtoms)])
+        maxY = max([max(CN),max(self.maxAtoms)])
+        AXES.set_xlim(0,len(self.data)+1.5)
+        AXES.set_ylim(minY-1,maxY+1)
+        # set axis labels
+        if xlabel:
+            AXES.set_xlabel("Core-Shell atoms", size=xlabelSize)
+        if ylabel:
+            AXES.set_ylabel("Coordination number"  , size=ylabelSize)
+        # set title
+        if title:
+            FIG.canvas.set_window_title('Atomic Coordination Number Constraint')
+            if titleUsedFrame:
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+            else:
+                t = ''
+            if titleAtRem:
+                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
+            if titleStdErr and self.standardError is not None:
+                t += "$std$ $error=%.6f$ "%(self.standardError)
+            if len(t):
+                AXES.set_title(t)  
+        # set background color
+        FIG.patch.set_facecolor('white')
+        # plot legend
+        if legend:
+            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc, numpoints=1)
+        #show
+        if show:
+            plt.show()
+        # return axes
+        return FIG, AXES
+    
+    def export(self, fname, delimiter='     ', comments='# '):
+        """
+        Export pair distribution constraint.
+        
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+        """
+        # get constraint value
+        if not len(self.data):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        CN = self.data/self.__numberOfCores
+        StdErrs  = []
+        for idx, cn in enumerate( CN ):
+            if cn < self.__minAtoms[idx]:
+                StdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
+            elif cn > self.__maxAtoms[idx]:
+                StdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
+            else:
+                StdErrs.append( 0. )
+        # create header      
+        header = ["core-shell","ninimum_coord_num","naximum_coord_num","mean_coord_num","standard_error"] 
+        # create data lists
+        data = [["%s-%s"%(e[:2]) for e in self.__coordNumDef],
+                 [str(i) for i in self.__minAtoms], 
+                 [str(i) for i in self.__maxAtoms], 
+                 [str(i) for i in CN],
+                 [str(i) for i in StdErrs]]
+        # save
+        data = np.transpose(data)
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = '%s', 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)
+        
+                
+            
+        
+        
+            

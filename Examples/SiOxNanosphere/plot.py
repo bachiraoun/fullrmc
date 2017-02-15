@@ -13,7 +13,10 @@ ENGINE = Engine(path=None)
 result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if result:
     ENGINE = ENGINE.load(engineFilePath)
-    ENGINE.constraints[0].plot(inter=False, intra=False, shapeFunc=True, legendLoc='upper left')
+    PDF, EMD, ACN = ENGINE.constraints
+    ACN.plot(show=False)
+    EMD.plot(show=False)
+    PDF.plot(inter=False, intra=False, shapeFunc=True, legendLoc='upper left')
 else:
     print mes
  

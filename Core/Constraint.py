@@ -498,6 +498,9 @@ class Constraint(ListenerBase):
     def _on_collector_reset(self):
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
         
+    def export(self, *args, **kwargs):
+        LOGGER.warn("%s export method is not implemented"%(self.__class__.__name__))
+        
     def plot(self, *args, **kwargs):
         LOGGER.warn("%s plot method is not implemented"%(self.__class__.__name__))
     

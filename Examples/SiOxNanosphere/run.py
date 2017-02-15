@@ -90,20 +90,27 @@ def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1):
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
-
+run_normal_rmc(nsteps=100000, ncores=NCORES)
 run_explore(ncores=NCORES)
 run_normal_rmc(nsteps=100000, ncores=NCORES)
 run_explore(ncores=NCORES)
 # expand nanoparticule
 expand_nanoparticule(ncores=NCORES)
+run_normal_rmc(nsteps=100000, ncores=NCORES)
 expand_nanoparticule(ncores=NCORES)
+run_normal_rmc(nsteps=100000, ncores=NCORES)
 expand_nanoparticule(ncores=NCORES)
+run_normal_rmc(nsteps=100000, ncores=NCORES)
 expand_nanoparticule(ncores=NCORES)
-    
+run_normal_rmc(nsteps=100000, ncores=NCORES)  
+run_normal_rmc(nsteps=100000, ncores=NCORES)  
+run_normal_rmc(nsteps=100000, ncores=NCORES)    
     
     
 ##########################################################################################
-##################################  PLOT PDF CONSTRAINT  #################################
-PDF_CONSTRAINT.plot(intra=False)
+####################################  PLOT CONSTRAINTS  ##################################
+ACNC_CONSTRAINT.plot(show=False)
+EMD_CONSTRAINT.plot(show=False)
+PDF_CONSTRAINT.plot(inter=False, intra=False, shapeFunc=True, legendLoc='upper left')
 
 

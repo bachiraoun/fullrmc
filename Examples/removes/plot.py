@@ -16,8 +16,9 @@ ENGINE = Engine(path=None)
 result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if result:
     ENGINE = ENGINE.load(engineFilePath)
-    GR     = ENGINE.constraints[0] 
-    GR.plot(intra=False, inter=True)
+    PDF, EMD = ENGINE.constraints
+    EMD.plot(show=False)
+    PDF.plot(intra=False, show=True)
 else:
     print mes
  

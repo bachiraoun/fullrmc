@@ -16,13 +16,7 @@ import numpy as np
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
 
-# should not be used because this makes a class un-picklable as it's type will look like a function
-#def SingletonDecorator(cls):
-#    """ A class singleton decorator. """
-#    instance = cls()
-#    instance.__call__ = lambda: instance
-#    return instance    
-    
+
 def raise_if_collected(func):
     """ Constraints method decorator that raises an error whenever the method is called 
     and the system has atoms that were removed.
@@ -30,6 +24,8 @@ def raise_if_collected(func):
     def wrapper(self, *args, **kwargs):
         assert not len(self._atomsCollector), LOGGER.error("Calling '%s.%s' is not allowed when system has collected atoms."%(self.__class__.__name__,func.__name__))
         return func(self, *args, **kwargs)
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__  = func.__doc__
     return wrapper
 
 def reset_if_collected_out_of_date(func):
@@ -45,6 +41,8 @@ def reset_if_collected_out_of_date(func):
                 for realIndex in self.engine._atomsCollector.indexes:
                     self._on_collector_collect_atom(realIndex=realIndex)
         return func(self, *args, **kwargs)
+    wrapper.__name__ = func.__name__
+    wrapper.__doc__  = func.__doc__
     return wrapper
     
 def is_number(number):

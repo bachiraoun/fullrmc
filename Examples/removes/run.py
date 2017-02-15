@@ -13,8 +13,7 @@ from fullrmc.Engine import Engine
 from fullrmc.Core.Group import EmptyGroup
 from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
 from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
-from fullrmc.Constraints.AtomicCoordinationConstraints import AtomicCoordinationNumberConstraint
-from fullrmc.Generators.Translations import TranslationGenerator, TranslationAlongSymmetryAxisGenerator
+from fullrmc.Generators.Translations import TranslationGenerator
 from fullrmc.Generators.Swaps import SwapPositionsGenerator
 
 
@@ -38,25 +37,18 @@ if not ENGINE.is_engine(engineSavePath) or FRESH_START:
     EMD_CONSTRAINT = InterMolecularDistanceConstraint()
     ENGINE.add_constraints([EMD_CONSTRAINT])
     EMD_CONSTRAINT.set_type_definition("element")
-    EMD_CONSTRAINT.set_pairs_distance([('Co','Co',2.00),('Co','O' ,1.7),('Co','Li',2.00),('Co','Mn',2.00),('Co','Ni',2.00),
-                                       ('Mn','Mn',2.00),('Mn','O' ,1.7),('Mn','Li',2.00),('Mn','Ni',2.00),
-                                       ('Ni','Ni',2.00),('Ni','O' ,1.7),('Ni','Li',2.00),
-                                       ('O' ,'O' ,1.20),('O' ,'Li',1.8),
-                                       ('Li','Li',2.40),])
-    ## create and add coordination number constraint
-    ACNC_CONSTRAINT = AtomicCoordinationNumberConstraint(rejectProbability=0.7)
-    ENGINE.add_constraints([ACNC_CONSTRAINT])
-    ACNC_CONSTRAINT.set_coordination_number_definition( coordNumDef=[('Co','O',1.7,3.0,4,7), 
-                                                                     ('Mn','O',1.7,3.0,4,7), 
-                                                                     ('Ni','O',1.7,3.0,4,7)])
+    EMD_CONSTRAINT.set_pairs_distance([('Co','Co',2.00),('Co','Mn',2.00),('Co','Ni',2.00),('Co','Li',2.00),('Co','O' ,1.7),
+                                       ('Mn','Mn',2.00),('Mn','Li',2.00),('Mn','Ni',2.00),('Mn','O' ,1.7),
+                                       ('Ni','Ni',2.00),('Ni','Li',2.00),('Ni','O' ,1.7),
+                                       ('Li','Li',2.40),('Li' ,'O',1.8),
+                                       ('O' ,'O' ,1.20),])
     ## save engine
     ENGINE.save()
 else:
     ENGINE = ENGINE.load(engineSavePath)
     ## unpack constraints before fitting in case tweaking is needed
-    PDF_CONSTRAINT, EMD_CONSTRAINT, ACNC_CONSTRAINT = ENGINE.constraints
-
-
+    PDF_CONSTRAINT, EMD_CONSTRAINT = ENGINE.constraints
+    
 #  ####################################################################################  #
 #  ############################### DEFINE DIFFERENT RUNS ##############################  #
 def normal_run(numberOfSteps=100000, saveFrequency=10000):

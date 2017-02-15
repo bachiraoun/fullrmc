@@ -21,7 +21,7 @@ import os
 
 # external libraries imports
 import numpy as np
-from pysimplelog import Logger as LOG
+from pysimplelog import SingleLogger as LOG
 
 # data types definitions
 INT_TYPE   = np.int32   # must be the integer type for the whole package
@@ -44,18 +44,8 @@ PI                   = FLOAT_TYPE(np.pi)                    # pi the ratio of a 
 
 
 # Create LOGGER
-class Logger(LOG):
-    """fullrmc's logger."""
-    def __new__(cls, *args, **kwds):
-        #Singleton interface for logger
-        thisSingleton = cls.__dict__.get("__thisSingleton__")
-        if thisSingleton is not None:
-            return thisSingleton
-        cls.__thisSingleton__ = thisSingleton = LOG.__new__(cls)
-        return thisSingleton
-        
-    def __init__(self, *args, **kwargs):
-        super(Logger, self).__init__(*args, **kwargs)
+class Logger(LOG):        
+    def custom_init(self):
         # set logfile basename
         logFile = os.path.join(os.getcwd(), "fullrmc")
         self.set_log_file_basename(logFile)
@@ -65,19 +55,15 @@ class Logger(LOG):
         self.add_log_type("move accepted",  name="INFO",           level= 15)
         self.add_log_type("engine saved",   name="INFO",           level= 17)
         self.add_log_type("argument fixed", name="FIXED",          level= 20)
-        self.add_log_type("implement",      name="IMPLEMENTATION", level= 1000)
+        self.add_log_type("implement",      name="IMPLEMENTATION", level= 100)
         self.add_log_type("usage",          name="USAGE",          level= 1000)
-        # set parameters
-        self.__set_logger_params_from_file()
-        
-    def __set_logger_params_from_file(self):
         # set minimum level to 10
         self.set_minimum_level(10)
         # force error and critical logging no matter what logging level is
         self.force_log_type_flags(logType="error",    stdoutFlag=True, fileFlag=True)
         self.force_log_type_flags(logType="critical", stdoutFlag=True, fileFlag=True)
-        self.force_log_type_flags(logType="implement",stdoutFlag=True, fileFlag=True)
-        self.force_log_type_flags(logType="usage",    stdoutFlag=True, fileFlag=True)
+        #self.force_log_type_flags(logType="implement",stdoutFlag=True, fileFlag=True)
+        #self.force_log_type_flags(logType="usage",    stdoutFlag=True, fileFlag=True)
         
     def fixed(self, message):
         """alias to message at fixed level"""
@@ -102,11 +88,16 @@ class Logger(LOG):
     def impl(self, message):
         """alias to message at implement engine level"""
         self.log("implement", message)
+    
+    def implement(self, message):
+        """alias to message at usage engine level"""
+        self.log("usage", message)
         
     def usage(self, message):
         """alias to message at usage engine level"""
         self.log("usage", message)
         
+# initialize Logger        
 LOGGER = Logger(name="fullrmc")  
 
 

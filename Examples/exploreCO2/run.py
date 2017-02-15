@@ -103,18 +103,21 @@ def run_recurring_atoms(ENGINE, rang=None, recur=None, explore=True, refine=Fals
             
 ##########################################################################################
 ####################################  RUN SIMULATION  ####################################
-# remove all .xyz trajectory files
+## remove all .xyz trajectory files
 files = [f for f in os.listdir(".") if os.path.isfile(f) and ".xyz" in f]
 [os.remove(fname) for fname in files]
-# run atoms
+## run atoms
 run_atoms(ENGINE, rang=4, xyzFrequency=None)
-run_molecules(ENGINE, xyzFrequency=None)
-run_recurring_atoms(ENGINE, rang=8, explore=True, refine=False, xyzFrequency=None) 
+#run_molecules(ENGINE, xyzFrequency=None)
+run_recurring_atoms(ENGINE, rang=50, explore=True, refine=False, xyzFrequency=None) 
 run_recurring_atoms(ENGINE, rang=4, explore=False, refine=True, xyzFrequency=None) 
+run_atoms(ENGINE, rang=4, xyzFrequency=None)
 
 ##########################################################################################
 ##################################  PLOT PDF CONSTRAINT  #################################
-PDF_CONSTRAINT.plot()
-    
+IMD_CONSTRAINT.plot(show=False)
+B_CONSTRAINT.plot(show=False)
+BA_CONSTRAINT.plot(show=False)
+PDF_CONSTRAINT.plot(show=True)
     
     

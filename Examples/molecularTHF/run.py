@@ -58,8 +58,6 @@ if freshStart or not ENGINE.is_engine(engineFilePath):
     IA_CONSTRAINT  = ImproperAngleConstraint()
     # add constraints to engine
     ENGINE.add_constraints([PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT])
-    
-    
     # initialize constraints definitions
     B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"THF": [('O' ,'C1' , 1.29, 1.70),
                                                                       ('O' ,'C4' , 1.29, 1.70),
@@ -110,7 +108,7 @@ else:
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ###################################    
 # ############ RUN C-H BONDS ############ #
-def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True, exportPdb=False): 
+def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True): 
     groups = []
     for idx in range(0,ENGINE.pdb.numberOfAtoms, 13):
         groups.append( np.array([idx+1 ,idx+2 ], dtype=np.int32) ) # C1-H11
@@ -132,11 +130,9 @@ def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True, exportPdb=Fa
     for stepIdx in range(rang):
         LOGGER.info("Running 'bonds_CH' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_bonds_CH.pdb"%(ENGINE.generated)) )
-
+        
 # ############ RUN H-C-H ANGLES ############ #   
-def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True, exportPdb=False):  
+def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True):  
     groups = []
     for idx in range(0,ENGINE.pdb.numberOfAtoms, 13):
         groups.append( np.array([idx+1 ,idx+2, idx+3 ], dtype=np.int32) ) # H11-C1-H12
@@ -154,11 +150,9 @@ def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True, exportPdb=F
     for stepIdx in range(rang):
         LOGGER.info("Running 'angles_HCH' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_angles_HCH.pdb"%(ENGINE.generated)) )    
-
+        
 # ############ RUN ATOMS ############ #    
-def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True, exportPdb=False):
+def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True):
     allElements = ENGINE.allElements
     groups = []
     for idx, el in enumerate(allElements):
@@ -174,11 +168,9 @@ def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True, 
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_atoms.pdb"%(ENGINE.generated)) )
-            
+              
 # ############ RUN ATOMS ############ #    
-def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True, exportPdb=False):
+def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True):
     ENGINE.set_groups_as_atoms()  
     # set selector
     if refine or explore:
@@ -189,11 +181,9 @@ def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True, exportPdb=False
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_atoms.pdb"%(ENGINE.generated)) )    
-     
+        
 # ############ RUN ROTATION ABOUT SYMM AXIS 0 ############ #
-def about0(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=False):  
+def about0(ENGINE, rang=5, recur=100, refine=True, explore=False):  
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -207,11 +197,9 @@ def about0(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'about0' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about0.pdb"%(ENGINE.generated)) ) 
- 
+        
 # ############ RUN ROTATION ABOUT SYMM AXIS 1 ############ #
-def about1(ENGINE, rang=5, recur=10, refine=True, explore=False, exportPdb=False):  
+def about1(ENGINE, rang=5, recur=10, refine=True, explore=False):  
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -225,11 +213,9 @@ def about1(ENGINE, rang=5, recur=10, refine=True, explore=False, exportPdb=False
     for stepIdx in range(rang):
         LOGGER.info("Running 'about1' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about1.pdb"%(ENGINE.generated)) )    
-        
+         
 # ############ RUN ROTATION ABOUT SYMM AXIS 2 ############ #
-def about2(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=False): 
+def about2(ENGINE, rang=5, recur=100, refine=True, explore=False): 
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -243,11 +229,9 @@ def about2(ENGINE, rang=5, recur=100, refine=True, explore=False, exportPdb=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'about2' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_about2.pdb"%(ENGINE.generated)) )  
-
+        
 # ############ RUN TRANSLATION ALONG SYMM AXIS 0 ############ #
-def along0(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=False):  
+def along0(ENGINE, rang=5, recur=100, refine=False, explore=True):  
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=0, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -261,11 +245,9 @@ def along0(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'along0' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along0.pdb"%(ENGINE.generated)) )    
-
+        
 # ############ RUN TRANSLATION ALONG SYMM AXIS 1 ############ #
-def along1(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=False):  
+def along1(ENGINE, rang=5, recur=100, refine=False, explore=True):  
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=1, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -280,11 +262,9 @@ def along1(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'along1' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along1.pdb"%(ENGINE.generated)) )    
-
+        
 # ############ RUN TRANSLATION ALONG SYMM AXIS 2 ############ # 
-def along2(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=False):   
+def along2(ENGINE, rang=5, recur=100, refine=False, explore=True):   
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=2, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -298,11 +278,9 @@ def along2(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=Fals
     for stepIdx in range(rang):
         LOGGER.info("Running 'along2' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_along2.pdb"%(ENGINE.generated)) )    
-
+        
 # ############ RUN MOLECULES ############ #
-def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=False):
+def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator( MoveGeneratorCollector(collection=[TranslationGenerator(amplitude=0.2),RotationGenerator(amplitude=2)],randomize=True) ) for g in ENGINE.groups]
     # number of steps
@@ -313,11 +291,9 @@ def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportPdb=F
     for stepIdx in range(rang):
         LOGGER.info("Running 'molecules' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i_molecules.pdb"%(ENGINE.generated)) )
 
 # ############ SHRINK SYSTEM ############ #   
-def shrink(ENGINE, newDim, exportPdb=False):
+def shrink(ENGINE, newDim):
     ENGINE.set_groups_as_molecules()  
     [g.set_move_generator( MoveGeneratorCollector(collection=[TranslationGenerator(amplitude=0.2),RotationGenerator(amplitude=5)],randomize=True) ) for g in ENGINE.groups]
     # get groups order    
@@ -339,10 +315,6 @@ def shrink(ENGINE, newDim, exportPdb=False):
         LOGGER.info("Running 'shrink' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
         fname = "shrink_"+str(newDim).replace(".","p")
-        if exportPdb:
-            ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%s_%s.pdb"%(ENGINE.generated, fname)) )    
-
-
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
@@ -388,5 +360,12 @@ atoms(ENGINE, explore=True, refine=False)
 
 
 ##########################################################################################
-#####################################  RUN SIMULATION  ###################################
-PDF_CONSTRAINT.plot()
+####################################  PLOT CONSTRAINTS  ##################################
+PDF_CONSTRAINT.plot(show=False)
+EMD_CONSTRAINT.plot(show=False)
+B_CONSTRAINT.plot(lineWidth=2,  nbins=20,  split='element', show=False)
+BA_CONSTRAINT.plot(lineWidth=2, nbins=20,  split='element', show=False)
+IA_CONSTRAINT.plot(lineWidth=2, nbins=20,  split='element', show=True)
+
+
+

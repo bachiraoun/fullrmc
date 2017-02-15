@@ -330,38 +330,38 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         if not self.__angles.has_key(idx1):
             angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
         else:
-            angles1 = {"idx2"        :self.__angles[improperIdx]["idx2"], 
-                       "idx3"        :self.__angles[improperIdx]["idx3"], 
-                       "idx4"        :self.__angles[improperIdx]["idx4"], 
-                       "dihedralMap" :self.__angles[improperIdx]["dihedralMap"], 
-                       "otherMap"    :self.__angles[improperIdx]["otherMap"] }          
+            angles1 = {"idx2"        :self.__angles[idx1]["idx2"], 
+                       "idx3"        :self.__angles[idx1]["idx3"], 
+                       "idx4"        :self.__angles[idx1]["idx4"], 
+                       "dihedralMap" :self.__angles[idx1]["dihedralMap"], 
+                       "otherMap"    :self.__angles[idx1]["otherMap"] }          
         # create dihedral angle2
         if not self.__angles.has_key(idx2):
             angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
         else:
-            angles2 = {"idx2"        :self.__angles[improperIdx]["idx2"], 
-                       "idx3"        :self.__angles[improperIdx]["idx3"], 
-                       "idx4"        :self.__angles[improperIdx]["idx4"], 
-                       "dihedralMap" :self.__angles[improperIdx]["dihedralMap"], 
-                       "otherMap"    :self.__angles[improperIdx]["otherMap"] }  
+            angles2 = {"idx2"        :self.__angles[idx2]["idx2"], 
+                       "idx3"        :self.__angles[idx2]["idx3"], 
+                       "idx4"        :self.__angles[idx2]["idx4"], 
+                       "dihedralMap" :self.__angles[idx2]["dihedralMap"], 
+                       "otherMap"    :self.__angles[idx2]["otherMap"] }  
         # create dihedral angle3
         if not self.__angles.has_key(idx3):
             angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
         else:
-            angles3 = {"idx2"        :self.__angles[improperIdx]["idx2"], 
-                       "idx3"        :self.__angles[improperIdx]["idx3"], 
-                       "idx4"        :self.__angles[improperIdx]["idx4"], 
-                       "dihedralMap" :self.__angles[improperIdx]["dihedralMap"], 
-                       "otherMap"    :self.__angles[improperIdx]["otherMap"] }  
+            angles3 = {"idx2"        :self.__angles[idx3]["idx2"], 
+                       "idx3"        :self.__angles[idx3]["idx3"], 
+                       "idx4"        :self.__angles[idx3]["idx4"], 
+                       "dihedralMap" :self.__angles[idx3]["dihedralMap"], 
+                       "otherMap"    :self.__angles[idx3]["otherMap"] }  
         # create dihedral angle4
         if not self.__angles.has_key(idx4):
             angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
         else:
-            angles4 = {"idx2"        :self.__angles[improperIdx]["idx2"], 
-                       "idx3"        :self.__angles[improperIdx]["idx3"], 
-                       "idx4"        :self.__angles[improperIdx]["idx4"], 
-                       "improperMap" :self.__angles[improperIdx]["improperMap"], 
-                       "otherMap"    :self.__angles[improperIdx]["otherMap"] }  
+            angles4 = {"idx2"        :self.__angles[idx4]["idx2"], 
+                       "idx3"        :self.__angles[idx4]["idx3"], 
+                       "idx4"        :self.__angles[idx4]["idx4"], 
+                       "dihedralMap" :self.__angles[idx4]["dihedralMap"], 
+                       "otherMap"    :self.__angles[idx4]["otherMap"] }  
         # check for re-defining
         setPos = idx2Pos = idx3Pos = idx4Pos = None               
         if idx2 in angles1["idx2"] and idx3 in angles1["idx3"] and idx4 in angles1["idx4"]:
@@ -800,23 +800,26 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                                                           'otherMap'   :self.__angles[realIndex]['otherMap']})
 
         
-    def plot(self, ax=None, nbins=20, subplots=True, 
+    def plot(self, ax=None, nbins=20, subplots=True, split=None,
                    wspace=0.3, hspace=0.3,
                    histtype='bar', lineWidth=None, lineColor=None,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=1, legendLoc='best',
-                   title=True, titleStdErr=True, usedFrame=True,):
+                   title=True, titleStdErr=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
         """ 
         Plot dihedral angles constraint distribution histogram.
         
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given, the figure won't be rendered and drawn and subplots 
-               parameters will be omitted. If None is given a new plot figure will be 
-               created and the figue will be rendered and drawn.
+               If ax is given,  subplots parameters will be omitted. 
+               If None is given a new plot figure will be created.
             #. nbins (int): number of bins in histogram.
             #. subplots (boolean): Whether to add plot constraint on multiple axes.
+            #. split (None, 'name', 'element'): To split plots into histogram per atom 
+               names, elements in addition to lower and upper bounds. If None histograms 
+               will be built from lower and upper bounds only.
             #. wspace (float): The amount of width reserved for blank space between 
                subplots, expressed as a fraction of the average axis width.
             #. hspace (float): The amount of height reserved for white space between 
@@ -837,20 +840,56 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
-            #. title (boolean): Whether to create the title or not
-            #. usedFrame(boolean): Whether to show used frame name.
+            #. title (boolean): Whether to create the title or not.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
         
         :Returns:
-            #. axes (matplotlib Axes, List): The matplotlib axes or a list of axes.
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
         """
+        def _get_bins(dmin, dmax, boundaries, nbins):
+            # create bins
+            delta = float(dmax-dmin)/float(nbins-1)
+            bins  = range(nbins)
+            bins  = [b*delta for b in bins]
+            bins  = [b+dmin for b in bins]
+            # check boundaries
+            bidx = 0
+            for b in sorted(boundaries):
+                for i in range(bidx, len(bins)-1):
+                    bidx = i
+                    # exact match with boundary
+                    if b==bins[bidx]:
+                        break
+                    # boundary between two bins, move closest bin to boundary
+                    if bins[bidx] < b < bins[bidx+1]:
+                        if b-bins[bidx] > bins[bidx+1]-b:
+                            bins[bidx+1] = b
+                        else:
+                            bins[bidx]   = b
+                        break
+            # return bins
+            return bins
         # get constraint value
         output = self.get_constraint_value()
         if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-        # compute categories 
+       # compute categories 
+        if split == 'name':
+            splitV = self.engine.get_original_data("allNames")
+        elif split == 'element':
+            splitV = self.engine.get_original_data("allElements")
+        else:
+            splitV = None
         categories = {}
+        atom2  = self.__anglesList[0]
+        atom1  = self.__anglesList[1]
+        atom3  = self.__anglesList[2]
+        atom4  = self.__anglesList[3]
         lower1 = self.__anglesList[4]
         upper1 = self.__anglesList[5]
         lower2 = self.__anglesList[6]
@@ -860,13 +899,20 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         for idx in xrange(self.__anglesList[0].shape[0]):
             if self._atomsCollector.is_collected(idx):
                 continue
+            if splitV is not None:
+                a1 = splitV[ atom1[idx] ]
+                a2 = splitV[ atom2[idx] ]
+                a3 = splitV[ atom3[idx] ]
+                a4 = splitV[ atom4[idx] ]
+            else:
+                a1 = a2 = a3 = a4 = ''
             l1 = lower1[idx]
             u1 = upper1[idx]
             l2 = lower2[idx]
             u2 = upper2[idx]
             l3 = lower3[idx]
             u3 = upper3[idx]
-            k = (l1,u1,l2,u2,l3,u3)
+            k = (a1,a2,a3,a4,l1,u1,l2,u2,l3,u3)
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
@@ -878,13 +924,13 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             if subplots and ncategories>1:
                 x = np.ceil(np.sqrt(ncategories))
                 y = np.ceil(ncategories/x)
-                _, N_AXES = plt.subplots(int(x), int(y) )
-                N_AXES = N_AXES.flatten()
-                plt.subplots_adjust(wspace=wspace, hspace=hspace)
-                FIG = N_AXES[0].get_figure()
+                FIG, N_AXES = plt.subplots(int(x), int(y) )
+                N_AXES = FIG.flatten()
+                FIG.subplots_adjust(wspace=wspace, hspace=hspace)
+                [N_AXES[i].axis('off') for i in range(ncategories,len(N_AXES))]
             else:
-                AXES = plt.gca()
-                FIG = AXES.get_figure()
+                FIG  = plt.figure()
+                AXES = FIG.gca()
                 subplots = False 
         else:
             AXES = ax  
@@ -894,21 +940,28 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
             for idx, key in enumerate(categories.keys()): 
-                LU = sorted(set( [(key[0],key[1]),(key[2],key[3]),(key[4],key[5])] ))
-                label = " ".join( ["(%.2f,%.2f)"%(l,u) for l,u in LU] )
+                a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
+                LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
+                LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
+                label = "%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)
                 COL  = COLORS[idx%len(COLORS)]
                 AXES = N_AXES[idx]
                 idxs = categories[key]
                 data = self.data["angles"][idxs]
+                # get data limits
+                mn = np.min(data)
+                mx = np.max(data)
+                # get bins
+                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
                 # plot histogram
-                D, E, P = AXES.hist(x=data, bins=nbins, 
+                D, _, P = AXES.hist(x=data, bins=BINS, 
                                     color=COL, label=label,
                                     histtype=histtype)
                 # vertical lines
                 Y = max(D)
                 for idx, (l,u) in enumerate(LU):
-                    AXES.plot([l,l],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                    AXES.plot([u,u],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([l,l],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([u,u],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
                 # legend
                 if legend:
                     AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
@@ -921,64 +974,39 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                     [p.set_linewidth(lineWidth) for p in P]
                 if lineColor is not None:
                     [p.set_edgecolor(lineColor) for p in P]
-                # set limits if ax not given
-                if ax is None:
-                    degMin = [min(E)]
-                    degMin.extend( [l for l,u in LU]  )
-                    degMin = min(degMin)
-                    degMax = [max(E)]
-                    degMax.extend( [u for l,u in LU]  )
-                    degMax = max(degMax)
-                    degPer = 0.1*(degMax-degMin)
-                    degMin = np.floor(degMin-degPer)
-                    degMax = np.ceil( degMax+degPer)
-                    AXES.set_xlim(degMin,degMax)
-                    numMin = 0
-                    numMax = max(D)
-                    numMax += 0.1*numMax
-                    AXES.set_ylim(numMin,numMax)
+                # update limits
+                AXES.set_xmargin(0.1)
+                AXES.autoscale() 
         else:
-            degMin = degMax = numMax = 0
             for idx, key in enumerate(categories.keys()): 
-                LU = sorted(set([(key[0],key[1]),(key[2],key[3]),(key[4],key[5])]))
-                label = " ".join( ["(%.2f,%.2f)"%(l,u) for l,u in LU] )
+                a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
+                LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
+                LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
+                label = "%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)
                 COL  = COLORS[idx%len(COLORS)]
                 idxs = categories[key]
                 data = self.data["angles"][idxs]
+                # get data limits
+                mn = np.min(data)
+                mx = np.max(data)
+                # get bins
+                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
                 # plot histogram
-                D, E, P = AXES.hist(x=data, bins=nbins, 
+                D, _, P = AXES.hist(x=data, bins=BINS, 
                                     color=COL, label=label,
                                     histtype=histtype)
                 # vertical lines
                 Y = max(D)
                 for idx, (l,u) in enumerate(LU):
-                    AXES.plot([l,l],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                    AXES.plot([u,u],[0,Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([l,l],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
+                    AXES.plot([u,u],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
                 if lineWidth is not None:
                     [p.set_linewidth(lineWidth) for p in P]
                 if lineColor is not None:
                     [p.set_edgecolor(lineColor) for p in P]
-                AXES.autoscale()
-                # set limits if ax not given
-                degMin_ = [min(E)]
-                degMin_.extend( [l for l,u in LU]  )
-                degMin_ = min(degMin_)
-                degMax_ = [max(E)]
-                degMax_.extend( [u for l,u in LU]  )
-                degMax_ = max(degMax_)
-                degPer = 0.1*(degMax_-degMin_)
-                degMin_ = np.floor(degMin_-degPer_)
-                degMax_ = np.ceil( degMax_+degPer_)
-                mins.extend( [degMin,degMin_] )
-                maxs.extend( [degMax,degMax_] )
-                degMax = min(maxs)
-                numMax_ = max(D)
-                numMax_ += 0.1*numMax_
-                numMax = min([numMax,numMax_])  
-            # set limits if ax not given
-            if ax is None:    
-                AXES.set_xlim(degMin,degMax)
-                AXES.set_ylim(0,numMax)
+            # update limits
+            AXES.set_xmargin(0.1)
+            AXES.autoscale()
             # legend
             if legend:
                 AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
@@ -989,10 +1017,13 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_ylabel("$number$"  , size=ylabelSize)
         # set title
         if title:
-            if usedFrame:
+            FIG.canvas.set_window_title('Dihedral Angle Constraint')
+            if titleUsedFrame:
                 t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
             else:
                 t = ''
+            if titleAtRem:
+                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if len(t):
@@ -1001,13 +1032,98 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # set background color
         FIG.patch.set_facecolor('white')
         #show
-        if ax is None:
+        if show:
             plt.show()
         # return axes
         if subplots:
-            return N_AXES
+            return FIG, N_AXES
         else:
-            return AXES  
+            return FIG, AXES  
+    
+    def export(self, fname, delimiter='     ', comments='# ', split=None):
+        """
+        Export pair distribution constraint.
+        
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+            #. split (None, 'name', 'element'): To split output into per atom names,
+               elements in addition to lower and upper bounds. If None output 
+               will be built from lower and upper bounds only.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # compute categories 
+        if split == 'name':
+            splitV = self.engine.get_original_data("allNames")
+        elif split == 'element':
+            splitV = self.engine.get_original_data("allElements")
+        else:
+            splitV = None
+        categories = {}
+        atom2  = self.__anglesList[0]
+        atom1  = self.__anglesList[1]
+        atom3  = self.__anglesList[2]
+        atom4  = self.__anglesList[3]
+        lower1 = self.__anglesList[4]
+        upper1 = self.__anglesList[5]
+        lower2 = self.__anglesList[6]
+        upper2 = self.__anglesList[7]
+        lower3 = self.__anglesList[8]
+        upper3 = self.__anglesList[9]
+        for idx in xrange(self.__anglesList[0].shape[0]):
+            if self._atomsCollector.is_collected(idx):
+                continue
+            if splitV is not None:
+                a1 = splitV[ atom1[idx] ]
+                a2 = splitV[ atom2[idx] ]
+                a3 = splitV[ atom3[idx] ]
+                a4 = splitV[ atom4[idx] ]
+            else:
+                a1 = a2 = a3 = a4 = ''
+            l1 = lower1[idx]
+            u1 = upper1[idx]
+            l2 = lower2[idx]
+            u2 = upper2[idx]
+            l3 = lower3[idx]
+            u3 = upper3[idx]
+            k = (a1,a2,a3,a4,l1,u1,l2,u2,l3,u3)
+            L = categories.get(k, [])
+            L.append(idx)
+            categories[k] = L
+        ncategories = len(categories.keys())
+        # create data
+        for idx, key in enumerate(categories.keys()): 
+            idxs = categories[key]
+            data = self.data["angles"][idxs]
+            categories[key] = [str(d) for d in data]
+        # adjust data size
+        maxSize = max( [len(v) for v in categories.values()] )
+        for key, data in categories.items():
+            add =  maxSize-len(data)
+            if add > 0:
+                categories[key] = data + ['']*add
+        # start creating header and data
+        sortCa = sorted( categories.keys() )
+        header = []
+        for key in sortCa:
+            a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
+            LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
+            LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
+            header.append( ("%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)).replace(' ','') )
+        data   = [categories[key] for key in sortCa]
+        # save
+        data = np.transpose(data)
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = '%s', 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)       
         
         
         

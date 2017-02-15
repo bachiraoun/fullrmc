@@ -35,7 +35,8 @@ Installation
 * pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
   0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
 * pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
-* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is used starting from fullrmc 3.0.0 - )
+* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is 
+  used starting from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
 
 ##### Installation using pip:
 numpy and cython must be installed and updated manually. 
@@ -54,7 +55,7 @@ following python script:
 from pkg_resources import parse_version as PV
 for name, ver in [('numpy'      ,'1.7.1') ,
                   ('cython'     ,'0.21.1'),
-                  ('pyrep'      ,'1.0.3') ,
+                  ('pyrep'      ,'1.0.4') ,
                   ('pdbParser'  ,'0.1.5') ,
                   ('pysimplelog','0.2.1') ,
                   ('matplotlib' ,'1.4'  )]:

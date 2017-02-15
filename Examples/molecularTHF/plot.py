@@ -14,8 +14,12 @@ result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if result:
     ENGINE = ENGINE.load(engineFilePath)
     PDF, EMD, B, BA, IA = ENGINE.constraints
-    BA.plot(lineWidth=2, nbins=20)
-    #PDF.plot()
+    # plot all constraints
+    PDF.plot(show=False)
+    EMD.plot(show=False)
+    B.plot(lineWidth=2, nbins=20,  split='element', show=False)
+    BA.plot(lineWidth=2, nbins=20, split='element', show=False)
+    IA.plot(lineWidth=2, nbins=20, split='element', show=True )
 else:
     print mes
  

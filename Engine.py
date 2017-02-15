@@ -142,7 +142,7 @@ class Engine(object):
         # check whether an engine exists at this path
         if self.is_engine(path):
             if freshStart: 
-                Repository().remove_repository(path, relatedFiles=True, relatedFolders=True)                
+                Repository(ACID=False).remove_repository(path, relatedFiles=True, relatedFolders=True)                
             else:
                 m  = "An Engine is found at '%s'. "%path
                 m += "If you wish to override it set freshStart argument to True. "
@@ -618,7 +618,7 @@ class Engine(object):
         """
         assert isinstance(repo, bool), "repo must be boolean"
         assert isinstance(mes, bool), "mes must be boolean"
-        rep = Repository()
+        rep = Repository(ACID=False)
         # check if this is a repository
         if path is None:
             result  = False
@@ -686,6 +686,7 @@ class Engine(object):
         # dump constraints' used frame FRAME_DATA
         for c in self.__constraints:
             cp = os.path.join(frame, 'constraints', c.constraintId)
+            #print c.__class__.__name__, cp
             #self.__repository.add_directory( cp )
             for dname in c.RUNTIME_DATA:
                 value = c.__dict__[dname]
@@ -720,13 +721,13 @@ class Engine(object):
         if path is not None:
             result, message = self.__check_path_to_create_repository(path)
             assert result, LOGGER.error(message)
-            REP = Repository()
+            REP = Repository(ACID=False)
             REP.create_repository(path, info=info)
             self.__path = path
         # first time saving this engine
         elif self.__repository is None:
             assert self.__path is not None, LOGGER.error("Given path and engine's path are both None, must give a valid path for saving.")
-            REP = Repository()
+            REP = Repository(ACID=False)
             REP.create_repository(self.__path, info=info)
         # engine loaded or saved before
         else:
@@ -2057,7 +2058,8 @@ class Engine(object):
                 self._RT_groupRelativeIndexes = self._RT_groupAtomsIndexes
                 _coordsBeforeMove             = np.array([], dtype=self.__realCoordinates.dtype).reshape((0,3))
             # get group atoms coordinates before applying move 
-            if isinstance(self._RT_moveGenerator, SwapGenerator):
+            elif isinstance(self._RT_moveGenerator, SwapGenerator):
+            #if isinstance(self._RT_moveGenerator, SwapGenerator):
                 if len(self._RT_groupAtomsIndexes) == self._RT_moveGenerator.swapLength:
                     self._RT_groupAtomsIndexes    = self._RT_moveGenerator.get_ready_for_move(engine=self,  groupAtomsIndexes=self._RT_groupAtomsIndexes)
                     notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
@@ -2078,8 +2080,13 @@ class Engine(object):
             elif not self.__groupSelector.refine:
                 self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
                 _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
-            else:
-                raise Exception(LOGGER.critical("Unknown fitting mode, unable to get coordinates before applying move."))
+            ## WHEN AT THIS POINT PROPERTIES ARE GroupSelector (RecursiveGroupSelector) explore (False) refine (True).
+            #else:
+            #    m  = "Unknown fitting mode, unable to get coordinates before applying move. "
+            #    m += "GroupSelector (%s) explore (%s) refine (%s). "%(self.__groupSelector.__class__.__name__, self.__groupSelector.explore, self.__groupSelector.refine)
+            #    m += "Group (%s) index (%s) len (%s). "%(self._RT_selectedGroup.__class__.__name__, self.__lastSelectedGroupIndex, len(self._RT_groupAtomsIndexes))
+            #    m += "MoveGenerator (%s) index (%s). "%(self._RT_moveGenerator.__class__.__name__, self.__lastSelectedGroupIndex,)
+            #    raise Exception(LOGGER.critical(m))
             # compute moved coordinates
             if len(_coordsBeforeMove):
                 movedRealCoordinates = self._RT_moveGenerator.move(_coordsBeforeMove)

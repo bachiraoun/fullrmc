@@ -5,14 +5,15 @@
     
 .. inheritance-diagram:: fullrmc.Selectors.RandomSelectors
                          fullrmc.Selectors.OrderedSelectors
-                         fullrmc.Generators.Translations 
-                         fullrmc.Generators.Rotations 
+                         fullrmc.Generators.Translations
+                         fullrmc.Generators.Rotations
                          fullrmc.Generators.Swaps 
                          fullrmc.Generators.Agitations
                          fullrmc.Generators.Removes
                          fullrmc.Constraints.AtomicCoordinationConstraints
-                         fullrmc.Constraints.DistanceConstraints
-                         fullrmc.Constraints.BondConstraints
+                         fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint
+                         fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint
+                         fullrmc.Constraints.BondConstraints 
                          fullrmc.Constraints.AngleConstraints
                          fullrmc.Constraints.DihedralAngleConstraints
                          fullrmc.Constraints.ImproperAngleConstraints
@@ -20,6 +21,7 @@
                          fullrmc.Constraints.PairCorrelationConstraints
                          fullrmc.Constraints.StructureFactorConstraints
     :parts: 1
+    :private-bases:
     
     
 Welcoming videos

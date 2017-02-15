@@ -604,23 +604,26 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         # collect atom bondIndexes
         self._atomsCollector.collect(realIndex, dataDict={'map':BI})  
     
-    def plot(self, ax=None, nbins=50, subplots=True, 
+    def plot(self, ax=None, nbins=25, subplots=True, split=None,
                    wspace=0.3, hspace=0.3,
                    histtype='bar', lineWidth=None, lineColor=None,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=1, legendLoc='best',
-                   title=True, titleStdErr=True, usedFrame=True,):
+                   title=True, titleStdErr=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
         """ 
         Plot bonds constraint distribution histogram.
         
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given, the figure won't be rendered and drawn and subplots 
-               parameters will be omitted. If None is given a new plot figure will be 
-               created and the figue will be rendered and drawn.
+               If ax is given,  subplots parameters will be omitted. 
+               If None is given a new plot figure will be created.
             #. nbins (int): number of bins in histogram.
             #. subplots (boolean): Whether to add plot constraint on multiple axes.
+            #. split (None, 'name', 'element'): To split plots into histogram per atom 
+               names, elements in addition to lower and upper bounds. If None histograms 
+               will be built from lower and upper bounds only.
             #. wspace (float): The amount of width reserved for blank space between 
                subplots, expressed as a fraction of the average axis width.
             #. hspace (float): The amount of height reserved for white space between 
@@ -641,46 +644,92 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
-            #. title (boolean): Whether to create the title or not
-            #. usedFrame(boolean): Whether to show used frame name.
+            #. title (boolean): Whether to create the title or not.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
-        
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
+            
         :Returns:
-            #. axes (matplotlib Axes, List): The matplotlib axes or a list of axes.
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
+            
+        +------------------------------------------------------------------------------+ 
+        |.. figure:: bond_constraint_plot_method.png                                   | 
+        |   :width: 530px                                                              | 
+        |   :height: 400px                                                             |
+        |   :align: left                                                               | 
+        +------------------------------------------------------------------------------+
         """
+        def _get_bins(dmin, dmax, boundaries, nbins):
+            # create bins
+            delta = float(dmax-dmin)/float(nbins-1)
+            bins  = range(nbins)
+            bins  = [b*delta for b in bins]
+            bins  = [b+dmin for b in bins]
+            # check boundaries
+            bidx = 0
+            for b in sorted(boundaries):
+                for i in range(bidx, len(bins)-1):
+                    bidx = i
+                    # exact match with boundary
+                    if b==bins[bidx]:
+                        break
+                    # boundary between two bins, move closest bin to boundary
+                    if bins[bidx] < b < bins[bidx+1]:
+                        if b-bins[bidx] > bins[bidx+1]-b:
+                            bins[bidx+1] = b
+                        else:
+                            bins[bidx]   = b
+                        break
+            # return bins
+            return bins
         # get constraint value
         output = self.get_constraint_value()
         if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
+        # import matplotlib
+        import matplotlib.pyplot as plt
         # compute categories 
-        categories = {}
+        if split == 'name':
+            splitV = self.engine.get_original_data("allNames")
+        elif split == 'element':
+            splitV = self.engine.get_original_data("allElements")
+        else:
+            splitV = None
+        atom1 = self.__bondsList[0]
+        atom2 = self.__bondsList[1]
         lower = self.__bondsList[2]
         upper = self.__bondsList[3]
+        categories = {}
         for idx in xrange(self.__bondsList[0].shape[0]):
             if self._atomsCollector.is_collected(idx):
                 continue
-            l = lower[idx]
-            u = upper[idx]
-            k = (l,u)
-            L = categories.get(k, [])
+            if splitV is not None:
+                a1 = splitV[ atom1[idx] ]
+                a2 = splitV[ atom2[idx] ]
+            else:
+                a1 = a2 = ''
+            l  = lower[idx]
+            u  = upper[idx]
+            k  = (a1,a2,l,u)
+            L  = categories.get(k, [])
             L.append(idx)
             categories[k] = L
         ncategories = len(categories.keys())
-        # import matplotlib
-        import matplotlib.pyplot as plt
         # get axes
         if ax is None:
             if subplots and ncategories>1:
                 x = np.ceil(np.sqrt(ncategories))
                 y = np.ceil(ncategories/x)
-                _, N_AXES = plt.subplots(int(x), int(y) )
+                FIG, N_AXES = plt.subplots(int(x), int(y) )
                 N_AXES = N_AXES.flatten()
-                plt.subplots_adjust(wspace=wspace, hspace=hspace)
-                FIG = N_AXES[0].get_figure()
+                FIG.subplots_adjust(wspace=wspace, hspace=hspace)
+                [N_AXES[i].axis('off') for i in range(ncategories,len(N_AXES))]
             else:
-                AXES = plt.gca()
-                FIG = AXES.get_figure()
+                FIG  = plt.figure()
+                AXES = FIG.gca()
                 subplots = False
         else:
             AXES = ax  
@@ -690,19 +739,26 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
             for idx, key in enumerate(categories.keys()): 
-                L,U  = key
-                COL  = COLORS[idx%len(COLORS)]
-                AXES = N_AXES[idx]
-                idxs = categories[key]
-                data = self.data["bondsLength"][idxs]
+                a1,a2, L,U  = key
+                # get label
+                label = "%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)
+                COL   = COLORS[idx%len(COLORS)]
+                AXES  = N_AXES[idx]
+                idxs  = categories[key]
+                data  = self.data["bondsLength"][idxs]
+                # get data limits
+                mn = np.min(data)
+                mx = np.max(data)
+                # get bins
+                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=nbins, 
-                                    color=COL, label="(%.2f,%.2f)"%(L,U),
+                D, _, P = AXES.hist(x=data, bins=BINS, 
+                                    color=COL, label=label,
                                     histtype=histtype)
                 # vertical lines
                 Y = max(D)
-                AXES.plot([L,L],[0,Y], linewidth=1.0, color='k', linestyle='--')
-                AXES.plot([U,U],[0,Y], linewidth=1.0, color='k', linestyle='--')
+                AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
+                AXES.plot([U,U],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
                 # legend
                 if legend:
                     AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
@@ -715,20 +771,29 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                     [p.set_linewidth(lineWidth) for p in P]
                 if lineColor is not None:
                     [p.set_edgecolor(lineColor) for p in P]
+                # update limits
+                AXES.set_xmargin(0.1)
+                AXES.autoscale()
         else:
             for idx, key in enumerate(categories.keys()): 
-                L,U  = key
-                COL  = COLORS[idx%len(COLORS)]
-                idxs = categories[key]
-                data = self.data["bondsLength"][idxs]
+                a1,a2, L,U  = key
+                label = "%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)
+                COL   = COLORS[idx%len(COLORS)]
+                idxs  = categories[key]
+                data  = self.data["bondsLength"][idxs]
+                # get data limits
+                mn = np.min(data)
+                mx = np.max(data)
+                # get bins
+                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=nbins, 
-                                    color=COL, label="(%.2f,%.2f)"%(L,U),
+                D, _, P = AXES.hist(x=data, bins=BINS, 
+                                    color=COL, label=label,
                                     histtype=histtype)
                 # vertical lines
                 Y = max(D)
-                AXES.plot([L,L],[0,Y], linewidth=1.0, color='k', linestyle='--')
-                AXES.plot([U,U],[0,Y], linewidth=1.0, color='k', linestyle='--')
+                AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
+                AXES.plot([U,U],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
                 if lineWidth is not None:
                     [p.set_linewidth(lineWidth) for p in P]
                 if lineColor is not None:
@@ -741,29 +806,100 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xlabel("$r(\AA)$", size=xlabelSize)
             if ylabel:
                 AXES.set_ylabel("$number$"  , size=ylabelSize)
-            
-            
+            # update limits
+            AXES.set_xmargin(0.1)
+            AXES.autoscale()
         # set title
         if title:
-            if usedFrame:
+            FIG.canvas.set_window_title('Bond Constraint')
+            if titleUsedFrame:
                 t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
             else:
                 t = ''
+            if titleAtRem:
+                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if len(t):
                 FIG.suptitle(t, fontsize=14)
-        
         # set background color
         FIG.patch.set_facecolor('white')
         #show
-        if ax is None:
+        if show:
             plt.show()
         # return axes
         if subplots:
-            return N_AXES
+            return FIG, N_AXES
         else:
-            return AXES   
+            return FIG, AXES   
+    
+    def export(self, fname, delimiter='     ', comments='# ', split=None):
+        """
+        Export pair distribution constraint.
+        
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+            #. split (None, 'name', 'element'): To split output into per atom names,
+               elements in addition to lower and upper bounds. If None output 
+               will be built from lower and upper bounds only.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # compute categories 
+        if split == 'name':
+            splitV = self.engine.get_original_data("allNames")
+        elif split == 'element':
+            splitV = self.engine.get_original_data("allElements")
+        else:
+            splitV = None
+        atom1 = self.__bondsList[0]
+        atom2 = self.__bondsList[1]
+        lower = self.__bondsList[2]
+        upper = self.__bondsList[3]
+        categories = {}
+        for idx in xrange(self.__bondsList[0].shape[0]):
+            if self._atomsCollector.is_collected(idx):
+                continue
+            if splitV is not None:
+                a1 = splitV[ atom1[idx] ]
+                a2 = splitV[ atom2[idx] ]
+            else:
+                a1 = a2 = ''
+            l  = lower[idx]
+            u  = upper[idx]
+            k  = (a1,a2,l,u)
+            L  = categories.get(k, [])
+            L.append(idx)
+            categories[k] = L
+        ncategories = len(categories.keys())
+        # create data
+        for idx, key in enumerate(categories.keys()): 
+            idxs = categories[key]
+            data = self.data["bondsLength"][idxs]
+            categories[key] = [str(d) for d in data]
+        # adjust data size
+        maxSize = max( [len(v) for v in categories.values()] )
+        for key, data in categories.items():
+            add =  maxSize-len(data)
+            if add > 0:
+                categories[key] = data + ['']*add              
+        # start creating header and data
+        sortCa = sorted( categories.keys() )
+        header = [("%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)).replace(" ","_") for a1,a2,L,U in sortCa]
+        data   = [categories[key] for key in sortCa]
+        # save
+        data = np.transpose(data)
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = '%s', 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)
         
         
         

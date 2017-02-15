@@ -360,14 +360,15 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         
     def plot(self, ax=None, intra=True, inter=True, shapeFunc=True, 
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, usedFrame=True, titleStdErr=True, titleScaleFactor=True):
+                   title=True, titleStdErr=True, 
+                   titleScaleFactor=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
         """ 
         Plot pair correlation constraint.
         
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given, the figure won't be rendered and drawn.
-               If None is given a new plot figure will be created and the figue will be rendered and drawn.
+               If None is given a new plot figure will be created.
             #. intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.
             #. inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.
             #. shapeFunc (boolean): Whether to add shape function to the plot only when exists.
@@ -377,13 +378,23 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
-            #. title (boolean): Whether to create the title or not
-            #. usedFrame(boolean): Whether to show used frame name.
+            #. title (boolean): Whether to create the title or not.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
-        
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
+            
         :Returns:
-            #. axes (matplotlib Axes): The matplotlib axes.
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes): matplotlib used axes.
+
+        +------------------------------------------------------------------------------+ 
+        |.. figure:: pair_correlation_constraint_plot_method.png                       | 
+        |   :width: 530px                                                              | 
+        |   :height: 400px                                                             |
+        |   :align: left                                                               | 
+        +------------------------------------------------------------------------------+
         """
         # get constraint value
         output = self.get_constraint_value()
@@ -394,9 +405,11 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         import matplotlib.pyplot as plt
         # get axes
         if ax is None:
+            FIG  = plt.figure()
             AXES = plt.gca()
         else:
-            AXES = ax   
+            AXES = ax  
+            FIG  = AXES.get_figure() 
         # Create plotting styles
         COLORS  = ["b",'g','r','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -429,10 +442,13 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
         # set title
         if title:
-            if usedFrame:
+            FIG.canvas.set_window_title('Pair Correlation Constraint')
+            if titleUsedFrame:
                 t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
             else:
                 t = ''
+            if titleAtRem:
+                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:
@@ -441,15 +457,68 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 AXES.set_title(t)
         # set axis labels
         AXES.set_xlabel("$r(\AA)$", size=16)
-        AXES.set_ylabel("$g(r)(\AA^{-2})$"  , size=16)
+        AXES.set_ylabel("$g(r)(\AA^{-2})$", size=16)
         # set background color
-        plt.gcf().patch.set_facecolor('white')
+        FIG.patch.set_facecolor('white')
         #show
-        #show
-        if ax is None:
+        if show:
             plt.show()
-        return AXES
+        return FIG, AXES
+    
+    def export(self, fname, format='%12.5f', delimiter=' ', comments='# '):
+        """
+        Export pair distribution constraint.
         
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. format (string): string format to export the data.
+               format is as follows (%[flag]width[.precision]specifier)
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # start creating header and data
+        header = ["distances",]
+        data   = [self.experimentalDistances,]
+        # add all intra data
+        for key, val in output.items():
+            if "inter" in key:
+                continue
+            header.append(key.replace(" ","_"))
+            data.append(val)
+        # add all inter data
+        for key, val in output.items():
+            if "intra" in key:
+                continue
+            header.append(key.replace(" ","_"))
+            data.append(val)
+        # add total
+        header.append("total")
+        data.append(output["pcf"])
+        if self.windowFunction is not None:
+            header.append("total_no_window")
+            data.append(output["pcf_total"])
+        if self._shapeArray is not None:
+            header.append("shape_function")
+            data.append(self._shapeArray)
+        # add experimental data
+        header.append("experimental")
+        data.append(self.experimentalPDF)  
+        # create array and export
+        data =np.transpose(data).astype(float)
+        # save
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = format, 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)
+         
+            
         
         
         

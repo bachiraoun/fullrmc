@@ -76,6 +76,10 @@ class StructureFactorConstraint(ExperimentalConstraint):
            total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
            array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
         #. weighting (string): The elements weighting.
+        #. atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+           element and values are custom weights. If None, elements weighting will be
+           fully set given weighting. If partially given, remaining non specified 
+           atom weights will be set using given weighting.
         #. rmin (None, number): The minimum distance value to compute G(r) histogram.
            If None is given, rmin is computed as :math:`2 \\pi / Q_{max}`.
         #. rmax (None, number): The maximum distance value to compute G(r) histogram.
@@ -119,8 +123,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         ENGINE.add_constraints(SFC)
     
     """
-    def __init__(self,  experimentalData, 
-                       dataWeights=None, weighting="atomicNumber", 
+    def __init__(self, experimentalData, dataWeights=None, 
+                       weighting="atomicNumber", atomsWeight=None, 
                        rmin=None, rmax=None, dr=None, 
                        scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
                        windowFunction=None, limits=None):
@@ -140,6 +144,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.__Gr2SqMatrix         = None
         # initialize constraint
         super(StructureFactorConstraint, self).__init__( experimentalData=experimentalData, dataWeights=dataWeights, scaleFactor=scaleFactor, adjustScaleFactor=adjustScaleFactor)
+        # set atomsWeight
+        self.set_atoms_weight(atomsWeight)
         # set elements weighting
         self.set_weighting(weighting)
         self.__set_weighting_scheme()
@@ -155,6 +161,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
         FRAME_DATA.extend(['_StructureFactorConstraint__limits',
                            '_StructureFactorConstraint__experimentalQValues',
                            '_StructureFactorConstraint__experimentalSF',
+                           '_StructureFactorConstraint__elementsPairs',
+                           '_StructureFactorConstraint__weightingScheme',
+                           '_StructureFactorConstraint__atomsWeight',
                            '_StructureFactorConstraint__qmin',
                            '_StructureFactorConstraint__qmax',
                            '_StructureFactorConstraint__rmin',
@@ -167,7 +176,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
                            '_StructureFactorConstraint__histogramSize',
                            '_StructureFactorConstraint__shellVolumes',
                            '_StructureFactorConstraint__Gr2SqMatrix',
-                           '_StructureFactorConstraint__windowFunction'] )
+                           '_StructureFactorConstraint__windowFunction',
+                           '_elementsWeights',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
@@ -216,8 +226,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
     def __set_weighting_scheme(self):
         if self.engine is not None:
             self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
-            elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
-            self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=elementsWeights)
+            #elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
+            self._elementsWeights  = dict([(el,self.__atomsWeight.get(el, float(get_element_property(el,self.__weighting)))) for el in self.engine.elements])
+            self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights)
             for k, v in self.__weightingScheme.items():
                 self.__weightingScheme[k] = FLOAT_TYPE(v)
         else:
@@ -336,6 +347,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
     def elementsPairs(self):
         """ Get elements pairs """
         return self.__elementsPairs
+    
+    @property
+    def atomsWeight(self):
+        """Custom atoms weight"""
+        return self.__atomsWeight
         
     @property
     def weightingScheme(self):
@@ -459,6 +475,34 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # dump to repository
         self._dump_to_repository({'_StructureFactorConstraint__weighting': self.__weighting}) 
      
+    def set_atoms_weight(self, atomsWeight):
+        """
+        Custom set atoms weight. This is the way to setting a weightingScheme different
+        than the given weighting. 
+        
+        :Parameters:
+            #. atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+               element and values are custom weights. If None, elements weighting will be
+               fully set given weighting. If partially given, remaining non specified 
+               atom weights will be set using given weighting.
+        """
+        if atomsWeight is None:
+            AW = {}
+        else:
+            assert isinstance(atomsWeight, dict),LOGGER.error("atomsWeight must be None or a dictionary")
+            AW = {}
+            for k, v in atomsWeight.items():
+                assert isinstance(k, basestring),LOGGER.error("atomsWeight keys must be strings")
+                try:
+                    val = float(v)
+                except:
+                    raise LOGGER.error( "atomsWeight values must be numerical")
+                AW[k]=val
+        # set atomsWeight
+        self.__atomsWeight = AW
+        # dump to repository
+        self._dump_to_repository({'_StructureFactorConstraint__atomsWeight': self.__atomsWeight}) 
+    
     def set_window_function(self, windowFunction):
         """
         Sets the window function.
@@ -905,6 +949,16 @@ class StructureFactorConstraint(ExperimentalConstraint):
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]
         data      = {"intra":dataIntra, "inter":dataInter}
+        ## ADDED 08 FEB 2017
+        # temporarily adjust self.__weightingScheme
+        weightingScheme = self.__weightingScheme
+        relativeIndex = relativeIndex[0]
+        selectedElement = self.engine.allElements[relativeIndex]
+        self.engine.numberOfAtomsPerElement[selectedElement] -= 1
+        self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights )
+        for k, v in self.__weightingScheme.items():
+            self.__weightingScheme[k] = FLOAT_TYPE(v)
+        ## END OF ADDED 08 FEB 2017   
         # compute standard error
         if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
             SF = self.adjustScaleFactorFrequency
@@ -917,8 +971,15 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         # set amputation
-        self.set_amputation_data( data )
+        # set data
+        #self.set_amputation_data( data ) ## COMMENTED 08 FEB 2017
+        self.set_amputation_data( {'data':data, 'weightingScheme':self.__weightingScheme} ) ## ADDED 08 FEB 2017
         self.set_amputation_standard_error( standardError )
+        ## ADDED 08 FEB 2017
+        # reset weightingScheme
+        self.__weightingScheme = weightingScheme
+        self.engine.numberOfAtomsPerElement[selectedElement] += 1
+        ## END OF ADDED 08 FEB 2017 
     
     def accept_amputation(self, realIndex, relativeIndex):
         """ 
@@ -928,7 +989,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
             #. index (numpy.ndarray): atom index as a numpy array of a single element.
 
         """
-        self.set_data( self.amputationData )
+        #self.set_data( self.amputationData ) ## COMMENTED 08 FEB 2017
+        self.set_data( self.amputationData['data'] )
+        self.__weightingScheme = self.amputationData['weightingScheme'] ## ADDED 08 FEB 2017
         self.set_standard_error( self.amputationStandardError )
         self.set_amputation_data( None )
         self.set_amputation_standard_error( None )
@@ -956,16 +1019,19 @@ class StructureFactorConstraint(ExperimentalConstraint):
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, usedFrame=True, titleStdErr=True, titleScaleFactor=True):
+                   title=True, titleStdErr=True, 
+                   titleScaleFactor=True, titleAtRem=True,
+                   titleUsedFrame=True, show=True):
         """ 
         Plot structure factor constraint.
         
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given, the figure won't be rendered and drawn.
-               If None is given a new plot figure will be created and the figue will be rendered and drawn.
-            #. intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.
-            #. inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.
+               If None is given a new plot figure will be created.
+            #. intra (boolean): Whether to add intra-molecular pair distribution 
+               function features to the plot.
+            #. inter (boolean): Whether to add inter-molecular pair distribution 
+               function features to the plot.
             #. xlabel (boolean): Whether to create x label.
             #. xlabelSize (number): The x label font size.
             #. ylabel (boolean): Whether to create y label.
@@ -977,12 +1043,22 @@ class StructureFactorConstraint(ExperimentalConstraint):
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
             #. title (boolean): Whether to create the title or not.
-            #. usedFrame(boolean): Whether to show used frame name.
             #. titleStdErr (boolean): Whether to show constraint standard error value in title.
             #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
-        
+            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in title.
+            #. show (boolean): Whether to render and show figure before returning.
+            
         :Returns:
-            #. axes (matplotlib Axes): The matplotlib axes.
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes): matplotlib used axes.
+            
+        +------------------------------------------------------------------------------+ 
+        |.. figure:: structure_factor_constraint_plot_method.png                       | 
+        |   :width: 530px                                                              | 
+        |   :height: 400px                                                             |
+        |   :align: left                                                               | 
+        +------------------------------------------------------------------------------+
         """
         # get constraint value
         output = self.get_constraint_value()
@@ -993,9 +1069,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
         import matplotlib.pyplot as plt
         # get axes
         if ax is None:
+            FIG  = plt.figure()
             AXES = plt.gca()
         else:
-            AXES = ax   
+            AXES = ax  
+            FIG = AXES.get_figure() 
         # Create plotting styles
         COLORS  = ["b",'g','r','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -1026,10 +1104,13 @@ class StructureFactorConstraint(ExperimentalConstraint):
             AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
         # set title
         if title:
-            if usedFrame:
+            FIG.canvas.set_window_title('Structure Factor Constraint')
+            if titleUsedFrame:
                 t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
             else:
                 t = ''
+            if titleAtRem:
+               t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
             if titleStdErr and self.standardError is not None:
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if titleScaleFactor:
@@ -1042,11 +1123,63 @@ class StructureFactorConstraint(ExperimentalConstraint):
         if ylabel:
             AXES.set_ylabel("$S(Q)$"  , size=ylabelSize)
         # set background color
-        plt.gcf().patch.set_facecolor('white')
+        FIG.patch.set_facecolor('white')
         #show
-        if ax is None:
+        if show:
             plt.show()
-        return AXES
+        # return axes
+        return FIG, AXES
+    
+    def export(self, fname, format='%12.5f', delimiter=' ', comments='# '):
+        """
+        Export pair distribution constraint.
+        
+        :Parameters:
+            #. fname (path): full file name and path.
+            #. format (string): string format to export the data.
+               format is as follows (%[flag]width[.precision]specifier)
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+        """
+        # get constraint value
+        output = self.get_constraint_value()
+        if not len(output):
+            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
+            return
+        # start creating header and data
+        header = ["inv_distances",]
+        data   = [self.experimentalDistances,]
+        # add all intra data
+        for key, val in output.items():
+            if "inter" in key:
+                continue
+            header.append(key.replace(" ","_"))
+            data.append(val)
+        # add all inter data
+        for key, val in output.items():
+            if "intra" in key:
+                continue
+            header.append(key.replace(" ","_"))
+            data.append(val)
+        # add total
+        header.append("total")
+        data.append(output["sf"])
+        if self.windowFunction is not None:
+            header.append("total_no_window")
+            data.append(output["sf_total"])
+        # add experimental data
+        header.append("experimental")
+        data.append(self.experimentalPDF)  
+        # create array and export
+        data =np.transpose(data).astype(float)
+        # save
+        np.savetxt(fname     = fname, 
+                   X         = data, 
+                   fmt       = format, 
+                   delimiter = delimiter, 
+                   header    = " ".join(header),
+                   comments  = comments)
+                   
         
 class ReducedStructureFactorConstraint(StructureFactorConstraint):
     """

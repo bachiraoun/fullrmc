@@ -6,7 +6,7 @@ Must know
 - fullrmc uses pdbParser library to parse input pdb files and to visualize
   system's atomic structure using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_.  
   VMD which stands for Visual Molecular Dynamics is a free software for 
-  displaying and animating large molecular systems.  
+  displaying and animating large molecular systems.
 - pdbParser in general automatically detects VMD executable when installed.
   fullrmc will work fine without VMD, but make sure it's installed if you
   want to use the convenient visualize method of fullrmc's Engine.
@@ -20,7 +20,7 @@ Must know
 
 Installation
 ============
-Here we describe two methods to installing fullrmc. 
+Here we describe two methods to installing fullrmc.
    #. The first method is by using `pip <https://pip.pypa.io/en/stable/>`_. 
       If you don't know what pip is and you are lazy enough not to read through 
       the documentation, pip supports installing from PyPI, version control, 
@@ -34,7 +34,7 @@ Here we describe two methods to installing fullrmc.
           
    #. The second method is by fullrmc's cloning the source code and  
       repository from `github <https://github.com/bachiraoun/fullrmc>`_ 
-      and then compiling the extension files in place.
+      and then compiling the extension files in place. 
 
 
 For your general understanding, fullrmc requires the following:
@@ -43,7 +43,7 @@ For your general understanding, fullrmc requires the following:
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
    #. pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting 
-      from fullrmc 3.0.0)
+      from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
    #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
       from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
       - 0.1.5 is used starting from fullrmc 1.0.1)
@@ -77,9 +77,9 @@ automatically installed and updated while fullrmc is being installed.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
-                          ('pyrep'      ,'1.0.3') ,
+                          ('pyrep'      ,'1.0.4') ,
                           ('pdbParser'  ,'0.1.5') ,
-                          ('pysimplelog','0.2.1') ,
+                          ('pysimplelog','0.3.0') ,
                           ('matplotlib' ,'1.4'  )]:
             try:
                 lib = __import__(name)
@@ -483,9 +483,36 @@ Fixes and improvements:
        generators.
     #. MLSelection, refine and explore examples BiasedEngine fixed
 
+
+
+
+`Version 3.1.0 <https://pypi.python.org/pypi/fullrmc/3.1.0>`_:
+--------------------------------------------------------------
+Starting from this version, it is possible custom set atoms weight for all of
+:class:`.PairDistributionConstraint`, :class:`.PairCorrelationConstraint`, 
+:class:`.StructureFactorConstraint` and :class:`.ReducedStructureFactorConstraint`.
+Also starting from this version, pysimplelog (>=0.3.0) and pyrep (>=1.0.4) are used. 
+  
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. All constraints export data method added.
+   #. All constraints plot method added.
+   #. :class:`.IntraMolecularDistanceConstraint` added again after being removed in
+      early versions.
+         
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~  
+    #. :class:`.Engine` repository ACID flag is changed to False as it's not needed.
+    #. :class:`.StructureFactorConstraint` and :class:`.ReducedStructureFactorConstraint`
+       atoms removal bug fixed.
+    #. Computing standard error for :class:`.IntraMolecularDistanceConstraint` and
+       :class:`.InterMolecularDistanceConstraint` is optimized for big systems and 
+       constraint's definition. Calculation time is thousands of times faster for
+       extended definitions.
+
 """
 
-__version__    = '3.0.2'
+__version__    = '3.1.0'
                
 __author__     = "Bachir Aoun"
                

@@ -77,10 +77,10 @@ cdef void _single_atomic_distances_dists( C_INT32          atomIndex,
         if i == atomIndex: continue
         inLoopMoleculeIndex = moleculeIndex[i]
         # whether atoms are of the same molecule and intramolecular is not needed
-        if not intraMolecular and inLoopMoleculeIndex==atomMoleculeIndex:
+        if (not intraMolecular) and (inLoopMoleculeIndex==atomMoleculeIndex):
            continue
         # whether atoms are not of the same molecule and intermolecular is not needed
-        if not interMolecular and not inLoopMoleculeIndex==atomMoleculeIndex:
+        if (not interMolecular) and (not inLoopMoleculeIndex==atomMoleculeIndex):
            continue
         # get distance         
         distance = distances[i]
@@ -191,10 +191,10 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
         if i == atomIndex: continue
         inLoopMoleculeIndex = moleculeIndex[i]
         # whether atoms are of the same molecule and intramolecular is not needed
-        if not intraMolecular and inLoopMoleculeIndex==atomMoleculeIndex:
+        if (not intraMolecular) and (inLoopMoleculeIndex==atomMoleculeIndex):
            continue
         # whether atoms are not of the same molecule and intermolecular is not needed
-        if not interMolecular and not inLoopMoleculeIndex==atomMoleculeIndex:
+        if (not interMolecular) and (not inLoopMoleculeIndex==atomMoleculeIndex):
            continue
         # get distance         
         distance = distances[i]
@@ -623,4 +623,55 @@ def full_atomic_distances_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
 
 
 
-                                
+
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+cdef void _pair_elements_stats( C_INT32[:]     elementIndex,
+                                C_INT32[:]     moleculeIndex,
+                                C_INT32        numberOfElements,
+                                C_INT32[:,:,:] nintra,
+                                C_INT32[:,:,:] ninter):
+    # declare variables
+    cdef C_INT32 atomMoleculeIndex, inLoopMoleculeIndex, atomElementIndex, inLoopElementIndex    
+    # double loops
+    for i from <C_INT32>0 <= i < <C_INT32>elementIndex.shape[0]-1:
+        atomElementIndex  =  elementIndex[i]
+        atomMoleculeIndex =  moleculeIndex[i]
+        for j from i+1 <= j < <C_INT32>elementIndex.shape[0]:
+            inLoopMoleculeIndex = moleculeIndex[j]
+            inLoopElementIndex  = elementIndex[j]
+            # increment histograms
+            if inLoopMoleculeIndex == atomMoleculeIndex:
+                nintra[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
+            else:
+                ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE 
+
+
+
+@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.cdivision(True)
+@cython.always_allow_keywords(False)
+def pair_elements_stats( ndarray[C_INT32, ndim=1] elementIndex not None,
+                         ndarray[C_INT32, ndim=1] moleculeIndex not None,
+                         C_INT32                  numberOfElements):
+    # declare variables
+    cdef ndarray[C_INT32,    mode="c", ndim=3] nintra = np.zeros((numberOfElements,numberOfElements,1), dtype=NUMPY_INT32)
+    cdef ndarray[C_INT32,    mode="c", ndim=3] ninter = np.zeros((numberOfElements,numberOfElements,1), dtype=NUMPY_INT32)
+    # compute
+    _pair_elements_stats(elementIndex     = elementIndex,
+                         moleculeIndex    = moleculeIndex,
+                         numberOfElements = numberOfElements,
+                         nintra           = nintra,
+                         ninter           = ninter)
+    # return 
+    return nintra, ninter
+    
+            
+            
+            
+                                     

@@ -32,8 +32,7 @@ sqExpPath      = os.path.join(DIR_PATH, sqFileName)
 pdbPath        = os.path.join(DIR_PATH, pdbFileName)
 engineFilePath = os.path.join(DIR_PATH, engineFileName)
 # set some useful flags
-EXPORT_PDB  = False    
-FRESH_START = True
+FRESH_START = False
 
 # check Engine exists, if not build it otherwise load it.
 ENGINE = Engine(path=None)
@@ -64,13 +63,11 @@ else:
 
 ##########################################################################################
 #####################################  DIFFERENT RUNS  ################################### 
-def run_normal(nsteps, saveFrequency, engineFilePath, exportPdb=True):
+def run_normal(nsteps, saveFrequency, engineFilePath):
     ENGINE.set_groups_as_atoms()
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
-    if exportPdb:
-        ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i.pdb"%(ENGINE.generated)) )
 
-def run_swap(nsteps, saveFrequency, engineFilePath, exportPdb=True):
+def run_swap(nsteps, saveFrequency, engineFilePath):
     # activate coordination number. Play with definition and set_used to True
     ACN_CONSTRAINT.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8), 
                                                          ('ti','ni',2.2, 3.1, 6, 10),
@@ -94,41 +91,35 @@ def run_swap(nsteps, saveFrequency, engineFilePath, exportPdb=True):
             g.set_move_generator(toNiSG)
     # run
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
-    if exportPdb:
-        ENGINE.export_pdb( os.path.join(DIR_PATH, "pdbFiles","%i.pdb"%(ENGINE.generated)) )
 
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
-# export first pdb
-if EXPORT_PDB:
-    ENGINE.export_pdb( os.path.join("pdbFiles","%i.pdb"%(ENGINE.generated)) )
-    
-# run normal 10 times for 10000 step each time
+## run normal 10 times for 10000 step each time
 for _ in range(10):
-    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
     
-# start fitting scale factors each 10 accepted moves
+## start fitting scale factors each 10 accepted moves
 PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
 RSF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2))
 
-# run normal 100 times for 9000 step each time 
+## run normal 100 times for 9000 step each time 
 for _ in range(50):
-    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
     
-# run swaping 100 times for 1000 step each time
-ACN_CONSTRAINT.set_used(False)  
+## run swaping 100 times for 1000 step each time
+#ACN_CONSTRAINT.set_used(False)  
 for _ in range(100):
-    run_swap(nsteps=1000, saveFrequency=1000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+    run_swap(nsteps=1000, saveFrequency=1000, engineFilePath=engineFilePath)
 
-
-# run normal 100 times for 9000 step each time 
+## run normal 100 times for 9000 step each time 
 for _ in range(10):
-    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath, exportPdb=EXPORT_PDB)
+    run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
 
     
 ##########################################################################################
 ##################################  PLOT PDF CONSTRAINT  #################################
-import matplotlib.pyplot as plt
-PDF_CONSTRAINT.plot(plt.figure().gca(), intra=False)
-RSF_CONSTRAINT.plot(plt.figure().gca(), intra=False)
-plt.show()
+PDF_CONSTRAINT.plot(intra=False,show=False)
+RSF_CONSTRAINT.plot(intra=False,show=False)
+ACN_CONSTRAINT.plot(show=False)
+EMD_CONSTRAINT.plot(show=True)
+    

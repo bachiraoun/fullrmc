@@ -7,10 +7,14 @@
 *.log
 *.rmc
 *.xyz
+*.DS_Store 
+*restart.pdb
 
 # sub packages
 /docs
 /tests
+/Extensions/build/
+/Extensions/test/
 
 # files
 .svn

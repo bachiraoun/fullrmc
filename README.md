@@ -34,7 +34,8 @@ Installation
 * matplotlib (lowest version tested is 1.4)
 * pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
   0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
-* pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
+* pysimplelog (lowest version tested is 0.1.7 - 0.1.4 is used starting from fullrmc 1.2.0 -
+   -  0.3.0 is used starting from fullrmc 3.1.0 )
 * pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is 
   used starting from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
 

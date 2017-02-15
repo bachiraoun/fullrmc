@@ -1,0 +1,7 @@
+<map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
+<area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined atoms, a first atom called central" alt="" coords="462,29,616,53"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
+</map>

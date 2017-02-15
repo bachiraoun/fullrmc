@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.2',
+        VERSION:     '3.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -133,7 +133,7 @@ the same three later attributes value.</li>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt>Here we describe two methods to installing fullrmc. </dt>
+<dt>Here we describe two methods to installing fullrmc.</dt>
 <dd><ol class="first last arabic">
 <li><p class="first">The first method is by using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>. 
 If you don&#8217;t know what pip is and you are lazy enough not to read through 
@@ -158,7 +158,7 @@ and then compiling the extension files in place.</p>
 <li>cython (lowest version tested is 0.21.1)</li>
 <li>matplotlib (lowest version tested is 1.4)</li>
 <li>pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting 
-from fullrmc 3.0.0)</li>
+from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)</li>
 <li>pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting 
 from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
 - 0.1.5 is used starting from fullrmc 1.0.1)</li>
@@ -195,9 +195,9 @@ following python script:</li>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.21.1&#39;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.0.3&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.0.4&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;pdbParser&#39;</span>  <span class="p">,</span><span class="s1">&#39;0.1.5&#39;</span><span class="p">)</span> <span class="p">,</span>
-                  <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;0.2.1&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;0.3.0&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s1">&#39;1.4&#39;</span>  <span class="p">)]:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -257,7 +257,7 @@ python setup.py build_ext --inplace
 <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">DirectionalOrderSelector</span></code></a></li>
 <li>Constraints:
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></code></a>
-<code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">BondsAngleConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal"><span class="pre">ImproperAngleConstraint</span></code></a>
@@ -650,6 +650,38 @@ generators.</li>
 </div></blockquote>
 </div>
 </div>
+<div class="section" id="id34">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.0">Version 3.1.0</a>:<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
+<p>Starting from this version, it is possible custom set atoms weight for all of
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairCorrelationConstraint</span></code></a>, 
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></code></a>.
+Also starting from this version, pysimplelog (&gt;=0.3.0) and pyrep (&gt;=1.0.4) are used.</p>
+<div class="section" id="id35">
+<h4>New Modules and definitions:<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>All constraints export data method added.</li>
+<li>All constraints plot method added.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code></a> added again after being removed in
+early versions.</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id36">
+<h4>Fixes and improvements:<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code> repository ACID flag is changed to False as it&#8217;s not needed.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></code></a>
+atoms removal bug fixed.</li>
+<li>Computing standard error for <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">IntraMolecularDistanceConstraint</span></code></a> and
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal"><span class="pre">InterMolecularDistanceConstraint</span></code></a> is optimized for big systems and 
+constraint&#8217;s definition. Calculation time is thousands of times faster for
+extended definitions.</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
 </div>
 </div>
 
@@ -732,6 +764,11 @@ generators.</li>
 <li><a class="reference internal" href="#id33">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id34">Version 3.1.0:</a><ul>
+<li><a class="reference internal" href="#id35">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id36">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -766,7 +803,7 @@ generators.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

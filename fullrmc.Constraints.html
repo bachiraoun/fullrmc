@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.2',
+        VERSION:     '3.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -103,7 +103,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -118,7 +118,7 @@
   <p>Constraint contains parent classes for all constraints.
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
-<img src="_images/inheritance-ccb0cc7651beeed5829e05b193174333feae323b.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-b26fffd3b3a3d9adf6096c3a78b27bfcd051fe94.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,53,235,77"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
@@ -271,7 +271,19 @@ most costly ones.</p>
 <dl class="method">
 <dt>
 <code class="descname">set_used</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Sets used flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (boolean): True to use this constraint in engine run time.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt>
@@ -550,6 +562,11 @@ and will completely reinitialize the constraint.</li>
 <dl class="method">
 <dt>
 <code class="descname">reject_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">export</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1133,18 +1150,15 @@ function reciprocal data.</li>
 <div class="section" id="module-fullrmc.Constraints.DistanceConstraints">
 <span id="distanceconstraints"></span><h2>DistanceConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DistanceConstraints" title="Permalink to this headline">¶</a></h2>
 <p>DistanceConstraints contains classes for all constraints related distances between atoms.</p>
-<img src="_images/inheritance-f57b2d27a2444b76c8eadffc102179a1a0f51549.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
+<img src="_images/inheritance-b934a8e71fdcf42645e570e8c16b733334543051.png" alt="Inheritance diagram of fullrmc.Constraints.DistanceConstraints" usemap="#inheritancedfc0fe7ea3" class="inheritance"/>
 <map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="283,53,414,77"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,29,104,53"/>
-<area shape="rect" id="node3" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="462,29,680,53"/>
+<area shape="rect" id="node1" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="5,53,224,77"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title=".. py:class::IntraMolecularDistanceConstraint" alt="" coords="5,5,224,29"/>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Constraints.DistanceConstraints.</code><code class="descname">InterMolecularDistanceConstraint</code><span class="sig-paren">(</span><em>defaultDistance=1.5</em>, <em>typeDefinition='element'</em>, <em>pairsDistanceDefinition=None</em>, <em>flexible=True</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" title="fullrmc.Core.Constraint.SingularConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.SingularConstraint</span></code></a></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.DistanceConstraints._MolecularDistanceConstraint</span></code></p>
 <p>Its controls the inter-molecular distances between atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1242,39 +1256,39 @@ for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed bet
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesPairs">
-<code class="descname">typesPairs</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesPairs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get types pairs</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typePairs">
+<code class="descname">typePairs</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typePairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms type pairs sorted list</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeDefinition">
 <code class="descname">typeDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the type definition.</p>
+<dd><p>atoms type definition.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.types">
 <code class="descname">types</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the defined types set.</p>
+<dd><p>Defined atom types set.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.allTypes">
 <code class="descname">allTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.allTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all atoms types.</p>
+<dd><p>All atom types.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfTypes">
 <code class="descname">numberOfTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.numberOfTypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of defined types in the configuration.</p>
+<dd><p>Number of defined atom types in the configuration.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesIndexes">
-<code class="descname">typesIndexes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typesIndexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get types indexes list.</p>
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeIndexes">
+<code class="descname">typeIndexes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.typeIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type indexes list.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1428,7 +1442,8 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>data (numpy.array): The constraint value data to compute standardError.</li>
+<li>data (dict): The constraint value data returned using 
+get_constraint_value.</li>
 </ol>
 </td>
 </tr>
@@ -1461,7 +1476,8 @@ is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</spa
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_before_move">
@@ -1584,13 +1600,612 @@ its was amputated.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>correctColor='#0066ff'</em>, <em>erroneousColor='#d62728'</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>legendText=('correct'</em>, <em>'erroneous')</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
+<li>correctColor (color): correct data bars color.</li>
+<li>erroneousColor (color): erroneous data bars color.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+<li>legendText (list): The legend of number of correct pairs satisfying
+constraint and number of erroneous pairs unsatisfying constraint
+condition.</li>
+<li>title (boolean): Whether to create the title or not</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/molecular_distances_constraint_plot_method.png"><img alt="_images/molecular_distances_constraint_plot_method.png" src="_images/molecular_distances_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint">
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.DistanceConstraints.</code><code class="descname">IntraMolecularDistanceConstraint</code><span class="sig-paren">(</span><em>defaultDistance=1.5</em>, <em>typeDefinition='name'</em>, <em>pairsDistanceDefinition=None</em>, <em>flexible=True</em>, <em>rejectProbability=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.DistanceConstraints._MolecularDistanceConstraint</span></code></p>
+<p>Its controls the intra-molecular distances between atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">defaultDistance (number): The minimum distance allowed set by default for all 
+atoms type.</p>
+</li>
+<li><p class="first">typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules 
+about how to differentiate between atoms and how to parse pairsLimits.</p>
+</li>
+<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to 
+every pair of elements. 
+A list of tuples must be given, all missing pairs will get automatically 
+assigned the given defaultMinimumDistance value.
+First defined elements pair distance will cancel all redundant. 
+If None is given all pairs will be automatically generated and assigned the 
+given defaultMinimumDistance value .</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="p">[(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="mf">1.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="mf">2.015</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span> 
+</pre></div>
+</div>
+</li>
+<li><p class="first">flexible (boolean): Whether to allow atoms to break constraint&#8217;s definition 
+under the condition of decreasing total standardError of the constraint. 
+If flexible is set to False, atoms will never be allowed to cross from above 
+to below minimum allowed distance. Even if the later will decrease some other 
+unsatisfying atoms distances, and therefore the total standardError of the 
+constraint.</p>
+</li>
+<li><p class="first">rejectProbability (Number): rejecting probability of all steps where 
+standardError increases. It must be between 0 and 1 where 1 means 
+rejecting all steps where standardError increases and 0 means accepting 
+all steps regardless whether standardError increases or not.</p>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.DistanceConstraints</span> <span class="kn">import</span> <span class="n">IntraMolecularDistanceConstraint</span>
+
+<span class="c1"># create engine </span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+
+<span class="c1"># create and add constraint</span>
+<span class="n">EMD</span> <span class="o">=</span> <span class="n">IntraMolecularDistanceConstraint</span><span class="p">()</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">(</span><span class="n">EMD</span><span class="p">)</span>
+
+<span class="c1"># create definition</span>
+<span class="n">EMD</span><span class="o">.</span><span class="n">set_pairs_distance</span><span class="p">([(</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="mf">1.75</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="mf">1.10</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;Si&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="mf">1.30</span><span class="p">)])</span>
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.defaultDistance">
+<code class="descname">defaultDistance</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.defaultDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the experimental data distances minimum.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsDistanceDefinition">
+<code class="descname">pairsDistanceDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsDistanceDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elements pairs</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsDistance">
+<code class="descname">pairsDistance</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.pairsDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get elements pairs</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.flexible">
+<code class="descname">flexible</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.flexible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get flexible flag</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.lowerLimitArray">
+<code class="descname">lowerLimitArray</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.lowerLimitArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get lowerLimitArray used in distances calculation.
+for InterMolecularDistanceConstraint it&#8217;s always a numpy.zeros array</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.upperLimitArray">
+<code class="descname">upperLimitArray</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.upperLimitArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get upperLimitArray used in distances calculation.
+for InterMolecularDistanceConstraint it&#8217;s the minimum distance allowed between pair of intermolecular atoms</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typePairs">
+<code class="descname">typePairs</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typePairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms type pairs sorted list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeDefinition">
+<code class="descname">typeDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>atoms type definition.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.types">
+<code class="descname">types</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defined atom types set.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.allTypes">
+<code class="descname">allTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.allTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>All atom types.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfTypes">
+<code class="descname">numberOfTypes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfTypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of defined atom types in the configuration.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeIndexes">
+<code class="descname">typeIndexes</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.typeIndexes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type indexes list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfAtomsPerType">
+<code class="descname">numberOfAtomsPerType</code><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.numberOfAtomsPerType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get number of atoms per type dict.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.listen">
+<code class="descname">listen</code><span class="sig-paren">(</span><em>message</em>, <em>argument=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>listen to any message sent from the Broadcaster.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>argument (object): Any type of argument to pass to the listeners.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_flexible">
+<code class="descname">set_flexible</code><span class="sig-paren">(</span><em>flexible</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_flexible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets flexible flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>flexible (boolean): Whether to allow atoms to break constraints definition 
+under the condition of decreasing total standardError. If flexible is 
+set to False, atoms will never be allowed to cross from above to below 
+minimum allowed distance. Even if the later will decrease some other 
+unsatisfying atoms distances, and therefore the total standardError 
+of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_default_distance">
+<code class="descname">set_default_distance</code><span class="sig-paren">(</span><em>defaultDistance</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_default_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the default intermolecular minimum distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>defaultDistance (number): The default minimum distance.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_type_definition">
+<code class="descname">set_type_definition</code><span class="sig-paren">(</span><em>typeDefinition</em>, <em>pairsDistanceDefinition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_type_definition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Its an alias to set_pairs_distance used when typeDefinition needs to be re-defined.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>typeDefinition (string): Can be either &#8216;element&#8217; or &#8216;name&#8217;. It sets the rules about how to differentiate between atoms and how to parse pairsLimits.</li>
+<li>pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
+If None is given the already defined pairsDistanceDefinition will be used and passed to set_pairs_distance method.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_pairs_distance">
+<code class="descname">set_pairs_distance</code><span class="sig-paren">(</span><em>pairsDistanceDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.set_pairs_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the pairs intermolecular minimum distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">pairsDistanceDefinition (None, list, set, tuple): The minimum distance set to every pair of elements. 
+A list of tuples must be given, all missing pairs will get automatically assigned the given defaultMinimumDistance value.
+First defined elements pair distance will cancel all redundant. 
+If None is given all pairs will be automatically generated and assigned the given defaultMinimumDistance value</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span> <span class="p">[(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="mf">1.5</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;h&#39;</span><span class="p">,</span><span class="s1">&#39;c&#39;</span><span class="p">,</span><span class="mf">2.015</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span> 
+</pre></div>
+</div>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.should_step_get_rejected">
+<code class="descname">should_step_get_rejected</code><span class="sig-paren">(</span><em>standardError</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a standardError, return whether to keep or reject new standardError 
+according to the constraint rejectProbability.
+In addition, if flexible flag is set to True, total number of atoms not satisfying 
+constraints definition must be decreasing or at least remain the same.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>standardError (number): The standardError to compare with the Constraint standardError</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): True to reject step, False to accept</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error">
+<code class="descname">compute_standard_error</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the standard error (stdErr) of data not satisfying constraint conditions.</p>
+<div class="math">
+\[stdErr = \sum \limits_{i}^{N} \sum \limits_{i+1}^{N} 
+\left| d_{ij}-D_{ij}) \right| 
+\int_{0}^{D_{ij}} \delta(x-d_{ij}) dx \]</div>
+<p>Where:</p>
+<p><span class="math">\(N\)</span> is the total number of atoms in the system.</p>
+<p><span class="math">\(D_{ij}\)</span> is the distance constraint set for atoms pair (i,j).</p>
+<p><span class="math">\(d_{ij}\)</span> is the distance between atom i and atom j.</p>
+<p><span class="math">\(\delta\)</span> is the Dirac delta function.</p>
+<p><span class="math">\(\int_{0}^{D_{ij}} \delta(x-d_{ij}) dx\)</span> 
+is equal to 1 if <span class="math">\(0 \leqslant d_{ij} \leqslant D_{ij}\)</span> and 0 elsewhere.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>data (dict): The constraint value data returned using 
+get_constraint_value.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>standardError (number): The calculated standardError of the constraint.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.get_constraint_value">
+<code class="descname">get_constraint_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute all partial Mean Pair Distances (MPD) below the defined minimum distance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data">
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_before_move">
+<code class="descname">compute_before_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_before_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint before move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_after_move">
+<code class="descname">compute_after_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em>, <em>movedBoxCoordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_after_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute constraint after move is executed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.</li>
+<li>movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_move">
+<code class="descname">accept_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_move">
+<code class="descname">reject_move</code><span class="sig-paren">(</span><em>realIndexes</em>, <em>relativeIndexes</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject move</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_as_if_amputated">
+<code class="descname">compute_as_if_amputated</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_as_if_amputated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and return constraint&#8217;s data and standard error as if atom given its 
+its was amputated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>index (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_amputation">
+<code class="descname">accept_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.accept_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept amputation of atom and sets constraints data and standard error accordingly.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_amputation">
+<code class="descname">reject_amputation</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.reject_amputation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject amputation of atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>realIndex (numpy.ndarray): atom index as a numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>correctColor='#0066ff'</em>, <em>erroneousColor='#d62728'</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>legendText=('correct'</em>, <em>'erroneous')</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
+<li>correctColor (color): correct data bars color.</li>
+<li>erroneousColor (color): erroneous data bars color.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+<li>legendText (list): The legend of number of correct pairs satisfying
+constraint and number of erroneous pairs unsatisfying constraint
+condition.</li>
+<li>title (boolean): Whether to create the title or not</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/molecular_distances_constraint_plot_method.png"><img alt="_images/molecular_distances_constraint_plot_method.png" src="_images/molecular_distances_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="module-fullrmc.Constraints.AtomicCoordinationConstraints">
 <span id="coordinationconstraints"></span><h2>CoordinationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AtomicCoordinationConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AtomicCoordinationConstraints contains classes for all constraints related to coordination numbers in shells around atoms.</p>
-<img src="_images/inheritance-5e568bb817c8e76c0d266f5013e2af274459ee7f.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints" usemap="#inheritance58c05307aa" class="inheritance"/>
+<img src="_images/inheritance-5de4a4f95fd80b3f583bc3e1f8841b8300040f09.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints" usemap="#inheritance58c05307aa" class="inheritance"/>
 <map id="inheritance58c05307aa" name="inheritance58c05307aa">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number between atoms. " alt="" coords="462,29,707,53"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
@@ -1862,7 +2477,8 @@ this is optional, if not given it is set automatically to 1.0.</li>
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_before_move">
@@ -1985,13 +2601,89 @@ its was amputated.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>barColor='#99ccff'</em>, <em>cnColor='#ffcc00'</em>, <em>cnPtSize=20</em>, <em>stdErrors=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If ax is given, the figure won&#8217;t be rendered and drawn.
+If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
+<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
+<li>barColor (color): boundaries bar color.</li>
+<li>cnColor (color): coordination number data points color.</li>
+<li>cnPtSize (number): coordination number data points size.</li>
+<li>stdErrors (boolean): Whether to show bars standard error.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
+&#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
+&#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/atomic_coordination_number_constraint_plot_method.png"><img alt="_images/atomic_coordination_number_constraint_plot_method.png" src="_images/atomic_coordination_number_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="module-fullrmc.Constraints.BondConstraints">
 <span id="bondconstraints"></span><h2>BondConstraints<a class="headerlink" href="#module-fullrmc.Constraints.BondConstraints" title="Permalink to this headline">¶</a></h2>
 <p>BondConstraints contains classes for all constraints related bonds between atoms.</p>
-<img src="_images/inheritance-788e1f33b59d04d37e7eace13c313a02fb44aaeb.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
+<img src="_images/inheritance-1c1b79a2c60b4aa3370fe35788cb5057fb152225.png" alt="Inheritance diagram of fullrmc.Constraints.BondConstraints" usemap="#inheritance8a1175d00c" class="inheritance"/>
 <map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond length defined between 2 defined atoms." alt="" coords="462,29,575,53"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
@@ -2244,7 +2936,8 @@ is equal to 1 if <span class="math">\(\beta_{i}^{max} \leqslant \beta_{i} \leqsl
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_before_move">
@@ -2369,7 +3062,7 @@ its was amputated.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=25</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot bonds constraint distribution histogram.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2377,13 +3070,16 @@ its was amputated.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
 <li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
-parameters will be omitted. If None is given a new plot figure will be 
-created and the figue will be rendered and drawn.</p>
+If ax is given,  subplots parameters will be omitted. 
+If None is given a new plot figure will be created.</p>
 </li>
 <li><p class="first">nbins (int): number of bins in histogram.</p>
 </li>
 <li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+names, elements in addition to lower and upper bounds. If None histograms 
+will be built from lower and upper bounds only.</p>
 </li>
 <li><p class="first">wspace (float): The amount of width reserved for blank space between 
 subplots, expressed as a fraction of the average axis width.</p>
@@ -2420,17 +3116,56 @@ value will be given.</p>
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</p>
 </li>
-<li><p class="first">title (boolean): Whether to create the title or not</p>
-</li>
-<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+<li><p class="first">title (boolean): Whether to create the title or not.</p>
 </li>
 <li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
+</li>
+<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
+</li>
+<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
 </li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/bond_constraint_plot_method.png"><img alt="_images/bond_constraint_plot_method.png" src="_images/bond_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split output into per atom names,
+elements in addition to lower and upper bounds. If None output 
+will be built from lower and upper bounds only.</li>
 </ol>
 </td>
 </tr>
@@ -2444,7 +3179,7 @@ is accepted.</p>
 <div class="section" id="module-fullrmc.Constraints.AngleConstraints">
 <span id="angleconstraints"></span><h2>AngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.AngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>AngleConstraints contains classes for all constraints related angles between atoms.</p>
-<img src="_images/inheritance-31919a9d7200c2e60213e7f9b44a490f5cb23d5a.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
+<img src="_images/inheritance-cb42445eba3d56d2a44898c2310ad22e114ba38e.png" alt="Inheritance diagram of fullrmc.Constraints.AngleConstraints" usemap="#inheritancebcea9c8ad8" class="inheritance"/>
 <map id="inheritancebcea9c8ad8" name="inheritancebcea9c8ad8">
 <area shape="rect" id="node1" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined atoms, a first atom called central" alt="" coords="462,29,616,53"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
@@ -2714,7 +3449,8 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_before_move">
@@ -2821,7 +3557,7 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=25</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot angles constraint distribution histogram.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2829,13 +3565,16 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
 <li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
-parameters will be omitted. If None is given a new plot figure will be 
-created and the figue will be rendered and drawn.</p>
+If ax is given,  subplots parameters will be omitted. 
+If None is given a new plot figure will be created.</p>
 </li>
 <li><p class="first">nbins (int): number of bins in histogram.</p>
 </li>
 <li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+names, elements in addition to lower and upper bounds. If None histograms 
+will be built from lower and upper bounds only.</p>
 </li>
 <li><p class="first">wspace (float): The amount of width reserved for blank space between 
 subplots, expressed as a fraction of the average axis width.</p>
@@ -2872,17 +3611,56 @@ value will be given.</p>
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</p>
 </li>
-<li><p class="first">title (boolean): Whether to create the title or not</p>
-</li>
-<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+<li><p class="first">title (boolean): Whether to create the title or not.</p>
 </li>
 <li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
+</li>
+<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
+</li>
+<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
 </li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/bonds_angle_constraint_plot_method.png"><img alt="_images/bonds_angle_constraint_plot_method.png" src="_images/bonds_angle_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split output into per atom names,
+elements in addition to lower and upper bounds. If None output 
+will be built from lower and upper bounds only.</li>
 </ol>
 </td>
 </tr>
@@ -2896,7 +3674,7 @@ is accepted.</p>
 <div class="section" id="module-fullrmc.Constraints.DihedralAngleConstraints">
 <span id="dihedralangleconstraints"></span><h2>DihedralAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.DihedralAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
-<img src="_images/inheritance-74c7e5ad0866934988e7f381f31939e2e5960532.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-81203c8e65508cabd7feeaf39dd30e1d09fef97a.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
@@ -3220,7 +3998,8 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <dl class="method">
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_before_move">
@@ -3327,7 +4106,7 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=20</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=20</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot dihedral angles constraint distribution histogram.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3335,13 +4114,16 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
 <li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
-parameters will be omitted. If None is given a new plot figure will be 
-created and the figue will be rendered and drawn.</p>
+If ax is given,  subplots parameters will be omitted. 
+If None is given a new plot figure will be created.</p>
 </li>
 <li><p class="first">nbins (int): number of bins in histogram.</p>
 </li>
 <li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+names, elements in addition to lower and upper bounds. If None histograms 
+will be built from lower and upper bounds only.</p>
 </li>
 <li><p class="first">wspace (float): The amount of width reserved for blank space between 
 subplots, expressed as a fraction of the average axis width.</p>
@@ -3378,17 +4160,44 @@ value will be given.</p>
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</p>
 </li>
-<li><p class="first">title (boolean): Whether to create the title or not</p>
-</li>
-<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+<li><p class="first">title (boolean): Whether to create the title or not.</p>
 </li>
 <li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
+</li>
+<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
+</li>
+<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
 </li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split output into per atom names,
+elements in addition to lower and upper bounds. If None output 
+will be built from lower and upper bounds only.</li>
 </ol>
 </td>
 </tr>
@@ -3402,7 +4211,7 @@ is accepted.</p>
 <div class="section" id="module-fullrmc.Constraints.ImproperAngleConstraints">
 <span id="improperangleconstraints"></span><h2>ImproperAngleConstraints<a class="headerlink" href="#module-fullrmc.Constraints.ImproperAngleConstraints" title="Permalink to this headline">¶</a></h2>
 <p>ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.</p>
-<img src="_images/inheritance-74c7e5ad0866934988e7f381f31939e2e5960532.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
+<img src="_images/inheritance-81203c8e65508cabd7feeaf39dd30e1d09fef97a.png" alt="Inheritance diagram of fullrmc.Constraints.ImproperAngleConstraints" usemap="#inheritance2ec5cb74e8" class="inheritance"/>
 <map id="inheritance2ec5cb74e8" name="inheritance2ec5cb74e8">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,29,235,53"/>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="292,5,404,29"/>
@@ -3681,7 +4490,8 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_before_move">
@@ -3790,7 +4600,7 @@ element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot improper angles constraint distribution histogram.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3798,13 +4608,16 @@ element.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
 <li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn and subplots 
-parameters will be omitted. If None is given a new plot figure will be 
-created and the figue will be rendered and drawn.</p>
+If ax is given,  subplots parameters will be omitted. 
+If None is given a new plot figure will be created.</p>
 </li>
 <li><p class="first">nbins (int): number of bins in histogram.</p>
 </li>
 <li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
+</li>
+<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+names, elements in addition to lower and upper bounds. If None histograms 
+will be built from lower and upper bounds only.</p>
 </li>
 <li><p class="first">wspace (float): The amount of width reserved for blank space between 
 subplots, expressed as a fraction of the average axis width.</p>
@@ -3841,17 +4654,56 @@ value will be given.</p>
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</p>
 </li>
-<li><p class="first">title (boolean): Whether to create the title or not</p>
-</li>
-<li><p class="first">usedFrame(boolean): Whether to show used frame name.</p>
+<li><p class="first">title (boolean): Whether to create the title or not.</p>
 </li>
 <li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
+</li>
+<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
+</li>
+<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
+</li>
+<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
 </li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes, List): The matplotlib axes or a list of axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/improper_angle_constraint_plot_method.png"><img alt="_images/improper_angle_constraint_plot_method.png" src="_images/improper_angle_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split output into per atom names,
+elements in addition to lower and upper bounds. If None output 
+will be built from lower and upper bounds only.</li>
 </ol>
 </td>
 </tr>
@@ -3865,7 +4717,7 @@ is accepted.</p>
 <div class="section" id="module-fullrmc.Constraints.PairDistributionConstraints">
 <span id="pairdistributionconstraints"></span><h2>PairDistributionConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairDistributionConstraints" title="Permalink to this headline">¶</a></h2>
 <p>PairDistributionConstraints contains classes for all constraints related experimental pair distribution functions.</p>
-<img src="_images/inheritance-cac4eb553badf57631665cada7434da8df9702dc.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
+<img src="_images/inheritance-42bccfa94513975196da65609377896a366ffef7.png" alt="Inheritance diagram of fullrmc.Constraints.PairDistributionConstraints" usemap="#inheritance6fb2cdd31b" class="inheritance"/>
 <map id="inheritance6fb2cdd31b" name="inheritance6fb2cdd31b">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
@@ -3874,7 +4726,7 @@ is accepted.</p>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</code><code class="descname">PairDistributionConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairDistributionConstraints.</code><code class="descname">PairDistributionConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>atomsWeight=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></code></a></p>
 <p>It controls the total reduced pair distribution function (pdf) of the system noted as G(r). 
 The pair distribution function is directly calculated from powder diffraction experimental
@@ -3933,6 +4785,11 @@ total constraint&#8217;s standard error. At least a single weight point is requi
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">weighting (string): The elements weighting.</p>
+</li>
+<li><p class="first">atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+element and values are custom weights. If None, elements weighting will be
+fully set given weighting. If partially given, remaining non specified 
+atom weights will be set using given weighting.</p>
 </li>
 <li><p class="first">scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.</p>
 </li>
@@ -4065,6 +4922,12 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.atomsWeight">
+<code class="descname">atomsWeight</code><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.atomsWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom atoms weight</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weightingScheme">
 <code class="descname">weightingScheme</code><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.weightingScheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements weighting scheme.</p>
@@ -4170,6 +5033,27 @@ the shape function in number of accpeted moves.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>weighting (string): The elements weighting.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_atoms_weight">
+<code class="descname">set_atoms_weight</code><span class="sig-paren">(</span><em>atomsWeight</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_atoms_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom set atoms weight. This is the way to setting a weightingScheme different
+than the given weighting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+element and values are custom weights. If None, elements weighting will be
+fully set given weighting. If partially given, remaining non specified 
+atom weights will be set using given weighting.</li>
 </ol>
 </td>
 </tr>
@@ -4354,7 +5238,8 @@ between model computed data and the experimental ones.</p>
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_before_move">
@@ -4479,7 +5364,7 @@ its was amputated.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>usedFrame=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair distribution constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4487,8 +5372,7 @@ its was amputated.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn.
-If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
+If None is given a new plot figure will be created.</li>
 <li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
 <li>shapeFunc (boolean): Whether to add shape function to the plot only when exists.</li>
@@ -4502,15 +5386,51 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>usedFrame(boolean): Whether to show used frame name.</li>
+<li>title (boolean): Whether to create the title or not.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes): The matplotlib axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/pair_distribution_constraint_plot_method.png"><img alt="_images/pair_distribution_constraint_plot_method.png" src="_images/pair_distribution_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
 </ol>
 </td>
 </tr>
@@ -4524,7 +5444,7 @@ is accepted.</li>
 <div class="section" id="module-fullrmc.Constraints.PairCorrelationConstraints">
 <span id="paircorrelationconstraints"></span><h2>PairCorrelationConstraints<a class="headerlink" href="#module-fullrmc.Constraints.PairCorrelationConstraints" title="Permalink to this headline">¶</a></h2>
 <p>PairCorrelationConstraint contains classes for all constraints related experimental pair correlation functions.</p>
-<img src="_images/inheritance-9e71fbcae330d368fcc7d6f90003a70306856d72.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
+<img src="_images/inheritance-9cad5138c0b70bd060430afe7d2815761d556d3a.png" alt="Inheritance diagram of fullrmc.Constraints.PairCorrelationConstraints" usemap="#inheritance225f361433" class="inheritance"/>
 <map id="inheritance225f361433" name="inheritance225f361433">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
@@ -4534,7 +5454,7 @@ is accepted.</li>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</code><code class="descname">PairCorrelationConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.PairCorrelationConstraints.</code><code class="descname">PairCorrelationConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>atomsWeight=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>shapeFuncParams=None</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint</span></code></a></p>
 <p>It controls the total pair correlation function (pcf) of the system noted as g(r).
 pcf tells the probability of finding atomic pairs separated by the real space distance r.
@@ -4601,7 +5521,8 @@ histograms of values <span class="math">\(n(r)\)</span> from which local number 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_before_move">
@@ -4658,7 +5579,7 @@ its was amputated.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>usedFrame=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot pair correlation constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4666,8 +5587,7 @@ its was amputated.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn.
-If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
+If None is given a new plot figure will be created.</li>
 <li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
 <li>shapeFunc (boolean): Whether to add shape function to the plot only when exists.</li>
@@ -4677,15 +5597,51 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>usedFrame(boolean): Whether to show used frame name.</li>
+<li>title (boolean): Whether to create the title or not.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes): The matplotlib axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/pair_correlation_constraint_plot_method.png"><img alt="_images/pair_correlation_constraint_plot_method.png" src="_images/pair_correlation_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
 </ol>
 </td>
 </tr>
@@ -4699,7 +5655,7 @@ is accepted.</li>
 <div class="section" id="module-fullrmc.Constraints.StructureFactorConstraints">
 <span id="structurefactorconstraints"></span><h2>StructureFactorConstraints<a class="headerlink" href="#module-fullrmc.Constraints.StructureFactorConstraints" title="Permalink to this headline">¶</a></h2>
 <p>StructureFactorConstraints contains classes for all constraints related experimental static structure factor functions.</p>
-<img src="_images/inheritance-5ca48331bdda34a3372a2f6882127a1361b8adac.png" alt="Inheritance diagram of fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritancecc47322566" class="inheritance"/>
+<img src="_images/inheritance-49db69425ce8501dcc38e54407fa04fc8c15d50d.png" alt="Inheritance diagram of fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritancecc47322566" class="inheritance"/>
 <map id="inheritancecc47322566" name="inheritancecc47322566">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,5,235,29"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
@@ -4709,7 +5665,7 @@ is accepted.</li>
 </map>
 <dl class="class">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">StructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">StructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>atomsWeight=None</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" title="fullrmc.Core.Constraint.ExperimentalConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.ExperimentalConstraint</span></code></a></p>
 <p>It controls the Structure Factor noted as S(Q) and also called
 total-scattering structure function or Static Structure Factor. 
@@ -4760,6 +5716,11 @@ total constraint&#8217;s standard error. At least a single weight point is requi
 array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.</p>
 </li>
 <li><p class="first">weighting (string): The elements weighting.</p>
+</li>
+<li><p class="first">atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+element and values are custom weights. If None, elements weighting will be
+fully set given weighting. If partially given, remaining non specified 
+atom weights will be set using given weighting.</p>
 </li>
 <li><p class="first">rmin (None, number): The minimum distance value to compute G(r) histogram.
 If None is given, rmin is computed as <span class="math">\(2 \pi / Q_{max}\)</span>.</p>
@@ -4905,6 +5866,12 @@ untouched and the limits minimum and maximum won&#8217;t be checked.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.atomsWeight">
+<code class="descname">atomsWeight</code><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.atomsWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom atoms weight</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.weightingScheme">
 <code class="descname">weightingScheme</code><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.weightingScheme" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements weighting scheme.</p>
@@ -5010,6 +5977,27 @@ If None is given, bin is computed as <span class="math">\(2 \pi / (Q_{max}-Q_{mi
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>weighting (string): The elements weighting.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_atoms_weight">
+<code class="descname">set_atoms_weight</code><span class="sig-paren">(</span><em>atomsWeight</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.set_atoms_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom set atoms weight. This is the way to setting a weightingScheme different
+than the given weighting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
+element and values are custom weights. If None, elements weighting will be
+fully set given weighting. If partially given, remaining non specified 
+atom weights will be set using given weighting.</li>
 </ol>
 </td>
 </tr>
@@ -5194,7 +6182,8 @@ between model computed data and the experimental ones.</p>
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute data and update engine constraintsData dictionary.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_before_move">
@@ -5319,7 +6308,7 @@ its was amputated.</p>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>usedFrame=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=2</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleScaleFactor=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot structure factor constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -5327,10 +6316,11 @@ its was amputated.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won&#8217;t be rendered and drawn.
-If None is given a new plot figure will be created and the figue will be rendered and drawn.</li>
-<li>intra (boolean): Whether to add intra-molecular pair distribution function features to the plot.</li>
-<li>inter (boolean): Whether to add inter-molecular pair distribution function features to the plot.</li>
+If None is given a new plot figure will be created.</li>
+<li>intra (boolean): Whether to add intra-molecular pair distribution 
+function features to the plot.</li>
+<li>inter (boolean): Whether to add inter-molecular pair distribution 
+function features to the plot.</li>
 <li>xlabel (boolean): Whether to create x label.</li>
 <li>xlabelSize (number): The x label font size.</li>
 <li>ylabel (boolean): Whether to create y label.</li>
@@ -5342,14 +6332,50 @@ If None is given a new plot figure will be created and the figue will be rendere
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
 is accepted.</li>
 <li>title (boolean): Whether to create the title or not.</li>
-<li>usedFrame(boolean): Whether to show used frame name.</li>
 <li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
 <li>titleScaleFactor (boolean): Whether to show contraint&#8217;s scale factor value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>axes (matplotlib Axes): The matplotlib axes.</li>
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><div class="first last figure align-left">
+<a class="reference internal image-reference" href="_images/structure_factor_constraint_plot_method.png"><img alt="_images/structure_factor_constraint_plot_method.png" src="_images/structure_factor_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export pair distribution constraint.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fname (path): full file name and path.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
 </ol>
 </td>
 </tr>
@@ -5361,7 +6387,7 @@ is accepted.</li>
 
 <dl class="class">
 <dt id="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">ReducedStructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Constraints.StructureFactorConstraints.</code><code class="descname">ReducedStructureFactorConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>weighting='atomicNumber'</em>, <em>atomsWeight=None</em>, <em>rmin=None</em>, <em>rmax=None</em>, <em>dr=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em>, <em>windowFunction=None</em>, <em>limits=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint</span></code></a></p>
 <p>The Reduced Structure Factor that we will also note S(Q) 
 is exactly the same quantity as the Structure Factor but with 
@@ -5440,7 +6466,7 @@ to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

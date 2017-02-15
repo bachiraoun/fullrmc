@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.0.2',
+        VERSION:     '3.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
     
@@ -110,7 +110,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -1677,7 +1677,19 @@ most costly ones.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_used">
 <code class="descname">set_used</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_used" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sets used flag.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>value (boolean): True to use this constraint in engine run time.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_state">
@@ -1956,6 +1968,11 @@ and will completely reinitialize the constraint.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reject_insertion">
 <code class="descname">reject_insertion</code><span class="sig-paren">(</span><em>realIndex</em>, <em>relativeIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reject_insertion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.export" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -4667,6 +4684,7 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <li>reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
 <li>reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
 </ol>
 </td>
 </tr>
@@ -4746,6 +4764,7 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <li>reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False</li>
 <li>reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
 </ol>
 </td>
 </tr>
@@ -4850,10 +4869,10 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>idx1 (float32 array): First atoms index array</li>
-<li>idx2 (float32 array): Second atoms index array</li>
-<li>lowerLimit (float32 array): array for lower limit or minimum bond length allowed.</li>
-<li>upperLimit (float32 array): array for upper limit or minimum bond length allowed.</li>
+<li>idx1 (int32 (n,) numpy.ndarray): First atoms index array</li>
+<li>idx2 (int32 (n,) numpy.ndarray): Second atoms index array</li>
+<li>lowerLimit (float32 (n,) numpy.ndarray): Lower limit or minimum bond length allowed.</li>
+<li>upperLimit (float32 (n,) numpy.ndarray): Upper limit or minimum bond length allowed.</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4886,8 +4905,11 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>anglesDict (python dict): The angles dictionary. Where keys are central atoms indexes and values 
-are dictionary of leftIndexes array, rightIndexes array, lowerLimit array, upperLimit array</li>
+<li>central (int32 (n,) numpy.ndarray): The central atom indexes.</li>
+<li>left (int32 (n,) numpy.ndarray): The left atom indexes.</li>
+<li>right (int32 (n,) numpy.ndarray): The right atom indexes.</li>
+<li>lowerLimit (float32 (n,) numpy.ndarray): The angles lower limits.</li>
+<li>upperLimit (float32 (n,) numpy.ndarray): The angles upper limits.</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4898,8 +4920,8 @@ are dictionary of leftIndexes array, rightIndexes array, lowerLimit array, upper
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>angles: The calculated angles (rad).</li>
-<li>reducedAngles: The reduced angles (rad).</li>
+<li>angles (float32 (n,) numpy.ndarray): The calculated angles (rad).</li>
+<li>reducedAngles (float32 (n,) numpy.ndarray): The reduced angles (rad).</li>
 </ol>
 </td>
 </tr>
@@ -4922,9 +4944,16 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>anglesDict (python dictionary): The angles dictionary. Where keys are the improper atoms indexes 
-and values are dictionary of oAtomIndex array, xAtomIndex array, yAtomIndex array, 
-lowerLimit array, upperLimit array</li>
+<li>indexes1 (int32 (n,) numpy.ndarray): Diherdral first atom indexes.</li>
+<li>indexes2 (int32 (n,) numpy.ndarray): Diherdral second atom indexes.</li>
+<li>indexes3 (int32 (n,) numpy.ndarray): Diherdral third atom indexes.</li>
+<li>indexes4 (int32 (n,) numpy.ndarray): Diherdral fourth atom indexes.</li>
+<li>lowerLimit1 (float32 (n,) numpy.ndarray): First shells lower limit.</li>
+<li>upperLimit1 (float32 (n,) numpy.ndarray): First shells upper limits.</li>
+<li>lowerLimit2 (float32 (n,) numpy.ndarray): Second shells lower limit.</li>
+<li>upperLimit2 (float32 (n,) numpy.ndarray): Second shells upper limits.</li>
+<li>lowerLimit3 (float32 (n,) numpy.ndarray): Third shells lower limit.</li>
+<li>upperLimit3 (float32 (n,) numpy.ndarray): Third shells upper limits.</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4935,11 +4964,8 @@ lowerLimit array, upperLimit array</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
 <li>angles: The calculated angles (rad).</li>
 <li>reducedAngles: The reduced angles (rad)</li>
-</ol>
-</li>
 </ol>
 </td>
 </tr>
@@ -4962,9 +4988,12 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
-<li>anglesDict (python dictionary): The angles dictionary. Where keys are the improper atoms indexes 
-and values are dictionary of oAtomIndex array, xAtomIndex array, yAtomIndex array, 
-lowerLimit array, upperLimit array</li>
+<li>improperIdxs (int32 (n,) numpy.ndarray): The improper atom indexes.</li>
+<li>oIdxs (int32 (n,) numpy.ndarray): The O atom indexes.</li>
+<li>xIdxs (int32 (n,) numpy.ndarray): The x atom indexes.</li>
+<li>yIdxs (int32 (n,) numpy.ndarray): The y atom indexes.</li>
+<li>lowerLimit (float32 (n,) numpy.ndarray): The angles lower limits.</li>
+<li>upperLimit (float32 (n,) numpy.ndarray): The angles upper limits.</li>
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array of the same shape as pointsFrom.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
@@ -4975,11 +5004,8 @@ lowerLimit array, upperLimit array</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (python dictionary): It has only two keys.<ol class="arabic">
 <li>angles: The calculated angles (rad).</li>
 <li>reducedAngles: The reduced angles (rad)</li>
-</ol>
-</li>
 </ol>
 </td>
 </tr>
@@ -5010,6 +5036,7 @@ lowerLimit array, upperLimit array</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
 <li>bin (float32): The histogram bin size.</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
 </ol>
 </td>
 </tr>
@@ -5077,6 +5104,7 @@ lowerLimit array, upperLimit array</li>
 <li>bin (float32): The histogram bin size.</li>
 <li>histSize(int32): The histograms size.</li>
 <li>allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
 </ol>
 </td>
 </tr>
@@ -5140,6 +5168,7 @@ lowerLimit array, upperLimit array</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
 <li>bin (float32): The histogram bin size.</li>
 <li>histSize(int32): The histograms size.</li>
+<li>ncores (int32) [default=1]: The number of cores to use.</li>
 </ol>
 </td>
 </tr>
@@ -5231,7 +5260,7 @@ lowerLimit array, upperLimit array</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.0.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

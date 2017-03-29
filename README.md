@@ -13,6 +13,18 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 
 Next on the list
 ================
+* Just In Time (jit) compilation using numba. Users must install and compile numba manually, otherwise no jit will be used. e.g. For mac users installing numba can be done using the following
+```bash
+brew install llvm
+brew link --force llvm
+pip install numba
+```
+maybe a certain llvm version is needed if so, additional steps are required.
+```bash
+brew install llvm@version
+brew unlink --force llvm
+brew link --force llvm@version
+```
 * Super-computing
 
 News

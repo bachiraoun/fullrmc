@@ -23,6 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
             <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -523,10 +525,10 @@ except for small modifications that were made and that are listed below.</p>
 <div class="section" id="modifications">
 <h4>Modifications:<a class="headerlink" href="#modifications" title="Permalink to this headline">¶</a></h4>
 <blockquote>
-<div><ol class="arabic">
+<div><ol class="arabic simple">
 <li><dl class="first docutils">
 <dt><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code>: Several modification happened to fullrmc.Engine class definition.</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Instanciating engine arguments have changed. We found that it&#8217;s a bad practice 
 to set the pdb structure, the constraints, the groups and all other attributes
 at the engine instanciation. Therefore, now engine&#8217;s instanciation takes more 
@@ -545,11 +547,10 @@ Engine.run method.</li>
 </dd>
 </dl>
 </li>
-<li><p class="first"><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change 
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change 
 engine and therefore Constraint.set_engine method is now deprecated. Also 
 Constraints are now instanciated without engine argument. Constraint&#8217;s engine is 
-set automatically when a constraint is added to an engine.</p>
-</li>
+set automatically when a constraint is added to an engine.</li>
 </ol>
 </div></blockquote>
 </div>

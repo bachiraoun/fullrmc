@@ -23,6 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
             <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
@@ -1524,7 +1526,7 @@ unbiasing the scheme. If None, unbias gaussian is used as defined.</li>
 <p>Constraint contains parent classes for all constraints.
 A Constraint is used to set certain rules to evolve the configuration.
 Therefore it has become possible to fully customize and set any possibly imaginable rule.</p>
-<img src="_images/inheritance-fda7ecd0798ce5bacb4b846bee45c983e21c2bc6.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<img src="_images/inheritance-7d3478161f388ee4514ac7d17797e6d578ac6b26.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="152,53,235,77"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
@@ -2470,7 +2472,7 @@ constraint becomes always free and useless.</li>
 A Group is a set of atoms indexes used to gather atoms and apply actions  such as moves upon them. 
 Therefore it has become possible to fully customize and separate atoms to groups and perform reverse monte carlo actions
 on groups rather than on single atoms.</p>
-<img src="_images/inheritance-337759984ad1193b67d61c4f6738018dbade1e5b.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
+<img src="_images/inheritance-c3dc3560611d40f7ad9be58587f5cfee64e3f65a.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
 <area shape="rect" id="node1" href="#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly used" alt="" coords="125,5,222,29"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,77,29"/>
@@ -2682,7 +2684,7 @@ disregarded in this particular case.</li>
 A GroupSelector is used at the Engine runtime to select groups upon which a move will be applied.
 Therefore it has become possible to fully customize the selection of groups of atoms and to choose 
 when and how frequently a group can be chosen to perform a move upon.</p>
-<img src="_images/inheritance-a59472892b49f1d1c1f7574904e5738ee8c3f046.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance"/>
+<img src="_images/inheritance-234e5eb1b37a8a01c60587662738e9c3ae271130.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance"/>
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
 <area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,113,29"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" target="_top" title="RecursiveSelector is the only selector that can use the recursive property on a selection." alt="" coords="161,5,327,29"/>
@@ -3171,7 +3173,7 @@ until recurrence expires, then the best position is kept.</li>
 A MoveGenerator sub-class is used at the Engine runtime to generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-dd9d5fc2ead98c503f3819ee2e636bae5d734ea0.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-6417d494664dce5346e08884d97eb1719e5ea8a5.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
 <area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="175,5,342,29"/>

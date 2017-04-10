@@ -23,6 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
             <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Constraints package" href="fullrmc.Constraints.html" />
             <link rel="prev" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
@@ -126,7 +128,7 @@
 A MoveGenerator sub-class is used at the Engine runtime to generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it has become possible
 to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-c4d177c16016602fee21da3f2b6c226c26d1d480.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<img src="_images/inheritance-a465a1ab1bf91bf35a7109e9758dfb06c0f2a2e8.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies the move of one instance at every step." alt="" coords="175,5,342,29"/>
@@ -1126,7 +1128,7 @@ If randomize is False, weights list is ignored upon generator selection from col
 <div class="section" id="module-fullrmc.Generators.Rotations">
 <span id="rotations"></span><h2>Rotations<a class="headerlink" href="#module-fullrmc.Generators.Rotations" title="Permalink to this headline">¶</a></h2>
 <p>Rotations contains all rotation like MoveGenerator classes.</p>
-<img src="_images/inheritance-59a954b3de6121a5f67a95b96e36da21f56c473c.png" alt="Inheritance diagram of fullrmc.Generators.Rotations" usemap="#inheritance0bc6f727b9" class="inheritance"/>
+<img src="_images/inheritance-a977b991a450d9d5c0a9d33ca106eaa6edca7718.png" alt="Inheritance diagram of fullrmc.Generators.Rotations" usemap="#inheritance0bc6f727b9" class="inheritance"/>
 <map id="inheritance0bc6f727b9" name="inheritance0bc6f727b9">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,53,119,77"/>
 <area shape="rect" id="node2" href="#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generates rotational moves upon groups of atoms to align and orient along an axis." alt="" coords="167,5,314,29"/>
@@ -1836,7 +1838,7 @@ the first, second and tertiary symmetry axis.</li>
 <div class="section" id="module-fullrmc.Generators.Translations">
 <span id="translations"></span><h2>Translations<a class="headerlink" href="#module-fullrmc.Generators.Translations" title="Permalink to this headline">¶</a></h2>
 <p>Translations contains all translation like MoveGenerator classes.</p>
-<img src="_images/inheritance-4df7308c2a3e421d44a50d0e2b89544b787b6903.png" alt="Inheritance diagram of fullrmc.Generators.Translations" usemap="#inheritance32367ebff3" class="inheritance"/>
+<img src="_images/inheritance-713ffa4540d39b939dc463a2aeb6bde9fb0243a4.png" alt="Inheritance diagram of fullrmc.Generators.Translations" usemap="#inheritance32367ebff3" class="inheritance"/>
 <map id="inheritance32367ebff3" name="inheritance32367ebff3">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,53,119,77"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="186,17,295,41"/>
@@ -2765,7 +2767,7 @@ If key is indexes, value must be a list or a numpy array of indexes.</li>
 <div class="section" id="module-fullrmc.Generators.Agitations">
 <span id="agitations"></span><h2>Agitations<a class="headerlink" href="#module-fullrmc.Generators.Agitations" title="Permalink to this headline">¶</a></h2>
 <p>Agitations contains all MoveGenerator classes that agitate and shake structures such as distances, angles, etc.</p>
-<img src="_images/inheritance-cdfc5d2d94c557fcbab872b004dfd500ed06d416.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
+<img src="_images/inheritance-cf0c37ec08cec271c06009b53fc542cfa34559ea.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
 <map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
 <area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" target="_top" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="176,5,344,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,29,119,53"/>
@@ -3202,7 +3204,7 @@ logical to adjust the bond length by moving only the hydrogen atom along the bon
 <div class="section" id="module-fullrmc.Generators.Swaps">
 <span id="swap"></span><h2>Swap<a class="headerlink" href="#module-fullrmc.Generators.Swaps" title="Permalink to this headline">¶</a></h2>
 <p>Swaps contains all swap or atoms position exchange MoveGenerator classes.</p>
-<img src="_images/inheritance-369a7f4ba4fd13d8148065c46647877a6818a926.png" alt="Inheritance diagram of fullrmc.Generators.Swaps" usemap="#inheritancef8ecb731d1" class="inheritance"/>
+<img src="_images/inheritance-faccf343908796037ab35e6611d949b2799d375d.png" alt="Inheritance diagram of fullrmc.Generators.Swaps" usemap="#inheritancef8ecb731d1" class="inheritance"/>
 <map id="inheritancef8ecb731d1" name="inheritancef8ecb731d1">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,29,119,53"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="167,29,282,53"/>

@@ -23,6 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
             <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
     
@@ -3068,64 +3070,43 @@ its was amputated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If ax is given,  subplots parameters will be omitted. 
-If None is given a new plot figure will be created.</p>
-</li>
-<li><p class="first">nbins (int): number of bins in histogram.</p>
-</li>
-<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
-</li>
-<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+If None is given a new plot figure will be created.</li>
+<li>nbins (int): number of bins in histogram.</li>
+<li>subplots (boolean): Whether to add plot constraint on multiple axes.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
 names, elements in addition to lower and upper bounds. If None histograms 
-will be built from lower and upper bounds only.</p>
-</li>
-<li><p class="first">wspace (float): The amount of width reserved for blank space between 
-subplots, expressed as a fraction of the average axis width.</p>
-</li>
-<li><p class="first">hspace (float): The amount of height reserved for white space between 
-subplots, expressed as a fraction of the average axis height.</p>
-</li>
+will be built from lower and upper bounds only.</li>
+<li>wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</li>
+<li>hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</li>
 <li><dl class="first docutils">
 <dt>histtype (string): the histogram type. optional among</dt>
-<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
-</dd>
+<dd>[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</dd>
 </dl>
 </li>
-<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">xlabel (boolean): Whether to create x label.</p>
-</li>
-<li><p class="first">xlabelSize (number): The x label font size.</p>
-</li>
-<li><p class="first">ylabel (boolean): Whether to create y label.</p>
-</li>
-<li><p class="first">ylabelSize (number): The y label font size.</p>
-</li>
-<li><p class="first">legend (boolean): Whether to create the legend or not</p>
-</li>
-<li><p class="first">legendCols (integer): Legend number of columns.</p>
-</li>
-<li><p class="first">legendLoc (string): The legend location. Anything among
+<li>lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</li>
+<li>lineColor (None, integer): bars contour line color. If None then default
+value will be given.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
-is accepted.</p>
-</li>
-<li><p class="first">title (boolean): Whether to create the title or not.</p>
-</li>
-<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
-</li>
-<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
-</li>
-<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
-</li>
-<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
-</li>
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
@@ -3563,64 +3544,43 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If ax is given,  subplots parameters will be omitted. 
-If None is given a new plot figure will be created.</p>
-</li>
-<li><p class="first">nbins (int): number of bins in histogram.</p>
-</li>
-<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
-</li>
-<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+If None is given a new plot figure will be created.</li>
+<li>nbins (int): number of bins in histogram.</li>
+<li>subplots (boolean): Whether to add plot constraint on multiple axes.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
 names, elements in addition to lower and upper bounds. If None histograms 
-will be built from lower and upper bounds only.</p>
-</li>
-<li><p class="first">wspace (float): The amount of width reserved for blank space between 
-subplots, expressed as a fraction of the average axis width.</p>
-</li>
-<li><p class="first">hspace (float): The amount of height reserved for white space between 
-subplots, expressed as a fraction of the average axis height.</p>
-</li>
+will be built from lower and upper bounds only.</li>
+<li>wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</li>
+<li>hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</li>
 <li><dl class="first docutils">
 <dt>histtype (string): the histogram type. optional among</dt>
-<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
-</dd>
+<dd>[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</dd>
 </dl>
 </li>
-<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">xlabel (boolean): Whether to create x label.</p>
-</li>
-<li><p class="first">xlabelSize (number): The x label font size.</p>
-</li>
-<li><p class="first">ylabel (boolean): Whether to create y label.</p>
-</li>
-<li><p class="first">ylabelSize (number): The y label font size.</p>
-</li>
-<li><p class="first">legend (boolean): Whether to create the legend or not</p>
-</li>
-<li><p class="first">legendCols (integer): Legend number of columns.</p>
-</li>
-<li><p class="first">legendLoc (string): The legend location. Anything among
+<li>lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</li>
+<li>lineColor (None, integer): bars contour line color. If None then default
+value will be given.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
-is accepted.</p>
-</li>
-<li><p class="first">title (boolean): Whether to create the title or not.</p>
-</li>
-<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
-</li>
-<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
-</li>
-<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
-</li>
-<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
-</li>
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
@@ -4112,64 +4072,43 @@ is equal to 1 if <span class="math">\(\theta_{i}^{max} \leqslant \theta_{i} \leq
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If ax is given,  subplots parameters will be omitted. 
-If None is given a new plot figure will be created.</p>
-</li>
-<li><p class="first">nbins (int): number of bins in histogram.</p>
-</li>
-<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
-</li>
-<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+If None is given a new plot figure will be created.</li>
+<li>nbins (int): number of bins in histogram.</li>
+<li>subplots (boolean): Whether to add plot constraint on multiple axes.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
 names, elements in addition to lower and upper bounds. If None histograms 
-will be built from lower and upper bounds only.</p>
-</li>
-<li><p class="first">wspace (float): The amount of width reserved for blank space between 
-subplots, expressed as a fraction of the average axis width.</p>
-</li>
-<li><p class="first">hspace (float): The amount of height reserved for white space between 
-subplots, expressed as a fraction of the average axis height.</p>
-</li>
+will be built from lower and upper bounds only.</li>
+<li>wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</li>
+<li>hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</li>
 <li><dl class="first docutils">
 <dt>histtype (string): the histogram type. optional among</dt>
-<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
-</dd>
+<dd>[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</dd>
 </dl>
 </li>
-<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">xlabel (boolean): Whether to create x label.</p>
-</li>
-<li><p class="first">xlabelSize (number): The x label font size.</p>
-</li>
-<li><p class="first">ylabel (boolean): Whether to create y label.</p>
-</li>
-<li><p class="first">ylabelSize (number): The y label font size.</p>
-</li>
-<li><p class="first">legend (boolean): Whether to create the legend or not</p>
-</li>
-<li><p class="first">legendCols (integer): Legend number of columns.</p>
-</li>
-<li><p class="first">legendLoc (string): The legend location. Anything among
+<li>lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</li>
+<li>lineColor (None, integer): bars contour line color. If None then default
+value will be given.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
-is accepted.</p>
-</li>
-<li><p class="first">title (boolean): Whether to create the title or not.</p>
-</li>
-<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
-</li>
-<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
-</li>
-<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
-</li>
-<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
-</li>
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>
@@ -4606,64 +4545,43 @@ element.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic">
-<li><p class="first">ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If ax is given,  subplots parameters will be omitted. 
-If None is given a new plot figure will be created.</p>
-</li>
-<li><p class="first">nbins (int): number of bins in histogram.</p>
-</li>
-<li><p class="first">subplots (boolean): Whether to add plot constraint on multiple axes.</p>
-</li>
-<li><p class="first">split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
+If None is given a new plot figure will be created.</li>
+<li>nbins (int): number of bins in histogram.</li>
+<li>subplots (boolean): Whether to add plot constraint on multiple axes.</li>
+<li>split (None, &#8216;name&#8217;, &#8216;element&#8217;): To split plots into histogram per atom 
 names, elements in addition to lower and upper bounds. If None histograms 
-will be built from lower and upper bounds only.</p>
-</li>
-<li><p class="first">wspace (float): The amount of width reserved for blank space between 
-subplots, expressed as a fraction of the average axis width.</p>
-</li>
-<li><p class="first">hspace (float): The amount of height reserved for white space between 
-subplots, expressed as a fraction of the average axis height.</p>
-</li>
+will be built from lower and upper bounds only.</li>
+<li>wspace (float): The amount of width reserved for blank space between 
+subplots, expressed as a fraction of the average axis width.</li>
+<li>hspace (float): The amount of height reserved for white space between 
+subplots, expressed as a fraction of the average axis height.</li>
 <li><dl class="first docutils">
 <dt>histtype (string): the histogram type. optional among</dt>
-<dd><p class="first last">[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</p>
-</dd>
+<dd>[&#8216;bar&#8217;, &#8216;barstacked&#8217;, &#8216;step&#8217;, &#8216;stepfilled&#8217;]</dd>
 </dl>
 </li>
-<li><p class="first">lineWidth (None, integer): bars contour line width. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">lineColor (None, integer): bars contour line color. If None then default
-value will be given.</p>
-</li>
-<li><p class="first">xlabel (boolean): Whether to create x label.</p>
-</li>
-<li><p class="first">xlabelSize (number): The x label font size.</p>
-</li>
-<li><p class="first">ylabel (boolean): Whether to create y label.</p>
-</li>
-<li><p class="first">ylabelSize (number): The y label font size.</p>
-</li>
-<li><p class="first">legend (boolean): Whether to create the legend or not</p>
-</li>
-<li><p class="first">legendCols (integer): Legend number of columns.</p>
-</li>
-<li><p class="first">legendLoc (string): The legend location. Anything among
+<li>lineWidth (None, integer): bars contour line width. If None then default
+value will be given.</li>
+<li>lineColor (None, integer): bars contour line color. If None then default
+value will be given.</li>
+<li>xlabel (boolean): Whether to create x label.</li>
+<li>xlabelSize (number): The x label font size.</li>
+<li>ylabel (boolean): Whether to create y label.</li>
+<li>ylabelSize (number): The y label font size.</li>
+<li>legend (boolean): Whether to create the legend or not</li>
+<li>legendCols (integer): Legend number of columns.</li>
+<li>legendLoc (string): The legend location. Anything among
 &#8216;right&#8217;, &#8216;center left&#8217;, &#8216;upper right&#8217;, &#8216;lower right&#8217;, &#8216;best&#8217;, &#8216;center&#8217;, 
 &#8216;lower left&#8217;, &#8216;center right&#8217;, &#8216;upper left&#8217;, &#8216;upper center&#8217;, &#8216;lower center&#8217;
-is accepted.</p>
-</li>
-<li><p class="first">title (boolean): Whether to create the title or not.</p>
-</li>
-<li><p class="first">titleStdErr (boolean): Whether to show constraint standard error value in title.</p>
-</li>
-<li><p class="first">titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</p>
-</li>
-<li><p class="first">titleUsedFrame(boolean): Whether to show used frame name in title.</p>
-</li>
-<li><p class="first">show (boolean): Whether to render and show figure before returning.</p>
-</li>
+is accepted.</li>
+<li>title (boolean): Whether to create the title or not.</li>
+<li>titleStdErr (boolean): Whether to show constraint standard error value in title.</li>
+<li>titleAtRem (boolean): Whether to show engine&#8217;s number of removed atoms.</li>
+<li>titleUsedFrame(boolean): Whether to show used frame name in title.</li>
+<li>show (boolean): Whether to render and show figure before returning.</li>
 </ol>
 </td>
 </tr>

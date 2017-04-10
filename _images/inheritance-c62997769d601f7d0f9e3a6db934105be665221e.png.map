@@ -1,4 +1,0 @@
-<map id="inheritance53638427b4" name="inheritance53638427b4">
-<area shape="poly" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly used" alt="" coords="628,41,621,30,598,20,563,12,519,7,470,5,421,7,377,12,342,20,320,30,312,41,320,52,342,62,377,70,421,76,470,77,519,76,563,70,598,62,621,52"/>
-<area shape="poly" id="node2" href="fullrmc.Core.html#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container. " alt="" coords="264,41,258,30,239,20,211,12,175,7,135,5,95,7,59,12,30,20,12,30,5,41,12,52,30,62,59,70,95,76,135,77,175,76,211,70,239,62,258,52"/>
-</map>

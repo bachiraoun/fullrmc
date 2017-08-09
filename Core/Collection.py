@@ -1,7 +1,6 @@
 """
 It contains a collection of methods and classes that are useful for the package.
 """
-
 # standard libraries imports
 import os
 import sys
@@ -12,14 +11,46 @@ from random import randint as generate_random_integer # generates a random integ
 
 # external libraries imports
 import numpy as np
+from pdbParser.Utilities.Database import is_element_property, get_element_property
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
 
 
+def get_real_elements_weight(elements, weightsDict, weighting):
+    """
+    Get elements weights given a dictionary of weights and a weighting scheme.
+    If element weight is not defined in weightsDict then weight is fetched
+    from pdbParser elements database using weighting scheme.
+
+    :Parameters:
+        #. elements (list): List of elements.
+        #. weightsDict (dict): Dictionary of fixed weights.
+        #. weighting (str): Weighting scheme.
+
+    :Returns:
+        #. elementsWeight (dict): Elements weights got from weightsDict
+           and completed using weighting scheme,
+    """
+    elementsWeight = {}
+    for el in elements:
+        w = weightsDict.get(el, get_element_property(el,weighting))
+        if w is None:
+            raise LOGGER.error("element '%s' weight is found to be None. Numerical elements weight is required."%(el) )
+        if isinstance(w, complex):
+            LOGGER.fixed("element '%s' weight is found to be complex '%s'. Value is cast to its real part."%(el,w) )
+            w = w.real
+        try:
+            w = FLOAT_TYPE(w)
+        except:
+            raise LOGGER.error("element '%s' is found to not numerical '%s'."%(el,w) )
+        elementsWeight[el] = w
+    # return dict
+    return elementsWeight
+
 def raise_if_collected(func):
-    """ Constraints method decorator that raises an error whenever the method is called 
-    and the system has atoms that were removed.
+    """ Constraints method decorator that raises an error whenever the
+    method is called and the system has atoms that were removed.
     """
     def wrapper(self, *args, **kwargs):
         assert not len(self._atomsCollector), LOGGER.error("Calling '%s.%s' is not allowed when system has collected atoms."%(self.__class__.__name__,func.__name__))
@@ -29,12 +60,12 @@ def raise_if_collected(func):
     return wrapper
 
 def reset_if_collected_out_of_date(func):
-    """ Constraints method decorator that raises an error whenever the method is called 
-    and the system has atoms that were removed.
+    """ Constraints method decorator that resets the constraint whenever
+    the method is called and the system has atoms that were removed.
     """
     def wrapper(self, *args, **kwargs):
         if self.engine is not None:
-            if set(self.engine._atomsCollector.indexes) != set(self._atomsCollector.indexes): 
+            if set(self.engine._atomsCollector.indexes) != set(self._atomsCollector.indexes):
                 # reset constraints
                 self.reset_constraint()
                 # collect atoms
@@ -44,14 +75,14 @@ def reset_if_collected_out_of_date(func):
     wrapper.__name__ = func.__name__
     wrapper.__doc__  = func.__doc__
     return wrapper
-    
+
 def is_number(number):
     """
-    check if number is convertible to float.
-    
+    Check if number is convertible to float.
+
     :Parameters:
-        #. number (str, number): input number
-                   
+        #. number (str, number): Input number.
+
     :Returns:
         #. result (bool): True if convertible, False otherwise
     """
@@ -63,17 +94,18 @@ def is_number(number):
         return False
     else:
         return True
-        
+
 def is_integer(number, precision=10e-10):
     """
-    check if number is convertible to integer.
-    
+    Check if number is convertible to integer.
+
     :Parameters:
-        #. number (str, number): input number
-        #. precision (number): To avoid floating errors, a precision should be given.
-                   
+        #. number (str, number): Input number.
+        #. precision (number): To avoid floating errors,
+           a precision should be given.
+
     :Returns:
-        #. result (bool): True if convertible, False otherwise
+        #. result (bool): True if convertible, False otherwise.
     """
     if isinstance(number, (int, long)):
         return True
@@ -86,17 +118,17 @@ def is_integer(number, precision=10e-10):
             return True
         else:
             return False
-    
+
 def get_elapsed_time(start, format="%d days, %d hours, %d minutes, %d seconds"):
     """
-    Gets formatted time elapsed.
-        
+    Get formatted time elapsed.
+
     :Parameters:
         #. start (time.time): A time instance.
         #. format (string): The format string. must contain exactly four '%d'.
-    
+
     :Returns:
-        #. time (string): The formatted elapsed time.  
+        #. time (string): The formatted elapsed time.
     """
     # get all time info
     days    = divmod(time.time()-start,86400)
@@ -108,9 +140,9 @@ def get_elapsed_time(start, format="%d days, %d hours, %d minutes, %d seconds"):
 
 def get_memory_usage():
     """
-    Gets current process memory usage. This is method requires
+    Get current process memory usage. This is method requires
     psutils to be installed.
-        
+
     :Returns:
         #. memory (float, None): The memory usage in Megabytes.
            When psutils is not installed, None is returned.
@@ -123,15 +155,16 @@ def get_memory_usage():
         LOGGER.warn("memory usage cannot be profiled. psutil is not installed. pip install psutil")
         memory = None
     return memory
-    
-    
+
+
 def get_path(key=None):
     """
-    get all information needed about the script, the current, and the python executable path.
-    
+    Get all paths information needed about the running script and python
+    executable path.
+
     :Parameters:
-        #. key (None, string): the path to return. If not None, it can take any of the 
-           following:\n
+        #. key (None, string): the path to return. If not None is given,
+        it can take any of the following:\n
             #. cwd:                 current working directory
             #. script:              the script's total path
             #. exe:                 python executable path
@@ -139,9 +172,9 @@ def get_path(key=None):
             #. relative_script_dir: the script's relative directory path
             #. script_dir:          the script's absolute directory path
             #. fullrmc:             fullrmc package path
-                   
+
     :Returns:
-        #. path (dictionary, value): If key is not None it returns the value of paths 
+        #. path (dictionary, value): If key is not None it returns the value of paths
            dictionary key. Otherwise all the dictionary is returned.
     """
     import fullrmc
@@ -166,19 +199,23 @@ def get_path(key=None):
         assert paths.has_key(key), LOGGER.error("key is not defined")
         return paths[key]
 
-        
+
 def rebin(data, bin=0.05, check=False):
     """
-    Re-bin 2D data of shape (N,2).
-    
+    Re-bin 2D data of shape (N,2). In general, fullrmc requires equivalently
+    spaced experimental data bins. This function can be used to recompute
+    any type of experimental data according to a set bin size.
+
     :Parameters:
-        #. data (numpy.ndarray): the (N,2) shape data.
-        #. bin (number): the new bin size.
+        #. data (numpy.ndarray): The (N,2) shape data where first column is
+           considered experimental data space values (e.g. r, q) and
+           second column experimental data values.
+        #. bin (number): New desired bin size.
         #. check (boolean): whether to check arguments before rebining.
-        
+
     :Returns:
-        #. X (numpy.ndarray): the first column re-binned.
-        #. Y (numpy.ndarray): the second column re-binned.
+        #. X (numpy.ndarray): First column re-binned.
+        #. Y (numpy.ndarray): Second column re-binned.
     """
     if check:
         assert isinstance(data, np.ndarray), Logger.error("data must be numpy.ndarray instance")
@@ -204,18 +241,18 @@ def rebin(data, bin=0.05, check=False):
     S,E = np.histogram(x, bins=bins, weights=y)
     # return
     return (E[1:]+E[:-1])/2., S/W
-    
+
 def smooth(data, winLen=11, window='hanning', check=False):
     """
     Smooth 1D data using window function and length.
-    
+
     :Parameters:
         #. data (numpy.ndarray): the 1D numpy data.
         #. winLen (integer): the smoothing window length.
         #. window (str): The smoothing window type. Can be anything among
            'flat', 'hanning', 'hamming', 'bartlett' and 'blackman'.
         #. check (boolean): whether to check arguments before smoothing data.
-        
+
     :Returns:
         #. smoothed (numpy.ndarray): the smoothed 1D data array.
     """
@@ -238,19 +275,20 @@ def smooth(data, winLen=11, window='hanning', check=False):
     f = winLen/2
     t = f-winLen+1
     return S[f:t]
- 
+
 def get_random_perpendicular_vector(vector):
     """
     Get random normalized perpendicular vector to a given vector.
-    
+
     :Parameters:
-        #. vector (numpy.ndarray, list, set, tuple): the vector to compute a random 
-           perpendicular vector to it
-        
+        #. vector (numpy.ndarray, list, set, tuple): Given vector to compute
+           a random perpendicular vector to it.
+
     :Returns:
-        #. perpVector (numpy.ndarray): the perpendicular vector  of type fullrmc.Globals.FLOAT_TYPE 
+        #. perpVector (numpy.ndarray): Perpendicular vector of type
+           fullrmc.Globals.FLOAT_TYPE
     """
-    vectorNorm = np.linalg.norm(vector) 
+    vectorNorm = np.linalg.norm(vector)
     assert vectorNorm, LOGGER.error("vector returned 0 norm")
     # easy cases
     if np.abs(vector[0])<PRECISION:
@@ -266,29 +304,30 @@ def get_random_perpendicular_vector(vector):
     perpVector = np.cross(randvect,vector)
     # normalize, coerce and return
     return np.array(perpVector/np.linalg.norm(perpVector), dtype=FLOAT_TYPE)
-    
-        
+
+
 def get_principal_axis(coordinates, weights=None):
     """
-    Calculates the principal axis of a set of atoms coordinates
-        
+    Calculate principal axis of a set of atoms coordinates.
+
     :Parameters:
-        #. coordinates (np.ndarray): The atoms coordinates. 
-        #. weights (numpy.ndarray, None): the list of weights for the COM calculation. 
-           Must be a numpy.ndarray of numbers of the same length as indexes.
-           None is accepted for equivalent weighting.
-        
+        #. coordinates (np.ndarray): Atoms (N,3) coordinates array.
+        #. weights (numpy.ndarray, None): List of weights to compute the
+           weighted Center Of Mass (COM) calculation. Must be a numpy.ndarray
+           of numbers of the same length as indexes. None is accepted for
+           equivalent weighting.
+
     :Returns:
-        #. center (numpy.ndarray): the geometric center of the records.
-        #. eval1 (fullrmc.Globals.FLOAT_TYPE): the biggest eigen value.
-        #. eval2 (fullrmc.Globals.FLOAT_TYPE): the second biggest eigen value.
-        #. eval3 (fullrmc.Globals.FLOAT_TYPE): the smallest eigen value.
-        #. axis1 (numpy.ndarray): the principal axis corresponding to the biggest eigen 
-           value.
-        #. axis2 (numpy.ndarray): the principal axis corresponding to the second biggest 
-           eigen value.
-        #. axis3 (numpy.ndarray): the principal axis corresponding to the smallest
-           eigen value.
+        #. center (numpy.ndarray): the weighted COM of the atoms.
+        #. eval1 (fullrmc.Globals.FLOAT_TYPE): Biggest eigen value.
+        #. eval2 (fullrmc.Globals.FLOAT_TYPE): Second biggest eigen value.
+        #. eval3 (fullrmc.Globals.FLOAT_TYPE): Smallest eigen value.
+        #. axis1 (numpy.ndarray): Principal axis corresponding to the
+           biggest eigen value.
+        #. axis2 (numpy.ndarray): Principal axis corresponding to the
+           second biggest eigen value.
+        #. axis3 (numpy.ndarray): Principal axis corresponding to the
+           smallest eigen value.
     """
     # multiply by weights
     if weights is not None:
@@ -297,7 +336,7 @@ def get_principal_axis(coordinates, weights=None):
         coordinates[:,2] *= weights
         norm = np.sum(weights)
     else:
-        norm = coordinates.shape[0]   
+        norm = coordinates.shape[0]
     # compute center
     center = np.array(np.sum(coordinates, 0)/norm, dtype=FLOAT_TYPE)
     # coordinates in center
@@ -309,11 +348,11 @@ def get_principal_axis(coordinates, weights=None):
     # http://docs.scipy.org/doc/numpy/reference/generated/numpy.linalg.eig.html
     e_values, e_vectors = np.linalg.eig(inertia)
     e_values  = list(e_values)
-    e_vectors = list(e_vectors.transpose())        
+    e_vectors = list(e_vectors.transpose())
     # get eval1 and axis1
     eval1 = max(e_values)
     vect1 = np.array(e_vectors.pop(e_values.index(eval1)), dtype=FLOAT_TYPE)
-    e_values.remove(eval1)    
+    e_values.remove(eval1)
     # get eval1 and axis1
     eval2 = max(e_values)
     vect2 = np.array(e_vectors.pop(e_values.index(eval2)), dtype=FLOAT_TYPE)
@@ -321,21 +360,22 @@ def get_principal_axis(coordinates, weights=None):
     # get eval3 and axis3
     eval3 = e_values[0]
     vect3 = np.array(e_vectors[0], dtype=FLOAT_TYPE)
-    return center, FLOAT_TYPE(eval1), FLOAT_TYPE(eval2), FLOAT_TYPE(eval3), vect1, vect2, vect3       
-        
+    return center, FLOAT_TYPE(eval1), FLOAT_TYPE(eval2), FLOAT_TYPE(eval3), vect1, vect2, vect3
+
 
 def get_rotation_matrix(rotationVector, angle):
     """
-        Calculates the rotation (3X3) matrix about an axis by a rotation angle.\n
-        
-        :Parameters:
-            #. rotationVector (list, tuple, numpy.ndarray): the rotation vector 
-               coordinates.
-            #. angle (float): the rotation angle in rad.
-           
-       :Returns:
-            #. rotationMatrix (numpy.ndarray): the (3X3) rotation matrix
-    """ 
+    Calculate the rotation (3X3) matrix about an axis (rotationVector)
+    by a rotation angle.
+
+    :Parameters:
+        #. rotationVector (list, tuple, numpy.ndarray): Rotation axis
+           coordinates.
+        #. angle (float): Rotation angle in rad.
+
+    :Returns:
+        #. rotationMatrix (numpy.ndarray): Computed (3X3) rotation matrix
+    """
     angle = float(angle)
     axis = rotationVector/np.sqrt(np.dot(rotationVector , rotationVector))
     a = np.cos(angle/2)
@@ -346,9 +386,9 @@ def get_rotation_matrix(rotationVector, angle):
 
 def rotate(xyzArray , rotationMatrix):
     """
-    Rotates a numpy.array using a rotation matrix.
+    Rotate (N,3) numpy.array using a rotation matrix.
     The array itself will be rotated and not a copy of it.
-    
+
     :Parameters:
         #. indexes (numpy.ndarray): the xyz (N,3) array to rotate.
         #. rotationMatrix (numpy.ndarray): the (3X3) rotation matrix.
@@ -361,7 +401,7 @@ def rotate(xyzArray , rotationMatrix):
 def get_orientation_matrix(arrayAxis, alignToAxis):
     """
     Get the rotation matrix that aligns arrayAxis to alignToAxis
-    
+
     :Parameters:
         #. arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.
         #. alignToAxis (list, tuple, numpy.ndarray): The axis to align to.
@@ -392,15 +432,15 @@ def get_orientation_matrix(arrayAxis, alignToAxis):
     #rotationAxis /= np.linalg.norm(rotationAxis)
     # calculate rotation matrix
     return get_rotation_matrix(rotationAxis, rotationAngle)
-  
-  
+
+
 def orient(xyzArray, arrayAxis, alignToAxis):
     """
-    Rotates xyzArray using the rotation matrix that rotates and aligns arrayAxis 
-    to alignToAXis.
-    
+    Rotates xyzArray using the rotation matrix that rotates and aligns
+    arrayAxis to alignToAXis.
+
     :Parameters:
-        #. xyzArray (numpy.ndarray): the xyz (N,3) array to rotate.
+        #. xyzArray (numpy.ndarray): The xyz (N,3) array to rotate.
         #. arrayAxis (list, tuple, numpy.ndarray): xyzArray axis.
         #. alignToAxis (list, tuple, numpy.ndarray): The axis to align to.
     """
@@ -432,25 +472,30 @@ def orient(xyzArray, arrayAxis, alignToAxis):
     rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
     # rotate and return
     return rotate(xyzArray , rotationMatrix)
-  
+
 
 
 def get_superposition_transformation(refArray, array, check=False):
     """
-        Calculates the rotation matrix and the translations that minimizes the root mean 
-        square deviation between and array of vectors and a reference array.\n   
-        
-        :Parameters:
-            #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
-            #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
-            #. check (boolean): whether to check arguments before generating points.
-        
-        :Returns:
-            #. rotationMatrix (numpy.ndarray): the 3X3 rotation tensor.
-            #. refArrayCOM (numpy.ndarray): the 1X3 vector center of mass of refArray.
-            #. arrayCOM (numpy.ndarray): the 1X3 vector center of mass of array.
-            #. rms (number)
-    """ 
+    Calculate the rotation tensor and the translations that minimizes
+    the root mean square deviation between an array of vectors
+    and a reference array.
+
+    :Parameters:
+        #. refArray (numpy.ndarray): The NX3 reference array to
+           superpose to.
+        #. array (numpy.ndarray): The NX3 array to calculate the
+           transformation of.
+        #. check (boolean): Whether to check arguments before
+           generating points.
+
+    :Returns:
+        #. rotationMatrix (numpy.ndarray): The 3X3 rotation tensor.
+        #. refArrayCOM (numpy.ndarray): The 1X3 vector center of mass of
+           refArray.
+        #. arrayCOM (numpy.ndarray): The 1X3 vector center of mass of array.
+        #. rms (number)
+    """
     if check:
         # check array
         assert isinstance(array, np.ndarray), Logger.error("array must be numpy.ndarray instance")
@@ -467,7 +512,7 @@ def get_superposition_transformation(refArray, array, check=False):
         else:
             assert refArray.shape[1]==3, Logger.error("vector refArray number of columns must be 3")
         # check weights
-        assert array.shape == refArray.shape, Logger.error("refArray and array must have the same number of vectors")     
+        assert array.shape == refArray.shape, Logger.error("refArray and array must have the same number of vectors")
     # calculate center of mass of array
     arrayCOM = np.sum(array, axis=0)/array.shape[0]
     # calculate cross matrix and reference config center of mass
@@ -536,40 +581,43 @@ def get_superposition_transformation(refArray, array, check=False):
 
 def superpose_array(refArray, array, check=False):
     """
-    Calculates the rotation matrix and the translations that minimizes the root mean 
-    square deviation between and array of vectors and a reference array.\n   
-    
+    Superpose arrays by calculating the rotation matrix and the
+    translations that minimize the root mean square deviation between and
+    array of vectors and a reference array.
+
     :Parameters:
         #. refArray (numpy.ndarray): the NX3 reference array to superpose to.
-        #. array (numpy.ndarray): the NX3 array to calculate the transformation of.
-        #. check (boolean): whether to check arguments before generating points.
-    
+        #. array (numpy.ndarray): the NX3 array to calculate the
+           transformation of.
+        #. check (boolean): whether to check arguments before generating
+           points.
+
     :Returns:
         #. superposedArray (numpy.ndarray): the NX3 array to superposed array.
-    """ 
-    rotationMatrix, _,_,_ = get_superposition_transformation(refArray=refArray, array=array, check=check)     
+    """
+    rotationMatrix, _,_,_ = get_superposition_transformation(refArray=refArray, array=array, check=check)
     return np.dot( rotationMatrix, np.transpose(array).\
                    reshape(1,3,-1)).transpose().reshape(-1,3)
-    
+
 
 def generate_random_vector(minAmp, maxAmp):
     """
-    Generate random vector in 3D.   
-    
+    Generate random vector in 3D.
+
     :Parameters:
         #. minAmp (number): Vector minimum amplitude.
         #. maxAmp (number): Vector maximum amplitude.
-    
+
     :Returns:
         #. vector (numpy.ndarray): the vector [X,Y,Z] array
-    """ 
+    """
     # generate random vector and ensure it is not zero
     vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
-    norm   = np.linalg.norm(vector) 
+    norm   = np.linalg.norm(vector)
     if norm == 0:
         while norm == 0:
             vector = np.array(1-2*np.random.random(3), dtype=FLOAT_TYPE)
-            norm   = np.linalg.norm(vector)  
+            norm   = np.linalg.norm(vector)
     # normalize vector
     vector /= FLOAT_TYPE( norm )
     # compute baseVector
@@ -580,22 +628,23 @@ def generate_random_vector(minAmp, maxAmp):
     vector += baseVector
     # return vector
     return vector
-    
-           
+
+
 def generate_points_on_sphere(thetaFrom, thetaTo,
                               phiFrom, phiTo,
                               npoints=1,
                               check=False):
     """
-    Generate random points on a sphere of radius 1. Points are generated using spherical coordinates
-    arguments as in figure below. Theta [0,Pi] is the angle between the generated point and Z axis.
-    Phi [0,2Pi] is the angle between the generated point and x axis.
-        
-    .. image:: sphericalCoordsSystem.png   
-       :align: left 
+    Generate random points on a sphere of radius 1. Points are generated
+    using spherical coordinates arguments as in figure below. Theta [0,Pi]
+    is the angle between the generated point and Z axis. Phi [0,2Pi] is the
+    angle between the generated point and x axis.
+
+    .. image:: sphericalCoordsSystem.png
+       :align: left
        :height: 200px
        :width: 200px
-        
+
     :Parameters:
         #. thetaFrom (number): The minimum theta value.
         #. thetaTo (number): The maximum theta value.
@@ -603,16 +652,19 @@ def generate_points_on_sphere(thetaFrom, thetaTo,
         #. phiTo (number): The maximum phi value.
         #. npoints (integer): The number of points to generate
         #. check (boolean): whether to check arguments before generating points.
-                   
+
     :Returns:
-        #. x (numpy.ndarray): The (npoints,1) numpy array of all generated points x coordinates.
-        #. y (numpy.ndarray): The (npoints,1) numpy array of all generated points y coordinates.
-        #. z (numpy.ndarray): The (npoints,1) numpy array of all generated points z coordinates.
+        #. x (numpy.ndarray): The (npoints,1) numpy array of all generated
+           points x coordinates.
+        #. y (numpy.ndarray): The (npoints,1) numpy array of all generated
+           points y coordinates.
+        #. z (numpy.ndarray): The (npoints,1) numpy array of all generated
+           points z coordinates.
     """
     if check:
         assert isinteger(npoints)   , LOGGER.error("npoints must be an integer")
-        assert is_number(thetaFrom) , LOGGER.error("thetaFrom must be a number") 
-        assert is_number(thetaTo)   , LOGGER.error("thetaTo must be a number")  
+        assert is_number(thetaFrom) , LOGGER.error("thetaFrom must be a number")
+        assert is_number(thetaTo)   , LOGGER.error("thetaTo must be a number")
         assert is_number(phiFrom)   , LOGGER.error("phiFrom must be a number")
         assert is_number(phiTo)     , LOGGER.error("phiTo must be a number")
         npoints   = INT_TYPE(npoints)
@@ -636,13 +688,13 @@ def generate_points_on_sphere(thetaFrom, thetaTo,
         phiTo     = FLOAT_TYPE(phiTo)
     # calculate differences
     deltaTheta = thetaTo-thetaFrom
-    deltaPhi = phiTo-phiFrom 
+    deltaPhi = phiTo-phiFrom
     # theta
     theta  = thetaFrom+np.random.random(npoints).astype(FLOAT_TYPE)*deltaTheta
     # phi
     phi  = phiFrom+np.random.random(npoints).astype(FLOAT_TYPE)*deltaPhi
     # compute sin and cos
-    sinTheta = np.sin(theta) 
+    sinTheta = np.sin(theta)
     sinPhi   = np.sin(phi)
     cosTheta = np.cos(theta)
     cosPhi   = np.cos(phi)
@@ -652,21 +704,21 @@ def generate_points_on_sphere(thetaFrom, thetaTo,
     z = cosTheta
     # return
     return x,y,z
-           
+
 
 def find_extrema(x, max = True, min = True, strict = False, withend = False):
     """
     Get a vector extrema indexes and values.
-    
+
     :Parameters:
-        #. max (boolean): Whether to index the maxima
-        #. min (boolean): Whether to index the minima
-    	#. strict (boolean): Whether not to index changes to zero gradient
-    	#. withend (boolean): Whether to always include x[0] and x[-1]
-    
+        #. max (boolean): Whether to index the maxima.
+        #. min (boolean): Whether to index the minima.
+    	#. strict (boolean): Whether not to index changes to zero gradient.
+    	#. withend (boolean): Whether to always include x[0] and x[-1].
+
     :Returns:
-        #. indexes (numpy.ndarray): Extrema indexes 
-        #. values (numpy.ndarray): Extrema values
+        #. indexes (numpy.ndarray): Extrema indexes.
+        #. values (numpy.ndarray): Extrema values.
     """
     # This is the gradient
     dx = np.empty(len(x))
@@ -691,30 +743,32 @@ def find_extrema(x, max = True, min = True, strict = False, withend = False):
     # Sift out the list of extremas
     ind = np.nonzero(d2x > threshold)[0]
     return ind, x[ind]
-    
+
 
 def convert_Gr_to_gr(Gr, minIndex):
     """
-    Converts G(r) to g(r) by computing the 
-    following :math:`g(r)=1+(\\frac{G(r)}{4 \\pi \\rho_{0} r})`
-    
+    Converts G(r) to g(r) by computing the following
+    :math:`g(r)=1+(\\frac{G(r)}{4 \\pi \\rho_{0} r})`
+
     :Parameters:
-        #. Gr (numpy.ndarray): The G(r) numpy array of shape (number of points, 2)
-        #. minIndex (int, tuple): The minima indexes to compute the number density rho0.
-           It can be a single peak or a list of peaks to compute the mean slope instead.
-    
+        #. Gr (numpy.ndarray): The G(r) numpy array of shape
+           (number of points, 2)
+        #. minIndex (int, tuple): The minima indexes to compute the
+           number density rho0. It can be a single peak or a list of peaks to
+           compute the mean slope instead.
+
     :Returns:
-        #. minimas (numpy.ndarray): The minimas array found using minIndex and used to 
-           compute the slope and therefore :math:`\\rho_{0}`.
+        #. minimas (numpy.ndarray): The minimas array found using minIndex
+           and used to compute the slope and therefore :math:`\\rho_{0}`.
         #. slope (float): The computed slope from the minimas.
         #. rho0 (float): The number density of the material.
         #. g(r) (numpy.ndarray): the computed g(r).
-       
-    
+
+
     **To visualize convertion**
-       
+
     .. code-block:: python
-        
+
         # peak indexes can be different, adjust according to your data
         minPeaksIndex = [1,3,4]
         minimas, slope, rho0, gr =  convert_Gr_to_gr(Gr, minIndex=minPeaksIndex)
@@ -727,8 +781,7 @@ def convert_Gr_to_gr(Gr, minIndex):
         plt.plot(gr[:,0],gr[:,1], label='g(r)')
         plt.legend()
         plt.show()
-    
-    
+
     """
     # check G(r)
     assert isinstance(Gr, np.ndarray), "Gr must be a numpy.ndarray"
@@ -760,31 +813,22 @@ def convert_Gr_to_gr(Gr, minIndex):
     gr = np.transpose( [Gr[:,0], gr] )
     # return
     return minimas, slope, rho0, gr
-    #minimas, slope, rho0, gr =  convert_Gr_to_gr(Gr, minIndex=peakIndex)
-    #print 'slope: %s --> rho0: %s'%(slope,rho0)
-    #import matplotlib.pyplot as plt
-    #line = np.transpose( [[0, Gr[-1,0]], [0, slope*Gr[-1,0]]] )
-    #plt.plot(Gr[:,0],Gr[:,1], label='G(r)')
-    #plt.plot(minimas[:,0], minimas[:,1], 'o', label='minimas')
-    #plt.plot(line[:,0], line[:,1], label='density')
-    #plt.plot(gr[:,0],gr[:,1], label='g(r)')
-    #plt.legend()
-    #plt.show()
 
-    
+
 def generate_vectors_in_solid_angle(direction,
                                     maxAngle,
                                     numberOfVectors=1,
                                     check=False):
     """
-    Generate random vectors that satisfy angle condition with a direction vector.
-    Angle between any generated vector and direction must be smaller than given maxAngle.
-    
-    +----------------------------------------+----------------------------------------+----------------------------------------+ 
-    |.. figure:: 100randomVectors30deg.png   |.. figure:: 200randomVectors45deg.png   |.. figure:: 500randomVectors100deg.png  | 
-    |   :width: 400px                        |   :width: 400px                        |   :width: 400px                        | 
+    Generate random vectors that satisfy angle condition with a
+    direction vector. Angle between any generated vector and direction must
+    be smaller than given maxAngle.
+
+    +----------------------------------------+----------------------------------------+----------------------------------------+
+    |.. figure:: 100randomVectors30deg.png   |.. figure:: 200randomVectors45deg.png   |.. figure:: 500randomVectors100deg.png  |
+    |   :width: 400px                        |   :width: 400px                        |   :width: 400px                        |
     |   :height: 300px                       |   :height: 300px                       |   :height: 300px                       |
-    |   :align: left                         |   :align: left                         |   :align: left                         | 
+    |   :align: left                         |   :align: left                         |   :align: left                         |
     |                                        |                                        |                                        |
     |   a) 100 vectors generated around      |   b) 200 vectors generated around      |   b) 500 vectors generated around      |
     |   OX axis within a maximum angle       |   [1,-1,1] axis within a maximum angle |   [2,5,1] axis within a maximum angle  |
@@ -795,11 +839,12 @@ def generate_vectors_in_solid_angle(direction,
         #. direction (number): The direction around which to create the vectors.
         #. maxAngle (number): The maximum angle allowed.
         #. numberOfVectors (integer): The number of vectors to generate.
-        #. check (boolean): whether to check arguments before generating vectors.
-                   
-    :Returns:
-        #. vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of generated 
+        #. check (boolean): whether to check arguments before generating
            vectors.
+
+    :Returns:
+        #. vectors (numpy.ndarray): The (numberOfVectors,3) numpy array of
+           generated vectors.
     """
     if check:
         assert isinstance(direction, (list,set,tuple,np.array)), LOGGER.error("direction must be a vector like list or array of length 3")
@@ -819,7 +864,7 @@ def generate_vectors_in_solid_angle(direction,
         numberOfVectors = INT_TYPE(numberOfVectors)
         assert numberOfVectors>0, LOGGER.error("numberOfVectors must be bigger than 0")
     # create axis
-    axis = np.array([1,0,0]) 
+    axis = np.array([1,0,0])
     if np.abs(direction[1])<=PRECISION and np.abs(direction[2])<=PRECISION:
         axis *= np.sign(direction[0])
     # create vectors
@@ -841,7 +886,7 @@ def generate_vectors_in_solid_angle(direction,
     direction /= np.linalg.norm(direction)
     # get rotation matrix of axis to direction
     rotationAngle  = np.arccos( np.dot(direction, axis) )
-    if rotationAngle > PRECISION:       
+    if rotationAngle > PRECISION:
         rotationAxis   = np.cross(direction, axis)
         rotationMatrix = get_rotation_matrix(rotationAxis, rotationAngle)
         # rotate vectors to direction
@@ -855,20 +900,24 @@ def gaussian(x, center=0, FWHM=1, normalize=True, check=True):
     Compute the normal distribution or gaussian distribution of a given vector.
     The probability density of the gaussian distribution is:
     :math:`f(x,\\mu,\\sigma) = \\frac{1}{\\sigma\\sqrt{2\\pi}} e^{\\frac{-(x-\\mu)^{2}}{2\\sigma^2}}`
-     
+
     Where:\n
-    * :math:`\\mu` is the center of the gaussian, it is the mean or expectation of the 
-      distribution it is called the distribution's median or mode. 
+    * :math:`\\mu` is the center of the gaussian, it is the mean or
+      expectation of the distribution it is called the distribution's
+      median or mode.
     * :math:`\\sigma` is its standard deviation.
-    * :math:`FWHM=2\\sqrt{2 ln 2} \\sigma` is the Full Width at Half Maximum of the gaussian. 
-    
+    * :math:`FWHM=2\\sqrt{2 ln 2} \\sigma` is the Full Width at Half
+      Maximum of the gaussian.
+
     :Parameters:
         #. x (numpy.ndarray): The vector to compute the gaussian
         #. center (number): The center of the gaussian.
         #. FWHM (number): The Full Width at Half Maximum of the gaussian.
-        #. normalize(boolean): Whether to normalize the generated gaussian by 
-           :math:`\\frac{1}{\\sigma\\sqrt{2\\pi}}` so the integral is equal to 1. 
-        #. check (boolean): whether to check arguments before generating vectors.
+        #. normalize(boolean): Whether to normalize the generated gaussian
+           by :math:`\\frac{1}{\\sigma\\sqrt{2\\pi}}` so the integral
+           is equal to 1.
+        #. check (boolean): whether to check arguments before generating
+           vectors.
     """
     if check:
         assert is_number(center), LOGGER.error("center must be a number")
@@ -884,19 +933,22 @@ def gaussian(x, center=0, FWHM=1, normalize=True, check=True):
     if normalize:
         scaleFactor /= sigma*np.sqrt(2*np.pi)
     return (scaleFactor * exp).astype(FLOAT_TYPE)
-    
+
 
 def step_function(x, center=0, FWHM=0.1, height=1, check=True):
     """
-    Compute a step function as the cumulative summation of a gaussian distribution of a given vector.
-    
+    Compute a step function as the cumulative summation of a gaussian
+    distribution of a given vector.
+
     :Parameters:
-        #. x (numpy.ndarray): The vector to compute the gaussian
-        #. center (number): The center of the step function which is the the center of 
-           the gaussian.
+        #. x (numpy.ndarray): The vector to compute the gaussian. gaussian
+           is computed as a function of x.
+        #. center (number): The center of the step function which is the
+           the center of the gaussian.
         #. FWHM (number): The Full Width at Half Maximum of the gaussian.
         #. height (number): The height of the step function.
-        #. check (boolean): whether to check arguments before generating vectors.
+        #. check (boolean): whether to check arguments before generating
+           vectors.
     """
     if check:
         assert is_number(height), LOGGER.error("height must be a number")
@@ -904,23 +956,23 @@ def step_function(x, center=0, FWHM=0.1, height=1, check=True):
     g  = gaussian(x, center=center, FWHM=FWHM, normalize=False, check=check)
     sf = np.cumsum(g)
     sf /= sf[-1]
-    return (sf*height).astype(FLOAT_TYPE)    
+    return (sf*height).astype(FLOAT_TYPE)
 
 
 class ListenerBase(object):
     """All listeners base class."""
     def __init__(self):
         self.__listenerId = str(uuid.uuid1())
-        
+
     @property
     def listenerId(self):
         """ Listener unique id set at initialization"""
         return self.__listenerId
-    
+
     def listen(self, message, argument=None):
-        """   
+        """
         Listens to any message sent from the Broadcaster.
-        
+
         :Parameters:
             #. message (object): Any python object to send to constraint's listen method.
             #. arguments (object): Any python object.
@@ -928,16 +980,16 @@ class ListenerBase(object):
         pass
 
 
-    
+
 class _Container(object):
     """
-    This is a general objects container that is used by the engine to contain a unique
-    instance for all objects that are prone for redundancy such as swapLists in 
-    SwapGenerators.
+    This is a general objects container that is used by the engine to
+    contain a unique instance for all objects that are prone for redundancy
+    such as swapLists in SwapGenerators.
     """
     # This is for internal usage only
     __FIRST_INIT = True
-    
+
     def __new__(cls, *args, **kwargs):
         #Singleton interface
         thisSingleton = cls.__dict__.get("__thisSingleton__")
@@ -945,7 +997,7 @@ class _Container(object):
             return thisSingleton
         cls.__thisSingleton__ = thisSingleton = object.__new__(cls,  *args, **kwargs)
         return thisSingleton
-        
+
     def __init__(self):
         # this if statment insures initializing _Container only once.
         if _Container.__FIRST_INIT:
@@ -957,32 +1009,32 @@ class _Container(object):
         """no need to store hints dict"""
         self.__hints = {}
         return self.__dict__
-    
+
     @property
     def containersName(self):
         """The containers name list."""
         return self.__containers.keys()
-    
+
     @property
     def containers(self):
         """The containers dictionary"""
         return self.__containers
-    
+
     @property
     def hints(self):
         """The containers dictionary"""
         return self.__hints
-    
+
     def get_location_by_hint(self, hint):
         """
         Get stored object in container using a hint.
-        
+
         :Parameters:
-           #. hint (object): hint used to fetch for stored object. Sometimes objects 
-              are parsed and modified before being set. In this particular 
-              case, those object will be passed as hint and then later used to find
-              stored object after modification.
-        
+           #. hint (object): This is used to fetch for stored object.
+              Sometimes objects are parsed and modified before being set.
+              In this particular case, those object will be passed as hint
+              and then later used to find stored object after modification.
+
         :Returns:
             #. location (None, tuple): The object location given a hint.
                If hint not found, the None is returned
@@ -992,72 +1044,77 @@ class _Container(object):
                 return location
         # return None when nothing is found
         return None
-        
+
     def is_container(self, name):
         """
-        Check whether container exists given its name
-        
+        Check whether container exists given its name.
+
         :Parameters:
             #. name (string): The container's name.
+
+        :Returns:
+            #. result (boolean): Whether container exists.
         """
         return self.__containers.has_key(name)
-    
+
     def assert_location(self, location):
         """
         Checks location exists. If it doesn't, an error will be raised
-        
+
         :Parameters:
-            #. location (tuple): Location tuple as (name, key) that points to the value.
-               It's typically implemented as such containers[name][key]
+            #. location (tuple): Location tuple as (name, key) that points
+               to the value. It's typically implemented as such
+               containers[name][key]
         """
         assert isinstance(location, (list, tuple)), LOGGER.error("location must be a tuple")
         assert len(location) == 2, LOGGER.error("location must contain 2 items")
         name, uniqueKey = location
         assert self.is_container(name), LOGGER.error("container name '%s' doesn't exists"%name)
         assert self.__containers[name].has_key(uniqueKey), LOGGER.error("container name '%s' key '%s' doesn't exist"%(name,uniqueKey))
-        
+
     def add_container(self, name):
         """
-        Add a container to the containers dict. 
-        
+        Add a container to the containers dict.
+
         :Parameters:
             #. name (string): The container's name.
         """
         assert isinstance(name, basestring), "name must be a string"
         assert not self.is_container(name), LOGGER.error("container name '%s' already exists"%name)
         self.__containers[name] = {}
-    
+
     def pop_container(self, name):
         """
-        pop and return a containerfrom containers dict. 
-        
+        Pop and return a containerfrom containers dict.
+
         :Parameters:
             #. name (string): The container's name.
-        
+
         :Returns:
             #. value (list): The container value.
         """
         assert isinstance(name, basestring), "name must be a string"
         assert self.is_container(name), LOGGER.error("container name '%s' doesn't exists"%name)
         return self.__containers.pop(name)
-    
+
     def add_to_container(self, container, value, hint=None):
         """
-        Add a value to a container. If stored correctly a location tuple (name, uuid) 
-        will be returned. This location tuple is needed to locate and get the data when
-        needed.
-        
+        Add a value to a container. If stored correctly a location tuple
+        (name, uuid) will be returned. This location tuple is needed to locate
+        and get the data when needed.
+
         :Parameters:
             #. container (string): The container's name.
             #. value (object): the value object to add to the container's.
-            #. hint (object): hint used to fetch for stored object. Sometimes objects 
-               are parsed and modified before being set. In this particular 
-               case, those object will be passed as hint and then later used to find
-               stored object after modification.
-        
+            #. hint (object): hint used to fetch for stored object.
+               Sometimes objects are parsed and modified before being set.
+               In this particular case, those object will be passed as hint
+               and then later used to find stored object after modification.
+
         :Returns:
-            #. location (tuple): Location tuple as (container, key) that points to the 
-               value. It's typically implemented as such containers[container][key]
+            #. location (tuple): Location tuple as (container, key) that
+               points to the value. It's typically implemented as such
+               containers[container][key]
         """
         assert self.is_container(container), LOGGER.error("container name '%s' doesn't exists"%container)
         uniqueKey = str(uuid.uuid1())
@@ -1069,53 +1126,55 @@ class _Container(object):
             self.__hints[location] = hint
         # return location
         return location
-    
+
     def set_value(self, *args, **kwargs):
         """alias to add_to_container"""
         return self.add_to_container(*args, **kwargs)
-    
+
     def get_value(self, location):
         """
         Get stored value in container.
-        
+
         :Parameters:
-            #. location (tuple): Location tuple as (name, key) that points to the value.
-               It's typically implemented as such containers[name][key]
-              
+            #. location (tuple): Location tuple as (name, key) that points
+               to the value. It's typically implemented as such
+               containers[name][key]
+
         :Returns:
             #. value (object): the value object to add to the container's list.
-        
+
         """
         self.assert_location(location)
         name, uniqueKey = location
         return self.__containers[name][uniqueKey]
-    
+
     def update_value(self, location, value):
         """
         Udpdate an existing value.
-        
+
         :Parameters:
-            #. location (tuple): Location tuple as (name, key) that points to the value.
-               It's typically implemented as such containers[name][key]
+            #. location (tuple): Location tuple as (name, key) that points to
+               the value. It's typically implemented as such
+               containers[name][key]
             #. value (object): the value object to add to the container's.
         """
         self.assert_location(location)
         name, uniqueKey = location
         self.__containers[name][uniqueKey] = value
-_Container()                    
-        
-        
-    
+_Container()
+
+
+
 class _AtomsCollector(object):
     """
-    Atoms collector manages collecting atoms data whenever they are removed from 
-    from system. This mechanism allows storing and recovering atoms data at engine 
-    runtime.
-    
+    Atoms collector manages collecting atoms data whenever they are
+    removed from from system. This mechanism allows storing and recovering
+    atoms data at engine runtime.
+
     :Parameters:
-        #. dataKeys (None, list): The data keys list promised to store everytime an atom 
-           is removed from the system. If None is given, dataKeys must be set later using 
-           set_data_keys method.
+        #. dataKeys (None, list): The data keys list promised to store
+           everytime an atom is removed from the system. If None is given,
+           dataKeys must be set later using set_data_keys method.
     """
     # internal usage only
     def __init__(self, parent, dataKeys=None):
@@ -1130,35 +1189,36 @@ class _AtomsCollector(object):
             self.set_data_keys(dataKeys)
         # set all properties
         self.reset()
-    
+
     def __len__(self):
-        return len(self.__collectedData.keys())    
-        
+        return len(self.__collectedData.keys())
+
     @property
     def dataKeys(self):
-        """get data keys that this collector will collect."""
+        """Data keys that this collector will collect."""
         return self.__dataKeys
-        
+
     @property
     def indexes(self):
         """Collected atoms indexes."""
         return self.__collectedData.keys()
-    
+
     @property
     def indexesSortedArray(self):
         """Collected atoms sorted indexes numpy array."""
         return self.__indexesSortedArray
-    
+
     @property
     def state(self):
-        """Current collector state that will only change upon reseting, 
+        """Current collector state that will only change upon reseting,
         collecting or releasing atoms."""
         return self.__state
-        
+
     def reset(self):
         """
-        Reset collector to initial state by releasing all collected atoms and 
-        re-initializing all properties. parent._on_collector_reset method is not called.
+        Reset collector to initial state by releasing all collected atoms
+        and re-initializing all properties. parent._on_collector_reset
+        method is not called.
         """
         # init indexes sorted array
         self.__indexesSortedArray = np.array([])
@@ -1169,62 +1229,64 @@ class _AtomsCollector(object):
         self._randomData = None
         # set state
         self.__state = str(uuid.uuid1())
-        
+
     def get_collected_data(self):
         """
         Get stored collected data.
-        
+
         :Returns:
-            #. collectedData (dict): The collected data dict.
+            #. collectedData (dict): The collected data dictionary.
         """
         return self.__collectedData
-        
+
     def is_collected(self, index):
         """
         Get whether atom is collected given its index.
-    
+
         :Parameters:
-            #. index (int): The atom index to check whether it is collected or not.
-        
+            #. index (int): The atom index to check whether it is
+               collected or not.
+
         :Returns:
-            #. result (bool): Whether it is collected or not
+            #. result (bool): Whether it is collected or not.
         """
         return self.__collectedData.has_key(index)
-    
+
     def is_not_collected(self, index):
         """
         Get whether atom is not collected given its index.
-    
+
         :Parameters:
-            #. index (int): The atom index to check whether it is collected or not.
-        
+            #. index (int): The atom index to check whether it is
+               collected or not.
+
         :Returns:
             #. result (bool): Whether it is not collected or it is.
         """
         return not self.__collectedData.has_key(index)
-    
+
     def are_collected(self, indexes):
         """
         Get whether atoms are collected given their indexes.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
-            #. result (list): List of booleans defining whether atoms are collected
-               or not.
+            #. result (list): List of booleans defining whether atoms are
+               collected or not.
         """
         return [self.__collectedData.has_key(idx) for idx in indexes]
-    
+
     def any_collected(self, indexes):
         """
         Get whether any atom in indexes is collected.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
             #. result (boolean): Whether any collected atom is found collected.
         """
@@ -1232,31 +1294,32 @@ class _AtomsCollector(object):
             if self.__collectedData.has_key(idx):
                 return True
         return False
-    
+
     def any_not_collected(self, indexes):
         """
         Get whether any atom in indexes is not collected.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
-            #. result (boolean): Whether any collected atom is not found collecte.
+            #. result (boolean): Whether any collected atom is not found
+               collected.
         """
         for idx in indexes:
             if not self.__collectedData.has_key(idx):
                 return True
         return False
-    
+
     def all_collected(self, indexes):
         """
         Get whether all atoms in indexes are collected.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
             #. result (boolean): Whether all atoms are collected.
         """
@@ -1264,15 +1327,15 @@ class _AtomsCollector(object):
             if not self.__collectedData.has_key(idx):
                 return False
         return True
-    
+
     def all_not_collected(self, indexes):
         """
         Get whether all atoms in indexes are not collected.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
             #. result (boolean): Whether all atoms are not collected.
         """
@@ -1280,69 +1343,71 @@ class _AtomsCollector(object):
             if self.__collectedData.has_key(idx):
                 return False
         return True
-        
+
     def are_not_collected(self, indexes):
         """
         Get whether atoms are not collected given their indexes.
-    
+
         :Parameters:
-            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to check whether 
-               they are collected or not.
-        
+            #. indexes (list,set,tuple, numpy.ndarray): Atoms indexes to
+               check whether they are collected or not.
+
         :Returns:
-            #. result (list): List of booleans defining whether atoms are not collected
-               or they are.
+            #. result (list): List of booleans defining whether atoms are
+               not collected or they are.
         """
         return [not self.__collectedData.has_key(idx) for idx in indexes]
-        
+
     def set_data_keys(self, dataKeys):
         """
-        Set atoms collector data keys. keys can be set only once. This method will 
-        throw an error if used to reset dataKeys. 
-    
+        Set atoms collector data keys. keys can be set only once.
+        This method will throw an error if used to reset dataKeys.
+
         :Parameters:
-            #. dataKeys (list): The data keys list promised to store everytime an atom is
-               removed from the system.
+            #. dataKeys (list): The data keys list promised to store everytime
+               an atom is removed from the system.
         """
         assert not len(self.__dataKeys), LOGGER.error("resetting dataKeys is not allowed")
         assert isinstance(dataKeys, (list, set, tuple)), LOGGER.error("dataKeys must be a list")
         assert len(set(dataKeys))==len(dataKeys),  LOGGER.error("Redundant keys in dataKeys list are found")
         assert len(dataKeys)>0,  LOGGER.error("dataKeys must not be empty")
         self.__dataKeys = tuple(sorted(dataKeys))
-        
+
     def get_relative_index(self, index):
         """
         Compute relative atom index considering already collected atoms.
-    
+
         :Parameters:
             #. index (int): Atom index.
-        
+
         :Returns:
             #. relativeIndex (int): Atom relative index.
         """
         position = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left').astype(INT_TYPE)
         return index-position
-    
+
     def get_relative_indexes(self, indexes):
         """
         Compute relative atoms index considering already collected atoms.
-    
+
         :Parameters:
             #. indexes (list,set,tuple,numpy.ndarray): Atoms index.
-        
+
         :Returns:
             #. relativeIndexes (list): Atoms relative index.
         """
         positions = np.searchsorted(a=self.__indexesSortedArray, v=indexes, side='left').astype(INT_TYPE)
         return indexes-positions
-        
+
     def get_real_index(self, relativeIndex):
         """
-        Compute real index of the given relativeIndex considering already collected indexes.
-    
+        Compute real index of the given relativeIndex considering
+        already collected indexes.
+
         :Parameters:
-            #. relativeIndex (int): Atom relative index to already collected indexes.
-        
+            #. relativeIndex (int): Atom relative index to already collected
+               indexes.
+
         :Parameters:
             #. index (int): Atom real index.
         """
@@ -1355,23 +1420,23 @@ class _AtomsCollector(object):
                 break
             index += 1
         return index
-            
+
     def get_atom_data(self, index):
         """
         Get collected atom data.
-        
+
         :Parameters:
             #. index (int): The atom index to return its collected data.
         """
         return self.__collectedData[index]
-        
+
     def get_data_by_key(self, key):
         """
         Get all collected atoms data that is associated with a key.
-    
+
         :Parameters:
-            #. key (int): the data.
-        
+            #. key (int): the data key.
+
         :Parameters:
             #. data (dict): dictionary of atoms indexes where values are the collected data.
         """
@@ -1379,19 +1444,23 @@ class _AtomsCollector(object):
         for k,d in self.__collectedData.items():
             data[k] = d[key]
         return data
-        
-    def collect(self, index, dataDict):
+
+    def collect(self, index, dataDict, check=True):
         """
         Collect atom given its index.
-        
+
         :Parameters:
             #. index (int): The atom index to collect.
             #. dataDict (dict): The atom data dict to collect.
+            #. check (boolean):  Whether to check dataDict keys before
+               collecting. If set to False, user promises that collected
+               data is a dictionary and contains the needed keys.
         """
-        assert isinstance(dataDict, dict), LOGGER.error("dataDict must be a dictionary of data where keys are dataKeys")
         assert not self.is_collected(index), LOGGER.error("attempting to collect and already collected atom of index '%i'"%index)
         # add data
-        assert tuple(sorted(dataDict.keys())) == self.__dataKeys, LOGGER.error("dataDict keys don't match promised dataKeys")
+        if check:
+            assert isinstance(dataDict, dict), LOGGER.error("dataDict must be a dictionary of data where keys are dataKeys")
+            assert tuple(sorted(dataDict.keys())) == self.__dataKeys, LOGGER.error("dataDict keys don't match promised dataKeys")
         self.__collectedData[index] = dataDict
         # set indexes sorted array
         idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')
@@ -1401,13 +1470,14 @@ class _AtomsCollector(object):
 
     def release(self, index):
         """
-        Release atom from list of collected atoms and return its collected data.
-        
+        Release atom from list of collected atoms and return its
+        collected data.
+
         :Parameters:
             #. index (int): The atom index to release.
-            
+
         :Returns:
-            #. dataDict (dict): The released atom collected data.           
+            #. dataDict (dict): The released atom collected data.
         """
         if not self.is_collected(index):
             LOGGER.warn("Attempting to release atom %i that is not collected."%index)
@@ -1420,24 +1490,24 @@ class _AtomsCollector(object):
         self.__state = str(uuid.uuid1())
         # return
         return index
-    
-            
+
+
 class Broadcaster(object):
-    """ 
-    A broadcaster broadcasts a message to all listener throughout execution.
+    """
+    A broadcaster broadcasts a message to all registered listener.
     """
     def __init__(self):
         self.__listeners = []
-    
+
     @property
     def listeners(self):
-        """listeners list copy."""
+        """Listeners list copy."""
         return [l for l in self.__listeners]
-        
+
     def add_listener(self, listener):
         """
-        Add listener to the list of listeners
-        
+        Add listener to the list of listeners.
+
         :Parameters:
             #. listener (object): Any python object having a listen method.
         """
@@ -1446,11 +1516,11 @@ class Broadcaster(object):
             self.__listeners.append(listener)
         else:
             LOGGER.warn("listener already exist in broadcaster list")
-            
+
     def remove_listener(self, listener):
         """
-        Remove listener to the list of listeners
-        
+        Remove listener to the list of listeners.
+
         :Parameters:
             #. listener (object): The listener object to remove.
         """
@@ -1461,19 +1531,21 @@ class Broadcaster(object):
     def broadcast(self, message, arguments=None):
         """
         Broadcast a message to all the listeners
-        
+
         :Parameters:
-            #. message (object): Any type of message object to pass to the listeners.
-            #. arguments (object): Any type of argument to pass to the listeners.
+            #. message (object): Any type of message object to pass to
+               the listeners.
+            #. arguments (object): Any type of argument to pass to the
+               listeners.
         """
         for l in self.__listeners:
             l.listen(message, arguments)
-            
-        
+
+
 class RandomFloatGenerator(object):
     """
     Generate random float number between a lower and an upper limit.
-    
+
     :Parameters:
         #. lowerLimit (number): The lower limit allowed.
         #. upperLimit (number): The upper limit allowed.
@@ -1483,196 +1555,203 @@ class RandomFloatGenerator(object):
          self.__upperLimit = None
          self.set_lower_limit(lowerLimit)
          self.set_upper_limit(upperLimit)
-         
+
     @property
     def lowerLimit(self):
-        """The lower limit of the number generation."""
+        """Lower limit of the number generation."""
         return self.__lowerLimit
-        
+
     @property
     def upperLimit(self):
-        """The upper limit of the number generation."""
+        """Upper limit of the number generation."""
         return self.__upperLimit
-        
+
     @property
     def rang(self):
-        """The range defined as upperLimit-lowerLimit."""
+        """Range defined as upperLimit-lowerLimit."""
         return self.__rang
-        
-    def set_lower_limit(self, lowerLimit):   
+
+    def set_lower_limit(self, lowerLimit):
         """
         Set lower limit.
-        
+
         :Parameters:
-            #. lowerLimit (number): The lower limit allowed.
+            #. lowerLimit (number): Lower limit allowed.
         """
         assert is_number(lowerLimit), LOGGER.error("lowerLimit must be numbers")
-        self.__lowerLimit = FLOAT_TYPE(lowerLimit) 
+        self.__lowerLimit = FLOAT_TYPE(lowerLimit)
         if self.__upperLimit is not None:
             assert self.__lowerLimit<self.__upperLimit, LOGGER.error("lower limit must be smaller than the upper one")
             self.__rang = FLOAT_TYPE(self.__upperLimit-self.__lowerLimit)
-    
+
     def set_upper_limit(self, upperLimit):
         """
         Set upper limit.
-        
+
         :Parameters:
-            #. upperLimit (number): The upper limit allowed.
+            #. upperLimit (number): Upper limit allowed.
         """
         assert is_number(upperLimit), LOGGER.error("upperLimit must be numbers")
         self.__upperLimit = FLOAT_TYPE(upperLimit)
         if self.__lowerLimit is not None:
             assert self.__lowerLimit<self.__upperLimit, LOGGER.error("lower limit must be smaller than the upper one")
             self.__rang = FLOAT_TYPE(self.__upperLimit-self.__lowerLimit)
-        
+
     def generate(self):
         """Generate a random float number between lowerLimit and upperLimit."""
         return FLOAT_TYPE(self.__lowerLimit+generate_random_float()*self.__rang)
 
-        
+
 class BiasedRandomFloatGenerator(RandomFloatGenerator):
-    """ 
+    """
     Generate biased random float number between a lower and an upper limit.
-    To bias the generator at a certain number, a bias gaussian is added to the 
+    To bias the generator at a certain number, a bias gaussian is added to the
     weights scheme at the position of this particular number.
-    
-    .. image:: biasedFloatGenerator.png   
-       :align: center 
-       
+
+    .. image:: biasedFloatGenerator.png
+       :align: center
+
     :Parameters:
         #. lowerLimit (number): The lower limit allowed.
         #. upperLimit (number): The upper limit allowed.
-        #. weights (None, list, numpy.ndarray): The weights scheme. The length defines the number of bins and the edges.
-           The length of weights array defines the resolution of the biased numbers generation.
-           If None is given, ones array of length 10000 is automatically generated.
-        #. biasRange(None, number): The bias gaussian range. 
-           It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-           If None, it will be automatically set to (upperLimit-lowerLimit)/5
-        #. biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
+        #. weights (None, list, numpy.ndarray): The weights scheme.
+           The length defines the number of bins and the edges.
+           The length of weights array defines the resolution of the biased
+           numbers generation. If None is given, ones array of length 10000
+           is automatically generated.
+        #. biasRange(None, number): The bias gaussian range.
+           It must be smaller than half of limits range which is equal to
+           (upperLimit-lowerLimit)/2. If None is given, it will be
+           automatically set to (upperLimit-lowerLimit)/5
+        #. biasFWHM(None, number): The bias gaussian Full Width at Half Maximum.
            It must be smaller than half of biasRange.
            If None, it will be automatically set to biasRange/10
         #. biasHeight(number): The bias gaussian maximum intensity.
-        #. unbiasRange(None, number): The bias gaussian range. 
-           It must be smaller than half of limits range which is equal to (upperLimit-lowerLimit)/2
-           If None, it will be automatically set to biasRange.
-        #. unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
-           It must be smaller than half of biasRange.
-           If None, it will be automatically set to biasFWHM.
+        #. unbiasRange(None, number): The bias gaussian range.
+           It must be smaller than half of limits range which is equal to
+           (upperLimit-lowerLimit)/2. If None is given, it will be
+           automatically set to biasRange.
+        #. unbiasFWHM(None, number): The bias gaussian Full Width at Half
+           Maximum. It must be smaller than half of biasRange.
+           If None is given, it will be automatically set to biasFWHM.
         #. unbiasHeight(number): The unbias gaussian maximum intensity.
-           If None, it will be automatically set to biasHeight.
-        #. unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
+           If None is given, it will be automatically set to biasHeight.
+        #. unbiasThreshold(number): unbias is only applied at a certain
+           position only when the position weight is above unbiasThreshold.
            It must be a positive number.
     """
-    def __init__(self, lowerLimit, upperLimit, 
-                       weights=None, 
+    def __init__(self, lowerLimit, upperLimit,
+                       weights=None,
                        biasRange=None, biasFWHM=None, biasHeight=1,
                        unbiasRange=None, unbiasFWHM=None, unbiasHeight=None, unbiasThreshold=1):
-         # initialize random generator              
+         # initialize random generator
          super(BiasedRandomFloatGenerator, self).__init__(lowerLimit=lowerLimit, upperLimit=upperLimit)
-         # set scheme 
+         # set scheme
          self.set_weights(weights)
          # set bias function
          self.set_bias(biasRange=biasRange, biasFWHM=biasFWHM, biasHeight=biasHeight)
          # set unbias function
          self.set_unbias(unbiasRange=unbiasRange, unbiasFWHM=unbiasFWHM, unbiasHeight=unbiasHeight, unbiasThreshold=unbiasThreshold)
-    
+
     @property
     def originalWeights(self):
-        """The original weights as initialized."""
+        """Original weights as initialized."""
         return self.__originalWeights
-    
+
     @property
     def weights(self):
-        """The current value weights vector."""
+        """Current value weights vector."""
         weights = self.__scheme[1:]-self.__scheme[:-1]
         weights = list(weights)
         weights.insert(0,self.__scheme[0])
         return weights
-        
+
     @property
     def scheme(self):
-        """The numbers generation scheme."""
-        return self.__scheme 
-    
+        """Numbers generation scheme."""
+        return self.__scheme
+
     @property
     def bins(self):
-        """The number of bins that is equal to the length of weights vector."""
+        """Number of bins that is equal to the length of weights vector."""
         return self.__bins
-    
+
     @property
     def binWidth(self):
-        """The bin width defining the resolution of the biased random number generation."""
-        return self.__binWidth 
-          
+        """Bin width defining the resolution of the biased random
+        number generation."""
+        return self.__binWidth
+
     @property
     def bias(self):
-        """The bias step-function."""
+        """Bias step-function."""
         return self.__bias
-    
+
     @property
     def biasGuassian(self):
-        """The bias gaussian function."""
+        """Bias gaussian function."""
         return self.__biasGuassian
-        
+
     @property
     def biasRange(self):
-        """The bias gaussian extent range."""
-        return self.__biasRange    
-        
+        """Bias gaussian extent range."""
+        return self.__biasRange
+
     @property
     def biasBins(self):
-        """The bias gaussian number of bins."""
+        """Bias gaussian number of bins."""
         return self.__biasBins
-    
+
     @property
     def biasFWHM(self):
-        """The bias gaussian Full Width at Half Maximum."""
-        return self.__biasFWHM 
+        """Bias gaussian Full Width at Half Maximum."""
+        return self.__biasFWHM
 
     @property
     def biasFWHMBins(self):
-        """The bias gaussian Full Width at Half Maximum number of bins."""
+        """Bias gaussian Full Width at Half Maximum number of bins."""
         return self.__biasFWHMBins
 
     @property
     def unbias(self):
-        """The unbias step-function."""
+        """Unbias step-function."""
         return self.__unbias
-    
+
     @property
     def unbiasGuassian(self):
-        """The unbias gaussian function."""
+        """Unbias gaussian function."""
         return self.__unbiasGuassian
-        
+
     @property
     def unbiasRange(self):
-        """The unbias gaussian extent range."""
-        return self.__unbiasRange    
-        
+        """Unbias gaussian extent range."""
+        return self.__unbiasRange
+
     @property
     def unbiasBins(self):
-        """The unbias gaussian number of bins."""
+        """Unbias gaussian number of bins."""
         return self.__unbiasBins
-    
+
     @property
     def unbiasFWHM(self):
-        """The unbias gaussian Full Width at Half Maximum."""
-        return self.__unbiasFWHM 
+        """Unbias gaussian Full Width at Half Maximum."""
+        return self.__unbiasFWHM
 
     @property
     def unbiasFWHMBins(self):
-        """The unbias gaussian Full Width at Half Maximum number of bins."""
+        """Unbias gaussian Full Width at Half Maximum number of bins."""
         return self.__unbiasFWHMBins
 
     def set_weights(self, weights=None):
         """
         Set generator's weights.
-        
+
         :Parameters:
-            #. weights (None, list, numpy.ndarray): The weights scheme. The length  
-               defines the number of bins and the edges. The length of weights array 
-               defines the resolution of the biased numbers generation.
-               If None is given, ones array of length 10000 is automatically generated.
+            #. weights (None, list, numpy.ndarray): The weights scheme.
+               The length defines the number of bins and the edges.
+               The length of weights array defines the resolution of the
+               biased numbers generation. If None is given, ones array of
+               length 10000 is automatically generated.
         """
         # set original weights
         if weights is None:
@@ -1694,22 +1773,22 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         # set bin width
         self.__binWidth     = FLOAT_TYPE(self.rang/self.__bins)
         self.__halfBinWidth = FLOAT_TYPE(self.__binWidth/2.)
-        # set scheme    
+        # set scheme
         self.__scheme = np.cumsum( self.__originalWeights )
-    
+
     def set_bias(self, biasRange, biasFWHM, biasHeight):
         """
         Set generator's bias gaussian function
-        
+
         :Parameters:
-            #. biasRange(None, number): The bias gaussian range. 
-               It must be smaller than half of limits range which is equal to 
-               (upperLimit-lowerLimit)/2. If None, it will be automatically set to 
-               (upperLimit-lowerLimit)/5.
-            #. biasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
-               It must be smaller than half of biasRange.
-               If None, it will be automatically set to biasRange/10
-            #. biasHeight(number): The bias gaussian maximum intensity.
+            #. biasRange(None, number): Bias gaussian range. It must be
+               smaller than half of limits range which is equal to
+               (upperLimit-lowerLimit)/2. If None is given, it will
+               be automatically set to (upperLimit-lowerLimit)/5.
+            #. biasFWHM(None, number): Bias gaussian Full Width at Half
+               Maximum. It must be smaller than half of biasRange.
+               If None is given, it will be automatically set to biasRange/10.
+            #. biasHeight(number): Bias gaussian maximum intensity.
         """
         # check biasRange
         if biasRange is None:
@@ -1729,7 +1808,7 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
             biasFWHM = FLOAT_TYPE(biasFWHM)
             assert biasFWHM>=0, LOGGER.error("biasFWHM must be positive")
             assert biasFWHM<=self.__biasRange/2., LOGGER.error("biasFWHM must be smaller than 50%% of bias range which is %s in this case"%str(self.__biasRange))
-        self.__biasFWHM     = FLOAT_TYPE(biasFWHM) 
+        self.__biasFWHM     = FLOAT_TYPE(biasFWHM)
         self.__biasFWHMBins = INT_TYPE(self.bins*self.__biasFWHM/self.rang)
         # check height
         assert is_number(biasHeight), LOGGER.error("biasHeight must be a number")
@@ -1743,23 +1822,24 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         self.__biasGuassian /= np.max(self.__biasGuassian)
         self.__biasGuassian *= self.__biasHeight
         self.__bias = np.cumsum(self.__biasGuassian)
-    
+
     def set_unbias(self, unbiasRange, unbiasFWHM, unbiasHeight, unbiasThreshold):
         """
         Set generator's unbias gaussian function
-        
+
         :Parameters:
-            #. unbiasRange(None, number): The bias gaussian range. 
-               It must be smaller than half of limits range which is equal to 
-               (upperLimit-lowerLimit)/2. If None, it will be automatically set to biasRange.
-            #. unbiasFWHM(None, number): The bias gaussian Full Width at Half Maximum. 
-               It must be smaller than half of biasRange.
-               If None, it will be automatically set to biasFWHM.
+            #. unbiasRange(None, number): The bias gaussian range.
+               It must be smaller than half of limits range which is equal to
+               (upperLimit-lowerLimit)/2. If None, it will be automatically set
+               to biasRange.
+            #. unbiasFWHM(None, number): The bias gaussian Full Width at Half
+               Maximum. It must be smaller than half of biasRange.
+               If None is given, it will be automatically set to biasFWHM.
             #. unbiasHeight(number): The unbias gaussian maximum intensity.
-               If None, it will be automatically set to biasHeight.
-            #. unbiasThreshold(number): unbias is only applied at a certain position 
-               only when the position weight is above unbiasThreshold. It must be a 
-               positive number.
+               If None is given, it will be automatically set to biasHeight.
+            #. unbiasThreshold(number): unbias is only applied at a certain
+               position only when the position weight is above
+               unbiasThreshold. It must be a positive number.
         """
         # check biasRange
         if unbiasRange is None:
@@ -1779,7 +1859,7 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
             unbiasFWHM = FLOAT_TYPE(unbiasFWHM)
             assert unbiasFWHM>=0, LOGGER.error("unbiasFWHM must be positive")
             assert unbiasFWHM<=self.__unbiasRange/2., LOGGER.error("unbiasFWHM must be smaller than 50%% of bias range which is %s in this case"%str(self.__biasRange))
-        self.__unbiasFWHM     = FLOAT_TYPE(unbiasFWHM) 
+        self.__unbiasFWHM     = FLOAT_TYPE(unbiasFWHM)
         self.__unbiasFWHMBins = INT_TYPE(self.bins*self.__unbiasFWHM/self.rang)
         # check height
         if unbiasHeight is None:
@@ -1799,15 +1879,17 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         self.__unbiasGuassian /= np.max(self.__unbiasGuassian)
         self.__unbiasGuassian *= -self.__unbiasHeight
         self.__unbias = np.cumsum(self.__unbiasGuassian)
-         
+
     def bias_scheme_by_index(self, index, scaleFactor=None, check=True):
         """
-        Bias the generator's scheme using the defined bias gaussian function at the given index.
-        
+        Bias the generator's scheme using the defined bias gaussian
+        function at the given index.
+
         :Parameters:
             #. index(integer): The index of the position to bias
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
-               biasing the scheme. If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian
+               before biasing the scheme. If None is given, bias gaussian is
+               used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__biasHeight>0: return
@@ -1833,7 +1915,7 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         if scaleFactor is None:
             scaledBias = bias
         else:
-            scaledBias = bias*scaleFactor         
+            scaledBias = bias*scaleFactor
         # get end indexes
         endIdx = startIdx+self.__biasBins-biasStartIdx
         biasEndIdx = len(scaledBias)
@@ -1843,15 +1925,17 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         # bias scheme
         self.__scheme[startIdx:endIdx] += scaledBias[0:biasEndIdx]
         self.__scheme[endIdx:] += scaledBias[biasEndIdx-1]
-        
+
     def bias_scheme_at_position(self, position, scaleFactor=None, check=True):
         """
-        Bias the generator's scheme using the defined bias gaussian function at the given number.
-        
+        Bias the generator's scheme using the defined bias gaussian function
+        at the given number.
+
         :Parameters:
             #. position(number): The number to bias.
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
-               biasing the scheme. If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian
+               before biasing the scheme. If None is given, bias gaussian is
+               used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -1859,18 +1943,20 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
             position = FLOAT_TYPE(position)
             assert position>=self.lowerLimit, LOGGER.error("position must be bigger than lowerLimit")
             assert position<=self.upperLimit, LOGGER.error("position must be smaller than upperLimit")
-        index = INT_TYPE(self.__bins*(position-self.lowerLimit)/self.rang) 
+        index = INT_TYPE(self.__bins*(position-self.lowerLimit)/self.rang)
         # bias scheme by index
         self.bias_scheme_by_index(index=index, scaleFactor=scaleFactor, check=check)
-    
+
     def unbias_scheme_by_index(self, index, scaleFactor=None, check=True):
         """
-        Unbias the generator's scheme using the defined bias gaussian function at the given index.
-        
+        Unbias the generator's scheme using the defined bias gaussian
+        function at the given index.
+
         :Parameters:
-            #. index(integer): The index of the position to unbias
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
-               unbiasing the scheme. If None, unbias gaussian is used as defined.
+            #. index(integer): The index of the position to unbias.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian
+               before unbiasing the scheme. If None is given, unbias gaussian
+               is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__unbiasHeight>0: return
@@ -1900,7 +1986,7 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
             endIdx = self.__bins
         # scale unbias
         if scaleFactor is None:
-            scaledUnbias = unbias 
+            scaledUnbias = unbias
         else:
             scaledUnbias = unbias*scaleFactor
         # unbias weights
@@ -1910,15 +1996,17 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
         weights[np.where(weights<self.__unbiasThreshold)] = self.__unbiasThreshold
         # set unbiased scheme
         self.__scheme = np.cumsum(weights)
-                                    
+
     def unbias_scheme_at_position(self, position, scaleFactor=None, check=True):
         """
-        Unbias the generator's scheme using the defined bias gaussian function at the given number.
-        
+        Unbias the generator's scheme using the defined bias gaussian
+        function at the given number.
+
         :Parameters:
             #. position(number): The number to unbias.
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
-               unbiasing the scheme. If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian
+               before unbiasing the scheme. If None is given, unbias gaussian
+               is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -1926,105 +2014,109 @@ class BiasedRandomFloatGenerator(RandomFloatGenerator):
             position = FLOAT_TYPE(position)
             assert position>=self.lowerLimit, LOGGER.error("position must be bigger than lowerLimit")
             assert position<=self.upperLimit, LOGGER.error("position must be smaller than upperLimit")
-        index = INT_TYPE(self.__bins*(position-self.lowerLimit)/self.rang) 
+        index = INT_TYPE(self.__bins*(position-self.lowerLimit)/self.rang)
         # bias scheme by index
         self.unbias_scheme_by_index(index=index, scaleFactor=scaleFactor, check=check)
 
     def generate(self):
-        """Generate a random float number between the biased range lowerLimit and upperLimit."""
+        """Generate a random float number between the biased range
+        lowerLimit and upperLimit."""
         # get position
         position = self.lowerLimit + self.__binWidth*np.searchsorted(self.__scheme, generate_random_float()*self.__scheme[-1]) + self.__halfBinWidth
         # find limits
         minLim = max(self.lowerLimit, position-self.__halfBinWidth)
         maxLim = min(self.upperLimit, position+self.__halfBinWidth)
         # generate number
-        return minLim+generate_random_float()*(maxLim-minLim) + self.__halfBinWidth    
-        
+        return minLim+generate_random_float()*(maxLim-minLim) + self.__halfBinWidth
+
 
 class RandomIntegerGenerator(object):
     """
     Generate random integer number between a lower and an upper limit.
-    
+
     :Parameters:
-        #. lowerLimit (number): The lower limit allowed.
-        #. upperLimit (number): The upper limit allowed.
+        #. lowerLimit (number): Lower limit allowed.
+        #. upperLimit (number): Upper limit allowed.
     """
     def __init__(self, lowerLimit, upperLimit):
          self.__lowerLimit = None
          self.__upperLimit = None
          self.set_lower_limit(lowerLimit)
          self.set_upper_limit(upperLimit)
-    
+
     @property
     def lowerLimit(self):
-        """The lower limit of the number generation."""
+        """Lower limit of the number generation."""
         return self.__lowerLimit
-        
+
     @property
     def upperLimit(self):
-        """The upper limit of the number generation."""
+        """Upper limit of the number generation."""
         return self.__upperLimit
-        
+
     @property
     def rang(self):
         """The range defined as upperLimit-lowerLimit"""
         return self.__rang
-            
-    def set_lower_limit(self, lowerLimit):    
+
+    def set_lower_limit(self, lowerLimit):
         """
         Set lower limit.
-        
+
         :Parameters:
             #. lowerLimit (number): The lower limit allowed.
         """
         assert is_integer(lowerLimit), LOGGER.error("lowerLimit must be numbers")
-        self.__lowerLimit = INT_TYPE(lowerLimit) 
+        self.__lowerLimit = INT_TYPE(lowerLimit)
         if self.__upperLimit is not None:
             assert self.__lowerLimit<self.__upperLimit, LOGGER.error("lower limit must be smaller than the upper one")
             self.__rang = self.__upperLimit-self.__lowerLimit+1
-    
+
     def set_upper_limit(self, upperLimit):
         """
         Set upper limit.
-        
+
         :Parameters:
             #. upperLimit (number): The upper limit allowed.
         """
         assert is_integer(upperLimit), LOGGER.error("upperLimit must be numbers")
-        self.__upperLimit = INT_TYPE(upperLimit) 
+        self.__upperLimit = INT_TYPE(upperLimit)
         if self.__lowerLimit is not None:
             assert self.__lowerLimit<self.__upperLimit, LOGGER.error("lower limit must be smaller than the upper one")
             self.__rang = self.__upperLimit-self.__lowerLimit+1
-        
+
     def generate(self):
         """Generate a random integer number between lowerLimit and upperLimit."""
         return generate_random_integer(self.__lowerLimit, self.__upperLimit)
 
-        
+
 class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
-    """ 
+    """
     Generate biased random integer number between a lower and an upper limit.
-    To bias the generator at a certain number, a bias height is added to the 
+    To bias the generator at a certain number, a bias height is added to the
     weights scheme at the position of this particular number.
-    
-    .. image:: biasedIntegerGenerator.png   
-       :align: center 
-       
+
+    .. image:: biasedIntegerGenerator.png
+       :align: center
+
     :Parameters:
         #. lowerLimit (integer): The lower limit allowed.
         #. upperLimit (integer): The upper limit allowed.
-        #. weights (None, list, numpy.ndarray): The weights scheme. The length must be equal to the range between lowerLimit and upperLimit.
-           If None is given, ones array of length upperLimit-lowerLimit+1 is automatically generated.
+        #. weights (None, list, numpy.ndarray): The weights scheme.
+           The length must be equal to the range between lowerLimit
+           and upperLimit. If None is given, ones array of length
+           upperLimit-lowerLimit+1 is automatically generated.
         #. biasHeight(number): The weight bias intensity.
         #. unbiasHeight(None, number): The weight unbias intensity.
            If None, it will be automatically set to biasHeight.
-        #. unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
+        #. unbiasThreshold(number): unbias is only applied at a certain
+           position only when the position weight is above unbiasThreshold.
            It must be a positive number.
     """
-    def __init__(self, lowerLimit, upperLimit, 
-                       weights=None, 
+    def __init__(self, lowerLimit, upperLimit,
+                       weights=None,
                        biasHeight=1, unbiasHeight=None, unbiasThreshold=1):
-        # initialize random generator              
+        # initialize random generator
         super(BiasedRandomIntegerGenerator, self).__init__(lowerLimit=lowerLimit, upperLimit=upperLimit)
         # set weights
         self.set_weights(weights=weights)
@@ -2034,38 +2126,39 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         self.set_unbias_height(unbiasHeight=unbiasHeight)
         # set bias height
         self.set_unbias_threshold(unbiasThreshold=unbiasThreshold)
-    
+
     @property
     def originalWeights(self):
-        """The original weights as initialized."""
+        """Original weights as initialized."""
         return self.__originalWeights
-    
+
     @property
     def weights(self):
-        """The current value weights vector."""
+        """Current value weights vector."""
         weights = self.__scheme[1:]-self.__scheme[:-1]
         weights = list(weights)
         weights.insert(0,self.__scheme[0])
         return weights
-        
+
     @property
     def scheme(self):
-        """The numbers generation scheme."""
-        return self.__scheme 
-    
+        """Numbers generation scheme."""
+        return self.__scheme
+
     @property
     def bins(self):
-        """The number of bins that is equal to the length of weights vector."""
+        """Number of bins that is equal to the length of weights vector."""
         return self.__bins
-        
+
     def set_weights(self, weights):
         """
         Set the generator integer numbers weights.
-        
+
         :Parameters:
-            #. weights (None, list, numpy.ndarray): The weights scheme. The length must 
-               be equal to the range between lowerLimit and upperLimit. If None is given, 
-               ones array of length upperLimit-lowerLimit+1 is automatically generated.
+            #. weights (None, list, numpy.ndarray): The weights scheme.
+               The length must be equal to the range between lowerLimit and
+               upperLimit. If None is given, ones array of length
+               upperLimit-lowerLimit+1 is automatically generated.
         """
         if weights is None:
             self.__originalWeights = np.ones(self.upperLimit-self.lowerLimit+1)
@@ -2083,24 +2176,24 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
             self.__originalWeights = np.array(wgts, dtype=FLOAT_TYPE)
         # set bins
         self.__bins = len( self.__originalWeights )
-        # set scheme    
+        # set scheme
         self.__scheme = np.cumsum( self.__originalWeights )
-        
+
     def set_bias_height(self, biasHeight):
         """
         Set weight bias intensity.
-        
+
         :Parameters:
-            #. biasHeight(number): The weight bias intensity.
+            #. biasHeight(number): Weight bias intensity.
         """
         assert is_number(biasHeight), LOGGER.error("biasHeight must be a number")
         self.__biasHeight = FLOAT_TYPE(biasHeight)
         assert self.__biasHeight>0, LOGGER.error("biasHeight must be bigger than 0")
-        
+
     def set_unbias_height(self, unbiasHeight):
         """
         Set weight unbias intensity.
-        
+
         :Parameters:
             #. unbiasHeight(None, number): The weight unbias intensity.
                If None, it will be automatically set to biasHeight.
@@ -2110,13 +2203,14 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         assert is_number(unbiasHeight), LOGGER.error("unbiasHeight must be a number")
         self.__unbiasHeight = FLOAT_TYPE(unbiasHeight)
         assert self.__unbiasHeight>=0, LOGGER.error("unbiasHeight must be positive")
-        
+
     def set_unbias_threshold(self, unbiasThreshold):
         """
         Set weight unbias threshold.
-        
+
         :Parameters:
-            #. unbiasThreshold(number): unbias is only applied at a certain position only when the position weight is above unbiasThreshold.
+            #. unbiasThreshold(number): unbias is only applied at a certain
+               position only when the position weight is above unbiasThreshold.
                It must be a positive number.
         """
         assert is_number(unbiasThreshold), LOGGER.error("unbiasThreshold must be a number")
@@ -2126,11 +2220,12 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
     def bias_scheme_by_index(self, index, scaleFactor=None, check=True):
         """
         Bias the generator's scheme at the given index.
-        
+
         :Parameters:
             #. index(integer): The index of the position to bias
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
-               biasing the scheme. If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian
+               before biasing the scheme. If None, bias gaussian is used as
+               defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__biasHeight>0: return
@@ -2147,18 +2242,19 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         if scaleFactor is None:
             scaledBias = self.__biasHeight
         else:
-            scaledBias = self.__biasHeight*scaleFactor         
+            scaledBias = self.__biasHeight*scaleFactor
         # bias scheme
         self.__scheme[index:] += scaledBias
-          
+
     def bias_scheme_at_position(self, position, scaleFactor=None, check=True):
         """
         Bias the generator's scheme at the given number.
-        
+
         :Parameters:
             #. position(number): The number to bias.
-            #. scaleFactor(None, number): Whether to scale the bias gaussian before 
-               biasing the scheme. If None, bias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the bias gaussian
+               before biasing the scheme. If None, bias gaussian is used as
+               defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -2173,11 +2269,12 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
     def unbias_scheme_by_index(self, index, scaleFactor=None, check=True):
         """
         Unbias the generator's scheme at the given index.
-        
+
         :Parameters:
             #. index(integer): The index of the position to unbias
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
-               unbiasing the scheme. If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian
+               before unbiasing the scheme. If None is given,
+               unbias gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if not self.__unbiasHeight>0: return
@@ -2192,25 +2289,27 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
                 assert scaleFactor>=0, LOGGER.error("scaleFactor must be bigger than 0")
         # scale unbias
         if scaleFactor is None:
-            scaledUnbias = self.__unbiasHeight 
+            scaledUnbias = self.__unbiasHeight
         else:
             scaledUnbias = self.__unbiasHeight*scaleFactor
         # check threshold
         if index == 0:
-            scaledUnbias = max(scaledUnbias, self.__scheme[index]-self.__unbiasThreshold)   
+            scaledUnbias = max(scaledUnbias, self.__scheme[index]-self.__unbiasThreshold)
         elif self.__scheme[index]-scaledUnbias < self.__scheme[index-1]+self.__unbiasThreshold:
             scaledUnbias = self.__scheme[index]-self.__scheme[index-1]-self.__unbiasThreshold
         # unbias scheme
         self.__scheme[index:] -= scaledUnbias
-                                   
+
     def unbias_scheme_at_position(self, position, scaleFactor=None, check=True):
         """
-        Unbias the generator's scheme using the defined bias gaussian function at the given number.
-        
+        Unbias the generator's scheme using the defined bias gaussian
+        function at the given number.
+
         :Parameters:
             #. position(number): The number to unbias.
-            #. scaleFactor(None, number): Whether to scale the unbias gaussian before 
-               unbiasing the scheme. If None, unbias gaussian is used as defined.
+            #. scaleFactor(None, number): Whether to scale the unbias gaussian
+               before unbiasing the scheme. If None is given, unbias
+               gaussian is used as defined.
             #. check(boolean): Whether to check arguments.
         """
         if check:
@@ -2221,10 +2320,9 @@ class BiasedRandomIntegerGenerator(RandomIntegerGenerator):
         index = position-self.lowerLimit
         # unbias scheme by index
         self.unbias_scheme_by_index(index=index, scaleFactor=scaleFactor, check=check)
-        
+
     def generate(self):
-        """Generate a random intger number between the biased range lowerLimit and upperLimit."""
+        """Generate a random intger number between the biased range
+        lowerLimit and upperLimit."""
         index = INT_TYPE( np.searchsorted(self.__scheme, generate_random_float()*self.__scheme[-1]) )
         return self.lowerLimit + index
-       
-

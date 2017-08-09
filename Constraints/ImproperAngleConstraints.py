@@ -1,5 +1,6 @@
 """
-ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.
+ImproperAngleConstraints contains classes for all constraints related to
+improper angles between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
     :parts: 1
@@ -11,8 +12,8 @@ ImproperAngleConstraints contains classes for all constraints related improper a
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, raise_if_collected, reset_if_collected_out_of_date
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.improper_angles import full_improper_angles_coords
 
@@ -21,38 +22,40 @@ from fullrmc.Core.improper_angles import full_improper_angles_coords
 
 class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     """
-    Controls the improper angle formed with 4 defined atoms. It's mainly used to 
-    keep the improper atom in the plane defined with three other atoms. 
-    The improper vector is defined as the vector from the first atom of the plane to
-    the improper atom. Therefore the improper angle is defined between the improper
-    vector and the plane.
-    
-    +--------------------------------------------------------------------------------+
-    |.. figure:: improperSketch.png                                                  |
-    |   :width: 269px                                                                |
-    |   :height: 200px                                                               |
-    |   :align: center                                                               |
-    |                                                                                |
-    |   Improper angle sketch defined between four atoms.                            |  
-    +--------------------------------------------------------------------------------+
-    
+    Controls the improper angle formed with 4 defined atoms. It's mainly used
+    to keep the improper atom in the plane defined with three other atoms.
+    The improper vector is defined as the vector from the first atom of the
+    plane to the improper atom. Therefore the improper angle is defined between
+    the improper vector and the plane.
+
+    +--------------------------------------------------------------------------+
+    |.. figure:: improperSketch.png                                            |
+    |   :width: 269px                                                          |
+    |   :height: 200px                                                         |
+    |   :align: center                                                         |
+    |                                                                          |
+    |   Improper angle sketch defined between four atoms.                      |
+    +--------------------------------------------------------------------------+
+
      .. raw:: html
 
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/qVATE-9cIBg" 
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/qVATE-9cIBg"
         frameborder="0" allowfullscreen>
-        </iframe> 
-        
-        
+        </iframe>
+
+
     :Parameters:
-        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
-    
+        #. rejectProbability (Number): rejecting probability of all steps
+           where standardError increases. It must be between 0 and 1 where 1
+           means rejecting all steps where standardError increases and 0 means
+           accepting all steps regardless whether standardError increases or
+           not.
+
     .. code-block:: python
-        
+
         ## Tetrahydrofuran (THF) molecule sketch
-        ## 
+        ##
         ##              O
         ##   H41      /   \      H11
         ##      \  /         \  /
@@ -61,37 +64,37 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         ##         \         /
         ##   H31-- C3-------C2 --H21
         ##        /         \\
-        ##     H32            H22 
+        ##     H32            H22
         ##
- 
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # create and add constraint
         IAC = ImproperAngleConstraint()
         ENGINE.add_constraints(IAC)
-        
-        # define intra-molecular improper angles 
+
+        # define intra-molecular improper angles
         IAC.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O','C1','C4', -15, 15),
                                                                     ('C3','O','C1','C4', -15, 15) ] })
-           
-                                                            
+
+
     """
-    
+
     def __init__(self, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set atomsCollector data keys
         self._atomsCollector.set_data_keys( ['improperMap','otherMap'] )
         # init angles data
-        self.__anglesList = [[],[],[],[],[],[]]      
+        self.__anglesList = [[],[],[],[],[],[]]
         self.__angles     = {}
         # set computation cost
         self.set_computation_cost(3.0)
@@ -105,27 +108,29 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA) )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
-        
+
     @property
     def anglesList(self):
         """ Get improper angles list."""
         return self.__anglesList
-    
+
     @property
     def angles(self):
         """ Get angles dictionary for every and each atom."""
         return self.__angles
-        
+
     def _on_collector_reset(self):
         self._atomsCollector._randomData = set([])
-        
+
     def listen(self, message, argument=None):
-        """   
+        """
         Listens to any message sent from the Broadcaster.
-        
+
         :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. argument (object): Any type of argument to pass to the listeners.
+            #. message (object): Any python object to send to constraint's
+               listen method.
+            #. argument (object): Any type of argument to pass to the
+               listeners.
         """
         if message in("engine set","update boundary conditions",):
             # set angles and reset constraint
@@ -133,48 +138,52 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                    self.__anglesList[2],self.__anglesList[3],
                    [a*FLOAT_TYPE(180.)/PI for a in self.__anglesList[4]],
                    [a*FLOAT_TYPE(180.)/PI for a in self.__anglesList[5]] ]
-            self.set_angles(anglesList=AL, tform=False) 
-            # reset constraint is called in set_angles 
-      
+            self.set_angles(anglesList=AL, tform=False)
+            # reset constraint is called in set_angles
+
     #@raise_if_collected
     def set_angles(self, anglesList, tform=True):
-        """ 
-        Sets the angles dictionary by parsing the anglesList list.
-        
+        """
+        Set angles dictionary by parsing anglesList list.
+
         :Parameters:
-            #. anglesList (list): The angles list definition.
-              
+            #. anglesList (list): Angles list definition.
+
                tuples format: every item must be a list of five items.\n
-               #. First item: The improper atom index that must be in the plane.
-               #. Second item: The index of the atom 'O' considered the origin of the plane.
-               #. Third item: The index of the atom 'x' used to calculated 'Ox' vector.
-               #. Fourth item: The index of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: The minimum lower limit or the minimum angle allowed 
+               #. Improper atom index that must be in the plane.
+               #. Index of atom 'O' considered the origin of the plane.
+               #. Index of atom 'x' used to calculated 'Ox' vector.
+               #. Index of atom 'y' used to calculated 'Oy' vector.
+               #. Minimum lower limit or minimum angle allowed
                   in degrees which later will be converted to rad.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+               #. Maximum upper limit or maximum angle allowed
                   in degrees which later will be converted to rad.
-                
+
                six vectors format: every item must be a list of five items.\n
-               #. First item: List containing improper atom indexes that must be in the plane.
-               #. Second item: List containing indexes of the atom 'O' considered the origin of the plane.
-               #. Third item: List containing indexes of the atom 'x' used to calculated 'Ox' vector.
-               #. Fourth item: List containing indexes of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: List containing the minimum lower limit or the minimum angle allowed 
+               #. List containing improper atoms index that must be in the
+                  plane.
+               #. List containing index of atoms 'O' considered the origin
+                  of the plane.
+               #. List containing index of atoms 'x' used to calculated
+                  'Ox' vector.
+               #. List containing index of atom 'y' used to calculated 'Oy'
+                  vector.
+               #. List containing minimum lower limit or minimum angle allowed
                   in degrees which later will be converted to rad.
-               #. Sixth item: List containing the maximum upper limit or the maximum angle allowed 
+               #. List containing maximum upper limit or maximum angle allowed
                   in degrees which later will be converted to rad.
-                  
-           #. tform (boolean): set whether given anglesList follows tuples format, If not 
-              then it must follow the six vectors one.
+
+           #. tform (boolean): Whether given anglesList follows tuples format,
+              If not then it must follow the six vectors one.
         """
         # check if bondsList is given
         if anglesList is None:
             anglesList = [[],[],[],[],[],[]]
-            tform      = False 
+            tform      = False
         elif len(anglesList) == 6 and len(anglesList[0]) == 0:
-            tform     = False 
+            tform     = False
         if self.engine is None:
-            self.__anglesList = anglesList      
+            self.__anglesList = anglesList
             self.__angles     = {}
         else:
             NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
@@ -185,11 +194,11 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                                  np.array([], dtype=INT_TYPE),
                                  np.array([], dtype=INT_TYPE),
                                  np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE)]      
+                                 np.array([], dtype=FLOAT_TYPE)]
             self.__angles     = {}
             self.__dumpAngles = False
             # build angles
-            try: 
+            try:
                 if tform:
                     for angle in anglesList:
                         self.add_angle(angle)
@@ -213,22 +222,21 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                                   '_ImproperAngleConstraint__angles'     :self.__angles})
         # reset constraint
         self.reset_constraint()
-    
+
     #@raise_if_collected
     def add_angle(self, angle):
         """
         Add a single angle to the list of constraint angles. All angles are in degrees.
-        
+
         :Parameters:
             #. angle (list): The angle list of five items.\n
-               #. First item: The central atom index.
-               #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
-               #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed 
+               #. Improper atom index that must be in the plane.
+               #. Index of atom 'O' considered the origin of the plane.
+               #. Index of atom 'x' used to calculated 'Ox' vector.
+               #. Index of atom 'y' used to calculated 'Oy' vector.
+               #. Minimum lower limit or minimum angle allowed
                   in degrees which later will be converted to rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed 
-                  in degrees which later will be converted to rad.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+               #. Maximum upper limit or maximum angle allowed
                   in degrees which later will be converted to rad.
         """
         assert self.engine is not None, LOGGER.error("setting an angle is not allowed unless engine is defined.")
@@ -269,39 +277,39 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create improper angle
         if not self.__angles.has_key(improperIdx):
-            anglesImproper = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]} 
+            anglesImproper = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
-            anglesImproper = {"oIdx"        :self.__angles[improperIdx]["oIdx"], 
-                              "xIdx"        :self.__angles[improperIdx]["xIdx"], 
-                              "yIdx"        :self.__angles[improperIdx]["yIdx"], 
-                              "improperMap" :self.__angles[improperIdx]["improperMap"], 
-                              "otherMap"    :self.__angles[improperIdx]["otherMap"] }          
+            anglesImproper = {"oIdx"        :self.__angles[improperIdx]["oIdx"],
+                              "xIdx"        :self.__angles[improperIdx]["xIdx"],
+                              "yIdx"        :self.__angles[improperIdx]["yIdx"],
+                              "improperMap" :self.__angles[improperIdx]["improperMap"],
+                              "otherMap"    :self.__angles[improperIdx]["otherMap"] }
         # create anglesO angle
         if not self.__angles.has_key(oIdx):
-            anglesO = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]} 
+            anglesO = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
-            anglesO = {"oIdx"        :self.__angles[oIdx]["oIdx"], 
-                       "xIdx"        :self.__angles[oIdx]["xIdx"], 
-                       "yIdx"        :self.__angles[oIdx]["yIdx"], 
-                       "improperMap" :self.__angles[oIdx]["improperMap"], 
-                       "otherMap"    :self.__angles[oIdx]["otherMap"] }     
+            anglesO = {"oIdx"        :self.__angles[oIdx]["oIdx"],
+                       "xIdx"        :self.__angles[oIdx]["xIdx"],
+                       "yIdx"        :self.__angles[oIdx]["yIdx"],
+                       "improperMap" :self.__angles[oIdx]["improperMap"],
+                       "otherMap"    :self.__angles[oIdx]["otherMap"] }
         # create anglesX angle
         if not self.__angles.has_key(xIdx):
-            anglesX = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]} 
+            anglesX = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
-            anglesX = {"oIdx"        :self.__angles[xIdx]["oIdx"], 
-                       "xIdx"        :self.__angles[xIdx]["xIdx"], 
-                       "yIdx"        :self.__angles[xIdx]["yIdx"], 
-                       "improperMap" :self.__angles[xIdx]["improperMap"], 
+            anglesX = {"oIdx"        :self.__angles[xIdx]["oIdx"],
+                       "xIdx"        :self.__angles[xIdx]["xIdx"],
+                       "yIdx"        :self.__angles[xIdx]["yIdx"],
+                       "improperMap" :self.__angles[xIdx]["improperMap"],
                        "otherMap"    :self.__angles[xIdx]["otherMap"] }
         # create anglesY angle
         if not self.__angles.has_key(yIdx):
-            anglesY = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]} 
+            anglesY = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
-            anglesY = {"oIdx"        :self.__angles[yIdx]["oIdx"], 
-                       "xIdx"        :self.__angles[yIdx]["xIdx"], 
-                       "yIdx"        :self.__angles[yIdx]["yIdx"], 
-                       "improperMap" :self.__angles[yIdx]["improperMap"], 
+            anglesY = {"oIdx"        :self.__angles[yIdx]["oIdx"],
+                       "xIdx"        :self.__angles[yIdx]["xIdx"],
+                       "yIdx"        :self.__angles[yIdx]["yIdx"],
+                       "improperMap" :self.__angles[yIdx]["improperMap"],
                        "otherMap"    :self.__angles[yIdx]["otherMap"] }
         # check for re-defining
         setPos = oPos = xPos = yPos = None
@@ -326,9 +334,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             setPos = anglesImproper["improperMap"][oPos]
         # set angle
         if setPos is None:
-            anglesImproper["oIdx"].append(oIdx)        
-            anglesImproper["xIdx"].append(xIdx)                
-            anglesImproper["yIdx"].append(yIdx)        
+            anglesImproper["oIdx"].append(oIdx)
+            anglesImproper["xIdx"].append(xIdx)
+            anglesImproper["yIdx"].append(yIdx)
             anglesImproper["improperMap"].append( len(self.__anglesList[0]) )
             anglesO["otherMap"].append( len(self.__anglesList[0]) )
             anglesX["otherMap"].append( len(self.__anglesList[0]) )
@@ -339,7 +347,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             self.__anglesList[3] = np.append(self.__anglesList[3],yIdx)
             self.__anglesList[4] = np.append(self.__anglesList[4],lower)
             self.__anglesList[5] = np.append(self.__anglesList[5],upper)
-            
+
         else:
             assert self.__anglesList[0][setPos] == improperIdx, LOGGER.error("mismatched angles improper atom '%s' and '%s'"%(self.__anglesList[0][setPos],improperIdx))
             assert sorted([oIdx, xIdx, yIdx]) == sorted([self.__anglesList[1][setPos],self.__anglesList[2][setPos],self.__anglesList[3][setPos]]), LOGGER.error("mismatched angles O, Y and Y at improper atom '%s'"%(improperIdx))
@@ -357,48 +365,48 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             self._dump_to_repository({'_ImproperAngleConstraint__anglesList' :self.__anglesList,
                                       '_ImproperAngleConstraint__angles'     :self.__angles})
             # reset constraint
-            self.reset_constraint() 
-    
+            self.reset_constraint()
+
     #@raise_if_collected
     def create_angles_by_definition(self, anglesDefinition):
-        """ 
-        Creates anglesList using angles definition. This calls set_angles(anglesMap) 
+        """
+        Creates anglesList using angles definition. This calls set_angles(anglesMap)
         and generates angles attribute. All angles are in degrees.
-        
+
         :Parameters:
-            #. anglesDefinition (dict): The angles definition. 
-               Every key must be a molecule name (residue name in pdb file). 
-               Every key value must be a list of angles definitions. 
+            #. anglesDefinition (dict): Angles definition.
+               Every key must be a molecule name.
+               Every key value must be a list of angles definitions.
                Every angle definition is a list of five items where:
-               
-               #. First item: The name of the improper atom that must be in the plane.
-               #. Second item: The name of the atom 'O' considered the origin of the plane.
-               #. Third item: The name of the atom 'x' used to calculated 'Ox' vector.
-               #. Fourth item: The name of the atom 'y' used to calculated 'Oy' vector.
-               #. Fifth item: The minimum lower limit or the minimum angle allowed 
+
+               #. Name of improper atom that must be in the plane.
+               #. Name of atom 'O' considered the origin of the plane.
+               #. Name of atom 'x' used to calculated 'Ox' vector.
+               #. Name of atom 'y' used to calculated 'Oy' vector.
+               #. Minimum lower limit or minimum angle allowed
                   in degrees which later will be converted to rad.
-               #. Sixth item: The maximum upper limit or the maximum angle allowed 
+               #. Maximum upper limit or maximum angle allowed
                   in degrees which later will be converted to rad.
-        
+
         ::
-        
+
             e.g. (Benzene):  anglesDefinition={"BENZ": [('C3','C1','C2','C6', -10, 10),
                                                         ('C4','C1','C2','C6', -10, 10),
                                                         ('C5','C1','C2','C6', -10, 10) ] }
-                                                  
+
         """
         if self.engine is None:
             raise Exception("Engine is not defined. Can't create impoper angles by definition")
         assert isinstance(anglesDefinition, dict), "anglesDefinition must be a dictionary"
         # check map definition
-        ALL_NAMES         = self.engine.get_original_data("allNames")
-        NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-        MOLECULES_NAMES   = self.engine.get_original_data("moleculesNames")
-        MOLECULES_INDEXES = self.engine.get_original_data("moleculesIndexes")
-        existingMoleculesNames = sorted(set(MOLECULES_NAMES))
+        ALL_NAMES       = self.engine.get_original_data("allNames")
+        NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
+        MOLECULES_NAME  = self.engine.get_original_data("moleculesName")
+        MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
+        existingMoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
         for mol, angles in anglesDefinition.items():
-            if mol not in existingMoleculesNames:
+            if mol not in existingMoleculesName:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
             assert isinstance(angles, (list, set, tuple)), LOGGER.error("mapDefinition molecule angles must be a list")
@@ -419,21 +427,21 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                             break
                 if append:
                     molAnglesList.append((improperAt, oAt, xAt, yAt, lower, upper))
-            # create bondDef for molecule mol 
+            # create bondDef for molecule mol
             anglesDef[mol] = molAnglesList
         # create mols dictionary
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
-            molName = MOLECULES_NAMES[idx]
-            if not molName in anglesDef.keys():    
+            molName = MOLECULES_NAME[idx]
+            if not molName in anglesDef.keys():
                 continue
-            molIdx = MOLECULES_INDEXES[idx]
+            molIdx = MOLECULES_INDEX[idx]
             if not mols.has_key(molIdx):
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
         # get anglesList
-        anglesList = []         
+        anglesList = []
         for val in mols.values():
             indexes = val["indexes"]
             names   = val["names"]
@@ -449,50 +457,51 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 anglesList.append((improperIdx, oIdx, xIdx, yIdx, lower, upper))
         # create angles
         self.set_angles(anglesList=anglesList)
-    
+
     def compute_standard_error(self, data):
-        """ 
-        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
-        
+        """
+        Compute the standard error (StdErr) of data not satisfying constraint's
+        conditions.
+
         .. math::
-            StdErr = \\sum \\limits_{i}^{C} 
-            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            StdErr = \\sum \\limits_{i}^{C}
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2}
             \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
             +
-            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2}
             \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
-                               
+
         Where:\n
         :math:`C` is the total number of defined improper angles constraints. \n
         :math:`\\theta_{i}^{min}` is the improper angle constraint lower limit set for constraint i. \n
         :math:`\\theta_{i}^{max}` is the improper angle constraint upper limit set for constraint i. \n
         :math:`\\theta_{i}` is the improper angle computed for constraint i. \n
         :math:`\\delta` is the Dirac delta function. \n
-        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
-        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute standardError.
-            
+            #. data (numpy.array): data to compute standardError.
+
         :Returns:
-            #. standardError (number): The calculated standardError of the constraint.
+            #. standardError (number): computed standardError of given data.
         """
         return FLOAT_TYPE( np.sum(data["reducedAngles"]**2) )
 
     def get_constraint_value(self):
         """
-        Compute all partial Mean Pair Distances (MPD) below the defined minimum distance. 
-        
+        get constraint's data value.
+
         :Returns:
-            #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
+            #. data (dictionary): constraint data.
         """
         return self.data
-        
+
     @reset_if_collected_out_of_date
     def compute_data(self):
-        """ Compute data and update engine constraintsData dictionary. """
+        """ Compute constraint's data."""
         if len(self._atomsCollector):
             anglesData    = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
             reducedData   = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
@@ -512,12 +521,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             lowerLimit = self.__anglesList[4]
             upperLimit = self.__anglesList[5]
         # compute data
-        angles, reduced =  full_improper_angles_coords( improperIdxs       = improperIdxs, 
-                                                        oIdxs              = oIdxs, 
-                                                        xIdxs              = xIdxs, 
-                                                        yIdxs              = yIdxs, 
-                                                        lowerLimit         = lowerLimit, 
-                                                        upperLimit         = upperLimit, 
+        angles, reduced =  full_improper_angles_coords( improperIdxs       = improperIdxs,
+                                                        oIdxs              = oIdxs,
+                                                        xIdxs              = xIdxs,
+                                                        yIdxs              = yIdxs,
+                                                        lowerLimit         = lowerLimit,
+                                                        upperLimit         = upperLimit,
                                                         boxCoords          = self.engine.boxCoordinates,
                                                         basis              = self.engine.basisVectors,
                                                         isPBC              = self.engine.isPBC,
@@ -530,7 +539,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             reducedData[anglesIndexes] = reduced
             angles  = anglesData
             reduced = reducedData
-        # set data.     
+        # set data.
         self.set_data( {"angles":angles, "reducedAngles":reduced} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
@@ -539,14 +548,15 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # set original data
         if self.originalData is None:
             self._set_original_data(self.data)
-  
+
     def compute_before_move(self, realIndexes, relativeIndexes):
-        """ 
-        Compute constraint before move is executed
-        
+        """
+        Compute constraint's data before move is executed.
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms relative indexes the move 
-               will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms index the move will
+               be applied to.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get angles indexes
         anglesIndexes = []
@@ -558,12 +568,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         anglesIndexes = list( set(anglesIndexes)-set(self._atomsCollector._randomData) )
         # compute data before move
         if len(anglesIndexes):
-            angles, reduced =  full_improper_angles_coords( improperIdxs       = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                            oIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                            xIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                            yIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]), 
-                                                            lowerLimit         = self.__anglesList[4][anglesIndexes], 
-                                                            upperLimit         = self.__anglesList[5][anglesIndexes], 
+            angles, reduced =  full_improper_angles_coords( improperIdxs       = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]),
+                                                            oIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]),
+                                                            xIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]),
+                                                            yIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]),
+                                                            lowerLimit         = self.__anglesList[4][anglesIndexes],
+                                                            upperLimit         = self.__anglesList[5][anglesIndexes],
                                                             boxCoords          = self.engine.boxCoordinates,
                                                             basis              = self.engine.basisVectors ,
                                                             isPBC              = self.engine.isPBC,
@@ -576,14 +586,17 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # set data before move
         self.set_active_atoms_data_before_move( {"anglesIndexes":anglesIndexes, "angles":angles, "reducedAngles":reduced} )
         self.set_active_atoms_data_after_move(None)
-        
+
     def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
-        """ 
-        Compute constraint after move is executed
-        
+        """
+        Compute constraint's data after move is executed.
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
-            #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Group atoms relative index the
+               move will be applied to.
+            #. movedBoxCoordinates (numpy.ndarray): The moved atoms new
+               coordinates.
         """
         # get angles indexes
         anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
@@ -592,12 +605,12 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # compute data before move
         if len(anglesIndexes):
-            angles, reduced =  full_improper_angles_coords( improperIdxs       = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                            oIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                            xIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                            yIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]), 
-                                                            lowerLimit         = self.__anglesList[4][anglesIndexes], 
-                                                            upperLimit         = self.__anglesList[5][anglesIndexes], 
+            angles, reduced =  full_improper_angles_coords( improperIdxs       = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]),
+                                                            oIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]),
+                                                            xIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]),
+                                                            yIdxs              = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]),
+                                                            lowerLimit         = self.__anglesList[4][anglesIndexes],
+                                                            upperLimit         = self.__anglesList[5][anglesIndexes],
                                                             boxCoords          = self.engine.boxCoordinates,
                                                             basis              = self.engine.basisVectors ,
                                                             isPBC              = self.engine.isPBC,
@@ -617,16 +630,17 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         else:
             # anglesIndexes is a fancy slicing, RL is a copy not a view.
             RL = self.data["reducedAngles"][anglesIndexes]
-            self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]         
+            self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]
             self.set_after_move_standard_error( self.compute_standard_error(data = self.data) )
             self.data["reducedAngles"][anglesIndexes] = RL
-  
+
     def accept_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Accept move
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get indexes
         anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
@@ -643,24 +657,28 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move(None)
 
     def reject_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Reject move
-        
+
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-    
+
     def accept_amputation(self, realIndex, relativeIndex):
-        """ 
-        Accept amputation of atom and sets constraints data and standard error accordingly.
-        
-        :Parameters:
-            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
         """
-        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM 
+        Accept amputation of atom and sets constraint's data and standard
+        error accordingly.
+
+        :Parameters:
+            #. realIndex (numpy.ndarray): Atom's index as a numpy array
+               of a single element.
+            #. relativeIndex (numpy.ndarray): Not used here.
+        """
+        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM
         # WHEN IMPLEMENTING ATOMS RELEASING. MAYBE WE NEED TO COLLECT DATA INSTEAD, REMOVE
         # AND ADD UPON RELEASE
         # get all involved data
@@ -676,21 +694,21 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             data["reducedAngles"][anglesIndexes] = 0
             self.set_data( data )
             # update standardError
-            SE = self.compute_standard_error(data = self.get_constraint_value()) 
+            SE = self.compute_standard_error(data = self.get_constraint_value())
             self.set_standard_error( SE )
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
-    
+
     def reject_amputation(self, realIndex, relativeIndex):
-        """ 
+        """
         Reject amputation of atom.
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): atom index as a numpy array of a single 
-               element.
+            #. realIndex (numpy.ndarray): Not used here.
+            #. relativeIndex (numpy.ndarray): Not used here.
         """
         pass
-    
+
     def _on_collector_collect_atom(self, realIndex):
         # get angle indexes
         AI = self.__angles[realIndex]['improperMap'] + self.__angles[realIndex]['otherMap']
@@ -699,39 +717,43 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # collect atom anglesIndexes
         self._atomsCollector.collect(realIndex, dataDict={'improperMap':self.__angles[realIndex]['improperMap'],
                                                           'otherMap'   :self.__angles[realIndex]['otherMap']})
- 
-        
-        
-    def plot(self, ax=None, nbins=50, subplots=True, split=None, 
+
+
+
+    def plot(self, ax=None, nbins=50, subplots=True, split=None,
                    wspace=0.3, hspace=0.3,
-                   histtype='bar', lineWidth=None, lineColor=None,
+                   histTtype='bar', lineWidth=None, lineColor=None,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=1, legendLoc='best',
                    title=True, titleStdErr=True, titleAtRem=True,
                    titleUsedFrame=True, show=True):
-        """ 
+        """
         Plot improper angles constraint distribution histogram.
-        
+
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given,  subplots parameters will be omitted. 
+               If ax is given,  subplots parameters will be omitted.
                If None is given a new plot figure will be created.
             #. nbins (int): number of bins in histogram.
-            #. subplots (boolean): Whether to add plot constraint on multiple axes.
-            #. split (None, 'name', 'element'): To split plots into histogram per atom 
-               names, elements in addition to lower and upper bounds. If None histograms 
-               will be built from lower and upper bounds only.
-            #. wspace (float): The amount of width reserved for blank space between 
-               subplots, expressed as a fraction of the average axis width.
-            #. hspace (float): The amount of height reserved for white space between 
-               subplots, expressed as a fraction of the average axis height.
-            #. histtype (string): the histogram type. optional among
-                ['bar', 'barstacked', 'step', 'stepfilled']
-            #. lineWidth (None, integer): bars contour line width. If None then default
-               value will be given.
-            #. lineColor (None, integer): bars contour line color. If None then default
-               value will be given.
+            #. subplots (boolean): Whether to add plot constraint on multiple
+               axes.
+            #. split (None, 'name', 'element'): To split plots into histogram
+               per atom names, elements in addition to lower and upper bounds.
+               If None is given, histograms will be built from lower and upper
+               bounds only.
+            #. wspace (float): The amount of width reserved for blank space
+               between subplots, expressed as a fraction of the average axis
+               width.
+            #. hspace (float): The amount of height reserved for white space
+               between subplots, expressed as a fraction of the average axis
+               height.
+            #. histTtype (string): the histogram type. optional among
+               ['bar', 'barstacked', 'step', 'stepfilled']
+            #. lineWidth (None, integer): bars contour line width.
+               If None is given, then default value will be set automatically.
+            #. lineColor (None, integer): bars contour line color.
+               If None is given, then default value will be set automatically.
             #. xlabel (boolean): Whether to create x label.
             #. xlabelSize (number): The x label font size.
             #. ylabel (boolean): Whether to create y label.
@@ -739,24 +761,28 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             #. legend (boolean): Whether to create the legend or not
             #. legendCols (integer): Legend number of columns.
             #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
-               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
-               is accepted.
+               'right', 'center left', 'upper right', 'lower right', 'best',
+               'center', 'lower left', 'center right', 'upper left',
+               'upper center', 'lower center' is accepted.
             #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in title.
-            #. show (boolean): Whether to render and show figure before returning.
-            
+            #. titleStdErr (boolean): Whether to show constraint standard
+               error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of
+               removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in
+               title.
+            #. show (boolean): Whether to render and show figure before
+               returning.
+
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
-            
-        +------------------------------------------------------------------------------+ 
-        |.. figure:: improper_angle_constraint_plot_method.png                         | 
-        |   :width: 530px                                                              | 
+
+        +------------------------------------------------------------------------------+
+        |.. figure:: improper_angle_constraint_plot_method.png                         |
+        |   :width: 530px                                                              |
         |   :height: 400px                                                             |
-        |   :align: left                                                               | 
+        |   :align: left                                                               |
         +------------------------------------------------------------------------------+
         """
         def _get_bins(dmin, dmax, boundaries, nbins):
@@ -787,7 +813,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-        # compute categories 
+        # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -834,13 +860,13 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES = FIG.gca()
                 subplots = False
         else:
-            AXES = ax  
+            AXES = ax
             FIG = AXES.get_figure()
-            subplots = False 
+            subplots = False
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3,a4, L,U  = key
                 L  = L*180./np.pi
                 U  = U*180./np.pi
@@ -856,9 +882,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histTtype)
                 # vertical lines
                 Y = max(D)
                 AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
@@ -879,7 +905,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3,a4, L,U  = key
                 L  = L*180./np.pi
                 U  = U*180./np.pi
@@ -894,9 +920,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histTtype)
                 # vertical lines
                 Y = max(D)
                 AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
@@ -916,7 +942,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             # update limits
             AXES.set_xmargin(0.1)
             AXES.autoscale()
-                
+
         # set title
         if title:
             FIG.canvas.set_window_title('Improper Angle Constraint')
@@ -932,7 +958,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 FIG.suptitle(t, fontsize=14)
         # set background color
         FIG.patch.set_facecolor('white')
-        
+
         #show
         if show:
             plt.show()
@@ -940,26 +966,26 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         if subplots:
             return FIG, N_AXES
         else:
-            return FIG, AXES 
-    
+            return FIG, AXES
+
     def export(self, fname, delimiter='     ', comments='# ', split=None):
         """
-        Export pair distribution constraint.
-        
+        Export improper angles constraint distribution histogram.
+
         :Parameters:
             #. fname (path): full file name and path.
             #. delimiter (string): String or character separating columns.
             #. comments (string): String that will be prepended to the header.
             #. split (None, 'name', 'element'): To split output into per atom names,
-               elements in addition to lower and upper bounds. If None output 
+               elements in addition to lower and upper bounds. If None output
                will be built from lower and upper bounds only.
         """
         # get constraint value
         output = self.get_constraint_value()
-        if not len(output):
+        if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-        # compute categories 
+        # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -991,7 +1017,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             categories[k] = L
         ncategories = len(categories.keys())
         # create data
-        for idx, key in enumerate(categories.keys()): 
+        for idx, key in enumerate(categories.keys()):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
@@ -1013,22 +1039,9 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         data   = [categories[key] for key in sortCa]
         # save
         data = np.transpose(data)
-        np.savetxt(fname     = fname, 
-                   X         = data, 
-                   fmt       = '%s', 
-                   delimiter = delimiter, 
+        np.savetxt(fname     = fname,
+                   X         = data,
+                   fmt       = '%s',
+                   delimiter = delimiter,
                    header    = " ".join(header),
-                   comments  = comments)   
-        
-        
-        
-        
-        
-        
-
-    
-    
-
-    
-    
-            
+                   comments  = comments)

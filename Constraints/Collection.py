@@ -1,5 +1,5 @@
 """
-Collection of methods and classes definition useful for constraints computation 
+Collection of methods and classes definition useful for constraints computation
 """
 
 # standard libraries imports
@@ -11,32 +11,33 @@ import numpy as np
 from fullrmc.Globals import LOGGER, FLOAT_TYPE, PI
 from fullrmc.Core.Collection import is_number
 
-        
-             
+
+
 class ShapeFunction(object):
     """
-    Shape function used to correct for particle shape. The shape 
-    function is subtracted from the total G(r) of g(r). It must 
-    be used when non-periodic boundary conditions are used to take 
-    into account the atomic density drop and to correct for the 
+    Shape function used to correct for particle shape. The shape
+    function is subtracted from the total G(r) of g(r). It must
+    be used when non-periodic boundary conditions are used to take
+    into account the atomic density drop and to correct for the
     :math:`\\rho_{0}` approximation.
-    
+
     :Parameters:
         #. engine (Engine): The fitting engine.
         #. weighting (string): The elements weighting.
-        #. qmin (number): The minimum reciprocal distance q in 
+        #. qmin (number): The minimum reciprocal distance q in
            :math:`\\AA^{-1}` considered to compute the shape function.
-        #. qmax (number): The maximum reciprocal distance q in 
+        #. qmax (number): The maximum reciprocal distance q in
            :math:`\\AA^{-1}` considered to compute the shape function.
-        #. dq (number): The reciprocal distance bin size in 
+        #. dq (number): The reciprocal distance bin size in
            :math:`\\AA^{-1}` considered to compute the shape function.
-        #. rmin (number): The minimum distance in :math:`\\AA` considered 
+        #. rmin (number): The minimum distance in :math:`\\AA` considered
            upon building the histogram prior to computing the shape function.
-        #. rmax (number): The maximum distance in :math:`\\AA` 
-           considered upon building the histogram prior to computing the shape function.
-        #. dr (number): The bin size in :math:`\\AA` considered upon 
-           building the histogram prior to computing the shape function. 
-        
+        #. rmax (number): The maximum distance in :math:`\\AA`
+           considered upon building the histogram prior to computing the shape
+           function.
+        #. dr (number): The bin size in :math:`\\AA` considered upon
+           building the histogram prior to computing the shape function.
+
     **N.B: tweak qmax as small as possible to reduce the wriggles ...**
     """
     def __init__(self, engine, weighting="atomicNumber",
@@ -70,7 +71,7 @@ class ShapeFunction(object):
         self._qmax = FLOAT_TYPE(qmax)
         self._dq   = FLOAT_TYPE(dq)
         self._weighting = weighting
-        
+
     def __get_Gr_from_Sq(self, qValues, rValues, Sq):
         Gr    = np.zeros(len(rValues), dtype=FLOAT_TYPE)
         sq_1  = Sq-1
@@ -79,17 +80,17 @@ class ShapeFunction(object):
         for ridx, r in enumerate(rValues):
             sinqr_dq = dq * np.sin(qValues*r)
             Gr[ridx] = (2./PI) * np.sum( qsq_1 * sinqr_dq )
-        return Gr  
-    
+        return Gr
+
     def get_Gr_shape_function(self, rValues, compute=True):
         """
         Get shape function of G(r) used in a PairDistributionConstraint.
-        
+
         :Parameters:
             #. rValues (numpy.ndarray): The r values array.
-            #. compute (boolean): whether to recompute shape 
+            #. compute (boolean): whether to recompute shape
                function reciprocal data.
-        
+
         :Returns:
             #. shapeFunction (numpy.ndarray): The compute shape function.
         """
@@ -99,24 +100,19 @@ class ShapeFunction(object):
         return self.__get_Gr_from_Sq( qValues=self._SFC.experimentalQValues,
                                       rValues=rValues,
                                       Sq=self._SFC.get_constraint_value()['sf'])
-    
+
     def get_gr_shape_function(self, rValues, compute=True):
         """
         Get shape function of g(r) used in a PairCorrelationConstraint.
-        
+
         :Parameters:
             #. rValues (numpy.ndarray): The r values array.
-            #. compute (boolean): whether to recompute shape 
+            #. compute (boolean): whether to recompute shape
                function reciprocal data.
-        
+
         :Returns:
             #. shapeFunction (numpy.ndarray): The compute shape function.
         """
         sFunc = self.get_Gr_shape_function(rValues=rValues, compute=compute)
         rho0  = self.engine.numberDensity #(self._SFC.engine.numberOfAtoms/self._SFC.engine.volume).astype(FLOAT_TYPE)
         return sFunc / (FLOAT_TYPE(4.)*PI*rho0*rValues)
-        
-        
-        
-        
-        

@@ -1,5 +1,6 @@
 """
-ImproperAngleConstraints contains classes for all constraints related improper angles between atoms.
+ImproperAngleConstraints contains classes for all constraint's related to
+improper angles between bonded atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
     :parts: 1
@@ -11,8 +12,8 @@ ImproperAngleConstraints contains classes for all constraints related improper a
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, raise_if_collected, reset_if_collected_out_of_date
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.dihedral_angles import full_dihedral_angles_coords
 
@@ -21,61 +22,71 @@ from fullrmc.Core.dihedral_angles import full_dihedral_angles_coords
 
 class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
     """
-    Dihedral angle is defined between two intersecting planes formed with four defined 
-    atoms. Dihedral angle constraint can control 3 angle shells at the same times.
-    
-    +--------------------------------------------------------------------------------+
-    |.. figure:: dihedralSketch.png                                                  |
-    |   :width: 312px                                                                |
-    |   :height: 200px                                                               |
-    |   :align: center                                                               |
-    |                                                                                |
-    |   Dihedral angle sketch defined between two planes formed with four atoms.     |  
-    +--------------------------------------------------------------------------------+
-    
+    Dihedral angle is defined between two intersecting planes formed
+    with defined atoms. Dihedral angle constraint can control up to three
+    angle shells at the same times.
+
+    +---------------------------------------------------------------------------+
+    |.. figure:: dihedralSketch.png                                             |
+    |   :width: 312px                                                           |
+    |   :height: 200px                                                          |
+    |   :align: center                                                          |
+    |                                                                           |
+    |   Dihedral angle sketch defined between two planes formed with four atoms.|
+    +---------------------------------------------------------------------------+
+
+     .. raw:: html
+
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/1wUSYcNygd4"
+        frameborder="0" allowfullscreen>
+        </iframe>
+
+
     :Parameters:
-        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
-    
+        #. rejectProbability (Number): rejecting probability of all steps
+           where standardError increases. It must be between 0 and 1 where 1
+           means rejecting all steps where standardError increases and 0
+           means accepting all steps regardless whether standardError increases or not.
+
     .. code-block:: python
-       
+
         ## Butane (BUT) molecule sketch
-        ##         
+        ##
         ##       H13  H22  H32  H43
         ##        |    |    |    |
         ## H11---C1---C2---C3---C4---H41
         ##        |    |    |    |
         ##       H12  H21  H31  H42
         ##
- 
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Constraints.DihedralAngleConstraints import DihedralAngleConstraint
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # create and add constraint
         DAC = DihedralAngleConstraint()
         ENGINE.add_constraints(DAC)
-        
-        # define intra-molecular dihedral angles 
+
+        # define intra-molecular dihedral angles
         DAC.create_angles_by_definition( anglesDefinition={"BUT": [ ('C1','C2','C3','C4', 40,80, 100,140, 290,330), ] })
-           
-                                                            
+
+
     """
-    
+
     def __init__(self, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set atomsCollector data keys
         self._atomsCollector.set_data_keys( ['dihedralMap','otherMap'] )
         # init angles data
-        self.__anglesList = [[],[],[],[],[],[],[],[],[],[]]      
+        self.__anglesList = [[],[],[],[],[],[],[],[],[],[]]
         self.__angles     = {}
         # set computation cost
         self.set_computation_cost(3.0)
@@ -89,113 +100,120 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA) )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
-        
+
     @property
     def anglesList(self):
-        """ Get improper angles list."""
+        """ Improper angles list."""
         return self.__anglesList
-    
+
     @property
     def angles(self):
-        """ Get angles dictionary for every and each atom."""
+        """ Angles dictionary for every and each atom."""
         return self.__angles
 
     def _on_collector_reset(self):
         self._atomsCollector._randomData = set([])
-        
+
     def listen(self, message, argument=None):
-        """   
+        """
         Listens to any message sent from the Broadcaster.
-        
+
         :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
+            #. message (object): Any python object to send to constraint's
+               listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine set","update boundary conditions",):     
-            self.set_angles(anglesList=self.__anglesList, tform=False)   
+        if message in("engine set","update boundary conditions",):
+            self.set_angles(anglesList=self.__anglesList, tform=False)
             # reset constraint is called in set_angles
-   
+
     #@raise_if_collected
     def set_angles(self, anglesList, tform=True):
-        """ 
-        Sets the angles dictionary by parsing the anglesList list. All angles are in 
-        degrees. Dihedral angle can control 3 angle shells at the same times defined using 
-        three different lower and upper angle bounds simulating three different dihedral 
-        potential energy minimums. Dihedral angles are defined from 0 to 360 degrees. 
-        Shell's lower and  upper bound defines a dihedral angle clockwise. Therefore in 
-        order to take into considerations the limits at 0 and 360 degrees, lower bound 
-        is allowed to be higher than the higher bound.\n
-        e.g. (50, 100) is a dihedral shell defined in the angle range between 50 and 
+        """
+        Sets the angles dictionary by parsing the anglesList list.
+        All angles are in degrees. Dihedral angle can control up to three
+        angle shells at the same times defined using three different lower
+        and upper angle bounds simulating three different dihedral
+        potential energy minimums. Dihedral angles are defined from 0 to
+        360 degrees. Shell's lower and  upper bound defines a dihedral angle
+        clockwise. Therefore in order to take into considerations the limits
+        at 0 and 360 degrees, lower bound is allowed to be higher than the
+        higher bound.\n
+        e.g. (50, 100) is a dihedral shell defined in the angle range between 50 and
         100 degrees. But (100, 50) dihedral shell is defined between 100 to 360 degrees
-        and wraps the range from 0 to 100. (50, 100) and (100, 50) are complementary 
+        and wraps the range from 0 to 100. (50, 100) and (100, 50) are complementary
         and cover the whole range from 0 to 360 deg. \n
-        
+
         :Parameters:
             #. anglesList (list): The angles list definition.
-              
+
                tuples format: every item must be a list of ten items.\n
-               #. First item: The first atom index of the first plane.
-               #. Second item: The second atom index of the first plane and the first 
+               #. First atom index of the first plane.
+               #. Second atom index of the first plane and
+                  first atom index of the second plane.
+               #. Third atom index of the first plane and second
                   atom index of the second plane.
-               #. Third item: The third atom index of the first plane and the second 
-                  atom index of the second plane.
-               #. Fourth item: The fourth atom index of the second plane.
-               #. Fifth item: The minimum lower limit of the first shell or the minimum 
-                  angle allowed in degrees.
-               #. Sixth item: The maximum upper limit of the first shell or the minimum 
-                  angle allowed in degrees.
-               #. Seventh item: The minimum lower limit of the second shell or the minimum 
-                  angle allowed in degrees.
-               #. Eights item: The maximum upper limit of the second shell or the minimum 
-                  angle allowed in degrees.
-               #. Nineth item: The minimum lower limit of the third shell or the minimum 
-                  angle allowed in degrees.
-               #. Tenth item: The maximum upper limit of the third shell or the minimum 
-                  angle allowed in degrees.\n\n
-                
+               #. Fourth atom index of the second plane.
+               #. Minimum lower limit of the first shell or
+                  minimum angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the first shell or
+                  maximum angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the second shell or
+                  minimum angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the second shell or
+                  maximum angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the third shell or
+                  minimum angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the third shell or
+                  maximum angle allowed in degrees.\n\n
+
                ten vectors format: every item must be a list of five items.\n
-               #. First item: List containing the first atom indexes of the first plane.
-               #. Second item: List containing indexes of the second atom index of the 
-                  first plane and the first atom index of the second plane.
-               #. Third item: List containing indexes of the third atom index of the 
-                  first plane and the second atom index of the second plane.
-               #. Fourth item: List containing indexes of the fourth atom index of the 
-                  second plane.
-               #. Fifth item: List containing the minimum lower limit of the first shell 
-                  or the minimum angle allowed in degrees which later will be converted 
-                  to rad.
-               #. Sixth item: List containing the maximum upper limit of the first shell 
-                  or the minimum angle allowed in degrees which later will be converted 
-                  to rad.
-               #. Seventh item: List containing the minimum lower limit of the second 
-                  shell or the minimum angle allowed in degrees which later will be 
+               #. List containing first atoms index of the first plane.
+               #. List containing second atoms index of the
+                  first plane and first atoms index of the second plane.
+               #. List containing third atoms indexes of the
+                  first plane and second atoms index of the second plane.
+               #. List containing fourth atoms index of the second plane.
+               #. List containing minimum lower limit of the first shell
+                  or minimum angle allowed in degrees which later will be
                   converted to rad.
-               #. Eights item: List containing the maximum upper limit of the second 
-                  shell or the minimum angle allowed in degrees which later will be 
+               #. List containing maximum upper limit of the first shell
+                  or maximum angle allowed in degrees which later will be
                   converted to rad.
-               #. Nineth item: List containing the minimum lower limit of the third 
-                  shell or the minimum angle allowed in degrees which later will be 
+               #. List containing minimum lower limit of the second
+                  shell or minimum angle allowed in degrees which later will be
                   converted to rad.
-               #. Tenth item: List containing the maximum upper limit of the third shell 
-                  or the minimum angle allowed in degrees which later will be converted 
-                  to rad.
-                  
-           #. tform (boolean): set whether given anglesList follows tuples format, If not 
+               #. List containing maximum upper limit of the second
+                  shell or maximum angle allowed in degrees which later will be
+                  converted to rad.
+               #. List containing minimum lower limit of the third
+                  shell or minimum angle allowed in degrees which later will be
+                  converted to rad.
+               #. List containing maximum upper limit of the third shell
+                  or maximum angle allowed in degrees which later will be
+                  converted to rad.
+
+           #. tform (boolean): set whether given anglesList follows tuples format, If not
               then it must follow the ten vectors one.
-        
+
         **N.B.** Defining three shells boundaries is mandatory. In case fewer than three
         shells is needed, it suffices to repeat one of the shells boundaries.\n
-        e.g. ('C1','C2','C3','C4', 40,80, 100,140, 40,80), in the herein definition the 
+        e.g. ('C1','C2','C3','C4', 40,80, 100,140, 40,80), in the herein definition the
         last shell is a repetition of the first which means only two shells are defined.
         """
         # check if bondsList is given
         if anglesList is None:
             anglesList = [[],[],[],[],[],[],[],[],[],[]]
-            tform      = False 
+            tform      = False
         elif len(anglesList) == 10 and len(anglesList[0]) == 0:
-            tform     = False 
+            tform     = False
         if self.engine is None:
-            self.__anglesList = anglesList      
+            self.__anglesList = anglesList
             self.__angles     = {}
         else:
             NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
@@ -210,18 +228,18 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                                  np.array([], dtype=FLOAT_TYPE),
                                  np.array([], dtype=FLOAT_TYPE),
                                  np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE)]      
+                                 np.array([], dtype=FLOAT_TYPE)]
             self.__angles     = {}
             self.__dumpAngles = False
             # build angles
-            try: 
+            try:
                 if tform:
                     for angle in anglesList:
                         self.add_angle(angle)
                 else:
                     for idx in xrange(len(anglesList[0])):
-                        angle = [anglesList[0][idx], anglesList[1][idx], 
-                                 anglesList[2][idx], anglesList[3][idx], 
+                        angle = [anglesList[0][idx], anglesList[1][idx],
+                                 anglesList[2][idx], anglesList[3][idx],
                                  anglesList[4][idx], anglesList[5][idx],
                                  anglesList[6][idx], anglesList[7][idx],
                                  anglesList[8][idx], anglesList[9][idx]]
@@ -242,32 +260,38 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                                   '_DihedralAngleConstraint__angles'     :self.__angles})
         # reset constraint
         self.reset_constraint()
-    
+
     #@raise_if_collected
     def add_angle(self, angle):
         """
         Add a single angle to the list of constraint angles. All angles are in degrees.
-        
+
         :Parameters:
             #. angle (list): The angle list of ten items.\n
-               #. First item: The first atom index of the first plane.
-               #. Second item: The second atom index of the first plane and the first 
+               #. First atom index of the first plane.
+               #. Second atom index of the first plane and first
                   atom index of the second plane.
-               #. Third item: The third atom index of the first plane and the second 
+               #. Third atom index of the first plane and second
                   atom index of the second plane.
-               #. Fourth item: The fourth atom index of the second plane.
-               #. Fifth item: The minimum lower limit of the first shell or the minimum 
-                  angle allowed in degrees.
-               #. Sixth item: The maximum upper limit of the first shell or the minimum 
-                  angle allowed in degrees.
-               #. seventh item: The minimum lower limit of the second shell or the minimum 
-                  angle allowed in degrees.
-               #. eights item: The maximum upper limit of the second shell or the minimum 
-                  angle allowed in degrees.
-               #. nineth item: The minimum lower limit of the third shell or the minimum 
-                  angle allowed in degrees.
-               #. tenth item: The maximum upper limit of the third shell or the minimum 
-                  angle allowed in degrees.
+               #. Fourth atom index of the second plane.
+               #. Minimum lower limit of the first shell or minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the first shell or maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the second shell or minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the second shell or maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the third shell or minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the third shell or maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
         """
         assert self.engine is not None, LOGGER.error("setting an angle is not allowed unless engine is defined.")
         NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
@@ -328,42 +352,42 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         #upper3 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create dihedral angles1
         if not self.__angles.has_key(idx1):
-            angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
+            angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
-            angles1 = {"idx2"        :self.__angles[idx1]["idx2"], 
-                       "idx3"        :self.__angles[idx1]["idx3"], 
-                       "idx4"        :self.__angles[idx1]["idx4"], 
-                       "dihedralMap" :self.__angles[idx1]["dihedralMap"], 
-                       "otherMap"    :self.__angles[idx1]["otherMap"] }          
+            angles1 = {"idx2"        :self.__angles[idx1]["idx2"],
+                       "idx3"        :self.__angles[idx1]["idx3"],
+                       "idx4"        :self.__angles[idx1]["idx4"],
+                       "dihedralMap" :self.__angles[idx1]["dihedralMap"],
+                       "otherMap"    :self.__angles[idx1]["otherMap"] }
         # create dihedral angle2
         if not self.__angles.has_key(idx2):
-            angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
+            angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
-            angles2 = {"idx2"        :self.__angles[idx2]["idx2"], 
-                       "idx3"        :self.__angles[idx2]["idx3"], 
-                       "idx4"        :self.__angles[idx2]["idx4"], 
-                       "dihedralMap" :self.__angles[idx2]["dihedralMap"], 
-                       "otherMap"    :self.__angles[idx2]["otherMap"] }  
+            angles2 = {"idx2"        :self.__angles[idx2]["idx2"],
+                       "idx3"        :self.__angles[idx2]["idx3"],
+                       "idx4"        :self.__angles[idx2]["idx4"],
+                       "dihedralMap" :self.__angles[idx2]["dihedralMap"],
+                       "otherMap"    :self.__angles[idx2]["otherMap"] }
         # create dihedral angle3
         if not self.__angles.has_key(idx3):
-            angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
+            angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
-            angles3 = {"idx2"        :self.__angles[idx3]["idx2"], 
-                       "idx3"        :self.__angles[idx3]["idx3"], 
-                       "idx4"        :self.__angles[idx3]["idx4"], 
-                       "dihedralMap" :self.__angles[idx3]["dihedralMap"], 
-                       "otherMap"    :self.__angles[idx3]["otherMap"] }  
+            angles3 = {"idx2"        :self.__angles[idx3]["idx2"],
+                       "idx3"        :self.__angles[idx3]["idx3"],
+                       "idx4"        :self.__angles[idx3]["idx4"],
+                       "dihedralMap" :self.__angles[idx3]["dihedralMap"],
+                       "otherMap"    :self.__angles[idx3]["otherMap"] }
         # create dihedral angle4
         if not self.__angles.has_key(idx4):
-            angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]} 
+            angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
-            angles4 = {"idx2"        :self.__angles[idx4]["idx2"], 
-                       "idx3"        :self.__angles[idx4]["idx3"], 
-                       "idx4"        :self.__angles[idx4]["idx4"], 
-                       "dihedralMap" :self.__angles[idx4]["dihedralMap"], 
-                       "otherMap"    :self.__angles[idx4]["otherMap"] }  
+            angles4 = {"idx2"        :self.__angles[idx4]["idx2"],
+                       "idx3"        :self.__angles[idx4]["idx3"],
+                       "idx4"        :self.__angles[idx4]["idx4"],
+                       "dihedralMap" :self.__angles[idx4]["dihedralMap"],
+                       "otherMap"    :self.__angles[idx4]["otherMap"] }
         # check for re-defining
-        setPos = idx2Pos = idx3Pos = idx4Pos = None               
+        setPos = idx2Pos = idx3Pos = idx4Pos = None
         if idx2 in angles1["idx2"] and idx3 in angles1["idx3"] and idx4 in angles1["idx4"]:
             idx2Pos = angles1["idx2"].index(idx2)
             idx3Pos = angles1["idx3"].index(idx3)
@@ -385,9 +409,9 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             setPos = angles1["dihedralMap"][idx2Pos]
         # set angle
         if setPos is None:
-            angles1["idx2"].append(idx2)        
-            angles1["idx3"].append(idx3)                
-            angles1["idx4"].append(idx4)        
+            angles1["idx2"].append(idx2)
+            angles1["idx3"].append(idx3)
+            angles1["idx4"].append(idx4)
             angles1["dihedralMap"].append( len(self.__anglesList[0]) )
             angles2["otherMap"].append( len(self.__anglesList[0]) )
             angles3["otherMap"].append( len(self.__anglesList[0]) )
@@ -401,7 +425,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             self.__anglesList[6] = np.append(self.__anglesList[6],lower2)
             self.__anglesList[7] = np.append(self.__anglesList[7],upper2)
             self.__anglesList[8] = np.append(self.__anglesList[8],lower3)
-            self.__anglesList[9] = np.append(self.__anglesList[9],upper3) 
+            self.__anglesList[9] = np.append(self.__anglesList[9],upper3)
         else:
             assert self.__anglesList[0][setPos] == idx1, LOGGER.error("mismatched dihedral angle atom '%s' and '%s'"%(self.__anglesList[0][setPos],idx1))
             assert sorted([idx2, idx3, idx4]) == sorted([self.__anglesList[1][idx2],self.__anglesList[2][idx3],self.__anglesList[3][idx4]]), LOGGER.error("mismatched dihedral angle atom2, atom3, atom4 at atom1 '%s'"%(idx1))
@@ -423,57 +447,63 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             self._dump_to_repository({'_DihedralAngleConstraint__anglesList' :self.__anglesList,
                                       '_DihedralAngleConstraint__angles'     :self.__angles})
             # reset constraint
-            self.reset_constraint() 
-    
+            self.reset_constraint()
+
     #@raise_if_collected
     def create_angles_by_definition(self, anglesDefinition):
-        """ 
+        """
         Creates anglesList using angles definition.
         Calls set_angles(anglesMap) and generates angles attribute.
-        
+
         :Parameters:
-            #. anglesDefinition (dict): The angles definition. 
-               Every key must be a molecule name (residue name in pdb file). 
-               Every key value must be a list of angles definitions. 
+            #. anglesDefinition (dict): The angles definition.
+               Every key must be a molecule name (residue name in pdb file).
+               Every key value must be a list of angles definitions.
                Every angle definition is a list of ten items where:
-               
-               #. First item: The name of the first dihedral atom.
-               #. Second item: The name of the second dihedral atom of the first plane 
+
+               #. Name of the first dihedral atom.
+               #. Name of the second dihedral atom of the first plane
                   and the first atom of the second plane.
-               #. Third item: The name of the third dihedral atom of the first plane 
+               #. Name of the third dihedral atom of the first plane
                   and the second  atom of the second plane.
-               #. Fourth item: The name of the fourth dihderal atom of the second plane.
-               #. Fifth item: The minimum lower limit of the first shell or the minimum 
-                  angle allowed in degrees.
-               #. Sixth item: The maximum upper limit of the first or the maximum 
-                  angle allowed in degrees.   
-               #. Seventh item: The minimum lower limit of the second shell or the minimum 
-                  angle allowed in degrees.
-               #. Eightth item: The maximum upper limit of the second or the maximum 
-                  angle allowed in degrees.
-               #. Nineth item: The minimum lower limit of the third shell or the minimum 
-                  angle allowed in degrees.
-               #. Tenth item: The maximum upper limit of the third or the maximum 
-                  angle allowed in degrees.
-        
+               #. Name of the fourth dihderal atom of the second plane.
+               #. Minimum lower limit of the first shell or the minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the first or the maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the second shell or the minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the second or the maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Minimum lower limit of the third shell or the minimum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+               #. Maximum upper limit of the third or the maximum
+                  angle allowed in degrees which later will be
+                  converted to rad.
+
         ::
-        
+
             e.g. (Butane):  anglesDefinition={"BUT": [ ('C1','C2','C3','C4', 40,80, 100,140, 290,330), ] }
-                                                                
-                                                  
+
+
         """
         if self.engine is None:
             raise Exception("Engine is not defined. Can't create dihedral angles by definition")
         assert isinstance(anglesDefinition, dict), "anglesDefinition must be a dictionary"
         # check map definition
-        ALL_NAMES         = self.engine.get_original_data("allNames")
-        NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-        MOLECULES_NAMES   = self.engine.get_original_data("moleculesNames")
-        MOLECULES_INDEXES = self.engine.get_original_data("moleculesIndexes")
-        existingMoleculesNames = sorted(set(MOLECULES_NAMES))
+        ALL_NAMES       = self.engine.get_original_data("allNames")
+        NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
+        MOLECULES_NAME  = self.engine.get_original_data("moleculesName")
+        MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
+        existingMoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
         for mol, angles in anglesDefinition.items():
-            if mol not in existingMoleculesNames:
+            if mol not in existingMoleculesName:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
             assert isinstance(angles, (list, set, tuple)), LOGGER.error("mapDefinition molecule angles must be a list")
@@ -494,21 +524,21 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                             break
                 if append:
                     molAnglesList.append((at1, at2, at3, at4, lower1, upper1, lower2, upper2, lower3, upper3))
-            # create bondDef for molecule mol 
+            # create bondDef for molecule mol
             anglesDef[mol] = molAnglesList
         # create mols dictionary
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
-            molName = MOLECULES_NAMES[idx]
-            if not molName in anglesDef.keys():    
+            molName = MOLECULES_NAME[idx]
+            if not molName in anglesDef.keys():
                 continue
-            molIdx = MOLECULES_INDEXES[idx]
+            molIdx = MOLECULES_INDEX[idx]
             if not mols.has_key(molIdx):
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
         # get anglesList
-        anglesList = []         
+        anglesList = []
         for val in mols.values():
             indexes = val["indexes"]
             names   = val["names"]
@@ -528,33 +558,33 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 anglesList.append( (idx1, idx2, idx3, idx4, lower1, upper1, lower2, upper2, lower3, upper3) )
         # create angles
         self.set_angles(anglesList=anglesList)
-    
+
     def compute_standard_error(self, data):
-        """ 
-        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
-        
+        """
+        Compute the standard error (StdErr) of data not satisfying constraint conditions.
+
         .. math::
-            StdErr = \\sum \\limits_{i}^{C} 
-            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            StdErr = \\sum \\limits_{i}^{C}
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2}
             \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
             +
-            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2}
             \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
-                               
+
         Where:\n
         :math:`C` is the total number of defined improper angles constraints. \n
         :math:`\\theta_{i}^{min}` is the improper angle constraint lower limit set for constraint i. \n
         :math:`\\theta_{i}^{max}` is the improper angle constraint upper limit set for constraint i. \n
         :math:`\\theta_{i}` is the improper angle computed for constraint i. \n
         :math:`\\delta` is the Dirac delta function. \n
-        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
-        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
 
         :Parameters:
             #. data (numpy.array): The constraint value data to compute standardError.
-            
+
         :Returns:
             #. standardError (number): The calculated standardError of the constraint.
         """
@@ -562,22 +592,22 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
 
     def get_constraint_value(self):
         """
-        Compute all partial Mean Pair Distances (MPD) below the defined minimum distance. 
-        
+        Get constraint's data.
+
         :Returns:
-            #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
+            #. data (numpy.array): The constraint value data
         """
         return self.data
-        
+
     @reset_if_collected_out_of_date
     def compute_data(self):
-        """ Compute data and update engine constraintsData dictionary. """
+        """ Compute constraint's data."""
         if len(self._atomsCollector):
             anglesData    = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
             reducedData   = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
             anglesIndexes = set(set(range(self.__anglesList[0].shape[0])))
             anglesIndexes  = list( anglesIndexes-self._atomsCollector._randomData )
-            
+
             indexes1 = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes])
             indexes2 = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes])
             indexes3 = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes])
@@ -599,17 +629,17 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             upperLimit2 = self.__anglesList[7]
             lowerLimit3 = self.__anglesList[8]
             upperLimit3 = self.__anglesList[9]
-        # compute data 
-        angles, reduced =  full_dihedral_angles_coords( indexes1           = indexes1, 
-                                                        indexes2           = indexes2, 
-                                                        indexes3           = indexes3, 
-                                                        indexes4           = indexes4, 
-                                                        lowerLimit1        = lowerLimit1, 
-                                                        upperLimit1        = upperLimit1, 
-                                                        lowerLimit2        = lowerLimit2, 
-                                                        upperLimit2        = upperLimit2, 
-                                                        lowerLimit3        = lowerLimit3, 
-                                                        upperLimit3        = upperLimit3, 
+        # compute data
+        angles, reduced =  full_dihedral_angles_coords( indexes1           = indexes1,
+                                                        indexes2           = indexes2,
+                                                        indexes3           = indexes3,
+                                                        indexes4           = indexes4,
+                                                        lowerLimit1        = lowerLimit1,
+                                                        upperLimit1        = upperLimit1,
+                                                        lowerLimit2        = lowerLimit2,
+                                                        upperLimit2        = upperLimit2,
+                                                        lowerLimit3        = lowerLimit3,
+                                                        upperLimit3        = upperLimit3,
                                                         boxCoords          = self.engine.boxCoordinates,
                                                         basis              = self.engine.basisVectors ,
                                                         isPBC              = self.engine.isPBC,
@@ -622,7 +652,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             reducedData[anglesIndexes] = reduced
             angles  = anglesData
             reduced = reducedData
-        # set data.     
+        # set data.
         self.set_data( {"angles":angles, "reducedAngles":reduced} )
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
@@ -631,13 +661,15 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # set original data
         if self.originalData is None:
             self._set_original_data(self.data)
-  
+
     def compute_before_move(self, realIndexes, relativeIndexes):
-        """ 
-        Compute constraint before move is executed
-        
+        """
+        Compute constraint's data before move is executed.
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Group atoms index the move will
+               be applied to.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get angles indexes
         anglesIndexes = []
@@ -649,16 +681,16 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         anglesIndexes = list( set(anglesIndexes)-set(self._atomsCollector._randomData) )
         # compute data before move
         if len(anglesIndexes):
-            angles, reduced =  full_dihedral_angles_coords( indexes1           = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                            indexes2           = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                            indexes3           = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                            indexes4           = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]), 
-                                                            lowerLimit1        = self.__anglesList[4][anglesIndexes], 
-                                                            upperLimit1        = self.__anglesList[5][anglesIndexes], 
-                                                            lowerLimit2        = self.__anglesList[6][anglesIndexes], 
-                                                            upperLimit2        = self.__anglesList[7][anglesIndexes], 
-                                                            lowerLimit3        = self.__anglesList[8][anglesIndexes], 
-                                                            upperLimit3        = self.__anglesList[9][anglesIndexes], 
+            angles, reduced =  full_dihedral_angles_coords( indexes1           = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]),
+                                                            indexes2           = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]),
+                                                            indexes3           = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]),
+                                                            indexes4           = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]),
+                                                            lowerLimit1        = self.__anglesList[4][anglesIndexes],
+                                                            upperLimit1        = self.__anglesList[5][anglesIndexes],
+                                                            lowerLimit2        = self.__anglesList[6][anglesIndexes],
+                                                            upperLimit2        = self.__anglesList[7][anglesIndexes],
+                                                            lowerLimit3        = self.__anglesList[8][anglesIndexes],
+                                                            upperLimit3        = self.__anglesList[9][anglesIndexes],
                                                             boxCoords          = self.engine.boxCoordinates,
                                                             basis              = self.engine.basisVectors ,
                                                             isPBC              = self.engine.isPBC,
@@ -671,14 +703,17 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # set data before move
         self.set_active_atoms_data_before_move( {"anglesIndexes":anglesIndexes, "angles":angles, "reducedAngles":reduced} )
         self.set_active_atoms_data_after_move(None)
-        
+
     def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
-        """ 
-        Compute constraint after move is executed
-        
+        """
+        Compute constraint's data after move is executed.
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
-            #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Group atoms relative index
+               the move will be applied to.
+            #. movedBoxCoordinates (numpy.ndarray): The moved atoms new
+               coordinates.
         """
         # get angles indexes
         anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
@@ -687,16 +722,16 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # compute data before move
         if len(anglesIndexes):
-            angles, reduced =  full_dihedral_angles_coords( indexes1           = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                            indexes2           = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                            indexes3           = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                            indexes4           = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]), 
-                                                            lowerLimit1        = self.__anglesList[4][anglesIndexes], 
-                                                            upperLimit1        = self.__anglesList[5][anglesIndexes], 
-                                                            lowerLimit2        = self.__anglesList[6][anglesIndexes], 
-                                                            upperLimit2        = self.__anglesList[7][anglesIndexes], 
-                                                            lowerLimit3        = self.__anglesList[8][anglesIndexes], 
-                                                            upperLimit3        = self.__anglesList[9][anglesIndexes], 
+            angles, reduced =  full_dihedral_angles_coords( indexes1           = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]),
+                                                            indexes2           = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]),
+                                                            indexes3           = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]),
+                                                            indexes4           = self._atomsCollector.get_relative_indexes(self.__anglesList[3][anglesIndexes]),
+                                                            lowerLimit1        = self.__anglesList[4][anglesIndexes],
+                                                            upperLimit1        = self.__anglesList[5][anglesIndexes],
+                                                            lowerLimit2        = self.__anglesList[6][anglesIndexes],
+                                                            upperLimit2        = self.__anglesList[7][anglesIndexes],
+                                                            lowerLimit3        = self.__anglesList[8][anglesIndexes],
+                                                            upperLimit3        = self.__anglesList[9][anglesIndexes],
                                                             boxCoords          = self.engine.boxCoordinates,
                                                             basis              = self.engine.basisVectors ,
                                                             isPBC              = self.engine.isPBC,
@@ -716,16 +751,16 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         else:
             # anglesIndexes is a fancy slicing, RL is a copy not a view.
             RL = self.data["reducedAngles"][anglesIndexes]
-            self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]         
+            self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]
             self.set_after_move_standard_error( self.compute_standard_error(data = self.data) )
             self.data["reducedAngles"][anglesIndexes] = RL
-  
+
     def accept_move(self, realIndexes, relativeIndexes):
-        """ 
-        Accept move
-        
-        :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+        """
+        Accept move.
+
+        #. realIndexes (numpy.ndarray): Not used here.
+        #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get indexes
         anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
@@ -742,25 +777,28 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move(None)
 
     def reject_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Reject move
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-    
-    def accept_amputation(self, realIndex, relativeIndex):
-        """ 
-        Accept amputation of atom and sets constraints data and standard error accordingly.
-        
-        :Parameters:
-            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
 
+    def accept_amputation(self, realIndex, relativeIndex):
         """
-        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM 
+        Accept amputation of atom and set constraint's data and standard
+        error accordingly.
+
+        :Parameters:
+            #. realIndex (numpy.ndarray): Atom's index as a numpy array
+               of a single element.
+            #. relativeIndex (numpy.ndarray): Not used here.
+        """
+        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM
         # WHEN IMPLEMENTING ATOMS RELEASING. MAYBE WE NEED TO COLLECT DATA INSTEAD, REMOVE
         # AND ADD UPON RELEASE
         # get all involved data
@@ -776,20 +814,21 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             data["reducedAngles"][anglesIndexes] = 0
             self.set_data( data )
             # update standardError
-            SE = self.compute_standard_error(data = self.get_constraint_value()) 
+            SE = self.compute_standard_error(data = self.get_constraint_value())
             self.set_standard_error( SE )
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
-    
+
     def reject_amputation(self, realIndex, relativeIndex):
-        """ 
+        """
         Reject amputation of atom.
-        
+
         :Parameters:
-            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
+            #. realIndex (numpy.ndarray): Not used here.
+            #. relativeIndex (numpy.ndarray): Not used here.
         """
         pass
-    
+
     def _on_collector_collect_atom(self, realIndex):
         # get angle indexes
         AI = self.__angles[realIndex]['dihedralMap'] + self.__angles[realIndex]['otherMap']
@@ -799,37 +838,41 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         self._atomsCollector.collect(realIndex, dataDict={'dihedralMap':self.__angles[realIndex]['dihedralMap'],
                                                           'otherMap'   :self.__angles[realIndex]['otherMap']})
 
-        
+
     def plot(self, ax=None, nbins=20, subplots=True, split=None,
                    wspace=0.3, hspace=0.3,
-                   histtype='bar', lineWidth=None, lineColor=None,
+                   histTtype='bar', lineWidth=None, lineColor=None,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=1, legendLoc='best',
                    title=True, titleStdErr=True, titleAtRem=True,
                    titleUsedFrame=True, show=True):
-        """ 
-        Plot dihedral angles constraint distribution histogram.
-        
+        """
+        Plot dihedral angles constraint's distribution histogram.
+
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given,  subplots parameters will be omitted. 
+               If ax is given,  subplots parameters will be omitted.
                If None is given a new plot figure will be created.
             #. nbins (int): number of bins in histogram.
-            #. subplots (boolean): Whether to add plot constraint on multiple axes.
-            #. split (None, 'name', 'element'): To split plots into histogram per atom 
-               names, elements in addition to lower and upper bounds. If None histograms 
-               will be built from lower and upper bounds only.
-            #. wspace (float): The amount of width reserved for blank space between 
-               subplots, expressed as a fraction of the average axis width.
-            #. hspace (float): The amount of height reserved for white space between 
-               subplots, expressed as a fraction of the average axis height.
-            #. histtype (string): the histogram type. optional among
-                ['bar', 'barstacked', 'step', 'stepfilled']
-            #. lineWidth (None, integer): bars contour line width. If None then default
-               value will be given.
-            #. lineColor (None, integer): bars contour line color. If None then default
-               value will be given.
+            #. subplots (boolean): Whether to add plot constraint on multiple
+               axes.
+            #. split (None, 'name', 'element'): To split plots into histogram
+               per atom names, elements in addition to lower and upper bounds.
+               If None is given, histograms will be built from lower and upper
+               bounds only.
+            #. wspace (float): The amount of width reserved for blank space
+               between subplots, expressed as a fraction of the average axis
+               width.
+            #. hspace (float): The amount of height reserved for white space
+               between subplots, expressed as a fraction of the average axis
+               height.
+            #. histTtype (string): the histogram type. optional among
+               ['bar', 'barstacked', 'step', 'stepfilled']
+            #. lineWidth (None, integer): bars contour line width.
+               If None is given, then default value set automatically.
+            #. lineColor (None, integer): bars contour line color.
+               If None is given, then default value set automatically.
             #. xlabel (boolean): Whether to create x label.
             #. xlabelSize (number): The x label font size.
             #. ylabel (boolean): Whether to create y label.
@@ -837,15 +880,19 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             #. legend (boolean): Whether to create the legend or not
             #. legendCols (integer): Legend number of columns.
             #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
-               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
-               is accepted.
+               'right', 'center left', 'upper right', 'lower right', 'best',
+               'center', 'lower left', 'center right', 'upper left',
+               'upper center', 'lower center' is accepted.
             #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in title.
-            #. show (boolean): Whether to render and show figure before returning.
-        
+            #. titleStdErr (boolean): Whether to show constraint standard
+               error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of
+               removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in
+               title.
+            #. show (boolean): Whether to render and show figure before
+               returning.
+
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
@@ -878,7 +925,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-       # compute categories 
+       # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -931,15 +978,15 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             else:
                 FIG  = plt.figure()
                 AXES = FIG.gca()
-                subplots = False 
+                subplots = False
         else:
-            AXES = ax  
+            AXES = ax
             FIG = AXES.get_figure()
-            subplots = False 
+            subplots = False
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
                 LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
                 LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
@@ -954,9 +1001,9 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histTtype)
                 # vertical lines
                 Y = max(D)
                 for idx, (l,u) in enumerate(LU):
@@ -976,9 +1023,9 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                     [p.set_edgecolor(lineColor) for p in P]
                 # update limits
                 AXES.set_xmargin(0.1)
-                AXES.autoscale() 
+                AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
                 LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
                 LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
@@ -992,9 +1039,9 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histTtype)
                 # vertical lines
                 Y = max(D)
                 for idx, (l,u) in enumerate(LU):
@@ -1028,7 +1075,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 t += "$std$ $error=%.6f$ "%(self.standardError)
             if len(t):
                 FIG.suptitle(t, fontsize=14)
-        
+
         # set background color
         FIG.patch.set_facecolor('white')
         #show
@@ -1038,26 +1085,27 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         if subplots:
             return FIG, N_AXES
         else:
-            return FIG, AXES  
-    
+            return FIG, AXES
+
     def export(self, fname, delimiter='     ', comments='# ', split=None):
         """
-        Export pair distribution constraint.
-        
+        Export dihedral angles constraint's distribution histogram.
+
         :Parameters:
             #. fname (path): full file name and path.
             #. delimiter (string): String or character separating columns.
             #. comments (string): String that will be prepended to the header.
-            #. split (None, 'name', 'element'): To split output into per atom names,
-               elements in addition to lower and upper bounds. If None output 
-               will be built from lower and upper bounds only.
+            #. split (None, 'name', 'element'): To split output into per atom
+               names, elements in addition to lower and upper bounds.
+               If None is given, output will be built from lower and upper
+               bounds only.
         """
         # get constraint value
         output = self.get_constraint_value()
-        if not len(output):
+        if output is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-        # compute categories 
+        # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -1097,7 +1145,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             categories[k] = L
         ncategories = len(categories.keys())
         # create data
-        for idx, key in enumerate(categories.keys()): 
+        for idx, key in enumerate(categories.keys()):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
@@ -1118,41 +1166,9 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         data   = [categories[key] for key in sortCa]
         # save
         data = np.transpose(data)
-        np.savetxt(fname     = fname, 
-                   X         = data, 
-                   fmt       = '%s', 
-                   delimiter = delimiter, 
+        np.savetxt(fname     = fname,
+                   X         = data,
+                   fmt       = '%s',
+                   delimiter = delimiter,
                    header    = " ".join(header),
-                   comments  = comments)       
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-
-
-
-
-
-
-        
-        
-        
-
-    
-    
-
-    
-    
-            
+                   comments  = comments)

@@ -2,8 +2,8 @@
 Swaps contains all swap or atoms position exchange MoveGenerator classes.
 
 .. inheritance-diagram:: fullrmc.Generators.Swaps
-    :parts: 1 
-                                                                                          
+    :parts: 1
+
 """
 
 # standard libraries imports
@@ -19,38 +19,38 @@ from fullrmc.Core.Collection import _Container
 
 class SwapPositionsGenerator(SwapGenerator):
     """
-    Generates positional swapping between atoms of the selected group and other atoms
-    randomly selected from swapList.
-    
+    Generates positional swapping between atoms of the selected group and
+    other atoms randomly selected from swapList.
+
     :Parameters:
         #. group (None, Group): The group instance.
-        #. swapLength (Integer): The swap length that defines the length of the group 
-           and the length of the every swap sub-list in swapList.
+        #. swapLength (Integer): The swap length that defines the length
+           of the group and the length of the every swap sub-list in swapList.
         #. swapList (None, List): The list of atoms.\n
            If None is given, no swapping or exchanging will be performed.\n
-           If List is given, it must contain lists of atoms where every 
+           If List is given, it must contain lists of atoms where every
            sub-list must have the same number of atoms as the group.
-    
+
     .. code-block:: python
-    
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Generators.Swaps import SwapPositionsGenerator
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups selector if needed ...
-        
+
         ##### set swap moves between Lithium and Manganese atoms in Li2MnO3 system #####
         # reset engine groups to atoms to insure atomic grouping of all the system's atoms
         ENGINE.set_groups_as_atoms()
-        # get all elements list 
+        # get all elements list
         elements = ENGINE.allElements
         # create list of lithium atoms indexes
         liIndexes = [[idx] for idx in xrange(len(elements)) if elements[idx]=='li']
@@ -71,39 +71,42 @@ class SwapPositionsGenerator(SwapGenerator):
             elif elements[idx]=='mn':
                 g.set_move_generator(swapWithLi)
             # the rest are oxygen atoms. Default RandomTranslation generator are kept.
-                                                                      
+
     """
     def check_group(self, group):
         """
-        Checks the generator's group.
-        
+        Check the generator's group.
+
         :Parameters:
-            #. group (Group): the Group instance.
+            #. group (Group): The Group instance.
         """
         return True, ""
-       
+
     def set_swap_length(self, swapLength):
         """
-        Set swap length. it will reset swaplist automatically.
-    
+        Set swap length. It will reset swaplist automatically.
+
         :Parameters:
-            #. swapLength (Integer): The swap length that defines the length of the group 
-               and the length of the every swap sub-list in swapList.
-        """   
+            #. swapLength (Integer): The swap length that defines the length
+               of the group and the length of the every swap sub-list in
+               swapList.
+        """
         super(SwapPositionsGenerator, self).set_swap_length(swapLength=swapLength)
         self.__swapArray = np.empty( (self.swapLength,3), dtype=FLOAT_TYPE )
-        
+
     def transform_coordinates(self, coordinates, argument=None):
         """
         Transform coordinates by swapping. This method is called in every move.
-        
+
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the swapping.
-            #. argument (object): Any other argument needed to perform the move.
-               In General it's not needed.
-            
+            #. coordinates (np.ndarray): The coordinates on which to apply
+               the swapping.
+            #. argument (object): Any other argument needed to perform
+               the move. In General it's not needed.
+
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the move.
+            #. coordinates (np.ndarray): The new coordinates after applying
+               the move.
         """
         # swap coordinates
         self.__swapArray[:,:] = coordinates[:self.swapLength ,:]
@@ -117,30 +120,30 @@ class SwapCentersGenerator(SwapGenerator):
     """
     Computes geometric center of the selected group, and swaps its atoms
     by translation to the atoms geometric center of the other atoms which
-    are randomly selected from swapList and vice-versa. 
-    
+    are randomly selected from swapList and vice-versa.
+
     :Parameters:
         #. group (None, Group): The group instance.
         #. swapList (None, List): The list of atoms.\n
            If None is given, no swapping or exchanging will be performed.\n
-           If List is given, it must contain lists of atom indexes.
-    
+           If List is given, it must contain lists of atoms index.
+
     .. code-block:: python
-    
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Generators.Swaps import SwapCentersGenerator
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups selector if needed ...
-        
+
         ##### set swap moves between first 10 molecular groups of a system #####
         # reset engine groups to molecules
         ENGINE.set_groups_as_molecules()
@@ -149,63 +152,65 @@ class SwapCentersGenerator(SwapGenerator):
         for gidx, group in enumerate(GROUPS):
             swapList = [g.indexes for idx,g in enumerate(GROUPS) if idx!=gidx]
             swapGen  = SwapCentersGenerator(swapList=swapList)
-            group.set_move_generator(swapGen)    
-    """  
+            group.set_move_generator(swapGen)
+    """
     def __init__(self, group=None, swapList=None):
-        super(SwapCentersGenerator, self).__init__(group=group, swapLength=None, swapList=swapList ) 
+        super(SwapCentersGenerator, self).__init__(group=group, swapLength=None, swapList=swapList )
 
     @property
     def swapLength(self):
-        """ Get swap length. In this Case it is always None as 
+        """ Swap length. In this Case it is always None as
         swapLength is not required for this generator."""
-        return self.__swapLength 
-        
+        return self.__swapLength
+
     def set_swap_length(self, swapLength):
         """
-        Set swap length. The swap length that defines the length of the group 
-        and the length of the every swap sub-list in swapList. 
-        It will automatically be set to None as SwapCentersGenerator 
+        Set swap length. The swap length that defines the length of the
+        group and the length of the every swap sub-list in swapList.
+        It will automatically be set to None as SwapCentersGenerator
         does not require a fixed length.
-    
+
         :Parameters:
             #. swapLength (None): The swap length.
-        """   
+        """
         self.__swapLength = None
         self.__swapList   = ()
         # set uncollected atoms swapList
         self._remainingAtomsSwapList = self.__swapList
         # reset collector state
-        self._collectorState = None  
- 
+        self._collectorState = None
+
     def set_group(self, group):
         """
         Set the MoveGenerator group.
-        
+
         :Parameters:
-            #. group (None, Group): group instance. 
+            #. group (None, Group): group instance.
         """
         MoveGenerator.set_group(self, group)
-        
+
     def check_group(self, group):
         """
-        Checks the generator's group.
-        
+        Check the generator's group.
+
         :Parameters:
             #. group (Group): the Group instance.
         """
         return True, ""
-       
+
     def transform_coordinates(self, coordinates, argument=None):
         """
         Transform coordinates by swapping. This method is called in every move.
-        
+
         :Parameters:
-            #. coordinates (np.ndarray): The coordinates on which to apply the swapping.
-            #. argument (object): Any other argument needed to perform the move.
-               In General it's not needed.
-            
+            #. coordinates (np.ndarray): The coordinates on which to apply
+               the swapping.
+            #. argument (object): Any other argument needed to perform the
+               move. In General it's not needed.
+
         :Returns:
-            #. coordinates (np.ndarray): The new coordinates after applying the move.
+            #. coordinates (np.ndarray): The new coordinates after
+               applying the move.
         """
         # get translation vector
         swapLength    = len(self.groupAtomsIndexes)
@@ -217,6 +222,3 @@ class SwapCentersGenerator(SwapGenerator):
         coordinates[swapLength :,:] -= direction
         # return
         return coordinates
-        
-        
-        

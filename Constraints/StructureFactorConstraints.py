@@ -15,43 +15,43 @@ from pdbParser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
 from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, reset_if_collected_out_of_date
+from fullrmc.Core.Collection import is_number, is_integer, get_path, reset_if_collected_out_of_date, get_real_elements_weight
 from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
 from fullrmc.Core.pairs_histograms import multiple_pairs_histograms_coords, full_pairs_histograms_coords
 
 class StructureFactorConstraint(ExperimentalConstraint):
     """
-    It controls the Structure Factor noted as S(Q) and also called
-    total-scattering structure function or Static Structure Factor. 
-    S(Q) is a dimensionless quantity and the normalization is such 
-    that the average value, :math:`<S(Q)>=1`.
-    
-    It is worth mentioning that S(Q) is nothing other than the normalized and 
-    corrected diffraction pattern from all experimental artefacts powder.
-    
-    The computation of S(Q) is done through an inverse Sine Fourier transform  
-    of the computed pair distribution function noted as G(r).
-    
+    Controls the Structure Factor noted as S(Q) and also called
+    total-scattering structure function or Static Structure Factor.
+    S(Q) is a dimensionless quantity and normalized such as the average
+    value :math:`<S(Q)>=1`.
+
+    It is worth mentioning that S(Q) is nothing other than the normalized and
+    corrected diffraction pattern if all experimental artefacts powder.
+
+    The computation of S(Q) is done through an inverse Sine Fourier transform
+    of the computed pair distribution function G(r).
+
     .. math::
-        
+
         S(Q) = 1+ \\frac{1}{Q} \\int_{0}^{\\infty} G(r) sin(Qr) dr
-        
+
     From an atomistic model and histogram point of view, G(r) is computed as
     the following:
-    
+
     .. math::
-        
+
         G(r) = 4 \\pi r (\\rho_{r} - \\rho_{0})
-             = 4 \\pi \\rho_{0} r (g(r)-1) 
+             = 4 \\pi \\rho_{0} r (g(r)-1)
              = \\frac{R(r)}{r} - 4 \\pi \\rho_{0}
-    
-    g(r) is calculated after binning all pair atomic distances into a 
+
+    g(r) is calculated after binning all pair atomic distances into a
     weighted histograms as the following:
 
     .. math::
-        g(r) = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{\\rho_{i,j}(r)}{\\rho_{0}} 
-             = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{n_{i,j}(r) / v(r)}{N_{i,j} / V} 
-     
+        g(r) = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{\\rho_{i,j}(r)}{\\rho_{0}}
+             = \\sum \\limits_{i,j}^{N} w_{i,j} \\frac{n_{i,j}(r) / v(r)}{N_{i,j} / V}
+
     Where:\n
     :math:`Q` is the momentum transfer. \n
     :math:`r` is the distance between two atoms. \n
@@ -65,68 +65,96 @@ class StructureFactorConstraint(ExperimentalConstraint):
     :math:`v(r)` is the annulus volume at distance r and of thickness dr. \n
     :math:`N_{i,j}` is the total number of atoms i and j in the system. \n
 
-    
+
     :Parameters:
-        #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+        #. experimentalData (numpy.ndarray, string): Experimental data as
+           numpy.ndarray or string path to load data using numpy.loadtxt
+           method.
+        #. dataWeights (None, numpy.ndarray): Weights array of the same number
+           of points of experimentalData used in the constraint's standard
+           error computation. Therefore particular fitting emphasis can be
+           put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
-        #. weighting (string): The elements weighting.
-        #. atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
-           element and values are custom weights. If None, elements weighting will be
-           fully set given weighting. If partially given, remaining non specified 
-           atom weights will be set using given weighting.
-        #. rmin (None, number): The minimum distance value to compute G(r) histogram.
-           If None is given, rmin is computed as :math:`2 \\pi / Q_{max}`.
-        #. rmax (None, number): The maximum distance value to compute G(r) histogram.
-           If None is given, rmax is computed as :math:`2 \\pi / dQ`.
-        #. dr (None, number): The distance bin value to compute G(r) histogram.
-           If None is given, bin is computed as :math:`2 \\pi / (Q_{max}-Q_{min})`.
-        #. scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.
-        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+           If None is given, all data points are considered of the same
+           importance in the computation of the constraint's standard error.\n
+           If numpy.ndarray is given, all weights must be positive and all
+           zeros weighted data points won't contribute to the total
+           constraint's standard error. At least a single weight point is
+           required to be non-zeros and the weights array will be automatically
+           scaled upon setting such as the the sum of all the weights
+           is equal to the number of data points.
+        #. weighting (string): The elements weighting scheme. It must be any
+           atomic attribute (atomicNumber, neutronCohb, neutronIncohb,
+           neutronCohXs, neutronIncohXs, atomicWeight, covalentRadius) defined
+           in pdbParser database. In case of xrays or neutrons experimental
+           weights, one can simply set weighting to 'xrays' or 'neutrons'
+           and the value will be automatically adjusted to respectively
+           'atomicNumber' and 'neutronCohb'. If attribute values are
+           missing in the pdbParser database, atomic weights must be
+           given in atomsWeight dictionary argument.
+        #. atomsWeight (None, dict): Atoms weight dictionary where keys are
+           atoms element and values are custom weights. If None is given
+           or partially given, missing elements weighting will be fully set
+           given weighting scheme.
+        #. rmin (None, number): The minimum distance value to compute G(r)
+           histogram. If None is given, rmin is computed as
+           :math:`2 \\pi / Q_{max}`.
+        #. rmax (None, number): The maximum distance value to compute G(r)
+           histogram. If None is given, rmax is computed as
+           :math:`2 \\pi / dQ`.
+        #. dr (None, number): The distance bin value to compute G(r)
+           histogram. If None is given, bin is computed as
+           :math:`2 \\pi / (Q_{max}-Q_{min})`.
+        #. scaleFactor (number): A normalization scale factor used to normalize
+           the computed data to the experimental ones.
+        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess
+           the best scale factor during stochastic engine runtime.
            It must be a list of exactly three entries.\n
-           1. The frequency in number of generated moves of finding the best scale factor. 
-              If 0 frequency is given, it means that the scale factor is fixed.
-           2. The minimum allowed scale factor value.
-           3. The maximum allowed scale factor value.
-        #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
-           of the system prior to comparing it with the experimental data. In general, the experimental pair
-           distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
-           by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
-           used to best imitate the numerical artefacts in the experimental data.
-        #. limits (None, tuple, list): The distance limits to compute the histograms.
-           If None, the limits will be automatically set the the min and max distance of the experimental data.
-           If not None, a tuple of exactly two items where the first is the minimum distance or None 
-           and the second is the maximum distance or None.
-    
-    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
-    untouched and the limits minimum and maximum won't be checked.
-    
+           #. The frequency in number of generated moves of finding the best
+              scale factor. If 0 frequency is given, it means that the scale
+              factor is fixed.
+           #. The minimum allowed scale factor value.
+           #. The maximum allowed scale factor value.
+        #. windowFunction (None, numpy.ndarray): The window function to
+           convolute with the computed pair distribution function of the
+           system prior to comparing it with the experimental data. In
+           general, the experimental pair distribution function G(r) shows
+           artificial wrinkles, among others the main reason is because
+           G(r) is computed by applying a sine Fourier transform to the
+           experimental structure factor S(q). Therefore window function is
+           used to best imitate the numerical artefacts in the experimental
+           data.
+        #. limits (None, tuple, list): The distance limits to compute the
+           histograms. If None is given, the limits will be automatically
+           set the the min and max distance of the experimental data.
+           Otherwise, a tuple of exactly two items where the first is the
+           minimum distance or None and the second is the maximum distance
+           or None.
+
+    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor
+    will remain untouched and the limits minimum and maximum won't be checked.
+
     .. code-block:: python
-    
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Constraints.StructureFactorConstraints import StructureFactorConstraint
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # create and add constraint
         SFC = StructureFactorConstraint(experimentalData="sq.dat", weighting="atomicNumber")
         ENGINE.add_constraints(SFC)
-    
+
     """
-    def __init__(self, experimentalData, dataWeights=None, 
-                       weighting="atomicNumber", atomsWeight=None, 
-                       rmin=None, rmax=None, dr=None, 
-                       scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2), 
+    def __init__(self, experimentalData, dataWeights=None,
+                       weighting="atomicNumber", atomsWeight=None,
+                       rmin=None, rmax=None, dr=None,
+                       scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2),
                        windowFunction=None, limits=None):
         # initialize variables
         self.__limits              = limits
@@ -155,7 +183,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_rmin(rmin)
         self.set_rmax(rmax)
         self.set_dr(dr)
-        
+
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
         FRAME_DATA.extend(['_StructureFactorConstraint__limits',
@@ -177,23 +205,23 @@ class StructureFactorConstraint(ExperimentalConstraint):
                            '_StructureFactorConstraint__shellVolumes',
                            '_StructureFactorConstraint__Gr2SqMatrix',
                            '_StructureFactorConstraint__windowFunction',
-                           '_elementsWeights',] )
+                           '_elementsWeight',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
-                                  
+
     #def __getstate__(self):
     #    # make sure that __Gr2SqMatrix is not pickled but saved to the disk as None
     #    state = super(StructureFactorConstraint, self).__getstate__()
     #    state["_StructureFactorConstraint__Gr2SqMatrix"] = None
     #    return state
-    #    
+    #
     #def __setstate__(self, state):
     #    # make sure to regenerate G(r) to S(q) matrix at loading time
     #    self.__dict__.update( state )
-    #    self.__set_Gr_2_Sq_matrix()     
-    # 
+    #    self.__set_Gr_2_Sq_matrix()
+    #
 
     def __set_Gr_2_Sq_matrix(self):
         if self.__experimentalQValues is None or self.__shellCenters is None:
@@ -206,7 +234,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             sinqr = np.sin(qr)
             sinqr_q = sinqr/Qs
             self.__Gr2SqMatrix = dr*sinqr_q
-        
+
     def __set_used_data_weights(self, minDistIdx=None, maxDistIdx=None):
         # set used dataWeights
         if self.dataWeights is None:
@@ -219,16 +247,17 @@ class StructureFactorConstraint(ExperimentalConstraint):
             self._usedDataWeights  = np.copy(self.dataWeights[minDistIdx:maxDistIdx+1])
             assert np.sum(self._usedDataWeights), LOGGER.error("used points dataWeights are all zero.")
             self._usedDataWeights /= FLOAT_TYPE( np.sum(self._usedDataWeights) )
-            self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) ) 
+            self._usedDataWeights *= FLOAT_TYPE( len(self._usedDataWeights) )
         # dump to repository
-        self._dump_to_repository({'_usedDataWeights': self._usedDataWeights})   
-        
+        self._dump_to_repository({'_usedDataWeights': self._usedDataWeights})
+
     def __set_weighting_scheme(self):
         if self.engine is not None:
             self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
-            #elementsWeights        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
-            self._elementsWeights  = dict([(el,self.__atomsWeight.get(el, float(get_element_property(el,self.__weighting)))) for el in self.engine.elements])
-            self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights)
+            #elementsWeight        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
+            #self._elementsWeight  = dict([(el,self.__atomsWeight.get(el, float(get_element_property(el,self.__weighting)))) for el in self.engine.elements])
+            self._elementsWeight   = get_real_elements_weight(elements=self.engine.elements, weightsDict=self.__atomsWeight, weighting=self.__weighting)
+            self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeight)
             for k, v in self.__weightingScheme.items():
                 self.__weightingScheme[k] = FLOAT_TYPE(v)
         else:
@@ -236,8 +265,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
             self.__weightingScheme = None
         # dump to repository
         self._dump_to_repository({'_StructureFactorConstraint__elementsPairs'  : self.__elementsPairs,
-                                  '_StructureFactorConstraint__weightingScheme': self.__weightingScheme}) 
-            
+                                  '_StructureFactorConstraint__weightingScheme': self.__weightingScheme})
+
     def __set_histogram(self):
         if self.__minimumDistance is None or self.__maximumDistance is None or self.__bin is None:
             self.__shellCenters  = None
@@ -264,122 +293,129 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                   '_StructureFactorConstraint__maximumDistance': self.__maximumDistance,
                                   '_StructureFactorConstraint__shellCenters'   : self.__shellCenters,
                                   '_StructureFactorConstraint__histogramSize'  : self.__histogramSize,
-                                  '_StructureFactorConstraint__shellVolumes'   : self.__shellVolumes}) 
+                                  '_StructureFactorConstraint__shellVolumes'   : self.__shellVolumes})
         # reset constraint
         self.reset_constraint()
         # reset sq matrix
         self.__set_Gr_2_Sq_matrix()
-        
+
     def _on_collector_reset(self):
-        pass  
-        
+        pass
+
     @property
     def rmin(self):
-        """ Get the given histogram minimum distance. """
+        """ Histogram minimum distance. """
         return self.__rmin
-    
+
     @property
     def rmax(self):
-        """ Get the given histogram maximum distance. """
+        """ Histogram maximum distance. """
         return self.__rmax
-    
+
     @property
     def dr(self):
-        """ Get the given histogram bin size."""
+        """ Histogram bin size."""
         return self.__dr
-    
+
     @property
     def bin(self):
-        """ Get the computed histogram distance bin size."""
+        """ Computed histogram distance bin size."""
         return self.__bin
-          
+
     @property
     def minimumDistance(self):
-        """ Get the computed histogram minimum distance. """
+        """ Computed histogram minimum distance. """
         return self.__minimumDistance
-          
+
     @property
     def maximumDistance(self):
-        """ Get the computed histogram maximum distance. """
+        """ Computed histogram maximum distance. """
         return self.__maximumDistance
-        
+
     @property
     def qmin(self):
-        """ Get the experimental data reciprocal distances minimum. """
+        """ Experimental data reciprocal distances minimum. """
         return self.__qmin
-          
+
     @property
     def qmax(self):
-        """ Get the experimental data reciprocal distances maximum. """
+        """ Experimental data reciprocal distances maximum. """
         return self.__qmax
-    
+
     @property
     def dq(self):
-        """ Get the experimental data reciprocal distances bin size. """
+        """ Experimental data reciprocal distances bin size. """
         return self.__experimentalQValues[1]-self.__experimentalQValues[0]
-        
+
     @property
     def experimentalQValues(self):
-        """ Gets the experimental data used q values. """
+        """ Experimental data used q values. """
         return self.__experimentalQValues
-        
+
     @property
     def histogramSize(self):
-        """ Get the histogram size"""
+        """ Histogram size"""
         return self.__histogramSize
-        
+
     @property
     def shellCenters(self):
-        """ Get the shells center array"""
+        """ Shells center array"""
         return self.__shellCenters
-        
+
     @property
     def shellVolumes(self):
-        """ Get the shells volume array"""
+        """ Shells volume array"""
         return self.__shellVolumes
-        
+
     @property
     def experimentalSF(self):
-        """ Get the experimental Structure Factor or S(q)"""
+        """ Experimental Structure Factor or S(q)"""
         return self.__experimentalSF
-        
+
     @property
     def elementsPairs(self):
-        """ Get elements pairs """
+        """ Elements pairs """
         return self.__elementsPairs
-    
+
     @property
     def atomsWeight(self):
         """Custom atoms weight"""
         return self.__atomsWeight
-        
+
+    @property
+    def weighting(self):
+        """ Elements weighting definition. """
+        return self.__weighting
+
     @property
     def weightingScheme(self):
-        """ Get elements weighting scheme. """
+        """ Elements weighting scheme. """
         return self.__weightingScheme
-    
+
     @property
     def windowFunction(self):
-        """ Get the window function. """
+        """ Convolution window function. """
         return self.__windowFunction
-    
+
     @property
     def limits(self):
-        """ The histogram computation limits."""
+        """ Histogram computation limits."""
         return self.__limits
-     
+
     @property
     def Gr2SqMatrix(self):
-        """ Get G(r) to S(q) transformation matrix."""
+        """ G(r) to S(q) transformation matrix."""
         return self.__Gr2SqMatrix
-                
+
     def listen(self, message, argument=None):
-        """   
+        """
         Listens to any message sent from the Broadcaster.
-        
+
         :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
-            #. argument (object): Any type of argument to pass to the listeners.
+            #. message (object): Any python object to send to constraint's
+               listen method.
+            #. argument (object): Any type of argument to pass to the
+               listeners.
         """
         if message in("engine set", "update molecules indexes"):
             self.__set_weighting_scheme()
@@ -389,14 +425,15 @@ class StructureFactorConstraint(ExperimentalConstraint):
             self.reset_constraint() # ADDED 2017-JAN-08
         elif message in("update boundary conditions",):
             self.reset_constraint()
-            
+
     def set_rmin(self, rmin):
         """
         Set rmin value.
-        
+
         :parameters:
-            #. rmin (None, number): The minimum distance value to compute G(r) histogram.
-               If None is given, rmin is computed as :math:`2 \\pi / Q_{max}`.
+            #. rmin (None, number): The minimum distance value to compute G(r)
+               histogram. If None is given, rmin is computed as
+               :math:`2 \\pi / Q_{max}`.
         """
         if rmin is None:
             minimumDistance = FLOAT_TYPE( 2.*PI/self.__qmax )
@@ -412,14 +449,15 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                   '_StructureFactorConstraint__minimumDistance': self.__minimumDistance})
         # reset histogram
         self.__set_histogram()
-         
+
     def set_rmax(self, rmax):
         """
         Set rmax value.
-        
+
         :Parameters:
-            #. rmax (None, number): The maximum distance value to compute G(r) histogram.
-               If None is given, rmax is computed as :math:`2 \\pi / dQ`.
+            #. rmax (None, number): The maximum distance value to compute G(r)
+               histogram. If None is given, rmax is computed as
+               :math:`2 \\pi / dQ`.
         """
         if rmax is None:
             dq = self.__experimentalQValues[1]-self.__experimentalQValues[0]
@@ -433,17 +471,18 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.__maximumDistance = maximumDistance
         # dump to repository
         self._dump_to_repository({'_StructureFactorConstraint__rmax': self.__rmax,
-                                  '_StructureFactorConstraint__maximumDistance': self.__maximumDistance}) 
+                                  '_StructureFactorConstraint__maximumDistance': self.__maximumDistance})
         # reset histogram
         self.__set_histogram()
-        
+
     def set_dr(self, dr):
         """
         Set dr value.
-        
+
         :Parameters:
-            #. dr (None, number): The distance bin value to compute G(r) histogram.
-               If None is given, bin is computed as :math:`2 \\pi / (Q_{max}-Q_{min})`.
+            #. dr (None, number): The distance bin value to compute G(r)
+               histogram. If None is given, bin is computed as
+               :math:`2 \\pi / (Q_{max}-Q_{min})`.
         """
         if dr is None:
             bin  = 2.*PI/self.__qmax
@@ -458,33 +497,48 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.__bin = bin
         # dump to repository
         self._dump_to_repository({'_StructureFactorConstraint__dr': self.__dr,
-                                  '_StructureFactorConstraint__bin': self.__bin}) 
+                                  '_StructureFactorConstraint__bin': self.__bin})
         # reset histogram
         self.__set_histogram()
-    
+
     def set_weighting(self, weighting):
         """
-        Sets elements weighting. It must a valid entry of pdbParser atoms database.
-        
+        Set elements weighting. It must be a valid entry of pdbParser atom's
+        database.
+
         :Parameters:
-            #. weighting (string): The elements weighting.
+            #. weighting (string): The elements weighting scheme. It must be
+               any atomic attribute (atomicNumber, neutronCohb, neutronIncohb,
+               neutronCohXs, neutronIncohXs, atomicWeight, covalentRadius)
+               defined in pdbParser database. In case of xrays or neutrons
+               experimental weights, one can simply set weighting to 'xrays'
+               or 'neutrons' and the value will be automatically adjusted to
+               respectively 'atomicNumber' and 'neutronCohb'. If attribute
+               values are  missing in the pdbParser database, atomic weights
+               must be given in atomsWeight dictionary argument.
         """
+        if weighting.lower() in ["xrays","x-rays","xray","x-ray"]:
+            LOGGER.fixed("'%s' weighting is set to atomicNumber")
+            weighting = "atomicNumber"
+        elif weighting.lower() in ["neutron","neutrons"]:
+            LOGGER.fixed("'%s' weighting is set to neutronCohb")
+            weighting = "neutronCohb"
         assert is_element_property(weighting),LOGGER.error( "weighting is not a valid pdbParser atoms database entry")
         assert weighting != "atomicFormFactor", LOGGER.error("atomicFormFactor weighting is not allowed")
-        self.__weighting = weighting        
+        self.__weighting = weighting
         # dump to repository
-        self._dump_to_repository({'_StructureFactorConstraint__weighting': self.__weighting}) 
-     
+        self._dump_to_repository({'_StructureFactorConstraint__weighting': self.__weighting})
+
     def set_atoms_weight(self, atomsWeight):
         """
-        Custom set atoms weight. This is the way to setting a weightingScheme different
-        than the given weighting. 
-        
+        Custom set atoms weight. This is the way to setting a atoms weights
+        different than the given weighting scheme.
+
         :Parameters:
-            #. atomsWeight (None, dict): Atoms weight dictionary where keys are atoms 
-               element and values are custom weights. If None, elements weighting will be
-               fully set given weighting. If partially given, remaining non specified 
-               atom weights will be set using given weighting.
+            #. atomsWeight (None, dict): Atoms weight dictionary where keys are
+               atoms element and values are custom weights. If None is given
+               or partially given, missing elements weighting will be fully set
+               given weighting scheme.
         """
         if atomsWeight is None:
             AW = {}
@@ -501,18 +555,22 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set atomsWeight
         self.__atomsWeight = AW
         # dump to repository
-        self._dump_to_repository({'_StructureFactorConstraint__atomsWeight': self.__atomsWeight}) 
-    
+        self._dump_to_repository({'_StructureFactorConstraint__atomsWeight': self.__atomsWeight})
+
     def set_window_function(self, windowFunction):
         """
-        Sets the window function.
-        
+        Set convolution window function.
+
         :Parameters:
-             #. windowFunction (None, numpy.ndarray): The window function to convolute with the computed pair distribution function
-                of the system prior to comparing it with the experimental data. In general, the experimental pair
-                distribution function G(r) shows artificial wrinkles, among others the main reason is because G(r) is computed
-                by applying a sine Fourier transform to the experimental structure factor S(q). Therefore window function is
-                used to best imitate the numerical artefacts in the experimental data.
+             #. windowFunction (None, numpy.ndarray): The window function to
+                convolute with the computed pair distribution function of the
+                system prior to comparing it with the experimental data. In
+                general, the experimental pair distribution function G(r) shows
+                artificial wrinkles, among others the main reason is because
+                G(r) is computed by applying a sine Fourier transform to the
+                experimental structure factor S(q). Therefore window function is
+                used to best imitate the numerical artefacts in the experimental
+                data.
         """
         if windowFunction is not None:
             assert isinstance(windowFunction, np.ndarray), LOGGER.error("windowFunction must be a numpy.ndarray")
@@ -525,28 +583,33 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set windowFunction
         self.__windowFunction = windowFunction
         # dump to repository
-        self._dump_to_repository({'_StructureFactorConstraint__windowFunction': self.__windowFunction}) 
-    
+        self._dump_to_repository({'_StructureFactorConstraint__windowFunction': self.__windowFunction})
+
     def set_experimental_data(self, experimentalData):
         """
-        Sets the constraint's experimental data.
-        
+        Set constraint's experimental data.
+
         :Parameters:
-            #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
+            #. experimentalData (numpy.ndarray, string): The experimental
+               data as numpy.ndarray or string path to load data using
+               numpy.loadtxt function.
         """
         # get experimental data
         super(StructureFactorConstraint, self).set_experimental_data(experimentalData=experimentalData)
         # set limits
         self.set_limits(self.__limits)
-    
+
     def set_limits(self, limits):
         """
         Set the reciprocal distance limits (qmin, qmax).
-        
+
         :Parameters:
-            #. limits (None, tuple, list): The distance limits to compute the histograms and compute with the experimental data.
-               If None, the limits will be automatically set the the min and max reciprocal distance recorded in the experimental data.
-               If not None, a tuple of minimum reciprocal distance (qmin) or None and maximum reciprocal distance (qmax) or None should be given.    
+            #. limits (None, tuple, list): Distance limits to bound
+               experimental data and compute histograms.
+               If None is given, the limits will be automatically set to
+               min and max reciprocal distance recorded in experimental data.
+               If given, a tuple of minimum reciprocal distance (qmin) or None
+               and maximum reciprocal distance (qmax) or None should be given.
         """
         if limits is None:
             self.__limits = (None, None)
@@ -576,55 +639,65 @@ class StructureFactorConstraint(ExperimentalConstraint):
             maxDistIdx =(np.abs(self.experimentalData[:,0]-self.__limits[1])).argmin()
         # set qvalues
         self.__experimentalQValues = self.experimentalData[minDistIdx:maxDistIdx+1,0].astype(FLOAT_TYPE)
-        self.__experimentalSF      = self.experimentalData[minDistIdx:maxDistIdx+1,1].astype(FLOAT_TYPE)    
+        self.__experimentalSF      = self.experimentalData[minDistIdx:maxDistIdx+1,1].astype(FLOAT_TYPE)
         # set qmin and qmax
         self.__qmin = self.__experimentalQValues[0]
         self.__qmax = self.__experimentalQValues[-1]
+        assert self.__qmin>0, LOGGER.error("qmin must be bigger than 0. Experimental null q values are ambigous. Try setting limits.")
         # dump to repository
         self._dump_to_repository({'_StructureFactorConstraint__limits'             : self.__limits,
                                   '_StructureFactorConstraint__experimentalQValues': self.__experimentalQValues,
                                   '_StructureFactorConstraint__experimentalSF'     : self.__experimentalSF,
                                   '_StructureFactorConstraint__qmin'               : self.__qmin,
-                                  '_StructureFactorConstraint__qmax'               : self.__qmax}) 
+                                  '_StructureFactorConstraint__qmax'               : self.__qmax})
         # set used dataWeights
-        self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)   
+        self.__set_used_data_weights(minDistIdx=minDistIdx, maxDistIdx=maxDistIdx)
         # reset constraint
         self.reset_constraint()
         # reset sq matrix
         self.__set_Gr_2_Sq_matrix()
-        
+
     def set_data_weights(self, dataWeights):
         """
         Set experimental data points weight.
-        
-        :Parameters: 
-            #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-               Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-               important in order to get a reasonable and plausible modal.\n
-               If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-               If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-               total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-               array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
+
+        :Parameters:
+            #. dataWeights (None, numpy.ndarray): Weights array of the same
+               number of points of experimentalData used in the constraint's
+               standard error computation. Therefore particular fitting
+               emphasis can be put on different data points that might be
+               considered as more or less important in order to get a
+               reasonable and plausible modal.\n
+               If None is given, all data points are considered of the same
+               importance in the computation of the constraint's standard
+               error.\n
+               If numpy.ndarray is given, all weights must be positive and all
+               zeros weighted data points won't contribute to the total
+               constraint's standard error. At least a single weight point is
+               required to be non-zeros and the weights array will be
+               automatically scaled upon setting such as the the sum of all
+               the weights is equal to the number of data points.
         """
         super(StructureFactorConstraint, self).set_data_weights(dataWeights=dataWeights)
         self.__set_used_data_weights()
-        
+
     def compute_and_set_standard_error(self):
-        """ Computes and sets the constraint's standardError."""
+        """ Compute and set constraint's standardError."""
         # set standardError
         totalSQ = self.get_constraint_value()["sf_total"]
         self.set_standard_error(self.compute_standard_error(modelData = totalSQ))
- 
+
     def check_experimental_data(self, experimentalData):
         """
         Check whether experimental data is correct.
- 
+
         :Parameters:
             #. experimentalData (object): The experimental data to check.
- 
+
         :Returns:
             #. result (boolean): Whether it is correct or not.
-            #. message (str): Checking message that explains whats's wrong with the given data
+            #. message (str): Checking message that explains whats's wrong
+               with the given data
         """
         if not isinstance(experimentalData, np.ndarray):
             return False, "experimentalData must be a numpy.ndarray"
@@ -642,15 +715,15 @@ class StructureFactorConstraint(ExperimentalConstraint):
             return False, "experimentalData distances min value is found negative"
         # data format is correct
         return True, ""
-        
+
     def compute_standard_error(self, modelData):
-        """ 
-        Compute the standard error (StdErr) as squared deviations
-        between model computed data and the experimental ones. 
-        
+        """
+        Compute the standard error (StdErr) as the squared deviations
+        between model computed data and the experimental ones.
+
         .. math::
             StdErr = \\sum \\limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}
-         
+
         Where:\n
         :math:`N` is the total number of experimental data points. \n
         :math:`W_{i}` is the data point weight. It becomes equivalent to 1 when dataWeights is set to None. \n
@@ -658,10 +731,12 @@ class StructureFactorConstraint(ExperimentalConstraint):
         :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
 
         :Parameters:
-            #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the standard error.
-            
+            #. modelData (numpy.ndarray): The data to compare with the
+               experimental one and compute the squared deviation.
+
         :Returns:
-            #. standardError (number): The calculated standardError of the constraint.
+            #. standardError (number): The calculated constraint's
+               standardError.
         """
         # compute difference
         diff = self.__experimentalSF-modelData
@@ -670,14 +745,13 @@ class StructureFactorConstraint(ExperimentalConstraint):
             return np.add.reduce((diff)**2)
         else:
             return np.add.reduce(self._usedDataWeights*((diff)**2))
-        
+
     def _get_Sq_from_Gr(self, Gr):
         return np.sum(Gr.reshape((-1,1))*self.__Gr2SqMatrix, axis=0)+1
-    
+
     def __get_total_Sq(self, data, rho0):
-        """
-        This method is created just to speed up the computation of the total Sq upon fitting.
-        """
+        """This method is created just to speed up the computation of
+        the total Sq upon fitting."""
         Gr = np.zeros(self.__histogramSize, dtype=FLOAT_TYPE)
         for pair in self.__elementsPairs:
             # get weighting scheme
@@ -692,20 +766,20 @@ class StructureFactorConstraint(ExperimentalConstraint):
             idj = self.engine.elements.index(pair[1])
             # get Nij
             if idi == idj:
-                Nij = ni*(ni-1)/2.0 
-                Dij = Nij/self.engine.volume  
+                Nij = ni*(ni-1)/2.0
+                Dij = Nij/self.engine.volume
                 nij = data["intra"][idi,idj,:]+data["inter"][idi,idj,:]
-                Gr += wij*nij/Dij      
+                Gr += wij*nij/Dij
             else:
                 Nij = ni*nj
                 Dij = Nij/self.engine.volume
-                nij = data["intra"][idi,idj,:]+data["intra"][idj,idi,:] + data["inter"][idi,idj,:]+data["inter"][idj,idi,:]  
+                nij = data["intra"][idi,idj,:]+data["intra"][idj,idi,:] + data["inter"][idi,idj,:]+data["inter"][idj,idi,:]
                 Gr += wij*nij/Dij
         # Devide by shells volume
         Gr /= self.shellVolumes
         # compute total G(r)
         #rho0 = (self.engine.numberOfAtoms/self.engine.volume).astype(FLOAT_TYPE)
-        Gr   = (FLOAT_TYPE(4.)*PI*self.__shellCenters*rho0)*( Gr-1)
+        Gr   = (FLOAT_TYPE(4.)*PI*self.__shellCenters*rho0)*(Gr-1)
         # Compute S(q) from G(r)
         Sq = self._get_Sq_from_Gr(Gr)
         # Multiply by scale factor
@@ -715,7 +789,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
         if self.__windowFunction is not None:
             Sq = np.convolve(Sq, self.__windowFunction, 'same')
         return Sq
-    
+
     def _get_constraint_value(self, data):
         # http://erice2011.docking.org/upload/Other/Billinge_PDF/03-ReadingMaterial/BillingePDF2011.pdf    page 6
         #import time
@@ -739,9 +813,9 @@ class StructureFactorConstraint(ExperimentalConstraint):
             idj = self.engine.elements.index(pair[1])
             # get Nij
             if idi == idj:
-                Nij = ni*(ni-1)/2.0 
-                output["sf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] 
-                output["sf_inter_%s-%s" % pair] += data["inter"][idi,idj,:]                
+                Nij = ni*(ni-1)/2.0
+                output["sf_intra_%s-%s" % pair] += data["intra"][idi,idj,:]
+                output["sf_inter_%s-%s" % pair] += data["inter"][idi,idj,:]
             else:
                 Nij = ni*nj
                 output["sf_intra_%s-%s" % pair] += data["intra"][idi,idj,:] + data["intra"][idj,idi,:]
@@ -773,45 +847,49 @@ class StructureFactorConstraint(ExperimentalConstraint):
         else:
             output["sf"] = output["sf_total"]
         return output
-    
+
     def get_constraint_value(self):
         """
-        Compute all partial Pair Distribution Functions (PDFs). 
-        
+        Compute all partial Pair Distribution Functions (PDFs).
+
         :Returns:
-            #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
+            #. PDFs (dictionary): The PDFs dictionnary, where keys are the
+               element wise intra and inter molecular PDFs and values are
+               the computed PDFs.
         """
         if self.data is None:
             LOGGER.warn("data must be computed first using 'compute_data' method.")
             return {}
         return self._get_constraint_value(self.data)
-    
+
     def get_constraint_original_value(self):
         """
-        Compute all partial Pair Distribution Functions (PDFs). 
-        
+        Compute all partial Pair Distribution Functions (PDFs).
+
         :Returns:
-            #. PDFs (dictionary): The PDFs dictionnary, where keys are the element wise intra and inter molecular PDFs and values are the computed PDFs.
+            #. PDFs (dictionary): The PDFs dictionnary, where keys are the
+               element wise intra and inter molecular PDFs and values are the
+               computed PDFs.
         """
         if self.originalData is None:
             LOGGER.warn("originalData must be computed first using 'compute_data' method.")
             return {}
         return self._get_constraint_value(self.originalData)
-        
+
     @reset_if_collected_out_of_date
     def compute_data(self):
-        """ Compute data and update engine constraintsData dictionary. """
+        """ Compute constraint's data."""
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
                                                     isPBC            = self.engine.isPBC,
-                                                    moleculeIndex    = self.engine.moleculesIndexes,
-                                                    elementIndex     = self.engine.elementsIndexes,
+                                                    moleculeIndex    = self.engine.moleculesIndex,
+                                                    elementIndex     = self.engine.elementsIndex,
                                                     numberOfElements = self.engine.numberOfElements,
                                                     minDistance      = self.__minimumDistance,
                                                     maxDistance      = self.__maximumDistance,
                                                     histSize         = self.__histogramSize,
                                                     bin              = self.__bin,
-                                                    ncores           = self.engine._runtime_ncores  )                  
+                                                    ncores           = self.engine._runtime_ncores  )
         # update data
         self.set_data({"intra":intra, "inter":inter})
         self.set_active_atoms_data_before_move(None)
@@ -822,47 +900,51 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # set original data
         if self.originalData is None:
             self._set_original_data(self.data)
-    
+
     def compute_before_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Compute constraint before move is executed
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Group atoms relative index
+               the move will be applied to.
         """
         intraM,interM = multiple_pairs_histograms_coords( indexes          = relativeIndexes,
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
-                                                          moleculeIndex    = self.engine.moleculesIndexes,
-                                                          elementIndex     = self.engine.elementsIndexes,
+                                                          moleculeIndex    = self.engine.moleculesIndex,
+                                                          elementIndex     = self.engine.elementsIndex,
                                                           numberOfElements = self.engine.numberOfElements,
                                                           minDistance      = self.__minimumDistance,
                                                           maxDistance      = self.__maximumDistance,
                                                           histSize         = self.__histogramSize,
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
-                                                          ncores           = self.engine._runtime_ncores )  
+                                                          ncores           = self.engine._runtime_ncores )
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
-                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
+                                                      moleculeIndex    = self.engine.moleculesIndex[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndex[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
                                                       histSize         = self.__histogramSize,
                                                       bin              = self.__bin,
-                                                      ncores           = self.engine._runtime_ncores )                                             
+                                                      ncores           = self.engine._runtime_ncores )
         self.set_active_atoms_data_before_move( {"intra":intraM-intraF, "inter":interM-interF} )
         self.set_active_atoms_data_after_move(None)
-    
+
     def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
-        """ 
+        """
         Compute constraint after move is executed
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Group atoms relative index
+               the move will be applied to.
             #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
         """
         # change coordinates temporarily
@@ -873,26 +955,26 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                           boxCoords        = self.engine.boxCoordinates,
                                                           basis            = self.engine.basisVectors,
                                                           isPBC            = self.engine.isPBC,
-                                                          moleculeIndex    = self.engine.moleculesIndexes,
-                                                          elementIndex     = self.engine.elementsIndexes,
+                                                          moleculeIndex    = self.engine.moleculesIndex,
+                                                          elementIndex     = self.engine.elementsIndex,
                                                           numberOfElements = self.engine.numberOfElements,
                                                           minDistance      = self.__minimumDistance,
                                                           maxDistance      = self.__maximumDistance,
                                                           histSize         = self.__histogramSize,
                                                           bin              = self.__bin,
                                                           allAtoms         = True,
-                                                          ncores           = self.engine._runtime_ncores )  
+                                                          ncores           = self.engine._runtime_ncores )
         intraF,interF = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates[relativeIndexes],
                                                       basis            = self.engine.basisVectors,
                                                       isPBC            = self.engine.isPBC,
-                                                      moleculeIndex    = self.engine.moleculesIndexes[relativeIndexes],
-                                                      elementIndex     = self.engine.elementsIndexes[relativeIndexes],
+                                                      moleculeIndex    = self.engine.moleculesIndex[relativeIndexes],
+                                                      elementIndex     = self.engine.elementsIndex[relativeIndexes],
                                                       numberOfElements = self.engine.numberOfElements,
                                                       minDistance      = self.__minimumDistance,
                                                       maxDistance      = self.__maximumDistance,
                                                       histSize         = self.__histogramSize,
                                                       bin              = self.__bin,
-                                                      ncores           = self.engine._runtime_ncores  )                                             
+                                                      ncores           = self.engine._runtime_ncores  )
         # set active atoms data
         self.set_active_atoms_data_after_move( {"intra":intraM-intraF, "inter":interM-interF} )
         # reset coordinates
@@ -902,13 +984,14 @@ class StructureFactorConstraint(ExperimentalConstraint):
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalSQ = self.__get_total_Sq({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalSQ) )
-    
+
     def accept_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Accept move
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
@@ -922,27 +1005,31 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_after_move_standard_error( None )
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
-    
+
     def reject_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Reject move
-        
+
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # update standardError
         self.set_after_move_standard_error( None )
-   
+
     def compute_as_if_amputated(self, realIndex, relativeIndex):
-        """ 
-        Compute and return constraint's data and standard error as if atom given its 
-        its was amputated.
-        
+        """
+        Compute and return constraint's data and standard error as if
+        given atom is amputated.
+
         :Parameters:
-            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
+            #. realIndex (numpy.ndarray): Atom's index as a numpy array
+               of a single element.
+            #. relativeIndex (numpy.ndarray): Atom's relative index as a
+               numpy array of a single element.
         """
         # compute data
         self.compute_before_move(realIndexes=realIndex, relativeIndexes=relativeIndex)
@@ -955,18 +1042,18 @@ class StructureFactorConstraint(ExperimentalConstraint):
         relativeIndex = relativeIndex[0]
         selectedElement = self.engine.allElements[relativeIndex]
         self.engine.numberOfAtomsPerElement[selectedElement] -= 1
-        self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeights )
+        self.__weightingScheme = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeight )
         for k, v in self.__weightingScheme.items():
             self.__weightingScheme[k] = FLOAT_TYPE(v)
-        ## END OF ADDED 08 FEB 2017   
+        ## END OF ADDED 08 FEB 2017
         # compute standard error
-        if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor:
             SF = self.adjustScaleFactorFrequency
             self._set_adjust_scale_factor_frequency(0)
         rho0          = ((self.engine.numberOfAtoms-1)/self.engine.volume).astype(FLOAT_TYPE)
         totalSQ       = self.__get_total_Sq(data, rho0=rho0)
         standardError = self.compute_standard_error(modelData = totalSQ)
-        if not self.engine._RT_moveGenerator.allowFittingScaleFactor: 
+        if not self.engine._RT_moveGenerator.allowFittingScaleFactor:
             self._set_adjust_scale_factor_frequency(SF)
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
@@ -979,15 +1066,15 @@ class StructureFactorConstraint(ExperimentalConstraint):
         # reset weightingScheme
         self.__weightingScheme = weightingScheme
         self.engine.numberOfAtomsPerElement[selectedElement] += 1
-        ## END OF ADDED 08 FEB 2017 
-    
-    def accept_amputation(self, realIndex, relativeIndex):
-        """ 
-        Accept amputated atom and sets constraints data and standard error accordingly.
-        
-        :Parameters:
-            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+        ## END OF ADDED 08 FEB 2017
 
+    def accept_amputation(self, realIndex, relativeIndex):
+        """
+        Accept amputated atom and sets constraints data and standard error accordingly.
+
+        :Parameters:
+            #. realIndex (numpy.ndarray): Not used here.
+            #. relativeIndex (numpy.ndarray): Not used here.
         """
         #self.set_data( self.amputationData ) ## COMMENTED 08 FEB 2017
         self.set_data( self.amputationData['data'] )
@@ -997,41 +1084,42 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_amputation_standard_error( None )
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
-    
-    def reject_amputation(self, realIndex, relativeIndex):
-        """ 
-        Reject amputated atom and sets constraints data and standard error accordingly.
-        
-        :Parameters:
-            #. index (numpy.ndarray): atom index as a numpy array of a single element.
 
+    def reject_amputation(self, realIndex, relativeIndex):
+        """
+        Reject amputated atom and set constraint's data and standard
+        error accordingly.
+
+        :Parameters:
+            #. realIndex (numpy.ndarray): Not used here.
+            #. relativeIndex (numpy.ndarray): Not used here.
         """
         self.set_amputation_data( None )
         self.set_amputation_standard_error( None )
-            
+
     def _on_collector_collect_atom(self, realIndex):
         pass
-    
+
     def _on_collector_release_atom(self, realIndex):
         pass
-        
-    def plot(self, ax=None, intra=True, inter=True, 
+
+    def plot(self, ax=None, intra=True, inter=True,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleStdErr=True, 
+                   title=True, titleStdErr=True,
                    titleScaleFactor=True, titleAtRem=True,
                    titleUsedFrame=True, show=True):
-        """ 
+        """
         Plot structure factor constraint.
-        
+
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
                If None is given a new plot figure will be created.
-            #. intra (boolean): Whether to add intra-molecular pair distribution 
-               function features to the plot.
-            #. inter (boolean): Whether to add inter-molecular pair distribution 
-               function features to the plot.
+            #. intra (boolean): Whether to add intra-molecular pair
+               distribution function features to the plot.
+            #. inter (boolean): Whether to add inter-molecular pair
+               distribution function features to the plot.
             #. xlabel (boolean): Whether to create x label.
             #. xlabelSize (number): The x label font size.
             #. ylabel (boolean): Whether to create y label.
@@ -1039,26 +1127,33 @@ class StructureFactorConstraint(ExperimentalConstraint):
             #. legend (boolean): Whether to create the legend or not
             #. legendCols (integer): Legend number of columns.
             #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
-               'lower left', 'center right', 'upper left', 'upper center', 'lower center'
-               is accepted.
+               'right', 'center left', 'upper right', 'lower right', 'best',
+               'center', 'lower left', 'center right', 'upper left',
+               'upper center', 'lower center' is accepted.
             #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
-            #. titleScaleFactor (boolean): Whether to show contraint's scale factor value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in title.
-            #. show (boolean): Whether to render and show figure before returning.
-            
+            #. titleStdErr (boolean): Whether to show constraint standard
+               error value in title.
+            #. titleScaleFactor (boolean): Whether to show contraint's scale
+               factor value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of
+               removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name
+               in title.
+            #. show (boolean): Whether to render and show figure before
+               returning.
+
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes): matplotlib used axes.
-            
-        +------------------------------------------------------------------------------+ 
-        |.. figure:: structure_factor_constraint_plot_method.png                       | 
-        |   :width: 530px                                                              | 
-        |   :height: 400px                                                             |
-        |   :align: left                                                               | 
-        +------------------------------------------------------------------------------+
+
+        +----------------------------------------------------------------------+
+        |.. figure:: reduced_structure_factor_constraint_plot_method.png       |
+        |   :width: 530px                                                      |
+        |   :height: 400px                                                     |
+        |   :align: left                                                       |
+        |                                                                      |
+        |   Reduced structure factor of memory shape Nickel-Titanium alloy.    |
+        +----------------------------------------------------------------------+
         """
         # get constraint value
         output = self.get_constraint_value()
@@ -1072,8 +1167,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
             FIG  = plt.figure()
             AXES = plt.gca()
         else:
-            AXES = ax  
-            FIG = AXES.get_figure() 
+            AXES = ax
+            FIG = AXES.get_figure()
         # Create plotting styles
         COLORS  = ["b",'g','r','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -1129,11 +1224,11 @@ class StructureFactorConstraint(ExperimentalConstraint):
             plt.show()
         # return axes
         return FIG, AXES
-    
+
     def export(self, fname, format='%12.5f', delimiter=' ', comments='# '):
         """
         Export pair distribution constraint.
-        
+
         :Parameters:
             #. fname (path): full file name and path.
             #. format (string): string format to export the data.
@@ -1169,37 +1264,35 @@ class StructureFactorConstraint(ExperimentalConstraint):
             data.append(output["sf_total"])
         # add experimental data
         header.append("experimental")
-        data.append(self.experimentalPDF)  
+        data.append(self.experimentalPDF)
         # create array and export
         data =np.transpose(data).astype(float)
         # save
-        np.savetxt(fname     = fname, 
-                   X         = data, 
-                   fmt       = format, 
-                   delimiter = delimiter, 
+        np.savetxt(fname     = fname,
+                   X         = data,
+                   fmt       = format,
+                   delimiter = delimiter,
                    header    = " ".join(header),
                    comments  = comments)
-                   
-        
+
+
 class ReducedStructureFactorConstraint(StructureFactorConstraint):
     """
-    The Reduced Structure Factor that we will also note S(Q) 
-    is exactly the same quantity as the Structure Factor but with 
-    the slight difference that it is normalized to 0 rather than 1 
+    The Reduced Structure Factor that we will also note S(Q)
+    is exactly the same quantity as the Structure Factor but with
+    the slight difference that it is normalized to 0 rather than 1
     and therefore :math:`<S(Q)>=0`.
-    
-    The computation of S(Q) is done through a Sine inverse Fourier transform  
+
+    The computation of S(Q) is done through a Sine inverse Fourier transform
     of the computed pair distribution function noted as G(r).
-    
+
     .. math::
-        
+
         S(Q) = \\frac{1}{Q} \\int_{0}^{\\infty} G(r) sin(Qr) dr
-        
+
     The only reason why the Reduced Structure Factor is implemented, is because
-    many experimental data are treated in this form. And it is just convenient not
-    to manipulate the experimental data every time.
-    """ 
+    many experimental data are treated in this form. And it is just convenient
+    not to manipulate the experimental data every time.
+    """
     def _get_Sq_from_Gr(self, Gr):
         return np.sum(Gr.reshape((-1,1))*self.Gr2SqMatrix, axis=0)
-        
-        

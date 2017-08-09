@@ -1,7 +1,8 @@
 """
 Constraint contains parent classes for all constraints.
-A Constraint is used to set certain rules to evolve the configuration.
-Therefore it has become possible to fully customize and set any possibly imaginable rule.
+A Constraint is used to set certain rules for the stochastic engine to
+evolve the atomic system. Therefore it has become possible to fully
+customize and set any possibly imaginable rule.
 
 .. inheritance-diagram:: fullrmc.Core.Constraint
     :parts: 1
@@ -20,10 +21,10 @@ from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
 from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path
 from fullrmc.Core.Collection import _AtomsCollector, reset_if_collected_out_of_date
 
-   
+
 class Constraint(ListenerBase):
-    """
-    A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one.
+    """ A constraint is used to direct the evolution of the atomic
+    configuration towards the desired and most meaningful one.
     """
     def __init__(self):
         # init ListenerBase
@@ -38,16 +39,16 @@ class Constraint(ListenerBase):
         self._atomsCollector = _AtomsCollector(self, dataKeys=None)
         # initialize data
         self.__initialize_constraint()
-        # computation cost 
+        # computation cost
         #self.__computationCost = 0
         self.set_computation_cost(0)
         # set frame data
-        FRAME_DATA  = ('_Constraint__state', '_Constraint__used', 
+        FRAME_DATA  = ('_Constraint__state', '_Constraint__used',
                        '_Constraint__tried', '_Constraint__accepted',
                        '_Constraint__varianceSquared','_Constraint__standardError',
                        '_Constraint__originalData', '_Constraint__data',
                        '_Constraint__activeAtomsDataBeforeMove', '_Constraint__activeAtomsDataAfterMove',
-                       '_Constraint__amputationData', '_Constraint__afterMoveStandardError', 
+                       '_Constraint__amputationData', '_Constraint__afterMoveStandardError',
                        '_Constraint__amputationStandardError', '_Constraint__computationCost',
                        '_atomsCollector')
         RUNTIME_DATA = ('_Constraint__state','_Constraint__tried', '_Constraint__accepted',
@@ -55,23 +56,23 @@ class Constraint(ListenerBase):
                         '_atomsCollector',)
         object.__setattr__(self, 'FRAME_DATA',  FRAME_DATA   )
         object.__setattr__(self, 'RUNTIME_DATA',RUNTIME_DATA )
-                                  
-    
+
+
     def __setattr__(self, name, value):
         if name in ('FRAME_DATA','RUNTIME_DATA',):
             raise LOGGER.error("Setting '%s' is not allowed."%name)
         else:
             object.__setattr__(self, name, value)
-            
+
     def __getstate__(self):
         state = {}
-        for k, v in self.__dict__.items():            
+        for k, v in self.__dict__.items():
             if k in self.FRAME_DATA:
                 continue
             else:
                 state[k] = v
         return state
-    
+
     def _set_engine(self, engine):
         assert self.__engine is None, LOGGER.error("Re-setting constraint engine is not allowed.")
         from fullrmc.Engine import Engine
@@ -92,7 +93,7 @@ class Constraint(ListenerBase):
         # and there is no need to reset_constraint anymore since at this poing all flag
         # are still and their reset value.
         #self.reset_constraint(reinitialize=False, flags=True, data=False)
-        
+
     def __initialize_constraint(self):
         # initialize flags
         self.__state     = None
@@ -128,93 +129,95 @@ class Constraint(ListenerBase):
                                   '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError,
                                   '_Constraint__amputationStandardError'  : self.__amputationStandardError,
                                   '_atomsCollector'                       : self._atomsCollector})
-    
+
     @property
     def constraintId(self):
-        """ Get constraints unique id."""
-        return self.__constraintId 
-        
+        """ Constraints unique id."""
+        return self.__constraintId
+
     @property
     def engine(self):
-        """ Get the engine fullrmc instance."""
-        return self.__engine 
-        
+        """ Stochastic fullrmc's engine instance."""
+        return self.__engine
+
     @property
     def computationCost(self):
-        """Get computation cost number."""
+        """ Computation cost number."""
         return self.__computationCost
-        
+
     @property
     def state(self):
-        """ Get constraint's state."""
+        """ Constraint's state."""
         return self.__state
-        
+
     @property
     def tried(self):
-        """ Get constraint's number of tried moves."""
+        """ Constraint's number of tried moves."""
         return self.__tried
-    
+
     @property
     def accepted(self):
-        """ Get constraint's number of accepted moves."""
+        """ Constraint's number of accepted moves."""
         return self.__accepted
-    
+
     @property
     def used(self):
-        """ Get whether this constraint is used in the engine run time or set inactive."""
+        """ Constraint's used flag. Defines whether constraint is used
+        in the stochastic engine at runtime or set inactive."""
         return self.__used
-    
+
     @property
     def varianceSquared(self):
-        """ Get constraint's varianceSquared used in the engine run time to calculate the total chi square."""
+        """ Constraint's varianceSquared used in the stochastic engine
+        at runtime to calculate the total constraint's standard error."""
         return self.__varianceSquared
-    
+
     @property
     def standardError(self):
-        """ Get constraint's current standard error."""
+        """ Constraint's standard error value."""
         return self.__standardError
-    
+
     @property
     def originalData(self):
-        """ Get constraint's original calculated data upon initialization."""
+        """ Constraint's original data calculated upon initialization."""
         return self.__originalData
-        
+
     @property
     def data(self):
-        """ Get constraint's current calculated data."""
+        """ Constraint's current calculated data."""
         return self.__data
-    
+
     @property
     def activeAtomsDataBeforeMove(self):
-        """ Get constraint's current calculated data before last move."""
+        """ Constraint's current calculated data before last move."""
         return self.__activeAtomsDataBeforeMove
-    
+
     @property
     def activeAtomsDataAfterMove(self):
-        """ Get constraint's current calculated data after last move."""
+        """ Constraint's current calculated data after last move."""
         return self.__activeAtomsDataAfterMove
-    
+
     @property
     def afterMoveStandardError(self):
-        """ Get constraint's current calculated StandardError after last move."""
+        """ Constraint's current calculated StandardError after last move."""
         return self.__afterMoveStandardError
-    
+
     @property
     def amputationData(self):
-        """ Get constraint's current calculated data after amputation."""
+        """ Constraint's current calculated data after amputation."""
         return self.__amputationData
-        
+
     @property
     def amputationStandardError(self):
-        """ Get constraint's current calculated StandardError after amputation."""
+        """ Constraint's current calculated StandardError after amputation."""
         return self.__amputationStandardError
-       
+
     def _get_repository(self):
         if self.engine is None:
             return None
         else:
             return self.engine._get_repository()
-    
+
     def _dump_to_repository(self, dataDict):
         rep = self._get_repository()
         if rep is None:
@@ -222,86 +225,90 @@ class Constraint(ListenerBase):
         cp = os.path.join(self.engine.usedFrame, 'constraints', self.__constraintId)
         #print 'Constraint._dump_to_repository --> ', cp
         for name, value in dataDict.items():
-            rep.dump(value=value, relativePath=cp, name=name, replace=True)    
-    
+            rep.dump(value=value, relativePath=cp, name=name, replace=True)
+
     def _set_original_data(self, data):
-        """ Used only by the engine to set constraint's data as initialized for the first time."""
+        """ Used only by the stochastic engine to set constraint's data as
+        initialized for the first time."""
         self.__originalData = data
         # dump to repository
         self._dump_to_repository({'_Constraint__originalData' :self.__originalData})
-    
+
     def _runtime_initialize(self):
-        """   
+        """
         This is called once everytime engine.run method is executed.
         It is meant to be used as a final setup call for all constraints.
         """
         pass
-    
+
     def _runtime_on_step(self):
-        """   
+        """
         This is called at everytime engine.run method main loop step.
         """
         pass
-        
+
     def set_variance_squared(self, value):
         """
-        Sets constraint's variance squared that is used in the computation of the total engine chi square.
-        
+        Set constraint's variance squared that is used in the c
+        omputation of the total stochastic engine standard error.
+
         :Parameters:
             #. value (number): Any positive non zero number.
         """
-        assert is_number(value), LOGGER.error("accepted value must be convertible to a number")
+        assert is_number(value), LOGGER.error("Variance squared accepted value must be convertible to a number")
         value = float(value)
-        assert value>0 , LOGGER.error("Variance must be positive non zero number.")
+        assert value>0 , LOGGER.error("Variance squared must be positive non zero number.")
         self.__varianceSquared = value
-    
+
     def set_computation_cost(self, value):
         """
-        Sets constraint's computation cost value. This is used at engine runtime 
-        to minimize computations and enhance performance by computing less costly
-        constraints first. At every step, constraints will be computed in order 
-        starting from the less to the most computationally costly. Therefore
-        upon rejection of a step because of an unsatisfactory rigid constraint, 
-        the left un-computed constraints at this step are guaranteed to be the        
-        most costly ones. 
-                
+        Set constraint's computation cost value. This is used at stochastic
+        engine runtime to minimize computations and enhance performance by
+        computing less costly constraints first. At every step, constraints
+        will be computed in order starting from the less to the most
+        computationally costly. Therefore upon rejection of a step because
+        of an unsatisfactory rigid constraint, the left un-computed
+        constraints at this step are guaranteed to be the most time coslty
+        ones.
+
         :Parameters:
-            #. value (number): Any number.
+            #. value (number): computation cost.
         """
         assert is_number(value), LOGGER.error("computation cost value must be convertible to a number")
         self.__computationCost  = FLOAT_TYPE(value)
         # dump to repository
         self._dump_to_repository({'_Constraint__computationCost' :self.__computationCost})
-   
+
     @reset_if_collected_out_of_date # ADDED 2017-JAN-12
     def set_used(self, value):
         """
-        Sets used flag.
-        
+        Set used flag.
+
         :Parameters:
-            #. value (boolean): True to use this constraint in engine run time.
+            #. value (boolean): True to use this constraint in stochastic
+               engine runtime.
         """
         assert isinstance(value, bool), LOGGER.error("value must be boolean")
         self.__used = value
         # dump to repository
         self._dump_to_repository({'_Constraint__used' :self.__used})
-    
+
     def set_state(self, value):
         """
-        Sets constraint's state. 
-        When constraint's state and engine's state don't match, constraint's data must be recalculated.
-        
+        Set constraint's state. When constraint's state and stochastic
+        engine's state don't match, constraint's data must be re-calculated.
+
         :Parameters:
-            #. value (object): constraint state value
+            #. value (object): Constraint state value.
         """
         self.__state = value
-    
+
     def set_tried(self, value):
         """
-        Sets constraint's engine tried moves.
-        
+        Set constraint's number of tried moves.
+
         :Parameters:
-            #. value (integer): constraint tried moves value
+            #. value (integer): Constraint tried moves value.
         """
         try:
             value = float(value)
@@ -310,17 +317,17 @@ class Constraint(ListenerBase):
         assert is_integer(value), LOGGER.error("tried value must be integer")
         assert value>=0, LOGGER.error("tried value must be positive")
         self.__tried = int(value)
-    
+
     def increment_tried(self):
-        """ Increment engine tried moves. """
+        """ Increment number of tried moves. """
         self.__tried += 1
-    
+
     def set_accepted(self, value):
         """
-        Sets constraint's engine accepted moves.
-        
+        Set constraint's number of accepted moves.
+
         :Parameters:
-            #. value (integer): constraint accepted moves value
+            #. value (integer): Constraint's number of accepted moves.
         """
         try:
             value = float(value)
@@ -330,82 +337,84 @@ class Constraint(ListenerBase):
         assert value>=0, LOGGER.error("accepted value must be positive")
         assert value<=self.__tried, LOGGER.error("accepted value can't be bigger than number of tried moves")
         self.__accepted = int(value)
-    
+
     def increment_accepted(self):
-        """ Increment engine accepted moves. """
+        """ Increment constraint's number of accepted moves. """
         self.__accepted += 1
-        
+
     def set_standard_error(self, value):
         """
-        Sets constraint's standardError value.
-        
+        Set constraint's standardError value.
+
         :Parameters:
-            #. value (number): standardError value
+            #. value (number): standard error value.
         """
         self.__standardError = value
-        
+
     def set_data(self, value):
         """
-        Sets constraint's data value
-        
+        Set constraint's data value.
+
         :Parameters:
-            #. value (number): standardError value.
+            #. value (number): constraint's data.
         """
         self.__data = value
-    
+
     def set_active_atoms_data_before_move(self, value):
         """
-        Sets constraint's before move happens active atoms data value.
-        
+        Set constraint's before move happens active atoms data value.
+
         :Parameters:
-            #. value (number): data value
+            #. value (number): Data value.
         """
         self.__activeAtomsDataBeforeMove = value
-    
+
     def set_active_atoms_data_after_move(self, value):
         """
-        Sets constraint's after move happens active atoms data value.
-        
+        Set constraint's after move happens active atoms data value.
+
         :Parameters:
-            #. value (number): data value
+            #. value (number): data value.
         """
         self.__activeAtomsDataAfterMove = value
-    
+
     def set_after_move_standard_error(self, value):
         """
-        Sets constraint's standardError value after move happens.
-        
+        Set constraint's standard error value after move happens.
+
         :Parameters:
-            #. value (number): standardError value.
+            #. value (number): standard error value.
         """
         self.__afterMoveStandardError = value
-      
+
     def set_amputation_data(self, value):
         """
-        Sets constraint's after amputation data.
-        
+        Set constraint's after amputation data.
+
         :Parameters:
-            #. value (number): data value
+            #. value (number): data value.
         """
         self.__amputationData = value
-    
+
     def set_amputation_standard_error(self, value):
         """
-        Sets constraint's standardError after amputation.
-        
+        Set constraint's standardError after amputation.
+
         :Parameters:
-            #. value (number): standardError value.
+            #. value (number): standard error value.
         """
         self.__amputationStandardError = value
-      
+
     def reset_constraint(self, reinitialize=True, flags=False, data=False):
-        """ 
-        Resets constraint.
-        
+        """
+        Reset constraint.
+
         :Parameters:
-            #. reinitialize (boolean): If set to True, it will override the rest of the flags 
-               and will completely reinitialize the constraint.
-            #. flags (boolean): Reset the state, tried and accepted flags of the constraint.
+            #. reinitialize (boolean): If set to True, it will override
+               the rest of the flags and will completely reinitialize the
+               constraint.
+            #. flags (boolean): Reset the state, tried and accepted flags
+               of the constraint.
             #. data (boolean): Reset the constraints computed data.
         """
         # reinitialize constraint
@@ -442,94 +451,125 @@ class Constraint(ListenerBase):
                                       '_Constraint__standardError'            : self.__standardError,
                                       '_Constraint__afterMoveStandardError'   : self.__afterMoveStandardError})
 
-    
+
     def compute_and_set_standard_error(self):
-        """ Computes and sets the constraint's standardError by calling compute_standard_error and passing the constraint's data."""
+        """ Compute and set constraint's standard error by calling
+        compute_standard_error method and passing constraint's data."""
         self.set_standard_error(self.compute_standard_error(data = self.data))
-        
+
     def get_constraint_value(self):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-    
+
     def get_constraint_original_value(self):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def compute_standard_error(self):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def compute_data(self):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def compute_before_move(self, realIndexes, relativeIndexes):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def accept_move(self, realIndexes, relativeIndexes):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def reject_move(self, realIndexes, relativeIndexes):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-    
+
     def compute_as_if_amputated(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def compute_as_if_inserted(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def accept_amputation(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def reject_amputation(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def accept_insertion(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def reject_insertion(self, realIndex, relativeIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def _on_collector_collect_atom(self, realIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-    
+
     def _on_collector_release_atom(self, realIndex):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def _on_collector_reset(self):
+        """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-        
+
     def export(self, *args, **kwargs):
+        """Method must be overloaded in children classes."""
         LOGGER.warn("%s export method is not implemented"%(self.__class__.__name__))
-        
+
     def plot(self, *args, **kwargs):
+        """Method must be overloaded in children classes."""
         LOGGER.warn("%s plot method is not implemented"%(self.__class__.__name__))
-    
-    
+
+
 class ExperimentalConstraint(Constraint):
     """
-    An ExperimentalConstraint is any constraint related to experimental data.
-    
+    Experimental constraint is any constraint related to experimental data.
+
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint RMC engine.
-        #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
-        #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-           Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
+        #. engine (None, fullrmc.Engine): Constraint's stochastic engine.
+        #. experimentalData (numpy.ndarray, string): Experimental data goiven
+           as numpy.ndarray or string path to load data using numpy.loadtxt
+           method.
+        #. dataWeights (None, numpy.ndarray): Weights array of the same number
+           of points of experimentalData used in the constraint's standard
+           error computation. Therefore particular fitting emphasis can be
+           put on different data points that might be considered as more or less
            important in order to get a reasonable and plausible modal.\n
-           If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-           If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-           total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-           array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
-        #. scaleFactor (number): A scaling constant multiplying the computed data to normalize to the experimental ones.
-        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+           If None is given, all data points are considered of the same
+           importance in the computation of the constraint's standard error.\n
+           If numpy.ndarray is given, all weights must be positive and all
+           zeros weighted data points won't contribute to the total
+           constraint's standard error. At least a single weight point is
+           required to be non-zeros and the weights array will be automatically
+           scaled upon setting such as the the sum of all the weights
+           is equal to the number of data points.
+        #. scaleFactor (number): A normalization scale factor used to normalize
+           the computed data to the experimental ones.
+        #. adjustScaleFactor (list, tuple): Used to adjust fit or guess
+           the best scale factor during stochastic engine runtime.
            It must be a list of exactly three entries.\n
-           1. The frequency in number of accepted moves of finding the best scale factor. 
-              If 0 frequency is given, it means that the scale factor is fixed.
-           2. The minimum allowed scale factor value.
-           3. The maximum allowed scale factor value.
-    
-    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor will remain 
-    untouched and the limits minimum and maximum won't be checked.
-           
+           #. The frequency in number of generated moves of finding the best
+              scale factor. If 0 frequency is given, it means that the scale
+              factor is fixed.
+           #. The minimum allowed scale factor value.
+           #. The maximum allowed scale factor value.
+
+    **NB**: If adjustScaleFactor first item (frequency) is 0, the scale factor
+    will remain untouched and the limits minimum and maximum won't be checked.
+
     """
     def __init__(self, experimentalData, dataWeights=None, scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2) ):
         # initialize constraint
@@ -553,7 +593,7 @@ class ExperimentalConstraint(Constraint):
         RUNTIME_DATA.extend( ['_ExperimentalConstraint__scaleFactor'] )
         object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA',tuple(RUNTIME_DATA) )
-        
+
     def _set_fitted_scale_factor_value(self, scaleFactor):
         """
         This method is a scaleFactor value without any validity checking.
@@ -562,47 +602,49 @@ class ExperimentalConstraint(Constraint):
         if self.__scaleFactor != scaleFactor:
             LOGGER.info("Experimental constraint '%s' scale factor updated from %.6f to %.6f" %(self.__class__.__name__, self.__scaleFactor, scaleFactor))
             self.__scaleFactor = scaleFactor
-        
+
     @property
     def experimentalData(self):
-        """ Gets the experimental data of the constraint. """
+        """ Experimental data of the constraint. """
         return self.__experimentalData
-    
+
     @property
     def dataWeights(self):
-        """ Get experimental data points weight"""
+        """ Experimental data points weight"""
         return self.__dataWeights
-        
+
     @property
     def scaleFactor(self):
-        """ Get the scaleFactor. """
+        """ Constraint's scaleFactor. """
         return self.__scaleFactor
-    
+
     @property
     def adjustScaleFactor(self):
+        """Adjust scale factor tuple."""
         return (self.__adjustScaleFactorFrequency, self.__adjustScaleFactorMinimum, self.__adjustScaleFactorMaximum)
 
     @property
     def adjustScaleFactorFrequency(self):
-        """ Get the scaleFactor adjustment frequency. """
+        """ Scale factor adjustment frequency. """
         return self.__adjustScaleFactorFrequency
-    
+
     @property
     def adjustScaleFactorMinimum(self):
-        """ Get the scaleFactor adjustment minimum number allowed. """
+        """ Scale factor adjustment minimum number allowed. """
         return self.__adjustScaleFactorMinimum
-    
+
     @property
     def adjustScaleFactorMaximum(self):
-        """ Get the scaleFactor adjustment maximum number allowed. """
+        """ Scale factor adjustment maximum number allowed. """
         return self.__adjustScaleFactorMaximum
-    
+
     def set_scale_factor(self, scaleFactor):
         """
-        Sets the scale factor.
-        
+        Set the scale factor.
+
         :Parameters:
-             #. scaleFactor (number): A normalization scale factor used to normalize the computed data to the experimental ones.
+             #. scaleFactor (number): A normalization scale factor used to
+                normalize the computed data to the experimental ones.
         """
         assert is_number(scaleFactor), LOGGER.error("scaleFactor must be a number")
         self.__scaleFactor = FLOAT_TYPE(scaleFactor)
@@ -610,18 +652,20 @@ class ExperimentalConstraint(Constraint):
         self._dump_to_repository({'_ExperimentalConstraint__scaleFactor' :self.__scaleFactor})
         ## reset constraint
         self.reset_constraint()
-    
+
     def set_adjust_scale_factor(self, adjustScaleFactor):
         """
-        Sets adjust scale factor.
-        
+        Set adjust scale factor.
+
         :Parameters:
-            #. adjustScaleFactor (list, tuple): Used to adjust fit or guess the best scale factor during EMC runtime. 
+            #. adjustScaleFactor (list, tuple): Used to adjust fit or guess
+               the best scale factor during stochastic engine runtime.
                It must be a list of exactly three entries.\n
-               1. The frequency in number of accepted moves of finding the best scale factor. 
-                  If 0 frequency is given, it means that the scale factor is fixed.
-               2. The minimum allowed scale factor value.
-               3. The maximum allowed scale factor value.
+               #. The frequency in number of generated moves of finding the best
+                  scale factor. If 0 frequency is given, it means that the scale
+                  factor is fixed.
+               #. The minimum allowed scale factor value.
+               #. The maximum allowed scale factor value.
         """
         assert isinstance(adjustScaleFactor, (list, tuple)), LOGGER.error('adjustScaleFactor must be a list.')
         assert len(adjustScaleFactor) == 3, LOGGER.error('adjustScaleFactor must be a list of exactly three items.')
@@ -646,18 +690,20 @@ class ExperimentalConstraint(Constraint):
                                   '_ExperimentalConstraint__adjustScaleFactorMaximum'  : self.__adjustScaleFactorMaximum})
         # reset constraint
         self.reset_constraint()
-        
+
     def _set_adjust_scale_factor_frequency(self, freq):
         """This must never be used externally. It's added to serve RemoveGenerators
          and only used internally upon calling compute_as_if_amputated """
         self.__adjustScaleFactorFrequency = freq
-        
+
     def set_experimental_data(self, experimentalData):
         """
-        Sets the constraint's experimental data.
-        
+        Set the constraint's experimental data.
+
         :Parameters:
-            #. experimentalData (numpy.ndarray, string): The experimental data as numpy.ndarray or string path to load data using numpy.loadtxt.
+            #. experimentalData (numpy.ndarray, string): Experimental data as
+               numpy.ndarray or string path to load data using numpy.loadtxt
+               method.
         """
         if isinstance(experimentalData, basestring):
             try:
@@ -674,19 +720,26 @@ class ExperimentalConstraint(Constraint):
             raise Exception( LOGGER.error("%s"%message) )
         # dump to repository
         self._dump_to_repository({'_ExperimentalConstraint__experimentalData': self.__experimentalData})
-    
+
     def set_data_weights(self, dataWeights):
         """
         Set experimental data points weight.
-        
-        :Parameters: 
-            #. dataWeights (None, numpy.ndarray): A weights array of the same number of points of experimentalData used in the constraint's standard error computation.
-               Therefore particular fitting emphasis can be put on different data points that might be considered as more or less
-               important in order to get a reasonable and plausible modal.\n
-               If None is given, all data points are considered of the same importance in the computation of the constraint's standard error.\n
-               If numpy.ndarray is given, all weights must be positive and all zeros weighted data points won't contribute to the 
-               total constraint's standard error. At least a single weight point is required to be non-zeros and the weights 
-               array will be automatically scaled upon setting such as the the sum of all the weights is equal to the number of data points.       
+
+        :Parameters:
+            #. dataWeights (None, numpy.ndarray): Weights array of the same
+               number of points of experimentalData used in the constraint's
+               standard error computation. Therefore particular fitting
+               emphasis can be put on different data points that might be
+               considered as more or less important in order to get a
+               reasonable and plausible modal.\n
+               If None is given, all data points are considered of the same
+               importance in the computation of the constraint's standard error.\n
+               If numpy.ndarray is given, all weights must be positive and all
+               zeros weighted data points won't contribute to the total
+               constraint's standard error. At least a single weight point is
+               required to be non-zeros and the weights array will be
+               automatically scaled upon setting such as the the sum of all
+               the weights is equal to the number of data points.
         """
         if dataWeights is not None:
             assert isinstance(dataWeights, (list, tuple, np.ndarray)), LOGGER.error("dataWeights must be None or a numpy array of weights")
@@ -699,41 +752,44 @@ class ExperimentalConstraint(Constraint):
             assert np.min(dataWeights) >=0, LOGGER.error("dataWeights negative values are not allowed")
             assert np.sum(dataWeights), LOGGER.error("dataWeights must be a non-zero array")
             dataWeights /= FLOAT_TYPE( np.sum(dataWeights) )
-            dataWeights *= FLOAT_TYPE( len(dataWeights) )                      
+            dataWeights *= FLOAT_TYPE( len(dataWeights) )
         self.__dataWeights = dataWeights
         # dump to repository
         self._dump_to_repository({'_ExperimentalConstraint__dataWeights': self.__dataWeights})
-        
+
     def check_experimental_data(self, experimentalData):
         """
         Checks the constraint's experimental data
-        This method must be overloaded in all ExperimentalConstraint sub-classes.
-        
+        This method must be overloaded in all experimental constraint
+        sub-classes.
+
         :Parameters:
-            #. experimentalData (numpy.ndarray): the experimental data numpy.ndarray.
+            #. experimentalData (numpy.ndarray): Experimental data numpy.ndarray.
         """
         raise Exception(LOGGER.error("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
-    
+
     def fit_scale_factor(self, experimentalData, modelData, dataWeights):
         """
         The best scale factor value is computed by minimizing :math:`E=sM`.\n
-        
+
         Where:
             #. :math:`E` is the experimental data.
             #. :math:`s` is the scale factor.
             #. :math:`M` is the model constraint data.
 
         :Parameters:
-            #. experimentalData (numpy.ndarray): the experimental data.
-            #. modelData (numpy.ndarray): the constraint modal data.
-            #. dataWeights (None, numpy.ndarray): the data points weights to compute the scale factor.
-               If None, all data points will be considered as having the same weight.
-            
+            #. experimentalData (numpy.ndarray): Experimental data.
+            #. modelData (numpy.ndarray): Constraint modal data.
+            #. dataWeights (None, numpy.ndarray): Data points weights to
+               compute the scale factor. If None is given, all data points
+               will be considered as having the same weight.
+
         :Returns:
             #. scaleFactor (number): The new scale factor fit value.
-        
-        **NB**: This method won't update the internal scale factor value of the constraint.
-        It always computes the best scale factor given some experimental and model data
+
+        **NB**: This method won't update the internal scale factor value
+        of the constraint. It always computes the best scale factor given
+        some experimental and model data.
         """
         if dataWeights is None:
             SF = FLOAT_TYPE( np.sum(modelData*experimentalData)/np.sum(modelData**2) )
@@ -742,50 +798,58 @@ class ExperimentalConstraint(Constraint):
         SF = max(SF, self.__adjustScaleFactorMinimum)
         SF = min(SF, self.__adjustScaleFactorMaximum)
         return SF
-        
+
     def get_adjusted_scale_factor(self, experimentalData, modelData, dataWeights):
         """
-        Checks if scale factor should be updated according to the given scale factor frequency
-        and engine's accepted steps. If adjustment is due, a new scale factor will be computed  
-        using fit_scale_factor method, otherwise the the constraint's scale factor will be returned.
+        Checks if scale factor should be updated according to the given scale
+        factor frequency and engine's accepted steps. If adjustment is due,
+        a new scale factor will be computed using fit_scale_factor method,
+        otherwise the the constraint's scale factor will be returned.
 
         :Parameters:
             #. experimentalData (numpy.ndarray): the experimental data.
             #. modelData (numpy.ndarray): the constraint modal data.
-            #. dataWeights (None, numpy.ndarray): the data points weights to compute the scale factor.
-               If None, all data points will be considered as having the same weight.
-        
+            #. dataWeights (None, numpy.ndarray): the data points weights to
+               compute the scale factor. If None is given, all data points
+               will be considered as having the same weight.
+
         :Returns:
-            #. scaleFactor (number): The constraint's scale factor or the new scale factor fit value.
-            
-        **NB**: This method WILL NOT UPDATE the internal scale factor value of the constraint. 
+            #. scaleFactor (number): Constraint's scale factor or the
+            new scale factor fit value.
+
+        **NB**: This method WILL NOT UPDATE the internal scale factor
+        value of the constraint.
         """
         SF = self.__scaleFactor
         # check to update scaleFactor
         if self.__adjustScaleFactorFrequency:
             if not self.engine.accepted%self.adjustScaleFactorFrequency:
-                SF = self.fit_scale_factor(experimentalData, modelData, dataWeights)                 
+                SF = self.fit_scale_factor(experimentalData, modelData, dataWeights)
         return SF
-    
+
     def compute_standard_error(self, experimentalData, modelData):
-        """ 
-        Compute the squared deviation between modal computed data and the experimental ones. 
-        
+        """
+        Compute the squared deviation between modal computed data
+        and the experimental ones.
+
         .. math::
             SD = \\sum \\limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}
-         
+
         Where:\n
         :math:`N` is the total number of experimental data points. \n
-        :math:`W_{i}` is the data point weight. It becomes equivalent to 1 when dataWeights is set to None. \n
+        :math:`W_{i}` is the data point weight. It becomes equivalent to 1
+        when dataWeights is set to None. \n
         :math:`Y(X_{i})` is the experimental data point :math:`X_{i}`. \n
         :math:`F(X_{i})` is the computed from the model data  :math:`X_{i}`. \n
 
         :Parameters:
-            #. experimentalData (numpy.ndarray): the experimental data.
-            #. modelData (numpy.ndarray): The data to compare with the experimental one and compute the squared deviation.
-            
+            #. experimentalData (numpy.ndarray): Experimental data.
+            #. modelData (numpy.ndarray): The data to compare with the
+               experimental one and compute the squared deviation.
+
         :Returns:
-            #. standardError (number): The calculated standardError of the constraint.
+            #. standardError (number): The calculated standard error of
+               the constraint.
         """
         # compute difference
         diff = experimentalData-modelData
@@ -794,42 +858,49 @@ class ExperimentalConstraint(Constraint):
             return np.add.reduce((diff)**2)
         else:
             return np.add.reduce(self.__dataWeights*(diff)**2)
-        
-        
+
+
 class SingularConstraint(Constraint):
-    """ A singular constraint is a constraint that doesn't allow multiple instances in the same engine."""
-    
+    """ A singular constraint is a constraint that doesn't allow multiple
+    instances in the same engine."""
+
     def is_singular(self, engine):
         """
-        Get whether only one instance of this constraint type is present in the engine.
-        True for only itself found, False for other instance of the same __class__.__name__
+        Get whether only one instance of this constraint type is present
+        in the stochastic engine. True for only itself found, False for
+        other instance of the same __class__.__name__.
         """
         for c in engine.constraints:
-            if c is self: 
+            if c is self:
                 continue
             if c.__class__.__name__ == self.__class__.__name__:
                 return False
         return True
-            
+
     def assert_singular(self, engine):
         """
-        Checks whether only one instance of this constraint type is present in the engine.
-        Raises Exception if multiple instances are present.
+        Checks whether only one instance of this constraint type is
+        present in the stochastic engine. Raises Exception if multiple
+        instances are present.
         """
         assert self.is_singular(engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine"%self.__class__.__name__)
-        
-        
+
+
 class RigidConstraint(Constraint):
     """
-    A rigid constraint is a constraint that doesn't count into the total standardError of the Engine.
-    But it's internal standardError must monotonously decrease or remain the same from one engine step to another.
-    If standardError of an RigidConstraint increases the step will be rejected even before engine's new standardError get computed.
-    
+    A rigid constraint is a constraint that doesn't count into the total
+    standard error of the stochastic Engine. But it's internal standard error
+    must monotonously decrease or remain the same from one engine step to
+    another. If standard error of an rigid constraint increases the
+    step will be rejected even before engine's new standardError get computed.
+
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
-        #. rejectProbability (Number): Rejecting probability of all steps where standardError increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
+        #. engine (None, fullrmc.Engine): The constraint stochastic engine.
+        #. rejectProbability (Number): Rejecting probability of all steps
+           where standard error increases. It must be between 0 and 1 where
+           1 means rejecting all steps where standardError increases
+           and 0 means accepting all steps regardless whether standard error
+           increases or not.
     """
     def __init__(self, rejectProbability):
         # initialize constraint
@@ -840,20 +911,22 @@ class RigidConstraint(Constraint):
         FRAME_DATA = [d for d in self.FRAME_DATA]
         FRAME_DATA.extend(['_RigidConstraint__rejectProbability'] )
         object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA) )
-        
+
     @property
     def rejectProbability(self):
-        """ Get rejection probability. """
+        """ Rejection probability. """
         return self.__rejectProbability
-        
+
     def set_reject_probability(self, rejectProbability):
         """
         Set the rejection probability.
-        
+
         :Parameters:
-            #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-               It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-               and 0 means accepting all steps regardless whether standardError increases or not.
+            #. rejectProbability (Number): rejecting probability of all steps
+               where standard error increases. It must be between 0 and 1
+               where 1 means rejecting all steps where standardError increases
+               and 0 means accepting all steps regardless whether standard
+               error increases or not.
         """
         assert is_number(rejectProbability), LOGGER.error("rejectProbability must be a number")
         rejectProbability = FLOAT_TYPE(rejectProbability)
@@ -861,14 +934,16 @@ class RigidConstraint(Constraint):
         self.__rejectProbability = rejectProbability
         # dump to repository
         self._dump_to_repository({'_RigidConstraint__dataWeights': self.__rejectProbability})
-    
+
     def should_step_get_rejected(self, standardError):
         """
-        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.
-        
+        Given a standard error, return whether to keep or reject new
+        standard error according to the constraint reject probability.
+
         :Parameters:
-            #. standardError (number): The standardError to compare with the Constraint standardError
-        
+            #. standardError (number): The standard error to compare with
+            the Constraint standard error
+
         :Return:
             #. result (boolean): True to reject step, False to accept
         """
@@ -877,14 +952,16 @@ class RigidConstraint(Constraint):
         if standardError<=self.standardError:
             return False
         return randfloat() < self.__rejectProbability
-        
+
     def should_step_get_accepted(self, standardError):
         """
-        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability.
-        
+        Given a standard error, return whether to keep or reject new standard
+        error according to the constraint reject probability.
+
         :Parameters:
-            #. standardError (number): The standardError to compare with the Constraint standardError
-        
+            #. standardError (number): The standard error to compare with
+               the Constraint standard error
+
         :Return:
             #. result (boolean): True to accept step, False to reject
         """
@@ -893,25 +970,29 @@ class RigidConstraint(Constraint):
 
 class QuasiRigidConstraint(RigidConstraint):
     """
-    A quasi-rigid constraint is a another rigid constraint but it becomes free above a certain threshold
-    ratio of satisfied data. Every quasi-rigid constraint has its own definition of maximum standard 
-    error. The ratio is computed as between current standard error and maximum standard error.
-    
+    A quasi-rigid constraint is a another rigid constraint but it becomes f
+    ree above a certain threshold ratio of satisfied data. Every quasi-rigid
+    constraint has its own definition of maximum standard error. The ratio is
+    computed as between current standard error and maximum standard error.
+
      .. math::
-        
-        ratio = 1-\\frac{current\ standard\ error}{maximum\ standard\ error} 
-    
+
+        ratio = 1-\\frac{current\ standard\ error}{maximum\ standard\ error}
+
     :Parameters:
-        #. engine (None, fullrmc.Engine): The constraint fullrmc engine.
-        #. rejectProbability (Number): Rejecting probability of all steps where standardError increases
-           only before threshold ratio is reached. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
-        #. thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
-           It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
-           behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
-           constraint becomes always free and useless.
-    """    
+        #. engine (None, fullrmc.Engine): The constraint stochastic engine.
+        #. rejectProbability (Number): Rejecting probability of all steps
+           where standardError increases only before threshold ratio is reached.
+           It must be between 0 and 1 where 1 means rejecting all steps where
+           standardError increases and 0 means accepting all steps regardless
+           whether standardError increases or not.
+        #. thresholdRatio(Number): The threshold of satisfied data, above
+           which the constraint become free. It must be between 0 and 1 where
+           1 means all data must be satisfied and therefore the constraint
+           behave like a RigidConstraint and 0 means none of the data must be
+           satisfied and therefore the constraint becomes always free and
+           useless.
+    """
     def __init__(self, engine, rejectProbability, thresholdRatio):
         # initialize constraint
         super(QuasiRigidConstraint, self).__init__(engine=engine, rejectProbability=rejectProbability)
@@ -925,11 +1006,12 @@ class QuasiRigidConstraint(RigidConstraint):
         FRAME_DATA.extend(['_QuasiRigidConstraint__thresholdRatio',
                            '_QuasiRigidConstraint__maximumStandardError'] )
         object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA) )
-        
-        
+
+
     def _set_maximum_standard_error(self, maximumStandardError):
-        """ Sets the maximum standard error. Use carefully, it's not meant to be used externally.
-        maximum squared deviation is what is used to compute the ratio and compare to thresholdRatio.
+        """ Set the maximum standard error. Use carefully, it's not meant to
+        be used externally. maximum squared deviation is what is used to
+        compute the ratio and compare to threshold ratio.
         """
         if (maximumStandardError is not None) and maximumStandardError:
             assert is_number(maximumStandardError), LOGGER.error("maximumStandardError must be a number.")
@@ -938,25 +1020,27 @@ class QuasiRigidConstraint(RigidConstraint):
         self.__maximumStandardError = maximumStandardError
         # dump to repository
         self._dump_to_repository({'_QuasiRigidConstraint__maximumStandardError': self.__maximumStandardError})
-    
+
     @property
     def thresholdRatio(self):
-        """ Get threshold ratio. """
+        """ Threshold ratio. """
         return self.__thresholdRatio
-    
+
     @property
     def currentRatio(self):
-        return 1-(self.standardError/self.__maximumStandardError)        
-        
+        return 1-(self.standardError/self.__maximumStandardError)
+
     def set_threshold_ratio(self, thresholdRatio):
         """
         Set the rejection probability function.
-        
+
         :Parameters:
-            #. thresholdRatio(Number): The threshold of satisfied data, above which the constraint become free.
-               It must be between 0 and 1 where 1 means all data must be satisfied and therefore the constraint
-               behave like a RigidConstraint and 0 means none of the data must be satisfied and therefore the
-               constraint becomes always free and useless.
+            #. thresholdRatio(Number): The threshold of satisfied data, above
+               which the constraint become free. It must be between 0 and 1
+               where 1 means all data must be satisfied and therefore the
+               constraint behave like a RigidConstraint and 0 means none of
+               the data must be satisfied and therefore the constraint
+               becomes always free and useless.
         """
         assert is_number(thresholdRatio), LOGGER.error("thresholdRatio must be a number")
         thresholdRatio = FLOAT_TYPE(thresholdRatio)
@@ -964,28 +1048,26 @@ class QuasiRigidConstraint(RigidConstraint):
         self.__thresholdRatio = thresholdRatio
         # dump to repository
         self._dump_to_repository({'_QuasiRigidConstraint__thresholdRatio': self.__thresholdRatio})
-        
+
     def should_step_get_rejected(self, standardError):
         """
-        Given a standardError, return whether to keep or reject new standardError according to the constraint rejectProbability function.
-        
+        Given a standard error, return whether to keep or reject new
+        standard error according to the constraint reject probability function.
+
         :Parameters:
-            #. standardError (number): The standardError to compare with the Constraint standardError
-        
+            #. standardError (number): Standard error to compare with the
+            Constraint standard error.
+
         :Return:
-            #. result (boolean): True to reject step, False to accept
+            #. result (boolean): True to reject step, False to accept.
         """
         previousRatio = 1-(self.standardError/self.__maximumStandardError)
         currentRatio  = 1-(standardError/self.__maximumStandardError)
         if currentRatio>=self.__thresholdRatio: # must be accepted
-            return False 
+            return False
         elif previousRatio>=self.__thresholdRatio: # it must be rejected
             return randfloat() < self.rejectProbability
         elif standardError<=self.standardError: # must be accepted
             return False
         else: # must be rejected
             return randfloat() < self.rejectProbability
-            
-            
-    
-            

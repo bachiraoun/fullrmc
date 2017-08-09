@@ -1,5 +1,6 @@
 """
-AngleConstraints contains classes for all constraints related angles between atoms.
+AngleConstraints contains classes for all constraints related angles
+between atoms.
 
 .. inheritance-diagram:: fullrmc.Constraints.AngleConstraints
     :parts: 1
@@ -11,8 +12,8 @@ AngleConstraints contains classes for all constraints related angles between ato
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, FLOAT_PLUS_INFINITY, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, raise_if_collected, reset_if_collected_out_of_date
+from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from fullrmc.Core.Collection import is_number, raise_if_collected, reset_if_collected_out_of_date
 from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
 from fullrmc.Core.angles import full_angles_coords
 
@@ -21,36 +22,38 @@ from fullrmc.Core.angles import full_angles_coords
 
 class BondsAngleConstraint(RigidConstraint, SingularConstraint):
     """
-    Controls the angle defined between 3 defined atoms, a first atom called central
+    Controls angle defined between 3 defined atoms, a first atom called central
     and the remain two called left and right.
-    
-    
-    +--------------------------------------------------------------------------------+
-    |.. figure:: angleSketch.png                                                     |
-    |   :width: 308px                                                                |
-    |   :height: 200px                                                               |
-    |   :align: center                                                               |
-    |                                                                                |
-    |   Angle sketch defined between three atoms.                                    |  
-    +--------------------------------------------------------------------------------+
-    
+
+
+    +-------------------------------------------------------------------------+
+    |.. figure:: angleSketch.png                                              |
+    |   :width: 308px                                                         |
+    |   :height: 200px                                                        |
+    |   :align: center                                                        |
+    |                                                                         |
+    |   Angle sketch defined between three atoms.                             |
+    +-------------------------------------------------------------------------+
+
     .. raw:: html
 
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/ezBbbO9IVig" 
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/ezBbbO9IVig"
         frameborder="0" allowfullscreen>
         </iframe>
-        
-    
+
+
     :Parameters:
-        #. rejectProbability (Number): rejecting probability of all steps where standardError increases. 
-           It must be between 0 and 1 where 1 means rejecting all steps where standardError increases
-           and 0 means accepting all steps regardless whether standardError increases or not.
-    
+        #. rejectProbability (Number): Rejecting probability of all steps where
+           standardError increases. It must be between 0 and 1 where 1 means
+           rejecting all steps where standardError increases and 0 means
+           accepting all steps regardless whether standardError increases or
+           not.
+
     .. code-block:: python
-    
+
         ## Methane (CH4) molecule sketch
-        ## 
+        ##
         ##              H4
         ##              |
         ##              |
@@ -58,36 +61,36 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         ##        H1-  /    -_
         ##            /       H3
         ##           H2
-        
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # create and add constraint
         BAC = BondsAngleConstraint()
         ENGINE.add_constraints(BAC)
-        
-        # define intra-molecular angles 
+
+        # define intra-molecular angles
         BAC.create_angles_by_definition( anglesDefinition={"CH4": [ ('C','H1','H2', 100, 120),
                                                                     ('C','H2','H3', 100, 120),
                                                                     ('C','H3','H4', 100, 120),
                                                                     ('C','H4','H1', 100, 120) ]} )
-                                                                          
-            
+
+
     """
-    def __init__(self, anglesMap=None, rejectProbability=1):
+    def __init__(self, rejectProbability=1):
         # initialize constraint
         RigidConstraint.__init__(self, rejectProbability=rejectProbability)
         # set atomsColletor data keys
         self._atomsCollector.set_data_keys( ['centralMap','otherMap'] )
         # init angles data
-        self.__anglesList = [[],[],[],[],[]]      
+        self.__anglesList = [[],[],[],[],[]]
         self.__angles     = {}
         # set computation cost
         self.set_computation_cost(2.0)
@@ -101,26 +104,27 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',  tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA',tuple(RUNTIME_DATA) )
-        
+
     @property
     def anglesList(self):
-        """ Get defined angles list."""
+        """ Defined angles list."""
         return self.__anglesList
-    
+
     @property
     def angles(self):
-        """ Get angles dictionary for every and each atom."""
+        """ Angles dictionary of every and each atom."""
         return self.__angles
 
     def _on_collector_reset(self):
         self._atomsCollector._randomData = set([])
-    
+
     def listen(self, message, argument=None):
-        """   
-        Listens to any message sent from the Broadcaster.
-        
+        """
+        Listen to any message sent from the Broadcaster.
+
         :Parameters:
-            #. message (object): Any python object to send to constraint's listen method.
+            #. message (object): Any python object to send to constraint's
+               listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
         if message in("engine set","update boundary conditions",):
@@ -130,45 +134,53 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                    [a*FLOAT_TYPE(180.)/PI for a in self.__anglesList[4]] ]
             self.set_angles( AL, tform=False )
             # reset constraint is called in set_angles
-    
+
     #@raise_if_collected
     def set_angles(self, anglesList, tform=True):
-        """ 
-        Sets the angles dictionary by parsing the anglesMap list. All angles are in 
-        degrees.
-        
-        :Parameters:
-            #. anglesList (list): The angles list definition.
-              
-               tuples format:  every item must be a list of five items.\n
-               #. First item: The central atom index.
-               #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
-               #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed 
-                  in degrees which later will be converted to rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed 
-                  in degrees which later will be converted to rad.
-                  
-               five vectors format:  List of exaclty five lists or numpy.arrays or vectors of the same length.\n
-               #. First item: List containing central atom indexes.
-               #. Second item: List containing the index of the left atom forming the angle (interchangeable with the right atom).
-               #. Third item: List containing the index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: List containing the minimum lower limit or the minimum angle allowed 
-                  in degrees which later will be converted to rad.
-               #. Fifth item: List containing the maximum upper limit or the maximum angle allowed 
-                  in degrees which later will be converted to rad.
-            
-           #. tform (boolean): set whether given anglesList follows tuples format, If not 
-              then it must follow the four vectors one.
         """
-        # check if bondsList is given
+        Sets the angles dictionary by parsing the anglesList. All angles are in
+        degrees.
+
+        :Parameters:
+            #. anglesList (list): The angles list definition that can be
+               given in two different formats.
+
+               tuples format:  every item must be a list of five items.\n
+               #. Central atom index.
+               #. Index of the left atom forming the angle
+                  (interchangeable with the right atom).
+               #. Index of the right atom forming the angle
+                  (interchangeable with the left atom).
+               #. Minimum lower limit or the minimum angle
+                  allowed in degrees which later will be converted to rad.
+               #. Maximum upper limit or the maximum angle
+                  allowed in degrees which later will be converted to rad.
+
+               five vectors format:  List of exaclty five lists or
+               numpy.arrays or vectors of the same length.\n
+               #. List containing central atom indexes.
+               #. List containing the index of the left atom
+                  forming the angle (interchangeable with the right atom).
+               #. List containing the index of the right atom
+                  forming the angle (interchangeable with the left atom).
+               #. List containing the minimum lower limit or the
+                  minimum angle allowed in degrees which later will be
+                  converted to rad.
+               #. List containing the maximum upper limit or the
+                  maximum angle allowed in degrees which later will be
+                  converted to rad.
+
+           #. tform (boolean): set whether given anglesList follows tuples
+              format, If False, then it must follow the five vectors one.
+        """
+        # check if anglesList is given
         if anglesList is None:
             bondsList = [[],[],[],[],[]]
-            tform     = False 
+            tform     = False
         elif len(anglesList) == 5 and len(anglesList[0]) == 0:
-            tform     = False 
+            tform     = False
         if self.engine is None:
-            self.__anglesList = anglesList      
+            self.__anglesList = anglesList
             self.__angles     = {}
         else:
             NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
@@ -178,11 +190,11 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                  np.array([], dtype=INT_TYPE),
                                  np.array([], dtype=INT_TYPE),
                                  np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE)]      
+                                 np.array([], dtype=FLOAT_TYPE)]
             self.__angles     = {}
             self.__dumpAngles = False
             # build angles
-            try: 
+            try:
                 if tform:
                     for angle in anglesList:
                         self.add_angle(angle)
@@ -210,17 +222,20 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
     #@raise_if_collected
     def add_angle(self, angle):
         """
-        Add a single angle to the list of constraint angles. All angles are in degrees.
-        
+        Add a single angle to the list of constraint angles.
+        All angles are in degrees.
+
         :Parameters:
-            #. angle (list): The bond list of five items.\n
-               #. First item: The central atom index.
-               #. Second item: The index of the left atom forming the angle (interchangeable with the right atom).
-               #. Third item: The index of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed 
-                  in degrees which later will be converted to rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed 
-                  in degrees which later will be converted to rad.
+            #. angle (list): The angle list of five items.\n
+               #. Central atom index.
+               #. Index of the left atom forming the angle
+                  (interchangeable with the right atom).
+               #. Index of the right atom forming the angle
+                  (interchangeable with the left atom).
+               #. Minimum lower limit or the minimum angle
+                  allowed in degrees which later will be converted to rad.
+               #. Maximum upper limit or the maximum angle
+                  allowed in degrees which later will be converted to rad.
         """
         assert self.engine is not None, LOGGER.error("setting an angle is not allowed unless engine is defined.")
         NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
@@ -244,29 +259,29 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create central angle
         if not self.__angles.has_key(centralIdx):
-            anglesCentral = {"left":[],"right":[],"centralMap":[],"otherMap":[]} 
+            anglesCentral = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
-            anglesCentral = {"left"       :self.__angles[centralIdx]["left"], 
-                             "right"      :self.__angles[centralIdx]["right"], 
-                             "centralMap" :self.__angles[centralIdx]["centralMap"], 
+            anglesCentral = {"left"       :self.__angles[centralIdx]["left"],
+                             "right"      :self.__angles[centralIdx]["right"],
+                             "centralMap" :self.__angles[centralIdx]["centralMap"],
                              "otherMap"   :self.__angles[centralIdx]["otherMap"] }
         # create left angle
         if not self.__angles.has_key(leftIdx):
-            anglesLeft = {"left":[],"right":[],"centralMap":[],"otherMap":[]} 
+            anglesLeft = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
-            anglesLeft = {"left"       :self.__angles[leftIdx]["left"], 
-                          "right"      :self.__angles[leftIdx]["right"], 
-                          "centralMap" :self.__angles[leftIdx]["centralMap"], 
-                          "otherMap"   :self.__angles[leftIdx]["otherMap"] }               
+            anglesLeft = {"left"       :self.__angles[leftIdx]["left"],
+                          "right"      :self.__angles[leftIdx]["right"],
+                          "centralMap" :self.__angles[leftIdx]["centralMap"],
+                          "otherMap"   :self.__angles[leftIdx]["otherMap"] }
         # create right angle
         if not self.__angles.has_key(rightIdx):
-            anglesRight = {"left":[],"right":[],"centralMap":[],"otherMap":[]} 
+            anglesRight = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
-            anglesRight = {"left"       :self.__angles[rightIdx]["left"], 
-                           "right"      :self.__angles[rightIdx]["right"], 
-                           "centralMap" :self.__angles[rightIdx]["centralMap"], 
+            anglesRight = {"left"       :self.__angles[rightIdx]["left"],
+                           "right"      :self.__angles[rightIdx]["right"],
+                           "centralMap" :self.__angles[rightIdx]["centralMap"],
                            "otherMap"   :self.__angles[rightIdx]["otherMap"] }
-                             
+
         # check for re-defining
         setPos = ileft = iright = None
         if leftIdx in anglesCentral["left"] and rightIdx in anglesCentral["right"]:
@@ -304,47 +319,49 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                                       '_BondsAngleConstraint__angles'     :self.__angles})
             # reset constraint
             self.reset_constraint()
-    
+
     #@raise_if_collected
     def create_angles_by_definition(self, anglesDefinition):
-        """ 
+        """
         Creates anglesList using angles definition.
         Calls set_angles(anglesList) and generates angles attribute.
-        
+
         :Parameters:
-            #. anglesDefinition (dict): The angles definition. 
-               Every key must be a molecule name (residue name in pdb file). 
-               Every key value must be a list of angles definitions. 
+            #. anglesDefinition (dict): Angles definition dictionary.
+               Every key must be a molecule's name.
+               Every key value must be a list of angles definitions.
                Every angle definition is a list of five items where:
-               
-               #. First item: The name of the central atom forming the angle.
-               #. Second item: The name of the left atom forming the angle (interchangeable with the right atom).
-               #. Third item: The name of the right atom forming the angle (interchangeable with the left atom).
-               #. Fourth item: The minimum lower limit or the minimum angle allowed 
-                  in degrees which later will be converted to rad.
-               #. Fifth item: The maximum upper limit or the maximum angle allowed 
-                  in degrees which later will be converted to rad.
-        
+
+               #. Name of the central atom forming the angle.
+               #. Name of the left atom forming the angle
+                  (interchangeable with the right atom).
+               #. Name of the right atom forming the angle
+                  (interchangeable with the left atom).
+               #. Minimum lower limit or the minimum angle
+                  allowed in degrees which later will be converted to rad.
+               #. Maximum upper limit or the maximum angle
+                  allowed in degrees which later will be converted to rad.
+
         ::
-        
+
             e.g. (Carbon tetrachloride):  anglesDefinition={"CCL4": [('C','CL1','CL2' , 105, 115),
                                                                      ('C','CL2','CL3' , 105, 115),
-                                                                     ('C','CL3','CL4' , 105, 115),                                      
+                                                                     ('C','CL3','CL4' , 105, 115),
                                                                      ('C','CL4','CL1' , 105, 115) ] }
-                                                                 
+
         """
         if self.engine is None:
             raise Exception(LOGGER.error("Engine is not defined. Can't create angles by definition"))
         assert isinstance(anglesDefinition, dict), LOGGER.error("anglesDefinition must be a dictionary")
         ALL_NAMES         = self.engine.get_original_data("allNames")
         NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-        MOLECULES_NAMES   = self.engine.get_original_data("moleculesNames")
-        MOLECULES_INDEXES = self.engine.get_original_data("moleculesIndexes")
+        MOLECULES_NAME   = self.engine.get_original_data("moleculesName")
+        MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
         # check map definition
-        existingMoleculesNames = sorted(set(MOLECULES_NAMES))
+        existingmoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
         for mol, angles in anglesDefinition.items():
-            if mol not in existingMoleculesNames:
+            if mol not in existingmoleculesName:
                 LOGGER.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
             assert isinstance(angles, (list, set, tuple)), LOGGER.error("mapDefinition molecule angles must be a list")
@@ -364,21 +381,21 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                         break
                 if append:
                     molAnglesList.append((centralAt, leftAt, rightAt, lower, upper))
-            # create bondDef for molecule mol 
+            # create bondDef for molecule mol
             anglesDef[mol] = molAnglesList
         # create mols dictionary
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
-            molName = MOLECULES_NAMES[idx]
-            if not molName in anglesDef.keys():    
+            molName = MOLECULES_NAME[idx]
+            if not molName in anglesDef.keys():
                 continue
-            molIdx = MOLECULES_INDEXES[idx]
+            molIdx = MOLECULES_INDEX[idx]
             if not mols.has_key(molIdx):
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
         # get anglesList
-        anglesList = []         
+        anglesList = []
         for val in mols.values():
             indexes = val["indexes"]
             names   = val["names"]
@@ -393,60 +410,68 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 anglesList.append((centralIdx, leftIdx, rightIdx, lower, upper))
         # create angles
         self.set_angles(anglesList=anglesList)
-    
+
     def compute_standard_error(self, data):
-        """ 
-        Compute the standard error (StdErr) of data not satisfying constraint conditions. 
-        
+        """
+        Compute the standard error (StdErr) of data not satisfying constraint
+        conditions.
+
         .. math::
-            StdErr = \\sum \\limits_{i}^{C} 
-            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2} 
+            StdErr = \\sum \\limits_{i}^{C}
+            ( \\theta_{i} - \\theta_{i}^{min} ) ^{2}
             \\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta
             +
-            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2} 
+            ( \\theta_{i} - \\theta_{i}^{max} ) ^{2}
             \\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta
-                               
+
         Where:\n
         :math:`C` is the total number of defined angles constraints. \n
         :math:`\\theta_{i}^{min}` is the angle constraint lower limit set for constraint i. \n
         :math:`\\theta_{i}^{max}` is the angle constraint upper limit set for constraint i. \n
         :math:`\\theta_{i}` is the angle computed for constraint i. \n
         :math:`\\delta` is the Dirac delta function. \n
-        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{0}^{\\theta_{i}^{min}} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`0 \\leqslant \\theta_{i} \\leqslant \\theta_{i}^{min}` and 0 elsewhere.\n
-        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta` 
+        :math:`\\int_{\\theta_{i}^{max}}^{\\pi} \\delta(\\theta-\\theta_{i}) d \\theta`
         is equal to 1 if :math:`\\theta_{i}^{max} \\leqslant \\theta_{i} \\leqslant \\pi` and 0 elsewhere.\n
 
         :Parameters:
-            #. data (numpy.array): The constraint value data to compute standardError.
-            
+            #. data (numpy.array): Constraint's data to compute standardError.
+
         :Returns:
-            #. standardError (number): The calculated standardError of the constraint.
+            #. standardError (number): The calculated standardError of the
+               given data.
         """
         return FLOAT_TYPE( np.sum(data["reducedAngles"]**2) )
 
     def get_constraint_value(self):
         """
-        Computes all partial Mean Pair Distances (MPD) below the defined minimum distance. 
-        
+        Get partial Mean Pair Distances (MPD) below the defined
+        minimum distance.
+
         :Returns:
-            #. MPD (dictionary): The MPD dictionary, where keys are the element wise intra and inter molecular MPDs and values are the computed MPDs.
+            #. MPD (dictionary): MPD dictionary, where keys are the
+               element wise intra and inter molecular MPDs and values are
+               the computed MPDs.
         """
+        if self.data is None:
+            LOGGER.warn("%s data must be computed first using 'compute_data' method."%(self.__class__.__name__))
+            return {}
         return self.data
-       
+
     @reset_if_collected_out_of_date
     def compute_data(self):
-        """ Compute data and update engine constraintsData dictionary. """
+        """ Compute constraint's data. """
         if len(self._atomsCollector):
-            anglesData    = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
-            reducedData   = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
-            anglesIndexes = set(set(range(self.__anglesList[0].shape[0])))
-            anglesIndexes  = list( anglesIndexes-self._atomsCollector._randomData )
-            central = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes])
-            left    = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes])
-            right   = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes])
-            lowerLimit = self.__anglesList[3][anglesIndexes]
-            upperLimit = self.__anglesList[4][anglesIndexes]
+            anglesData  = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
+            reducedData = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
+            anglesIndex = set(set(range(self.__anglesList[0].shape[0])))
+            anglesIndex = list( anglesIndex-self._atomsCollector._randomData )
+            central = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndex])
+            left    = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndex])
+            right   = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndex])
+            lowerLimit = self.__anglesList[3][anglesIndex]
+            upperLimit = self.__anglesList[4][anglesIndex]
         else:
             central = self._atomsCollector.get_relative_indexes(self.__anglesList[0])
             left    = self._atomsCollector.get_relative_indexes(self.__anglesList[1])
@@ -454,21 +479,21 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             lowerLimit = self.__anglesList[3]
             upperLimit = self.__anglesList[4]
         # compute data
-        angles, reduced = full_angles_coords(central            = central, 
-                                             left               = left, 
-                                             right              = right, 
-                                             lowerLimit         = lowerLimit, 
-                                             upperLimit         = upperLimit, 
+        angles, reduced = full_angles_coords(central            = central,
+                                             left               = left,
+                                             right              = right,
+                                             lowerLimit         = lowerLimit,
+                                             upperLimit         = upperLimit,
                                              boxCoords          = self.engine.boxCoordinates,
                                              basis              = self.engine.basisVectors,
                                              isPBC              = self.engine.isPBC,
                                              reduceAngleToUpper = False,
                                              reduceAngleToLower = False,
-                                             ncores             = INT_TYPE(1))         
+                                             ncores             = INT_TYPE(1))
         # create full length data
         if len(self._atomsCollector):
-            anglesData[anglesIndexes]  = angles
-            reducedData[anglesIndexes] = reduced
+            anglesData[anglesIndex]  = angles
+            reducedData[anglesIndex] = reduced
             angles  = anglesData
             reduced = reducedData
         # set data
@@ -482,26 +507,28 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             self._set_original_data(self.data)
 
     def compute_before_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Compute constraint before move is executed.
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Group atoms index the move will
+               be applied to.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get angles indexes
-        anglesIndexes = []
+        anglesIndex = []
         #for idx in relativeIndexes:
         for idx in realIndexes:
-            anglesIndexes.extend( self.__angles[idx]['centralMap'] )
-            anglesIndexes.extend( self.__angles[idx]['otherMap'] )
-        anglesIndexes = list( set(anglesIndexes)-self._atomsCollector._randomData )
+            anglesIndex.extend( self.__angles[idx]['centralMap'] )
+            anglesIndex.extend( self.__angles[idx]['otherMap'] )
+        anglesIndex = list( set(anglesIndex)-self._atomsCollector._randomData )
         # compute data before move
-        if len(anglesIndexes):
-            angles, reduced =  full_angles_coords( central            = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                   left               = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                   right              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                   lowerLimit         = self.__anglesList[3][anglesIndexes], 
-                                                   upperLimit         = self.__anglesList[4][anglesIndexes], 
+        if len(anglesIndex):
+            angles, reduced =  full_angles_coords( central            = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndex]),
+                                                   left               = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndex]),
+                                                   right              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndex]),
+                                                   lowerLimit         = self.__anglesList[3][anglesIndex],
+                                                   upperLimit         = self.__anglesList[4][anglesIndex],
                                                    boxCoords          = self.engine.boxCoordinates,
                                                    basis              = self.engine.basisVectors ,
                                                    isPBC              = self.engine.isPBC,
@@ -512,29 +539,31 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             angles  = None
             reduced = None
         # set data before move
-        self.set_active_atoms_data_before_move( {"anglesIndexes":anglesIndexes, "angles":angles, "reducedAngles":reduced} )
+        self.set_active_atoms_data_before_move( {"anglesIndex":anglesIndex, "angles":angles, "reducedAngles":reduced} )
         self.set_active_atoms_data_after_move(None)
-        
+
     def compute_after_move(self, realIndexes, relativeIndexes, movedBoxCoordinates):
-        """ 
+        """
         Compute constraint after move is executed.
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Group atoms relative index
+               the move will be applied to.
             #. movedBoxCoordinates (numpy.ndarray): The moved atoms new coordinates.
         """
         # get angles indexes
-        anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
+        anglesIndex = self.activeAtomsDataBeforeMove["anglesIndex"]
         # change coordinates temporarily
         boxData = np.array(self.engine.boxCoordinates[relativeIndexes], dtype=FLOAT_TYPE)
         self.engine.boxCoordinates[relativeIndexes] = movedBoxCoordinates
         # compute data before move
-        if len(anglesIndexes):
-            angles, reduced =  full_angles_coords( central            = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes]), 
-                                                   left               = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes]), 
-                                                   right              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndexes]), 
-                                                   lowerLimit         = self.__anglesList[3][anglesIndexes], 
-                                                   upperLimit         = self.__anglesList[4][anglesIndexes], 
+        if len(anglesIndex):
+            angles, reduced =  full_angles_coords( central            = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndex]),
+                                                   left               = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndex]),
+                                                   right              = self._atomsCollector.get_relative_indexes(self.__anglesList[2][anglesIndex]),
+                                                   lowerLimit         = self.__anglesList[3][anglesIndex],
+                                                   upperLimit         = self.__anglesList[4][anglesIndex],
                                                    boxCoords          = self.engine.boxCoordinates,
                                                    basis              = self.engine.basisVectors ,
                                                    isPBC              = self.engine.isPBC,
@@ -552,26 +581,27 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if angles is None:
             self.set_after_move_standard_error( self.standardError )
         else:
-            # anglesIndexes is a fancy slicing, RL is a copy not a view.
-            RL = self.data["reducedAngles"][anglesIndexes]
-            self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]         
+            # anglesIndex is a fancy slicing, RL is a copy not a view.
+            RL = self.data["reducedAngles"][anglesIndex]
+            self.data["reducedAngles"][anglesIndex] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]
             self.set_after_move_standard_error( self.compute_standard_error(data = self.data) )
-            self.data["reducedAngles"][anglesIndexes] = RL
-            
+            self.data["reducedAngles"][anglesIndex] = RL
+
     def accept_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Accept move.
-        
+
         :Parameters:
-            #. realIndexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # get indexes
-        anglesIndexes = self.activeAtomsDataBeforeMove["anglesIndexes"]
-        if len(anglesIndexes):
+        anglesIndex = self.activeAtomsDataBeforeMove["anglesIndex"]
+        if len(anglesIndex):
             # set new data
             data = self.data
-            data["angles"][anglesIndexes]        += self.activeAtomsDataAfterMove["angles"]-self.activeAtomsDataBeforeMove["angles"]
-            data["reducedAngles"][anglesIndexes] += self.activeAtomsDataAfterMove["reducedAngles"]-self.activeAtomsDataBeforeMove["reducedAngles"]
+            data["angles"][anglesIndex]        += self.activeAtomsDataAfterMove["angles"]-self.activeAtomsDataBeforeMove["angles"]
+            data["reducedAngles"][anglesIndex] += self.activeAtomsDataAfterMove["reducedAngles"]-self.activeAtomsDataBeforeMove["reducedAngles"]
             self.set_data( data )
             # update standardError
             self.set_standard_error( self.afterMoveStandardError )
@@ -580,119 +610,131 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         self.set_active_atoms_data_after_move(None)
 
     def reject_move(self, realIndexes, relativeIndexes):
-        """ 
+        """
         Reject move.
-        
+
         :Parameters:
-            #. indexes (numpy.ndarray): Group atoms indexes the move will be applied to.
+            #. realIndexes (numpy.ndarray): Not used here.
+            #. relativeIndexes (numpy.ndarray): Not used here.
         """
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
-        
-    def accept_amputation(self, realIndex, relativeIndex):
-        """ 
-        Accept amputation of atom and sets constraints data and standard error accordingly.
-        
-        :Parameters:
-            #. realIndex (numpy.ndarray): atom index as a numpy array of a single element.
 
+    def accept_amputation(self, realIndex, relativeIndex):
         """
-        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM 
+        Accept amputation of atom and set constraint's data and
+        standard error accordingly.
+
+        :Parameters:
+            #. realIndex (numpy.ndarray): Atom's index as a numpy array
+               of a single element.
+            #. relativeIndex (numpy.ndarray): Not used here.
+        """
+        # MAYBE WE DON"T NEED TO CHANGE DATA AND SE. BECAUSE THIS MIGHT BE A PROBLEM
         # WHEN IMPLEMENTING ATOMS RELEASING. MAYBE WE NEED TO COLLECT DATA INSTEAD, REMOVE
         # AND ADD UPON RELEASE
         # get all involved data
-        anglesIndexes = []
+        anglesIndex = []
         for idx in realIndex:
-            anglesIndexes.extend( self.__angles[idx]['centralMap'] )
-            anglesIndexes.extend( self.__angles[idx]['otherMap'] )
-        anglesIndexes = list(set(anglesIndexes))
-        if len(anglesIndexes):
+            anglesIndex.extend( self.__angles[idx]['centralMap'] )
+            anglesIndex.extend( self.__angles[idx]['otherMap'] )
+        anglesIndex = list(set(anglesIndex))
+        if len(anglesIndex):
             # set new data
             data = self.data
-            data["angles"][anglesIndexes]        = 0
-            data["reducedAngles"][anglesIndexes] = 0
+            data["angles"][anglesIndex]        = 0
+            data["reducedAngles"][anglesIndex] = 0
             self.set_data( data )
             # update standardError
-            SE = self.compute_standard_error(data = self.get_constraint_value()) 
+            SE = self.compute_standard_error(data = self.get_constraint_value())
             self.set_standard_error( SE )
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
-    
+
     def reject_amputation(self, realIndex, relativeIndex):
-        """ 
+        """
         Reject amputation of atom.
-        
+
         :Parameters:
-            #. index (numpy.ndarray): atom index as a numpy array of a single element.
+            #. realIndex (numpy.ndarray): Not used here.
+            #. relativeIndex (numpy.ndarray): Not used here.
         """
         pass
-    
+
     def _on_collector_collect_atom(self, realIndex):
         # get angle indexes
         AI = self.__angles[realIndex]['centralMap'] + self.__angles[realIndex]['otherMap']
         # append all mapped bonds to collector's random data
         self._atomsCollector._randomData = self._atomsCollector._randomData.union( set(AI) )
-        # collect atom anglesIndexes
+        # collect atom anglesIndex
         self._atomsCollector.collect(realIndex, dataDict={'centralMap':self.__angles[realIndex]['centralMap'],
                                                           'otherMap':  self.__angles[realIndex]['otherMap']})
-    
+
     def plot(self, ax=None, nbins=25, subplots=True, split=None,
                    wspace=0.3, hspace=0.3,
-                   histtype='bar', lineWidth=None, lineColor=None,
+                   histType='bar', lineWidth=None, lineColor=None,
                    xlabel=True, xlabelSize=16,
                    ylabel=True, ylabelSize=16,
                    legend=True, legendCols=1, legendLoc='best',
                    title=True, titleStdErr=True, titleAtRem=True,
                    titleUsedFrame=True, show=True):
-        """ 
+        """
         Plot angles constraint distribution histogram.
-        
+
         :Parameters:
             #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given,  subplots parameters will be omitted. 
-               If None is given a new plot figure will be created.
+               If ax is given, subplots parameters will be omitted.
+               If None is given, a new plot figure will be created.
             #. nbins (int): number of bins in histogram.
-            #. subplots (boolean): Whether to add plot constraint on multiple axes.
-            #. split (None, 'name', 'element'): To split plots into histogram per atom 
-               names, elements in addition to lower and upper bounds. If None histograms 
-               will be built from lower and upper bounds only.
-            #. wspace (float): The amount of width reserved for blank space between 
-               subplots, expressed as a fraction of the average axis width.
-            #. hspace (float): The amount of height reserved for white space between 
-               subplots, expressed as a fraction of the average axis height.
-            #. histtype (string): the histogram type. optional among
-                ['bar', 'barstacked', 'step', 'stepfilled']
-            #. lineWidth (None, integer): bars contour line width. If None then default
-               value will be given.
-            #. lineColor (None, integer): bars contour line color. If None then default
-               value will be given.
+            #. subplots (boolean): Whether to add plot constraint on multiple
+               axes.
+            #. split (None, 'name', 'element'): To split plots into histogram
+               per atom names, elements in addition to lower and upper bounds.
+               If None is given, histograms will be built from lower and upper
+               bounds only.
+            #. wspace (float): The amount of width reserved for blank space
+               between subplots, expressed as a fraction of the average axis
+               width.
+            #. hspace (float): The amount of height reserved for white space
+               between subplots, expressed as a fraction of the average axis
+               height.
+            #. histType (string): the histogram type. optional among
+               ['bar', 'barstacked', 'step', 'stepfilled']
+            #. lineWidth (None, integer): Bars contour line width.
+               If None is given, then default value will be automatically set.
+            #. lineColor (None, integer): Bars contour line color.
+               If None is given, then default value will be automatically set.
             #. xlabel (boolean): Whether to create x label.
-            #. xlabelSize (number): The x label font size.
+            #. xlabelSize (number): x label font size.
             #. ylabel (boolean): Whether to create y label.
-            #. ylabelSize (number): The y label font size.
+            #. ylabelSize (number): y label font size.
             #. legend (boolean): Whether to create the legend or not
             #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best', 'center', 
+            #. legendLoc (string): Legend location. Anything among
+               'right', 'center left', 'upper right', 'lower right', 'best', 'center',
                'lower left', 'center right', 'upper left', 'upper center', 'lower center'
                is accepted.
             #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard error value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in title.
-            #. show (boolean): Whether to render and show figure before returning.
-        
+            #. titleStdErr (boolean): Whether to show constraint standard
+               error value in title.
+            #. titleAtRem (boolean): Whether to show engine's number of
+               removed atoms.
+            #. titleUsedFrame(boolean): Whether to show used frame name in
+               title.
+            #. show (boolean): Whether to render and show figure before
+               returning.
+
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
-        
-        +------------------------------------------------------------------------------+ 
-        |.. figure:: bonds_angle_constraint_plot_method.png                            | 
-        |   :width: 530px                                                              | 
-        |   :height: 400px                                                             |
-        |   :align: left                                                               | 
-        +------------------------------------------------------------------------------+
+
+        +----------------------------------------------------------------------+
+        |.. figure:: bonds_angle_constraint_plot_method.png                    |
+        |   :width: 530px                                                      |
+        |   :height: 400px                                                     |
+        |   :align: left                                                       |
+        +----------------------------------------------------------------------+
         """
         def _get_bins(dmin, dmax, boundaries, nbins):
             # create bins
@@ -718,13 +760,13 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             # return bins
             return bins
         # get constraint value
-        output = self.get_constraint_value()
-        if output is None:
+        if self.data is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
+        output = self.get_constraint_value()
         # import matplotlib
         import matplotlib.pyplot as plt
-        # compute categories 
+        # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -765,15 +807,15 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             else:
                 FIG  = plt.figure()
                 AXES = FIG.gca()
-                subplots = False 
+                subplots = False
         else:
-            AXES = ax  
+            AXES = ax
             FIG = AXES.get_figure()
-            subplots = False 
+            subplots = False
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3, L,U  = key
                 L = L*180./np.pi
                 U = U*180./np.pi
@@ -788,9 +830,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histType)
                 # vertical lines
                 Y = max(D)
                 AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
@@ -811,7 +853,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()): 
+            for idx, key in enumerate(categories.keys()):
                 a1,a2,a3, L,U  = key
                 L = L*180./np.pi
                 U = U*180./np.pi
@@ -825,9 +867,9 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 # get bins
                 BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L,U], nbins=nbins)
                 # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS, 
+                D, _, P = AXES.hist(x=data, bins=BINS,
                                     color=COL, label=label,
-                                    histtype=histtype)
+                                    histtype=histType)
                 # vertical lines
                 Y = max(D)
                 AXES.plot([L,L],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle='--')
@@ -869,26 +911,26 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if subplots:
             return FIG, N_AXES
         else:
-            return FIG, AXES   
-    
+            return FIG, AXES
+
     def export(self, fname, delimiter='     ', comments='# ', split=None):
         """
-        Export pair distribution constraint.
-        
+        Export angle constraint's data.
+
         :Parameters:
             #. fname (path): full file name and path.
             #. delimiter (string): String or character separating columns.
             #. comments (string): String that will be prepended to the header.
-            #. split (None, 'name', 'element'): To split output into per atom names,
-               elements in addition to lower and upper bounds. If None output 
-               will be built from lower and upper bounds only.
+            #. split (None, 'name', 'element'): To split output per atoms name,
+               or element in addition to lower and upper bounds. If None is
+               given output will be built from lower and upper bounds only.
         """
         # get constraint value
-        output = self.get_constraint_value()
-        if not len(output):
+        if self.data is None:
             LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
             return
-        # compute categories 
+        output = self.get_constraint_value()
+        # compute categories
         if split == 'name':
             splitV = self.engine.get_original_data("allNames")
         elif split == 'element':
@@ -918,7 +960,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             categories[k] = L
         ncategories = len(categories.keys())
         # create data
-        for idx, key in enumerate(categories.keys()): 
+        for idx, key in enumerate(categories.keys()):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
@@ -927,46 +969,16 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         for key, data in categories.items():
             add =  maxSize-len(data)
             if add > 0:
-                categories[key] = data + ['']*add              
+                categories[key] = data + ['']*add
         # start creating header and data
         sortCa = sorted( categories.keys() )
         header = [("%s%s%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,L,U)).replace(" ","_") for a1,a2,a3,L,U in sortCa]
         data   = [categories[key] for key in sortCa]
         # save
         data = np.transpose(data)
-        np.savetxt(fname     = fname, 
-                   X         = data, 
-                   fmt       = '%s', 
-                   delimiter = delimiter, 
+        np.savetxt(fname     = fname,
+                   X         = data,
+                   fmt       = '%s',
+                   delimiter = delimiter,
                    header    = " ".join(header),
                    comments  = comments)
-        
-        
-        
-        
-        
-        
-        
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    
-
-
-
-
-
-        

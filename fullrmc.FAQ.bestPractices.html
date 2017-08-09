@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Best practices &mdash; fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="top" title="fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
+    
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+  
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu"> 
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li> 
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>   
+                        </a></td> 
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />   
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->    
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;  
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>  
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+         
+         
+        
+        
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="best-practices">
+<h1>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this headline">¶</a></h1>
+<p>fullrmc&#8217;s learning curve is very steep if one understands basic python
+and some golden rules to setting and running the stochastic engine. The
+best way to creating and running a fullrmc fit is to create a run python
+script and launch it from the terminal.</p>
+<p><span class="underline">Atomic system</span></p>
+<p><strong>The first</strong> and most important step in fullrmc is to provide a complete
+pdb file containing all necessary atomic system information.
+One must not underestimate the importance of preparing a pdb file with all
+atomic and molecular information.
+There is always a programatic way in fullrmc to fix the structure,
+but it would make one&#8217;s life easier if the pdb file contains all the
+needed information. One should make sure to provide correct and coherent
+residue name, sequence number and segment identifier all of which
+will be used by fullrmc to parse and separate between molecules.
+All atoms name must be unique within the same molecule and all elements
+must be correctly set. for more information about pdb files please click
+<a class="reference external" href="fullrmc.FAQ.pdbFile.html">here</a>.</p>
+<p><strong>The second</strong> thing to take care of is the boundary conditions definition.
+Boundary conditions define the box size and therefore the density of the
+modeled system. Box size can be set as a REMARK in the pdb file or set using
+fullrmc&#8217;s stochastic engine set_boundary_conditions method. Two general types
+of boundary conditions exist. Periodic boundary conditions with a defined
+system box size and shape. Infinite boundary conditions with a non-defined
+box emulating an isolated atomic system.</p>
+<p><strong>The third</strong> thing one might need to fix is the density of the system but
+only when working with infinite boundary conditions. In this case, fullrmc&#8217;s
+stochastic engine set_number_density method should be used to set
+system&#8217;s density.</p>
+<p><span class="underline">Adding constraints</span></p>
+<p><strong>The fourth</strong> thing to do is to define and set stochastic engine constraints.
+Constraints are the engine&#8217;s rules to fitting the atomic system. Constraints
+can be defined at any time and added to the engine. At any time a constraint
+can be removed from the engine or set as used or unused using constraint
+set_used method. Available constraints in the fullrmc&#8217;s standard distribution
+can be found <a class="reference external" href="fullrmc.Constraints.html">here</a>.</p>
+<p>A constraint must be initialized, added to the engine so it&#8217;s aware of the
+atomic system and then configured like the following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import needed constraints definition from fullrmc.Constraints package</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.BondConstraints</span> <span class="kn">import</span> <span class="n">BondConstraint</span>
+
+<span class="c1"># Initialize constraints</span>
+<span class="n">PDF</span>  <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="n">dataPath</span><span class="p">)</span>
+<span class="n">BOND</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">()</span>
+
+<span class="c1"># Add initialized constraints to the stochastic engine instance ENGINE</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF</span><span class="p">,</span> <span class="n">BOND</span><span class="p">])</span>
+
+<span class="c1"># At this level constraints are added to the engine and they are</span>
+<span class="c1"># aware of the atomic structure. Now it&#39;s possible to configure</span>
+<span class="c1"># constraints and create atomic and molecular definitions such as</span>
+<span class="c1"># bonds definitions of the molecules</span>
+<span class="n">BOND</span><span class="o">.</span><span class="n">create_bonds_by_definition</span><span class="p">(</span> <span class="n">bondsDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;MOL1&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;H1&#39;</span> <span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">),</span>
+                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;H2&#39;</span> <span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">),</span>
+                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;H3&#39;</span> <span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.15</span><span class="p">)],</span>
+                                                  <span class="s2">&quot;MOL2&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;H1&#39;</span> <span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">),</span>
+                                                           <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;H2&#39;</span> <span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">)]</span> <span class="p">})</span>
+</pre></div>
+</div>
+<p>In the above example, two molecules &#8216;MOL1&#8217; and &#8216;MOL2&#8217; atomic bonds are
+defined. This is possible only because the atomic system pdb file is complete
+and therefore fullrmc is able to parse molecules and identify atoms name.</p>
+<p><span class="underline">Defining groups</span></p>
+<p><strong>The fifth</strong> step is re-defining groups if needed. By default atomic groups
+are set like one group per atom where each group contains a single atom index.
+One should not be afraid to alternate, remove and add new groups to the
+stochastic engine. Because atomic system pdb file is well configured,
+fullrmc&#8217;s stochastic methods such as set_groups_as_molecules can be used to
+automatically remove all defined groups and add molecular groups where each
+group contains all atoms of a single molecule. On the other hand, to customize
+more complex groups, one can do that by writing some python code as the
+following:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import Group definition from fullrmc</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
+
+<span class="c1"># Create a group of atoms with random indexes for the sake of the example</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span><span class="n">indexes</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="c1"># Add group to Engine&#39;s instance ENGINE</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span> <span class="n">G</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>One can create as many groups as needed and add them to the stochastic
+engine just like the above example. Other engine group methods such as
+clear_groups, add_group, set_groups, set_groups_as_atoms and
+set_groups_as_molecules, etc. also exist to be used as needed.</p>
+<p><span class="underline">Defining move generators</span></p>
+<p><strong>The sixth</strong> step is to define groups way of moving. Random translation
+move generator is set my default to every new group instance. To customize
+a group move generator one should do the following.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+
+<span class="c1"># Create a group of atoms with random indexes for the sake of the example</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">Group</span><span class="p">(</span> <span class="n">indexes</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">33</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span> <span class="p">)</span>
+
+<span class="c1"># Assuming random rotation of 10 deg. maximum amplitude is needed</span>
+<span class="n">G</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="p">)</span>
+
+<span class="c1"># Add group to Engine&#39;s instance ENGINE</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span> <span class="n">G</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p>fullrmc&#8217;s stochastic engine groups can be accessed using engine&#8217;s groups
+attribute and all Group method can be applied.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
+
+<span class="c1"># loop over groups and set move generator</span>
+<span class="k">for</span> <span class="n">G</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+    <span class="n">G</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span> <span class="n">RotationGenerator</span><span class="p">(</span><span class="n">amplitude</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
+<p><span class="underline">Running stochastic engine</span></p>
+<p><strong>The seventh</strong> and last step is running fullrmc&#8217;s stochastic engine. This
+can be as simple as calling engine&#8217;s run method. run method takes several
+arguments to allow customization.</p>
+<p><span class="underline">Creating running script</span></p>
+<p>fullrmc is designed to model complex atomic and molecular system. We believe
+that one should be able to interact with the atomic system and torture out
+useful insights when doing the stochastic modeling. For this particular reason
+creating a run, plot and visualize scripts is very useful to do so.n</p>
+<p>run.py script example for Nickel-Titanium alloy.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import operating system package</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Import fullrmc&#39;s stochastic engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="c1"># Import needed constraints</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.DistanceConstraints</span> <span class="kn">import</span> <span class="n">InterMolecularDistanceConstraint</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.AtomicCoordinationConstraints</span> <span class="kn">import</span> <span class="n">AtomicCoordinationNumberConstraint</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Constraints.StructureFactorConstraints</span> <span class="kn">import</span> <span class="n">ReducedStructureFactorConstraint</span>
+
+<span class="c1"># Import needed move generators</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Generators.Swaps</span> <span class="kn">import</span> <span class="n">SwapPositionsGenerator</span>
+
+<span class="c1"># Create run.py script global variables</span>
+<span class="n">ENGINE_PATH</span> <span class="o">=</span> <span class="s2">&quot;ni-ti_engine&quot;</span>
+<span class="n">PDF_PATH</span>    <span class="o">=</span> <span class="s2">&quot;experimental_pdf.gr&quot;</span>
+<span class="n">PDB_PATH</span>    <span class="o">=</span> <span class="s2">&quot;ni-ti_structure.pdb&quot;</span>
+<span class="n">FRESH_START</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="c1"># Check whether stochastic engine is already created at ENGINE_PATH</span>
+<span class="n">created</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span><span class="o">.</span><span class="n">is_engine</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">)</span>
+
+<span class="c1"># Create engine if this is the first run or starting fresh engine is requested</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">created</span> <span class="ow">or</span> <span class="n">FRESH_START</span><span class="p">:</span>
+    <span class="c1"># Create and instantiate stochastic engine</span>
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">ENGINE_PATH</span><span class="p">,</span> <span class="n">FRESH_START</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="c1"># Set atomic structure pdb file</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="n">PDB_PATH</span><span class="p">)</span>
+
+    <span class="c1"># Create constraints</span>
+    <span class="n">PDF</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="n">PDF_PATH</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
+    <span class="n">IMD</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">(</span><span class="n">defaultDistance</span><span class="o">=</span><span class="mf">2.2</span><span class="p">,</span> <span class="n">flexible</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">ACN</span> <span class="o">=</span> <span class="n">AtomicCoordinationNumberConstraint</span><span class="p">()</span>
+
+    <span class="c1"># Add constraints to the stochastic engine</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF</span><span class="p">,</span><span class="n">IMD</span><span class="p">,</span><span class="n">ACN</span><span class="p">])</span>
+
+    <span class="c1"># Customize constraints</span>
+    <span class="n">ACN</span><span class="o">.</span><span class="n">set_coordination_number_definition</span><span class="p">(</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;ti&#39;</span><span class="p">,</span><span class="s1">&#39;ti&#39;</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+                                              <span class="p">(</span><span class="s1">&#39;ti&#39;</span><span class="p">,</span><span class="s1">&#39;ni&#39;</span><span class="p">,</span><span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+                                              <span class="p">(</span><span class="s1">&#39;ni&#39;</span><span class="p">,</span><span class="s1">&#39;ni&#39;</span><span class="p">,</span><span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+                                              <span class="p">(</span><span class="s1">&#39;ni&#39;</span><span class="p">,</span><span class="s1">&#39;ti&#39;</span><span class="p">,</span><span class="mf">2.2</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+
+    <span class="c1"># save engine to disk</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+<span class="c1"># If engine is already created, load saved engine</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">)</span>
+
+    <span class="c1"># unpack constraints so later in the script they can be tweaked if needed</span>
+    <span class="n">PDF</span><span class="p">,</span><span class="n">IMD</span><span class="p">,</span><span class="n">ACN</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span>
+
+
+<span class="c1"># Define run functions that can be called later to start stochastic engine</span>
+<span class="k">def</span> <span class="nf">run_normal</span><span class="p">(</span><span class="n">nsteps</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="p">):</span>
+    <span class="c1"># Set groups as atoms</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
+
+    <span class="c1"># This run mode has all groups as atoms and all move generators</span>
+    <span class="c1"># as random translation. This mode is very similar to traditional</span>
+    <span class="c1"># Eeverse Monte Carlo.</span>
+    <span class="c1"># Run stochastic engine</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="n">nsteps</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="n">saveFrequency</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">run_swap</span><span class="p">(</span><span class="n">nsteps</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="p">):</span>
+    <span class="c1"># Set swapping move generators Ni--&gt;Ti and Ti--&gt;Ni</span>
+    <span class="c1"># Set groups as atoms</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
+
+    <span class="c1"># Get all atoms element list to use and identify atomic elements</span>
+    <span class="n">allElements</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">allElements</span>
+
+    <span class="c1"># Get all Nickel atoms index</span>
+    <span class="n">niSwapList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allElements</span><span class="p">))</span> <span class="k">if</span> <span class="n">allElements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ni&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Get all Titanium atoms index</span>
+    <span class="n">tiSwapList</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">allElements</span><span class="p">))</span> <span class="k">if</span> <span class="n">allElements</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ti&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Create swap generator from Titanium to Nickel</span>
+    <span class="n">toNiSG</span> <span class="o">=</span> <span class="n">SwapPositionsGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">niSwapList</span><span class="p">)</span>
+
+    <span class="c1"># Create swap generator from Nickel to Titanium</span>
+    <span class="n">toTiSG</span> <span class="o">=</span> <span class="n">SwapPositionsGenerator</span><span class="p">(</span><span class="n">swapList</span><span class="o">=</span><span class="n">tiSwapList</span><span class="p">)</span>
+
+    <span class="c1"># Set swap generator to groups</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+        <span class="c1"># Get group atom index</span>
+        <span class="n">atomIndex</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">indexes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Check whether group&#39;s atom is Nickel or Titanium</span>
+        <span class="c1"># Set Swap to Titanium Nickel atoms</span>
+        <span class="k">if</span> <span class="n">allElements</span><span class="p">[</span><span class="n">atomIndex</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ni&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">toTiSG</span><span class="p">)</span>
+        <span class="c1"># Set Swap to Nickel Titanium atoms</span>
+        <span class="k">elif</span> <span class="n">allElements</span><span class="p">[</span><span class="n">atomIndex</span><span class="p">]</span><span class="o">==</span><span class="s1">&#39;ti&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">set_move_generator</span><span class="p">(</span><span class="n">toNiSG</span><span class="p">)</span>
+
+    <span class="c1"># Run stochastic engine</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="n">nsteps</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="n">saveFrequency</span><span class="p">)</span>
+
+
+<span class="c1"># run stochastic engine</span>
+<span class="n">run_normal</span><span class="p">(</span><span class="n">nsteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">run_swap</span><span class="p">(</span><span class="n">nsteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More or less run functions can be created depending on the system being
+studied. At any point in time, one should stop the run script execution and
+create new run functions or alternate between them, tweak constraints,
+change groups, and move generators. The reason why we like to adopt this
+way of setting a stochastic fit is because once it&#8217;s set it becomes very
+easy to run the stochastic engine by simply calling a run function rather
+than writing and deleting code.
+We highly recommend copying this exact script every time a new system needs
+to be studied, change global variables value, add or remove constraints as
+needed.
+Look at the examples in the standard distribution, all run.py scripts
+look very similar to this one. Get inspired by the run functions and their
+is no shame in copying and adopting a function.</p>
+<p>plot.py script example for Nickel-Titanium alloy. This script can be launched
+at any time even when the stochastic engine is running. This way one can
+follow the fitting process and decide whether to proceed, or stop the engine
+and tweak the fitting parameters, modes, groups or generators.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import stochastic engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="c1"># Set engine path</span>
+<span class="n">ENGINE_PATH</span> <span class="o">=</span> <span class="s2">&quot;ni-ti_engine&quot;</span>
+
+<span class="c1"># Check whether engine is already saved or not.</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">mes</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">is_engine</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">,</span> <span class="n">mes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># If engine exists</span>
+<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+    <span class="c1"># load engine</span>
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">)</span>
+    <span class="c1"># unpack constraints</span>
+    <span class="n">PDF</span><span class="p">,</span><span class="n">IMD</span><span class="p">,</span><span class="n">ACN</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span>
+    <span class="c1"># plot pair distribution constraint</span>
+    <span class="n">PDF</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">intra</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c1"># plot atomic coordination numberOfSteps</span>
+    <span class="n">ACN</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="c1"># plot inter-molecular distance constraint</span>
+    <span class="n">IMD</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># if engine not found, print message</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">mes</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>visualize.py script example for Nickel-Titanium alloy. This script can be
+launched at any time even when the stochastic engine is running. This way one
+can visualize the atomic configuration system using
+<a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># standard libraries imports</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Import stochastic engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">Engine</span>
+
+<span class="c1"># Set engine path</span>
+<span class="n">ENGINE_PATH</span> <span class="o">=</span> <span class="s2">&quot;ni-ti_engine&quot;</span>
+
+<span class="c1"># Check whether engine is already saved or not.</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">result</span><span class="p">,</span> <span class="n">mes</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">is_engine</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">,</span> <span class="n">mes</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+<span class="c1"># If engine exists</span>
+<span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+    <span class="c1"># load engine</span>
+    <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">ENGINE_PATH</span><span class="p">)</span>
+    <span class="c1"># visualize configuration</span>
+    <span class="n">ENGINE</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">foldIntoBox</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">representationParams</span><span class="o">=</span><span class="s1">&#39;VDW 0.1 20&#39;</span><span class="p">)</span>
+<span class="c1"># if engine not found, print message</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span> <span class="n">mes</span>
+</pre></div>
+</div>
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

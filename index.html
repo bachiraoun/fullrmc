@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc package &mdash; fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.1.0',
+        VERSION:     '3.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="index" title="Index" href="genindex.html" />
-            <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="#" />
+            <link rel="top" title="fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package" href="#" />
             <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" />
     
     <!-- -------------------------------------------------------------------------- -->
@@ -105,7 +103,7 @@
              |
         
         </li>
-        <li><a href="#">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -119,62 +117,68 @@
         
   <div class="section" id="module-fullrmc">
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
-<img src="_images/inheritance-af213b81dea9384788bb52b6ec28e9a891e8e774.png" alt="Inheritance diagram of fullrmc.Engine" usemap="#inheritance3c5c761ed2" class="inheritance"/>
-<map id="inheritance3c5c761ed2" name="inheritance3c5c761ed2">
-<area shape="rect" id="node1" title="fulrmc&#39;s Reverse Monte Carlo (RMC) engine, used to launched a RMC simulation. " alt="" coords="5,5,156,29"/>
+<img src="_images/inheritance-b863adad8779201361adc8070e55f047802800d9.png" alt="Inheritance diagram of fullrmc.Engine" usemap="#inheritancef3da48e58f" class="inheritance"/>
+<map id="inheritancef3da48e58f" name="inheritancef3da48e58f">
+<area shape="rect" id="node1" title="fulrmc&#39;s engine, is used to launch a stochastic modelling which is" alt="" coords="5,5,77,29"/>
 </map>
-<img src="_images/inheritance-3b4e20c3de53f517d2ac8543a85d5c9f7e16346f.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritance53638427b4" class="inheritance"/>
-<map id="inheritance53638427b4" name="inheritance53638427b4">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly used" alt="" coords="228,5,441,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container. " alt="" coords="5,5,180,29"/>
+<img src="_images/inheritance-0f1e3055c365ab33b34c6fc47f9704638f216759.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
+<map id="inheritancefd4366267b" name="inheritancefd4366267b">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly" alt="" coords="125,5,222,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container." alt="" coords="5,5,77,29"/>
 </map>
-<img src="_images/inheritance-a2aaa3dbf208cbbb4999ef0d1a90fd065c2daecd.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors, fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Generators.Removes, fullrmc.Constraints.AtomicCoordinationConstraints, fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint, fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.DihedralAngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints, fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritance702c372d83" class="inheritance"/>
-<map id="inheritance702c372d83" name="inheritance702c372d83">
-<area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" target="_top" title="Generates random agitation moves upon an angle defined between two vectors left&#45;central and right&#45;central " alt="" coords="176,389,344,413"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class for all moves generators." alt="" coords="5,557,119,581"/>
-<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on atoms but " alt="" coords="194,437,325,461"/>
-<area shape="rect" id="node16" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" target="_top" title="Generates random agitation moves upon a distance separating two atoms by translating" alt="" coords="167,485,352,509"/>
-<area shape="rect" id="node22" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generates rotational moves upon groups of atoms to align and orient along an axis." alt="" coords="187,533,333,557"/>
-<area shape="rect" id="node25" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions are pre&#45;stored in a path " alt="" coords="205,581,314,605"/>
-<area shape="rect" id="node30" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" target="_top" title="Generates random rotational moves upon groups of atoms." alt="" coords="194,629,325,653"/>
-<area shape="rect" id="node36" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a " alt="" coords="203,701,317,725"/>
-<area shape="rect" id="node39" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" target="_top" title="Generates random translations moves upon groups of atoms." alt="" coords="186,821,333,845"/>
-<area shape="rect" id="node3" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number between atoms. " alt="" coords="732,101,978,125"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="477,245,590,269"/>
-<area shape="rect" id="node8" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond length defined between 2 defined atoms." alt="" coords="799,149,912,173"/>
-<area shape="rect" id="node9" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls the angle defined between 3 defined atoms, a first atom called central" alt="" coords="778,197,932,221"/>
-<area shape="rect" id="node14" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" target="_top" title="Dihedral angle is defined between two intersecting planes formed with four defined " alt="" coords="772,245,938,269"/>
-<area shape="rect" id="node18" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used to " alt="" coords="771,293,940,317"/>
-<area shape="rect" id="node45" title="This is the design class for all distance related constraints. " alt="" coords="785,341,926,365"/>
-<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="468,197,599,221"/>
-<area shape="rect" id="node6" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" target="_top" title="This generator allows removing single atoms at a time from the system. Atoms are" alt="" coords="449,437,618,461"/>
-<area shape="rect" id="node10" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="219,245,301,269"/>
-<area shape="rect" id="node17" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="An ExperimentalConstraint is any constraint related to experimental data." alt="" coords="454,389,613,413"/>
-<area shape="rect" id="node11" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="13,245,112,269"/>
-<area shape="rect" id="node12" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="185,5,335,29"/>
-<area shape="rect" id="node15" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="450,5,617,29"/>
-<area shape="rect" id="node13" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="9,29,116,53"/>
-<area shape="rect" id="node26" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="200,53,320,77"/>
-<area shape="rect" id="node24" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="It controls the total reduced pair distribution function (pdf) of the system noted as G(r). " alt="" coords="769,389,942,413"/>
-<area shape="rect" id="node28" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" target="_top" title="It controls the Structure Factor noted as S(Q) and also called" alt="" coords="768,437,942,461"/>
-<area shape="rect" id="node19" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="1320,317,1538,341"/>
-<area shape="rect" id="node20" title="This is the design class for all molecular distance related constraints. " alt="" coords="1058,341,1258,365"/>
-<area shape="rect" id="node21" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title=".. py:class::IntraMolecularDistanceConstraint" alt="" coords="1320,365,1538,389"/>
-<area shape="rect" id="node23" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" target="_top" title="It controls the total pair correlation function (pcf) of the system noted as g(r)." alt="" coords="1072,389,1243,413"/>
-<area shape="rect" id="node32" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" target="_top" title="Generates rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="424,509,643,533"/>
-<area shape="rect" id="node41" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" target="_top" title="Generates translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="417,557,650,581"/>
-<area shape="rect" id="node34" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="445,53,622,77"/>
-<area shape="rect" id="node27" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" target="_top" title="The Reduced Structure Factor that we will also note S(Q) " alt="" coords="1044,437,1272,461"/>
-<area shape="rect" id="node29" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a pre&#45;defined axis." alt="" coords="438,605,629,629"/>
-<area shape="rect" id="node31" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about one of their symmetry axis." alt="" coords="408,653,659,677"/>
-<area shape="rect" id="node33" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="777,53,933,77"/>
-<area shape="rect" id="node35" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapCentersGenerator" target="_top" title="Computes geometric center of the selected group, and swaps its atoms" alt="" coords="453,701,614,725"/>
-<area shape="rect" id="node37" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" target="_top" title="Generates positional swapping between atoms of the selected group and other atoms" alt="" coords="449,749,618,773"/>
-<area shape="rect" id="node38" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along a pre&#45;defined axis." alt="" coords="430,797,637,821"/>
-<area shape="rect" id="node42" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards a pre&#45;defined axis" alt="" coords="745,797,966,821"/>
-<area shape="rect" id="node40" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along one of their symmetry axis." alt="" coords="400,845,667,869"/>
-<area shape="rect" id="node43" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" target="_top" title="Generates random translation moves of every atom of the group along its direction vector to the geometric center of the group." alt="" coords="415,893,652,917"/>
-<area shape="rect" id="node44" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards one of its symmetry" alt="" coords="715,845,996,869"/>
+<img src="_images/inheritance-c2decd8e4e072a9abb93a9e82d3e81d5526afa14.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors" usemap="#inheritance41b11bc119" class="inheritance"/>
+<map id="inheritance41b11bc119" name="inheritance41b11bc119">
+<area shape="rect" id="node1" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="161,5,311,29"/>
+<area shape="rect" id="node3" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="364,5,531,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,29,113,53"/>
+<area shape="rect" id="node4" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="175,53,296,77"/>
+<area shape="rect" id="node6" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="359,53,536,77"/>
+<area shape="rect" id="node5" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="584,53,740,77"/>
+</map>
+<img src="_images/inheritance-699c476a93c9bfa34c0eb302bf0a79d454a3818d.png" alt="Inheritance diagram of fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Generators.Removes" usemap="#inheritance88be5fd1ce" class="inheritance"/>
+<map id="inheritance88be5fd1ce" name="inheritance88be5fd1ce">
+<area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" target="_top" title="Generate random agitation moves upon an angle defined between two vectors" alt="" coords="176,5,344,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,173,119,197"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on" alt="" coords="194,53,325,77"/>
+<area shape="rect" id="node5" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" target="_top" title="Generates random agitation moves upon a distance separating two atoms" alt="" coords="167,101,352,125"/>
+<area shape="rect" id="node6" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generate rotational moves upon groups of atoms to align and orient" alt="" coords="187,149,333,173"/>
+<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="205,197,314,221"/>
+<area shape="rect" id="node9" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationGenerator" target="_top" title="Generate random rotational moves upon groups of atoms." alt="" coords="194,245,325,269"/>
+<area shape="rect" id="node13" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a" alt="" coords="203,317,317,341"/>
+<area shape="rect" id="node16" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" target="_top" title="Generates random translations moves upon groups of atoms." alt="" coords="186,437,333,461"/>
+<area shape="rect" id="node3" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" target="_top" title="This generator allows removing single atoms at a time from the system." alt="" coords="449,53,618,77"/>
+<area shape="rect" id="node11" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" target="_top" title="Generate rotational moves upon groups of atoms about one of their" alt="" coords="424,125,643,149"/>
+<area shape="rect" id="node18" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" target="_top" title="Generates translation moves upon groups of atoms along one of their" alt="" coords="417,173,650,197"/>
+<area shape="rect" id="node8" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a" alt="" coords="438,221,629,245"/>
+<area shape="rect" id="node10" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about one of" alt="" coords="408,269,659,293"/>
+<area shape="rect" id="node12" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapCentersGenerator" target="_top" title="Computes geometric center of the selected group, and swaps its atoms" alt="" coords="453,317,614,341"/>
+<area shape="rect" id="node14" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" target="_top" title="Generates positional swapping between atoms of the selected group and" alt="" coords="449,365,618,389"/>
+<area shape="rect" id="node15" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along a" alt="" coords="430,413,637,437"/>
+<area shape="rect" id="node19" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards a" alt="" coords="745,413,966,437"/>
+<area shape="rect" id="node17" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" target="_top" title="Generate random translation moves upon groups of atoms along one of" alt="" coords="400,461,667,485"/>
+<area shape="rect" id="node20" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" target="_top" title="Generates random translation moves of every atom of the group along" alt="" coords="415,509,652,533"/>
+<area shape="rect" id="node21" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards one of" alt="" coords="715,461,996,485"/>
+</map>
+<img src="_images/inheritance-82f19cd93771dc0dd1eb3353d83c394fb757c7c2.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints, fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint, fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.DihedralAngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints, fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritance3d6e2e9ef5" class="inheritance"/>
+<map id="inheritance3d6e2e9ef5" name="inheritance3d6e2e9ef5">
+<area shape="rect" id="node1" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number of atoms." alt="" coords="491,5,736,29"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total" alt="" coords="306,149,419,173"/>
+<area shape="rect" id="node4" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond&#39;s length defined between two atoms." alt="" coords="557,53,670,77"/>
+<area shape="rect" id="node5" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls angle defined between 3 defined atoms, a first atom called central" alt="" coords="536,101,690,125"/>
+<area shape="rect" id="node8" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" target="_top" title="Dihedral angle is defined between two intersecting planes formed" alt="" coords="531,149,696,173"/>
+<area shape="rect" id="node10" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used" alt="" coords="529,197,698,221"/>
+<area shape="rect" id="node18" title="This is the design class for all distance related constraints." alt="" coords="543,245,684,269"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple" alt="" coords="297,101,428,125"/>
+<area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the atomic" alt="" coords="152,149,235,173"/>
+<area shape="rect" id="node9" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="Experimental constraint is any constraint related to experimental data." alt="" coords="283,293,443,317"/>
+<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,149,104,173"/>
+<area shape="rect" id="node15" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="Controls the total reduced pair distribution function (pdf) of atomic" alt="" coords="527,293,700,317"/>
+<area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" target="_top" title="Controls the Structure Factor noted as S(Q) and also called" alt="" coords="526,341,700,365"/>
+<area shape="rect" id="node11" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="1060,221,1278,245"/>
+<area shape="rect" id="node12" title="This is the design class for all molecular distance related constraints." alt="" coords="798,245,998,269"/>
+<area shape="rect" id="node13" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title=".. py:class::IntraMolecularDistanceConstraint" alt="" coords="1060,269,1278,293"/>
+<area shape="rect" id="node14" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" target="_top" title="Controls the total pair correlation function (pcf) of the system noted" alt="" coords="813,293,984,317"/>
+<area shape="rect" id="node16" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" target="_top" title="The Reduced Structure Factor that we will also note S(Q)" alt="" coords="784,341,1012,365"/>
 </map>
 <div class="section" id="welcoming-videos">
 <h2>Welcoming videos<a class="headerlink" href="#welcoming-videos" title="Permalink to this headline">¶</a></h2>
@@ -186,32 +190,35 @@
 <tr class="row-odd"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/untepXVc3BQ"
 frameborder="0" allowfullscreen>
-</iframe></div><p class="last">Molecular system full RMC simulation. Groups are set to molecules and smart moves are
-applied. Translations along symmetry axes, rotations about symmetry axes, etc.</p>
+</iframe></div><p class="last">Molecular system fullrmc stochastic fitting simulation. Groups are set to
+molecules and smart moves are applied. Translations along symmetry axes,
+rotations about symmetry axes, etc.</p>
 </td>
 </tr>
 <tr class="row-even"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/yTnCAw1DK3Q?rel=0"
 frameborder="0" allowfullscreen>
-</iframe></div><p class="last">Atomic binary Nickel-Titanium shape memory alloy system phase transformation RMC
-simulation. Random atomic translations are enough to reproduce short range ordering.
-But swapping atoms is necessary to fit long range atomic correlations.</p>
+</iframe></div><p class="last">Atomic binary Nickel-Titanium shape memory alloy system phase transformation
+stochastic simulation. Random atomic translations are enough to reproduce
+short range ordering. But swapping atoms is necessary to fit long range
+atomic correlations.</p>
 </td>
 </tr>
 <tr class="row-odd"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/xnG0wnEfbJ8"
 frameborder="0" allowfullscreen>
-</iframe></div><p class="last">Molecular system mere atomic RMC simulation. Covalent bond electron density
-polarization is modelled by allowing fullrmc to explore across energy low correlation
-barriers.</p>
+</iframe></div><p class="last">Molecular system mere atomic stochastic simulation. Covalent bond electron
+density polarization is modelled by allowing fullrmc to explore across energy
+low correlation barriers.</p>
 </td>
 </tr>
 <tr class="row-even"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/24Rd2EZ2vVo?rel=0"
 frameborder="0" allowfullscreen>
 </iframe></div><p class="last">Reverse Monte Carlo traditional fitting mode compared with fullrmc&#8217;s recursive
-selection with exploring. This video shows how from a potential point of view exploring
-allow to cross forbidden unlikely barriers and going out of local minimas.</p>
+selection with exploring. This video shows how from a potential point of view
+exploring allow to cross forbidden unlikely barriers and going out of local
+minimas.</p>
 </td>
 </tr>
 </tbody>
@@ -219,50 +226,56 @@ allow to cross forbidden unlikely barriers and going out of local minimas.</p>
 </div>
 <div class="section" id="brief-description">
 <h2>Brief Description<a class="headerlink" href="#brief-description" title="Permalink to this headline">¶</a></h2>
-<p>Reverse Monte Carlo (RMC) is probably best known for its applications in condensed matter 
-physics and solid state chemistry. fullrmc which stands for FUndamental Library Language 
-for Reverse Monte Carlo is a modelling package to solve an inverse problem whereby an 
-atomic/molecular model is adjusted until its atoms position have the greatest consistency 
-with a set of experimental data.</p>
-<p>fullrmc is a python package with its core and calculation modules optimized and compiled 
-in Cython. fullrmc is not a standard RMC package but it&#8217;s rather unique in its approach 
-to stochastically solving an atomic or molecular structure. fullrmc&#8217;s Engine sub-module 
-is the main module that contains the definition of &#8216;Engine&#8217; which is the main and only 
-class used to launch an RMC calculation. Engine reads only Protein Data Bank formatted 
-atomic configuration <a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> 
+<p>Reverse Monte Carlo (RMC) is probably best known for its applications in
+condensed matter physics and solid state chemistry. fullrmc which stands for
+FUndamental Library Language for Reverse Monte Carlo is different than
+traditional RMC but a stochastic modelling method to solve an inverse problem
+whereby an atomic/molecular model is  adjusted until its atoms position have
+the greatest consistency with a set of experimental data.</p>
+<p>fullrmc is a python package with its core and calculation modules optimized
+and compiled in Cython. fullrmc is not a standard RMC package but it&#8217;s rather
+unique in its approach to stochastically solving an atomic or molecular
+structure. fullrmc&#8217;s Engine sub-module is the main module that contains the
+definition of &#8216;Engine&#8217; which is the main and only class used to launch a
+stochastic fitting calculation. Engine reads only Protein Data Bank formatted
+atomic configuration <a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a>
 files and handles other definitions and attributes such as:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><strong>Group</strong>: Engine doesn&#8217;t understand atoms or molecules but group of atom indexes 
-instead. A group is a set of atom indexes, allowing no indexes redundancy 
-within the same group definition. A Group instance can contain any set of indexes 
-and as many atom indexes as needed. Grouping atoms is essential to make clusters 
-of atoms (residues, molecules, etc) evolve and move together. A group of 
-a single atom index can be used to make a single atom move separately from the 
-others. Engine&#8217;s &#8216;groups&#8217; attribute is a simple list of group instances containing 
-all the desired and defined groups that one wants to move.</li>
-<li><strong>Group selector</strong>: Engine requires a GroupSelector instance which is the artist 
-that selects a group from the engine&#8217;s groups list at every engine runtime step. 
-Among other properties, depending on which group selector is used by the engine, 
-a GroupSelector can allow weighting which means selecting groups more or less 
-frequently than the others, it can also allow selection recurrence and refinement 
-of a single group, ordered and random selection is also possible.</li>
-<li><strong>Move generator</strong>: Every group instance has its own MoveGenerator. Therefore 
-every group of atoms when selected by the engine&#8217;s group selector at the engine&#8217;s 
-runtime can perform a customizable and different kind of moves.</li>
-<li><strong>Constraint</strong>: A constraint is a rule that controls certain aspect of the 
-configuration upon moving groups. Engine&#8217;s &#8216;constraints&#8217; attribute is a list of 
-all defined and used constraint instances, it is the judge that controls the 
-evolution of the system by accepting or rejecting the move of a group. If engine&#8217;s 
-constraints list is empty and contains no constraint definition, this will result 
-in accepting all the generated moves.</li>
+<li><strong>Group</strong>: Engine doesn&#8217;t understand atoms or molecules but group of
+atom indexes instead. A group is a set of atom indexes, allowing
+indexes redundancy within the same group definition. A Group instance
+can contain any list of indexes and as many atoms index as needed.
+Grouping atoms is essential to make clusters of atoms (residues,
+molecules, etc) evolve and move together. A group of a single atom index
+can be used to make a single atom move separately from the others.
+Engine&#8217;s &#8216;groups&#8217; attribute is a simple list of group instances
+containing all the desired and defined groups that one wants to move.</li>
+<li><strong>Group selector</strong>: Engine requires a GroupSelector instance which is
+the artist that selects a group from the engine&#8217;s groups list at every
+engine runtime step. Among other properties, depending on which group
+selector is used by the engine, a GroupSelector can allow weighting
+which means selecting groups more or less frequently than the others,
+it can also allow selection recurrence and refinement of a single group,
+ordered and random selection is also possible.</li>
+<li><strong>Move generator</strong>: Every group instance has its own MoveGenerator.
+Therefore every group of atoms when selected by the engine&#8217;s group
+selector at the engine&#8217;s runtime can perform a customizable and
+different kind of moves.</li>
+<li><strong>Constraint</strong>: A constraint is a rule that controls certain aspect
+of the configuration upon moving groups. Engine&#8217;s &#8216;constraints&#8217;
+attribute is a list of all defined and used constraint instances, it
+is the judge that controls the evolution of the system by accepting or
+rejecting the move of a group. If engine&#8217;s constraints list is empty and
+contains no constraint definition, this will result in accepting all the
+generated moves.</li>
 </ol>
 </div></blockquote>
 </div>
 <div class="section" id="tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point">
 <h2>Tetrahydrofuran simple example yet complete and straight to the point<a class="headerlink" href="#tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">## Tetrahydrofuran (THF) molecule sketch</span>
-<span class="c1">## </span>
+<span class="c1">##</span>
 <span class="c1">##              O</span>
 <span class="c1">##   H41      /   \      H11</span>
 <span class="c1">##      \  /         \  /</span>
@@ -271,7 +284,7 @@ in accepting all the generated moves.</li>
 <span class="c1">##         \         /</span>
 <span class="c1">##   H31-- C3-------C2 --H21</span>
 <span class="c1">##        /         \</span>
-<span class="c1">##     H32            H22 </span>
+<span class="c1">##     H32            H22</span>
 <span class="c1">##</span>
 
 <span class="c1">#   #####################################################################################   #</span>
@@ -295,25 +308,25 @@ in accepting all the generated moves.</li>
 <span class="n">enginePath</span>   <span class="o">=</span> <span class="s2">&quot;thf_engine.rmc&quot;</span>
 
 <span class="c1">#   #####################################################################################   #</span>
-<span class="c1">#   ################################# CREATE RMC SYSTEM #################################   #</span>
+<span class="c1">#   ############################## CREATE STOCHASTIC ENGINE #############################   #</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
 <span class="c1"># if engine is not created and saved</span>
 <span class="k">if</span> <span class="ow">not</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">is_engine</span><span class="p">(</span><span class="n">enginePath</span><span class="p">)</span>
     <span class="c1"># create and initialize engine</span>
     <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">enginePath</span><span class="p">,</span> <span class="n">freshStart</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="n">pdbFileName</span><span class="p">)</span>
-    
+
     <span class="c1"># re-set structure boundary conditions</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_boundary_conditions</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">48.860</span><span class="p">]))</span>
-    
+
     <span class="c1"># create and add pair distribution constraint to the engine</span>
     <span class="n">PDF_CONSTRAINT</span> <span class="o">=</span> <span class="n">PairDistributionConstraint</span><span class="p">(</span><span class="n">experimentalData</span><span class="o">=</span><span class="n">pdfData</span><span class="p">,</span> <span class="n">weighting</span><span class="o">=</span><span class="s2">&quot;atomicNumber&quot;</span><span class="p">)</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">PDF_CONSTRAINT</span><span class="p">])</span>
-    
+
     <span class="c1"># create and add intermolecular distances constraint to the engine</span>
     <span class="n">EMD_CONSTRAINT</span> <span class="o">=</span> <span class="n">InterMolecularDistanceConstraint</span><span class="p">()</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">EMD_CONSTRAINT</span><span class="p">])</span>
-    
+
     <span class="c1"># create and add bonds constraint to the engine</span>
     <span class="n">B_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondConstraint</span><span class="p">()</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">B_CONSTRAINT</span><span class="p">])</span>
@@ -326,7 +339,7 @@ in accepting all the generated moves.</li>
                                                                       <span class="p">(</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span><span class="s1">&#39;H21&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span><span class="s1">&#39;H22&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
                                                                       <span class="p">(</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;H31&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;H32&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),</span>
                                                                       <span class="p">(</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span><span class="s1">&#39;H41&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">),(</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span><span class="s1">&#39;H42&#39;</span><span class="p">,</span> <span class="mf">0.88</span><span class="p">,</span> <span class="mf">1.16</span><span class="p">)]</span> <span class="p">})</span>
-    
+
     <span class="c1"># create and add angles constraint to the engine</span>
     <span class="n">BA_CONSTRAINT</span> <span class="o">=</span> <span class="n">BondsAngleConstraint</span><span class="p">()</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">BA_CONSTRAINT</span><span class="p">])</span>
@@ -344,7 +357,7 @@ in accepting all the generated moves.</li>
                                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span> <span class="p">,</span><span class="s1">&#39;H11&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span> <span class="p">,</span><span class="s1">&#39;H12&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span><span class="s1">&#39;H41&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
-                                                                          <span class="p">(</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span><span class="s1">&#39;H42&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>                                                                           
+                                                                          <span class="p">(</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span><span class="s1">&#39;H42&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span>  <span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
                                                                           <span class="c1"># H-C-C</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span> <span class="p">,</span><span class="s1">&#39;H11&#39;</span><span class="p">,</span><span class="s1">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C1&#39;</span> <span class="p">,</span><span class="s1">&#39;H12&#39;</span><span class="p">,</span><span class="s1">&#39;C2&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
@@ -358,34 +371,34 @@ in accepting all the generated moves.</li>
                                                                           <span class="p">(</span><span class="s1">&#39;C3&#39;</span> <span class="p">,</span><span class="s1">&#39;H32&#39;</span><span class="p">,</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span><span class="s1">&#39;H41&#39;</span><span class="p">,</span><span class="s1">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C4&#39;</span> <span class="p">,</span><span class="s1">&#39;H42&#39;</span><span class="p">,</span><span class="s1">&#39;C3&#39;</span> <span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">123</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-    
+
     <span class="c1"># create and add improper angles constraint to the engine keeping THF molecules&#39; atoms in the plane</span>
     <span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ImproperAngleConstraint</span><span class="p">()</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_constraints</span><span class="p">([</span><span class="n">IA_CONSTRAINT</span><span class="p">])</span>
     <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">create_angles_by_definition</span><span class="p">(</span> <span class="n">anglesDefinition</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;THF&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="p">(</span><span class="s1">&#39;C2&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span>
                                                                           <span class="p">(</span><span class="s1">&#39;C3&#39;</span><span class="p">,</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="s1">&#39;C1&#39;</span><span class="p">,</span><span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="p">]</span> <span class="p">})</span>
-    
+
     <span class="c1"># initialize constraints data</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">initialize_used_constraints</span><span class="p">()</span>
-    
+
     <span class="c1"># save engine</span>
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 <span class="c1"># if engine is created and saved, it can be simply loaded.</span>
-<span class="k">else</span><span class="p">:</span> 
+<span class="k">else</span><span class="p">:</span>
     <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">engineFilePath</span><span class="p">)</span>
     <span class="c1"># unpack constraints before fitting in case tweaking is needed</span>
     <span class="n">PDF_CONSTRAINT</span><span class="p">,</span> <span class="n">EMD_CONSTRAINT</span><span class="p">,</span> <span class="n">B_CONSTRAINT</span><span class="p">,</span> <span class="n">BA_CONSTRAINT</span><span class="p">,</span> <span class="n">IA_CONSTRAINT</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">constraints</span>
 
 <span class="c1">#   #####################################################################################   #</span>
-<span class="c1">#   ################################# RUN RMC ON ATOMS ##################################   #</span>
+<span class="c1">#   ########################### RUN ATOMIC STOCHASTIC FITTING ###########################   #</span>
 <span class="c1"># set groups as atoms. By default when the engine is constructed, all groups are single atoms.</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_atoms</span><span class="p">()</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
 
 <span class="c1">#   #####################################################################################   #</span>
-<span class="c1">#   ############################### RUN RMC ON MOLECULES ################################   #</span>
+<span class="c1">#   ########################## RUN MOLECULAR STOCHASTIC FITTING #########################   #</span>
 <span class="c1">## set groups as molecules instead of atoms</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_molecules</span><span class="p">()</span>  
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_groups_as_molecules</span><span class="p">()</span>
 <span class="c1"># set moves generators to all groups as a collection of random translation and rotation</span>
 <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
     <span class="n">mg</span> <span class="o">=</span> <span class="n">MoveGeneratorCollector</span><span class="p">(</span><span class="n">collection</span><span class="o">=</span><span class="p">[</span><span class="n">TranslationGenerator</span><span class="p">(),</span><span class="n">RotationGenerator</span><span class="p">()],</span> <span class="n">randomize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -400,25 +413,32 @@ in accepting all the generated moves.</li>
 <span class="c1">#[g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2))    for g in ENGINE.groups]</span>
 <span class="c1">## Molecular constraints are not necessary any more because groups are set to molecules.</span>
 <span class="c1">## At every engine step a whole molecule is rotate or translated therefore its internal</span>
-<span class="c1">## distances and properties are safe from any changes. At any time constraints can be </span>
+<span class="c1">## distances and properties are safe from any changes. At any time constraints can be</span>
 <span class="c1">## turn on again using the same method with a True flag. e.g. B_CONSTRAINT.set_used(True)</span>
 <span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">set_used</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
-<span class="c1">## run engine and perform RMC on molecules</span>
+<span class="c1">## run engine and perform stochastic fitting on molecules</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
-    
+
 <span class="c1">#   #####################################################################################   #</span>
-<span class="c1">#   ################################### PLOT TOTAL GR ###################################   #</span>
-<span class="n">PDF_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="c1">#   ################################## PLOT CONSTRAINTS #################################   #</span>
+<span class="n">PDF_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">EMD_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">B_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lineWidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>  <span class="n">split</span><span class="o">=</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">BA_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lineWidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">IA_CONSTRAINT</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lineWidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s1">&#39;element&#39;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="bp">True</span> <span class="p">)</span>
 </pre></div>
 </div>
-<p>The result shown in the figures herein is obtained by running fullrmc Engine for several hours on molecular groups.
-Position optimization is achieved by using a RecursiveGroupSelector to refine every selected group position
-and alternating groups moves generators. RotationAboutSymmetryAxisGenerator is used to fit the ring orientation, 
-then TranslationAlongSymmetryAxisGenerator is used to translate molecules along meaningful directions. 
-At the end, groups a reset to single atom index and RandomSelector is used to select groups randomly.
-the Engine is run for additional several hours to refine atoms positions separately.</p>
+<p>The result shown in the figures herein is obtained by running fullrmc Engine
+for several hours on molecular groups. Position optimization is achieved by
+using a RecursiveGroupSelector to refine every selected group position and
+alternating groups move generators. RotationAboutSymmetryAxisGenerator is
+used to fit the ring orientation, then TranslationAlongSymmetryAxisGenerator
+is used to translate molecules along meaningful directions. At the end, reset
+groups to single atom index and RandomSelector is used to select groups
+randomly. the Engine is run for additional several hours to refine atoms
+positions separately.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="33%" />
@@ -502,42 +522,46 @@ Engine runtime.</span></p>
 </div>
 <div class="section" id="sub-modules">
 <h2>Sub-modules<a class="headerlink" href="#sub-modules" title="Permalink to this headline">¶</a></h2>
-<p>Engine is fullrmc main module. It contains &#8216;Engine&#8217; the main class 
-of fullrmc which is the Reverse Monte Carlo artist. The engine class 
-takes only Protein Data Bank formatted files 
-<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> as 
-atomic/molecular input structure. It handles and fits simultaneously many 
-experimental data while controlling the evolution of the system using 
-user-defined molecular or atomistic constraints such as bond-length, 
-bond-angles, inter-molecular-distances, dihedral angles, etc.</p>
+<p>Engine is fullrmc&#8217;s main module. It contains &#8216;Engine&#8217; the main class
+of fullrmc which is the stochastic artist. The engine class
+takes only Protein Data Bank formatted files
+<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> as
+atomic/molecular input structure. It handles and fits simultaneously many
+experimental data while controlling the evolution of the system using
+user-defined molecular and atomistic constraints such as bond-length,
+bond-angles, dihedral angles, inter-molecular-distances, etc.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">Engine</code><span class="sig-paren">(</span><em>path=None</em>, <em>frames=None</em>, <em>logFile=None</em>, <em>freshStart=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>fulrmc&#8217;s Reverse Monte Carlo (RMC) engine, used to launched a RMC simulation. 
-It has the capability to use and fit simultaneously multiple sets of 
-experimental data. One can also define constraints such as distances, 
-bonds length, angles and many others.</p>
+<p>fulrmc&#8217;s engine, is used to launch a stochastic modelling which is
+different than traditional Reverse Monte Carlo (RMC).
+It has the capability to use and fit simultaneously
+multiple sets of experimental data. One can also define constraints such
+as distances, bonds length, angles and many others.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>path (None, string): Engine repository path to save the engine. If None is 
-given path will be set when saving the engine using Engine.save method. if a 
-non-empty directory is found at the given path an error will be raised.</li>
-<li>frames (None, list): List of frames name. Frames are used to store fitting
-data. Multiple frames can be used to create a fitting story or to fit 
-multiple structures simultaneously. Also multiple frames can be used to 
-launch multiple simulations at the same time and merge structures at some 
-predefined merging frequency.
+<li>path (None, string): Engine repository (directory) path to save the
+engine. If None is given path will be set when saving the engine
+using Engine.save method. If a non-empty directory is found at the
+given path an error will be raised unless freshStart flag attribute
+is set to True.</li>
+<li>frames (None, list): List of frames name. Frames are used to store
+fitting data. Multiple frames can be used to create a fitting story
+or to fit multiple structures simultaneously. Also multiple frames
+can be used to launch multiple simulations at the same time and
+merge structures at some predefined merging frequency.
 If None is given, a single frame &#8216;0&#8217; is initialized automatically.</li>
-<li>logFile (None, string): Logging file basename. A logging file full name will
-be the given logFile appended &#8216;.log&#8217; extension automatically.
-If None is given, logFile is left unchanged.</li>
-<li>freshStart (boolean): Whether to remove any existing fullrmc engine at the 
-given path if found. If set to False, an error will be raise if a fullrmc 
-engine or a non-empty directory is found at the given path.</li>
+<li>logFile (None, string): Logging file basename. A logging file full
+name will be the given logFile appended &#8216;.log&#8217; extension
+automatically. If None is given, logFile is left unchanged.</li>
+<li>freshStart (boolean): Whether to remove any existing fullrmc engine
+at the given path if found. If set to False, an error will be raise
+if a fullrmc engine or a non-empty directory is found at the given
+path.</li>
 </ol>
 </td>
 </tr>
@@ -546,7 +570,7 @@ engine or a non-empty directory is found at the given path.</li>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
@@ -596,8 +620,8 @@ engine or a non-empty directory is found at the given path.</li>
 
 <dl class="attribute">
 <dt>
-<code class="descname">lastSelectedAtomsIndexes</code></dt>
-<dd><p>The last moved atoms indexes.</p>
+<code class="descname">lastSelectedAtomsIndex</code></dt>
+<dd><p>The last moved atoms index.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -615,7 +639,7 @@ engine or a non-empty directory is found at the given path.</li>
 <dl class="attribute">
 <dt>
 <code class="descname">removed</code></dt>
-<dd><p>removed atoms tuple (tried, accepted, ratio)</p>
+<dd><p>Removed atoms tuple (tried, accepted, ratio)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -633,7 +657,8 @@ engine or a non-empty directory is found at the given path.</li>
 <dl class="attribute">
 <dt>
 <code class="descname">tolerated</code></dt>
-<dd><p>Number of tolerated steps in spite of increasing total totalStandardError</p>
+<dd><p>Number of tolerated steps in spite of increasing
+totalStandardError</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -675,21 +700,21 @@ engine or a non-empty directory is found at the given path.</li>
 <dl class="attribute">
 <dt>
 <code class="descname">basisVectors</code></dt>
-<dd><p>The boundary conditions basis vectors in case of PeriodicBoundaries, None in 
-case of InfiniteBoundaries.</p>
+<dd><p>The boundary conditions basis vectors in case of
+PeriodicBoundaries, None in case of InfiniteBoundaries.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">reciprocalBasisVectors</code></dt>
-<dd><p>The boundary conditions reciprocal basis vectors in case of 
+<dd><p>The boundary conditions reciprocal basis vectors in case of
 PeriodicBoundaries, None in case of InfiniteBoundaries.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">volume</code></dt>
-<dd><p>The boundary conditions basis volume in case of PeriodicBoundaries, 
+<dd><p>The boundary conditions basis volume in case of PeriodicBoundaries,
 None in case of InfiniteBoundaries.</p>
 </dd></dl>
 
@@ -702,8 +727,9 @@ None in case of InfiniteBoundaries.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">boxCoordinates</code></dt>
-<dd><p>The box coordinates of the current configuration in case of 
-PeriodicBoundaries. Similar to realCoordinates in case of InfiniteBoundaries.</p>
+<dd><p>The box coordinates of the current configuration in case of
+PeriodicBoundaries. Similar to realCoordinates in case of
+InfiniteBoundaries.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -714,20 +740,20 @@ PeriodicBoundaries. Similar to realCoordinates in case of InfiniteBoundaries.</p
 
 <dl class="attribute">
 <dt>
-<code class="descname">moleculesIndexes</code></dt>
-<dd><p>All atoms molecules indexes.</p>
+<code class="descname">moleculesIndex</code></dt>
+<dd><p>Atoms molecule index list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
-<code class="descname">moleculesNames</code></dt>
-<dd><p>Al atoms molecules names.</p>
+<code class="descname">moleculesName</code></dt>
+<dd><p>Atoms molecule name list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
-<code class="descname">elementsIndexes</code></dt>
-<dd><p>All atoms element index in elements list.</p>
+<code class="descname">elementsIndex</code></dt>
+<dd><p>Atoms element index list indexing elements sorted set.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -739,37 +765,37 @@ PeriodicBoundaries. Similar to realCoordinates in case of InfiniteBoundaries.</p
 <dl class="attribute">
 <dt>
 <code class="descname">allElements</code></dt>
-<dd><p>All atoms elements.</p>
+<dd><p>Atoms element list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
-<code class="descname">namesIndexes</code></dt>
-<dd><p>All atoms name index in names list</p>
+<code class="descname">namesIndex</code></dt>
+<dd><p>Atoms name index list indexing names sorted set</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">names</code></dt>
-<dd><p>Srted set of all existing atom names.</p>
+<dd><p>Sorted set of all existing atom names.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">allNames</code></dt>
-<dd><p>All atoms name list.</p>
+<dd><p>Atoms name list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">numberOfNames</code></dt>
-<dd><p>Number of defined atom names set.</p>
+<dd><p>Length of atoms name set.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">numberOfAtoms</code></dt>
-<dd><p>Number of atoms in pdb structure.</p>
+<dd><p>Number of atoms in the pdb.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -781,7 +807,7 @@ PeriodicBoundaries. Similar to realCoordinates in case of InfiniteBoundaries.</p
 <dl class="attribute">
 <dt>
 <code class="descname">numberOfElements</code></dt>
-<dd><p>Number of different elements in the configuration.</p>
+<dd><p>Number of different elements in the pdb.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -800,7 +826,7 @@ where N is the total number of atoms and V the volume of the system.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">constraints</code></dt>
-<dd><p>List copy of all constraints instances.</p>
+<dd><p>Copy list of all constraints instances.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -812,7 +838,8 @@ where N is the total number of atoms and V the volume of the system.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">totalStandardError</code></dt>
-<dd><p>Engine&#8217;s last recorded totalStandardError of the current configuration.</p>
+<dd><p>Engine&#8217;s last recorded totalStandardError of the current
+configuration.</p>
 </dd></dl>
 
 <dl class="method">
@@ -847,16 +874,16 @@ where N is the total number of atoms and V the volume of the system.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>path (string): The path to fetch.</li>
-<li>repo (boolean): Whether to return repository if an engine is found. 
-Otherwise None is returned.</li>
+<li>repo (boolean): Whether to return repository if an engine is
+found. Otherwise None is returned.</li>
 <li>mes (boolean): Whether to return explanatory message.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): The fetch result, True if engine is found False 
-otherwise.</li>
-<li>repo (pyrep.Repository): The repository instance. 
+<li>result (boolean): The fetch result, True if engine is found
+False otherwise.</li>
+<li>repo (pyrep.Repository): The repository instance.
 This is returned only if &#8216;repo&#8217; argument is set to True.</li>
 <li>message (string): The explanatory message.
 This is returned only if &#8216;mes&#8217; argument is set to True.</li>
@@ -876,31 +903,33 @@ This is returned only if &#8216;mes&#8217; argument is set to True.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>path (None, string): Repository path to save the engine. 
-If path is None, engine&#8217;s path is used to update already saved engine. 
-If path and engine&#8217;s path are both None, and error will be raised.</li>
-<li>copyFrames (boolean): If path is None, this argument is discarded. 
-This argument sets whether to copy all frames data to the new repository 
-path. If path is not None and this argument is False, Only used frame data 
-will be copied and other frames will be discarded in new engine.</li>
+<li>path (None, string): Repository path to save the engine.
+If path is None, engine&#8217;s path will be used.
+If path and engine&#8217;s path are both None, and error will
+be raised.</li>
+<li>copyFrames (boolean): If path is None, this argument is
+discarded. This argument sets whether to copy all frames data
+to the new repository path. If path is not None and this
+argument is False, Only used frame data will be copied and other
+frames will be discarded in new engine.</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-<p>N.B. If path is given, it will automatically updates engine&#8217;s path to point 
-towards given path.</p>
+<p>N.B. If path is given, it will automatically update engine&#8217;s path to
+point towards given path.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
-<dd><p>Load and return engine instance. None of the current engine attribute will be 
-updated. must be used as the following</p>
+<dd><p>Load and return engine instance. None of the current engine attribute
+will be updated. must be used as the following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -909,12 +938,12 @@ updated. must be used as the following</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>path (string): the file path to save the engine</li>
+<li>path (string): Directory path to save the engine.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (Engine): the engine&#8217;s instance.</li>
+<li>engine (Engine): Engine instance.</li>
 </ol>
 </td>
 </tr>
@@ -931,8 +960,9 @@ updated. must be used as the following</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>logFile (None, string): Logging file basename. A logging file full name will
-be the given logFile appended &#8216;.log&#8217; extension automatically.</li>
+<li>logFile (None, string): Logging file basename. A logging file
+full name will be the given logFile appended &#8216;.log&#8217;
+extension automatically.</li>
 </ol>
 </td>
 </tr>
@@ -949,12 +979,12 @@ be the given logFile appended &#8216;.log&#8217; extension automatically.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>frame (string): Frame name</li>
+<li>frame (string): Frame name.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): whether frame exists.</li>
+<li>result (boolean): True if frame exists False otherwise.</li>
 </ol>
 </td>
 </tr>
@@ -971,8 +1001,8 @@ be the given logFile appended &#8216;.log&#8217; extension automatically.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frames (string, list): Frames name. It can be a string to add a single
-frame or a list of strings to add multiple frames.</li>
+<li>frames (string, list): Frames name. It can be a string to
+add a single frame or a list of strings to add multiple frames.</li>
 </ol>
 </td>
 </tr>
@@ -989,7 +1019,7 @@ frame or a list of strings to add multiple frames.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frame (string): Frames name.</li>
+<li>frame (string): Frame name.</li>
 </ol>
 </td>
 </tr>
@@ -1017,13 +1047,13 @@ frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_used_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
-<dd><p>Set engine frame in use.</p>
+<dd><p>Switch engine frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frame (string): The frame name to set.</li>
+<li>frame (string): The frame to switch to and use from now on.</li>
 </ol>
 </td>
 </tr>
@@ -1040,7 +1070,7 @@ frame or a list of strings to add multiple frames.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frame (string): The frame name to delete.</li>
+<li>frame (string): The frame to delete.</li>
 </ol>
 </td>
 </tr>
@@ -1057,8 +1087,8 @@ frame or a list of strings to add multiple frames.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frame (string): The frame name to rename.</li>
-<li>newName (string): The frame new name.</li>
+<li>frame (string): The frame to rename.</li>
+<li>newName (string): The new name.</li>
 </ol>
 </td>
 </tr>
@@ -1069,7 +1099,7 @@ frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">export_pdb</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
-<dd><p>Export a pdb file of the last refined and save configuration state.</p>
+<dd><p>Export a pdb file of the last refined and saved configuration state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1086,13 +1116,13 @@ frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">get_pdb</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>get a pdb instance of the last refined and save configuration state.</p>
+<dd><p>Get a pdb instance of the last refined and save configuration state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>pdb (pdbParser): the pdb instance.</li>
+<li>pdb (pdbParser): The pdb instance.</li>
 </ol>
 </td>
 </tr>
@@ -1103,13 +1133,13 @@ frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_tolerance</code><span class="sig-paren">(</span><em>tolerance</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the runtime engine tolerance value.</p>
+<dd><p>Set engine&#8217;s runtime tolerance value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>tolerance (number): The runtime tolerance parameters. 
+<li>tolerance (number): The runtime tolerance parameters.
 It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
 </ol>
 </td>
@@ -1121,14 +1151,14 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <dl class="method">
 <dt>
 <code class="descname">set_group_selector</code><span class="sig-paren">(</span><em>selector</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the engine group selector instance.</p>
+<dd><p>Set engine&#8217;s group selector instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, GroupSelector): the GroupSelector instance. 
-If None, RandomSelector is set automatically.</li>
+<li>selector (None, GroupSelector): The GroupSelector instance.
+If None is given, RandomSelector is set automatically.</li>
 </ol>
 </td>
 </tr>
@@ -1151,10 +1181,12 @@ If None, RandomSelector is set automatically.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>g (Group, integer, list, set, tuple numpy.ndarray): Group instance, integer, 
-list, tuple, set or numpy.ndarray of atoms indexes of atoms indexes.</li>
-<li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;. Keep True 
-unless you know what you are doing.</li>
+<li>g (Group, integer, list, set, tuple numpy.ndarray): Group
+instance, integer, list, tuple, set or numpy.ndarray of atoms
+index.</li>
+<li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;.
+This is to be used interally only. Keep default value unless
+you know what you are doing.</li>
 </ol>
 </td>
 </tr>
@@ -1165,17 +1197,18 @@ unless you know what you are doing.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_groups</code><span class="sig-paren">(</span><em>groups</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the engine groups of indexes.</p>
+<dd><p>Set engine&#8217;s groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (None, Group, list): A single Group instance or a list, tuple, 
-set of any of Group instance, integer, list, set, tuple or numpy.ndarray 
-of atom indexes that will be set one by one by set_group method.
-If None, single atom groups of all atoms will be all automatically created 
-which is the same as using set_groups_as_atoms method.</li>
+<li>groups (None, Group, list): A single Group instance or a list,
+tuple, set of any of Group instance, integer, list, set, tuple
+or numpy.ndarray of atoms index that will be set one by one
+by set_group method. If None is given, single atom groups of
+all atoms will be all automatically created which is the same
+as using set_groups_as_atoms method.</li>
 </ol>
 </td>
 </tr>
@@ -1192,9 +1225,9 @@ which is the same as using set_groups_as_atoms method.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groups (Group, list): Group instance or list of groups, where every 
-group must be a Group instance or a numpy.ndarray of atoms indexes of 
-type numpy.int32.</li>
+<li>groups (Group, list): Group instance or list of groups,
+where every group must be a Group instance or a
+numpy.ndarray of atoms index of type numpy.int32.</li>
 </ol>
 </td>
 </tr>
@@ -1205,49 +1238,56 @@ type numpy.int32.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_groups_as_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine&#8217;s groups as single atom groups of all atoms.</p>
+<dd><p>Automatically set engine&#8217;s groups as single atom group for
+all atoms.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">set_groups_as_molecules</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine&#8217;s groups indexes according to molecules indexes.</p>
+<dd><p>Automatically set engine&#8217;s groups indexes according to
+molecules indexes.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">set_pdb</code><span class="sig-paren">(</span><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Set used frame pdb configuration. Engine and constraints data will be 
-automatically reset but not constraints definitions. If pdb was already set and 
-this is a resetting of a different atomic configuration, with different elements 
-or atomic order, or different size and number of atoms, constraints definitions 
-must be reset manually. In general, their is no point in changing the atomic 
-configuration of a completely different atomic nature. It is advisable to create 
-a new engine from scratch or redefining all constraints definitions.</p>
+<code class="descname">set_pdb</code><span class="sig-paren">(</span><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndex=None</em>, <em>moleculesName=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Set used frame pdb configuration. Engine and constraints data will be
+automatically reset but not constraints definitions. If pdb was already
+set and this is a resetting of a different atomic configuration, with
+different elements or atomic order, or different size and number of
+atoms, constraints definitions must be reset manually. In general,
+their is no point in changing the atomic configuration of a completely
+different atomic nature. It is advisable to create a new engine from
+scratch or redefining all constraints definitions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>pdb (pdbParser, string): the configuration pdb as a pdbParser instance or 
-a path string to a pdb file.</li>
-<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, 
+<li>pdb (pdbParser, string): the configuration pdb as a pdbParser
+instance or a path string to a pdb file.</li>
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
 numpy.ndarray, number): The configuration&#8217;s boundary conditions.
-If None, boundaryConditions are set to InfiniteBoundaries with no periodic 
-boundaries. If numpy.ndarray is given, it must be pass-able to a 
-PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), 
-(9,1), (3,3) is allowed. If number is given, it&#8217;s like a numpy.ndarray of 
-shape (1,), it is assumed as a cubic box of box length equal to number.</li>
-<li>names (None, list): All pdb atoms names list.
-If None names will be calculated automatically by parsing pdb instance.</li>
-<li>elements (None, list): All pdb atoms elements list.
-If None elements will be calculated automatically by parsing pdb instance.</li>
-<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-If None moleculesIndexes will be calculated automatically by parsing pdb 
+If None, boundaryConditions will be parsed from pdb if existing
+otherwise, InfiniteBoundaries with no periodic boundaries will
+be set. If numpy.ndarray is given, it must be pass-able
+to a PeriodicBoundaries instance. Normally any real
+numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,),
+it is assumed as a cubic box of box length equal to number.</li>
+<li>names (None, list): Atoms names list. If None is given, names
+will be calculated automatically by parsing pdb instance.</li>
+<li>elements (None, list): Atoms elements list. If None is given,
+elements will be calculated automatically by parsing pdb
 instance.</li>
-<li>moleculesNames (None, list): The molecules names list. Must have the 
-length of the number of atoms. If None, it is automatically generated as 
-the pdb residues name.</li>
+<li>moleculesIndex (None, list, numpy.ndarray): Molecules index
+list. Must have the length of number of atoms. If None is given,
+moleculesIndex will be calculated automatically by parsing pdb
+instance.</li>
+<li>moleculesName (None, list): Molecules name list. Must have the
+length of the number of atoms. If None is given, it is
+automatically generated as the pdb residues name.</li>
 </ol>
 </td>
 </tr>
@@ -1258,21 +1298,22 @@ the pdb residues name.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_boundary_conditions</code><span class="sig-paren">(</span><em>boundaryConditions</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the configuration boundary conditions. Any type of periodic boundary 
-conditions are allowed and not restricted to cubic. Engine and constraintsData 
-will be automatically reset.</p>
+<dd><p>Sets the configuration&#8217;s boundary conditions. Any type of periodic
+boundary conditions is allowed and not restricted to cubic. Engine
+and constraints data will be automatically reset.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries, 
+<li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
 numpy.ndarray, number): The configuration&#8217;s boundary conditions.
-If None, boundaryConditions are set to InfiniteBoundaries with no periodic 
-boundaries. If numpy.ndarray is given, it must be pass-able to a
-PeriodicBoundaries. Normally any real numpy.ndarray of shape (1,), (3,1), 
-(9,1), (3,3) is allowed. If number is given, it&#8217;s like a numpy.ndarray of 
-shape (1,), it is assumed as a cubic box of box length equal to number.</li>
+If None, InfiniteBoundaries with no periodic boundaries will
+be set. If numpy.ndarray is given, it must be pass-able
+to a PeriodicBoundaries instance. Normally any real
+numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it&#8217;s like a numpy.ndarray of shape (1,),
+it is assumed as a cubic box of box length equal to number.</li>
 </ol>
 </td>
 </tr>
@@ -1284,13 +1325,14 @@ shape (1,), it is assumed as a cubic box of box length equal to number.</li>
 <dt>
 <code class="descname">set_number_density</code><span class="sig-paren">(</span><em>numberDensity</em><span class="sig-paren">)</span></dt>
 <dd><p>Sets system&#8217;s number density. This is used to correct system&#8217;s
-volume. It can be used only with InfiniteBoundaries.</p>
+volume. It can only be used with InfiniteBoundaries.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>numberDensity (number): The number density value.</li>
+<li>numberDensity (number): Number density value that should be
+bigger than zero.</li>
 </ol>
 </td>
 </tr>
@@ -1300,19 +1342,41 @@ volume. It can be used only with InfiniteBoundaries.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">set_molecules_indexes</code><span class="sig-paren">(</span><em>moleculesIndexes=None</em>, <em>moleculesNames=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets moleculesIndexes list, assigning each atom to a molecule.</p>
+<code class="descname">set_molecules_index</code><span class="sig-paren">(</span><em>moleculesIndex=None</em>, <em>moleculesName=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Set moleculesIndex list, assigning each atom to a molecule.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>moleculesIndexes (None, list, numpy.ndarray): The molecules indexes list.
-If None moleculesIndexes will be calculated automatically by parsing pdb 
+<li>moleculesIndex (None, list, numpy.ndarray): Molecules index
+list. Must have the length of the number of atoms. If None is
+given, moleculesIndex will be calculated automatically by
+parsing pdb instance.</li>
+<li>moleculesName (None, list): Molecules name list. Must have the
+length of the number of atoms. If None is given, it will be
+automatically generated as the pdb residues name.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_elements_index</code><span class="sig-paren">(</span><em>elements=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Set elements and elementsIndex lists, assigning a type element
+to each atom.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>elements (None, list): Elements list. Must have the
+length of the number of atoms. If None is given,
+elements will be calculated automatically  by parsing pdb
 instance.</li>
-<li>moleculesNames (None, list): The molecules names list. Must have the 
-length of the number of atoms. If None, it is automatically generated as 
-the pdb residues name.</li>
 </ol>
 </td>
 </tr>
@@ -1322,35 +1386,14 @@ the pdb residues name.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_elements_indexes</code><span class="sig-paren">(</span><em>elements=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets elements list, assigning a type element to each atom.</p>
+<code class="descname">set_names_index</code><span class="sig-paren">(</span><em>names=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Set names and namesIndex list, assigning a name to each atom.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>elements (None, list): All pdb atoms elements list.
-If None elements will be calculated automatically by parsing pdb instance.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">set_names_indexes</code><span class="sig-paren">(</span><em>names=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets names list, assigning a name to each atom.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>names (None, list): The names indexes list.
-If None names will be generated automatically by parsing pdbParser instance.</li>
-</ol>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body">#. names (None, list): The names list. If None is given, names
+will be generated automatically by parsing pdbParser instance.</td>
 </tr>
 </tbody>
 </table>
@@ -1365,53 +1408,65 @@ If None names will be generated automatically by parsing pdbParser instance.</li
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">commands (None, list, tuple): List of commands to pass upon calling vmd.
-commands can be a .dcd file to load a trajectory for instance.</p>
+<li><p class="first">commands (None, list, tuple): List of commands to pass
+upon calling vmd.</p>
 </li>
-<li><p class="first">foldIntoBox (boolean): Whether to fold all atoms into simulation box 
-before visualization.</p>
+<li><p class="first">foldIntoBox (boolean): Whether to fold all atoms into
+PeriodicBoundaries box before visualization. If boundary
+conditions are InfiniteBoundaries then nothing will be done.</p>
 </li>
-<li><p class="first">boxToCenter (boolean): Translate box center to atom coordinates center.</p>
+<li><p class="first">boxToCenter (boolean): Translate box center to atom coordinates
+center.</p>
 </li>
-<li><p class="first">boxWidth (number): Visualize the simulation box by giving the lines width.
-If 0 then the simulation box is not visualized.</p>
+<li><p class="first">boxWidth (number): Visualize the simulation box by giving the
+lines width. If 0 or boundary conditions are InfiniteBoundaries
+then nothing is visualized.</p>
 </li>
-<li><p class="first">boxStyle (str): The box line style, it can be either solid or dashed.</p>
+<li><p class="first">boxStyle (str): The box line style, it can be either solid or
+dashed.  If boundary conditions are InfiniteBoundaries then
+nothing will be done.</p>
 </li>
-<li><p class="first">boxColor (str): Choose the simulation box color among the following:</p>
+<li><p class="first">boxColor (str): Choose the simulation box color. If boundary
+conditions are InfiniteBoundaries then  nothing will be done.
+available colors are:</p>
 <p>blue, red, gray, orange, yellow, tan, silver, green,
-white, pink, cyan, purple, lime, mauve, ochre, iceblue, 
+white, pink, cyan, purple, lime, mauve, ochre, iceblue,
 black, yellow2, yellow3, green2, green3, cyan2, cyan3, blue2,
-blue3, violet, violet2, magenta, magenta2, red2, red3, 
+blue3, violet, violet2, magenta, magenta2, red2, red3,
 orange2, orange3.</p>
 </li>
-<li><p class="first">bgColor (str): Set the background color.</p>
+<li><p class="first">bgColor (str): Set visualization background color.</p>
 </li>
-<li><p class="first">displayParams(None, dict): Set the display parameters. If None, default 
-parameters will be applied. If dictionary the following keys can be used.</p>
+<li><p class="first">displayParams(None, dict): Set display parameters.
+If None is given, default parameters will be applied.
+If dictionary is given, the following keys can be used.</p>
 <ul class="simple">
 <li>&#8216;depth cueing&#8217; (default True): Set the depth cueing flag.</li>
 <li>&#8216;cue density&#8217; (default 0.1): Set the depth density.</li>
-<li>&#8216;cue mode&#8217; (default &#8216;Exp&#8217;): Set the depth mode among &#8216;linear&#8217;, 
+<li>&#8216;cue mode&#8217; (default &#8216;Exp&#8217;): Set the depth mode among &#8216;linear&#8217;,
 &#8216;Exp&#8217; and &#8216;Exp2&#8217;.</li>
 </ul>
 </li>
-<li><p class="first">representationParams(str): Set representation method among the following:</p>
-<p>Lines, Bonds, DynamicBonds, HBonds, Points, VDW, CPK, Licorice, Beads, 
-Dotted, Solvent. And add parameters accordingly if needed. e.g.</p>
+<li><p class="first">representationParams(str): Set representation method among
+the following:</p>
+<p>Lines, Bonds, DynamicBonds, HBonds, Points, VDW, CPK, Licorice,
+Beads, Dotted, Solvent.</p>
+<p>Add parameters accordingly if needed like the following.</p>
 <ul class="simple">
-<li>Points representation accept only size parameter e.g. &#8216;Points 5&#8217;</li>
-<li>CPK representation can accept respectively 4 parameters as the 
-following &#8216;Sphere Scale&#8217;, &#8216;Bond Radius&#8217;, &#8216;Sphere Resolution&#8217;, 
+<li>Points representation accept only size parameter
+e.g. &#8216;Points 5&#8217;</li>
+<li>CPK representation can accept respectively 4 parameters as the
+following &#8216;Sphere Scale&#8217;, &#8216;Bond Radius&#8217;, &#8216;Sphere Resolution&#8217;,
 &#8216;Bond Resolution&#8217; e.g. &#8216;CPK 1.0 0.2 50 50&#8217;</li>
-<li>VDW representation can accept respectively 2 parameters as the following 
-&#8216;Sphere Scale&#8217;, &#8216;Sphere Resolution&#8217; e.g. &#8216;VDW 0.7 100&#8217;</li>
+<li>VDW representation can accept respectively 2 parameters as
+the following &#8216;Sphere Scale&#8217;, &#8216;Sphere Resolution&#8217;
+e.g. &#8216;VDW 0.7 100&#8217;</li>
 </ul>
 </li>
-<li><p class="first">otherParams(None, list, set, tuple): Any other parameters in a form of a 
-list of strings.</p>
-<p>e.g. [&#8216;display resize 700 700&#8217;, &#8216;rotate x to 45&#8217;, &#8216;scale to 0.02&#8217;, 
-&#8216;axes location off&#8217;]</p>
+<li><p class="first">otherParams(None, list, set, tuple): Any other parameters
+in a form of a list of strings.</p>
+<p>e.g. [&#8216;display resize 700 700&#8217;, &#8216;rotate x to 45&#8217;,
+&#8216;scale to 0.02&#8217;, &#8216;axes location off&#8217;]</p>
 </li>
 </ol>
 </td>
@@ -1429,7 +1484,7 @@ list of strings.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>constraints (Constraint, list, set, tuple): A constraint instance or 
+<li>constraints (Constraint, list, set, tuple): A constraint instance or
 list of constraints instances</li>
 </ol>
 </td>
@@ -1447,8 +1502,8 @@ list of constraints instances</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>constraints (Constraint, list, set, tuple): A constraint instance or 
-list of constraints instances</li>
+<li>constraints (Constraint, list, set, tuple): A constraint
+instance or list of constraints instances</li>
 </ol>
 </td>
 </tr>
@@ -1471,26 +1526,30 @@ list of constraints instances</li>
 <dl class="method">
 <dt>
 <code class="descname">compute_total_standard_error</code><span class="sig-paren">(</span><em>constraints</em>, <em>current='standardError'</em><span class="sig-paren">)</span></dt>
-<dd><p>Computes the total standard error as the sum of all constraints&#8217; standard error.</p>
+<dd><p>Compute the total standard error as the sum of all constraints&#8217;
+standard error.</p>
 <div class="math">
 \[\chi^{2} = \sum \limits_{i}^{N} (\frac{stdErr_{i}}{variance_{i}})^{2}\]</div>
 <p>Where:</p>
 <p><span class="math">\(variance_{i}\)</span> is the variance value of the constraint i.</p>
-<p><span class="math">\(stdErr_{i}\)</span> the standard error of the constraint i defined as <span class="math">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
+<p><span class="math">\(stdErr_{i}\)</span> the standard error of the constraint i defined
+as <span class="math">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>constraints (list): All constraints used to calculate total 
+<li>constraints (list): All constraints used to calculate total
 totalStandardError.</li>
 <li>current (str): which standard error to use. can be anything like
-standardError, afterMoveStandardError or amputatedStandardError, etc.</li>
+standardError, afterMoveStandardError or
+amputatedStandardError, etc.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>totalStandardError (list): The computed total total standard error.</li>
+<li>totalStandardError (list): The computed total total standard
+error.</li>
 </ol>
 </td>
 </tr>
@@ -1501,32 +1560,35 @@ standardError, afterMoveStandardError or amputatedStandardError, etc.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_total_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Computes and sets the total totalStandardError of active constraints.</p>
+<dd><p>Compute and set engine&#8217;s total totalStandardError of active constraints.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">get_used_constraints</code><span class="sig-paren">(</span><em>sortConstraints=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Parses all engine constraints and returns different lists of the active ones.</p>
+<dd><p>Parses all engine&#8217;s constraints and returns different lists of
+the active (used) ones.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>sortConstraints (boolean): Whether to sort used constraints according 
-to their computation cost property. This is can minimize computations
-and enhance performance by computing less costly constraints first.</li>
+<li>sortConstraints (boolean): Whether to sort used constraints
+according to their computation cost property. This is can
+minimize computations and enhance performance by computing
+less costly constraints first.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>usedConstraints (list): All types of active constraints that will be used 
-in engine runtime.</li>
-<li>constraints (list): All active constraints instances among usedConstraints 
-list that will contribute to the engine total totalStandardError</li>
-<li>RigidConstraint (list): All active RigidConstraint constraints instances 
-among usedConstraints list that won&#8217;t contribute to the engine total 
-totalStandardError</li>
+<li>usedConstraints (list): All types of active constraints
+instances that are used at engine&#8217;s runtime.</li>
+<li>constraints (list): All active constraints instance among
+usedConstraints list that will contribute to engine&#8217;s
+totalStandardError.</li>
+<li>RigidConstraint (list): All active RigidConstraint constraints
+instance among usedConstraints list that won&#8217;t contribute
+engine&#8217;s totalStandardError.</li>
 </ol>
 </td>
 </tr>
@@ -1537,29 +1599,31 @@ totalStandardError</li>
 <dl class="method">
 <dt>
 <code class="descname">initialize_used_constraints</code><span class="sig-paren">(</span><em>force=False</em>, <em>sortConstraints=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Calls get_used_constraints method, re-initializes constraints when needed and 
-return them all.</p>
+<dd><p>Calls get_used_constraints method, re-initializes constraints when
+needed and return them all.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>force (boolean): Whether to force initializing constraints regardless 
-of their state.</li>
-<li>sortConstraints (boolean): Whether to sort used constraints according 
-to their computation cost property. This is can minimize computations
-and enhance performance by computing less costly constraints first.</li>
+<li>force (boolean): Whether to force initializing constraints
+regardless of their state.</li>
+<li>sortConstraints (boolean): Whether to sort used constraints
+according to their computation cost property. This is can
+minimize computations and enhance performance by computing less
+costly constraints first.</li>
 </ol>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>usedConstraints (list): All types of active constraints that will be used 
-in engine runtime.</li>
-<li>constraints (list): All active constraints instances among usedConstraints 
-list that will contribute to the engine total totalStandardError</li>
-<li>RigidConstraint (list): All active RigidConstraint constraints instances 
-among usedConstraints list that won&#8217;t contribute to the engine total 
+<li>usedConstraints (list): All types of active constraints
+instances that are used at engine&#8217;s runtime.</li>
+<li>constraints (list): All active constraints instance among
+usedConstraints list that will contribute to engine&#8217;s
 totalStandardError.</li>
+<li>RigidConstraint (list): All active RigidConstraint constraints
+instance among usedConstraints list that won&#8217;t contribute
+engine&#8217;s totalStandardError.</li>
 </ol>
 </td>
 </tr>
@@ -1570,28 +1634,32 @@ totalStandardError.</li>
 <dl class="method">
 <dt>
 <code class="descname">run</code><span class="sig-paren">(</span><em>numberOfSteps=100000</em>, <em>sortConstraints=True</em>, <em>saveFrequency=1000</em>, <em>frame=None</em>, <em>xyzFrequency=None</em>, <em>xyzPath='trajectory.xyz'</em>, <em>restartPdb='restart.pdb'</em>, <em>ncores=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Run the Reverse Monte Carlo engine by performing random moves on engine groups.</p>
+<dd><p>Run stochastic fitting engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>numberOfSteps (integer): The number of steps to run.</li>
-<li>sortConstraints (boolean): Whether to sort used constraints according 
-to their computation cost property. This is can minimize computations
-and enhance performance by computing less costly constraints first.</li>
+<li>sortConstraints (boolean): Whether to sort used constraints
+according to their computation cost property. This is can
+minimize computations and enhance performance by computing less
+costly constraints first.</li>
 <li>saveFrequency (integer): Save engine every saveFrequency steps.
-Save will be omitted if totalStandardError has not decreased.</li>
-<li>xyzFrequency (None, integer): Save coordinates to .xyz file every 
-xyzFrequency steps regardless totalStandardError has decreased or not.
-If None, no .xyz file will be generated.</li>
+Save will be omitted if no moves are accepted.</li>
+<li>xyzFrequency (None, integer): Save coordinates to .xyz file
+every xyzFrequency steps regardless if totalStandardError
+has decreased or not. If None is given, no .xyz file will be
+generated.</li>
 <li>xyzPath (string): Save coordinates to .xyz file.</li>
-<li>restartPdb (None, string): Export a pdb file of the last configuration at 
-the end of the run. If None is given, no pdb file will be exported. If 
-string is given, it should be the path and the pdb file name.</li>
-<li>ncores (None, integer): set the number of cores to use. If None, is  
-given, ncores will be set automatically to 1. This argument is only
-effective if fullrmc is compiled with openmp.</li>
+<li>restartPdb (None, string): Export a pdb file of the last
+configuration at the end of the run. If None is given, no pdb
+file will be exported. If string is given, it should be the
+full path of the pdb file.</li>
+<li>ncores (None, integer): set the number of cores to use.
+If None is given, ncores will be set automatically to 1.
+This argument is only effective if fullrmc is compiled with
+openmp.</li>
 </ol>
 </td>
 </tr>
@@ -1748,7 +1816,7 @@ effective if fullrmc is compiled with openmp.</li>
              |
         
         </li>
-        <li><a href="#">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

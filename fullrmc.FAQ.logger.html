@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Logger &mdash; fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Logger &mdash; fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.1.0',
+        VERSION:     '3.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="index" title="Index" href="genindex.html" />
-            <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -98,7 +96,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -140,16 +138,16 @@ critical       |CRITICAL       |100.0     |True      |True      |
 implement      |IMPLEMENTATION |100.0     |True      |True      |
 usage          |USAGE          |1000.0    |True      |True      |
 </pre><p>As you can see many logging types exist with different logging levels and flags. Refer
-to <a class="reference external" href="https://bachiraoun.github.io/pysimplelog/">pysimplelog&#8217;s</a> documentation if you need to
-understand more about how to tweak logger&#8217;s settings. What can be useful to know, is that
-logging comes at a cost but in fullrmc&#8217;s case it&#8217;s very minimal because logging is invoked
-smartly and only when it makes sense. As a rule of thumb, the bigger the modeled system
-is the less one needs to care about how long it takes to log anything because engine&#8217;s
-step time increases linearly with the number of atoms but logging doesn&#8217;t. Depending on
-the machine, logging a message simultaneously to the standard output and to a file can
-take anything between few micro-seconds to milliseconds. At engine&#8217;s runtime, using
-fullrmc&#8217;s default settings, only accepted moves are logged. One can do the math now and
-see how much logging can add to engine&#8217;s runtime step.</p>
+to <a class="reference external" href="https://bachiraoun.github.io/pysimplelog/">pysimplelog&#8217;s</a> documentation if you need
+to understand more about how to tweak logger&#8217;s settings. What can be useful to know, is
+that logging comes at a cost but in fullrmc&#8217;s case it&#8217;s very minimal because logging is
+invoked smartly and only when it makes sense. As a rule of thumb, the bigger the modeled
+system is the less one needs to care about how long it takes to log anything because
+engine&#8217;s step time increases linearly with the number of atoms but logging doesn&#8217;t.
+Depending on the machine, logging a message simultaneously to the standard output and to
+a file can take anything between few micro-seconds to milliseconds. At engine&#8217;s runtime,
+using fullrmc&#8217;s default settings, only accepted moves are logged. One can do the math now
+and see how much logging can add to engine&#8217;s runtime step.</p>
 <p>In order to shut down all logging except for errors and critical errors one can do the
 following:</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># standard library imports</span>
@@ -262,7 +260,7 @@ usage          |USAGE          |1000.0    |False     |False     |
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.1.1, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

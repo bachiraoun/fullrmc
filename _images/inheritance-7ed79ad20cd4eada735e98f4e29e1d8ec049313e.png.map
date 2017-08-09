@@ -1,0 +1,9 @@
+<map id="inheritance0bc6f727b9" name="inheritance0bc6f727b9">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,53,119,77"/>
+<area shape="rect" id="node2" href="#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generate rotational moves upon groups of atoms to align and orient" alt="" coords="167,5,314,29"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="186,53,295,77"/>
+<area shape="rect" id="node5" href="#fullrmc.Generators.Rotations.RotationGenerator" target="_top" title="Generate random rotational moves upon groups of atoms." alt="" coords="175,101,306,125"/>
+<area shape="rect" id="node7" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" target="_top" title="Generate rotational moves upon groups of atoms about one of their" alt="" coords="378,53,597,77"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a" alt="" coords="392,101,583,125"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about one of" alt="" coords="362,149,613,173"/>
+</map>

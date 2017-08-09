@@ -1,0 +1,353 @@
+:orphan:
+
+.. role:: underline
+   :class: underline
+
+
+Best practices
+==============
+fullrmc's learning curve is very steep if one understands basic python
+and some golden rules to setting and running the stochastic engine. The
+best way to creating and running a fullrmc fit is to create a run python
+script and launch it from the terminal.
+
+
+:underline:`Atomic system`
+
+**The first** and most important step in fullrmc is to provide a complete
+pdb file containing all necessary atomic system information.
+One must not underestimate the importance of preparing a pdb file with all
+atomic and molecular information.
+There is always a programatic way in fullrmc to fix the structure,
+but it would make one's life easier if the pdb file contains all the
+needed information. One should make sure to provide correct and coherent
+residue name, sequence number and segment identifier all of which
+will be used by fullrmc to parse and separate between molecules.
+All atoms name must be unique within the same molecule and all elements
+must be correctly set. for more information about pdb files please click
+`here <fullrmc.FAQ.pdbFile.html>`__.
+
+**The second** thing to take care of is the boundary conditions definition.
+Boundary conditions define the box size and therefore the density of the
+modeled system. Box size can be set as a REMARK in the pdb file or set using
+fullrmc's stochastic engine set_boundary_conditions method. Two general types
+of boundary conditions exist. Periodic boundary conditions with a defined
+system box size and shape. Infinite boundary conditions with a non-defined
+box emulating an isolated atomic system.
+
+**The third** thing one might need to fix is the density of the system but
+only when working with infinite boundary conditions. In this case, fullrmc's
+stochastic engine set_number_density method should be used to set
+system's density.
+
+
+:underline:`Adding constraints`
+
+**The fourth** thing to do is to define and set stochastic engine constraints.
+Constraints are the engine's rules to fitting the atomic system. Constraints
+can be defined at any time and added to the engine. At any time a constraint
+can be removed from the engine or set as used or unused using constraint
+set_used method. Available constraints in the fullrmc's standard distribution
+can be found `here <fullrmc.Constraints.html>`__.
+
+A constraint must be initialized, added to the engine so it's aware of the
+atomic system and then configured like the following:
+
+.. code-block:: python
+
+    # Import needed constraints definition from fullrmc.Constraints package
+    from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
+    from fullrmc.Constraints.BondConstraints import BondConstraint
+
+    # Initialize constraints
+    PDF  = PairDistributionConstraint(experimentalData=dataPath)
+    BOND = BondConstraint()
+
+    # Add initialized constraints to the stochastic engine instance ENGINE
+    ENGINE.add_constraints([PDF, BOND])
+
+    # At this level constraints are added to the engine and they are
+    # aware of the atomic structure. Now it's possible to configure
+    # constraints and create atomic and molecular definitions such as
+    # bonds definitions of the molecules
+    BOND.create_bonds_by_definition( bondsDefinition={"MOL1": [('C1','H1' , 0.9, 1.15),
+                                                               ('C1','H2' , 0.9, 1.15),
+                                                               ('C1','H3' , 0.9, 1.15)],
+                                                      "MOL2": [('O', 'H1' , 0.7, 1.10),
+                                                               ('O', 'H2' , 0.7, 1.10)] })
+
+In the above example, two molecules 'MOL1' and 'MOL2' atomic bonds are
+defined. This is possible only because the atomic system pdb file is complete
+and therefore fullrmc is able to parse molecules and identify atoms name.
+
+
+:underline:`Defining groups`
+
+**The fifth** step is re-defining groups if needed. By default atomic groups
+are set like one group per atom where each group contains a single atom index.
+One should not be afraid to alternate, remove and add new groups to the
+stochastic engine. Because atomic system pdb file is well configured,
+fullrmc's stochastic methods such as set_groups_as_molecules can be used to
+automatically remove all defined groups and add molecular groups where each
+group contains all atoms of a single molecule. On the other hand, to customize
+more complex groups, one can do that by writing some python code as the
+following:
+
+.. code-block:: python
+
+    # Import Group definition from fullrmc
+    from fullrmc.Core.Group import Group
+
+    # Create a group of atoms with random indexes for the sake of the example
+    G = Group(indexes=[10,0,1,25,33,5])
+
+    # Add group to Engine's instance ENGINE
+    ENGINE.add_group( G )
+
+One can create as many groups as needed and add them to the stochastic
+engine just like the above example. Other engine group methods such as
+clear_groups, add_group, set_groups, set_groups_as_atoms and
+set_groups_as_molecules, etc. also exist to be used as needed.
+
+
+:underline:`Defining move generators`
+
+**The sixth** step is to define groups way of moving. Random translation
+move generator is set my default to every new group instance. To customize
+a group move generator one should do the following.
+
+.. code-block:: python
+
+    # Import definitions
+    from fullrmc.Core.Group import Group
+    from fullrmc.Generators.Rotations import RotationGenerator
+
+    # Create a group of atoms with random indexes for the sake of the example
+    G = Group( indexes=[10,0,1,25,33,5] )
+
+    # Assuming random rotation of 10 deg. maximum amplitude is needed
+    G.set_move_generator( RotationGenerator(amplitude=10) )
+
+    # Add group to Engine's instance ENGINE
+    ENGINE.add_group( G )
+
+
+fullrmc's stochastic engine groups can be accessed using engine's groups
+attribute and all Group method can be applied.
+
+.. code-block:: python
+
+    # Import definitions
+    from fullrmc.Generators.Rotations import RotationGenerator
+
+    # loop over groups and set move generator
+    for G in ENGINE.groups:
+        G.set_move_generator( RotationGenerator(amplitude=10) )
+
+
+:underline:`Running stochastic engine`
+
+**The seventh** and last step is running fullrmc's stochastic engine. This
+can be as simple as calling engine's run method. run method takes several
+arguments to allow customization.
+
+
+:underline:`Creating running script`
+
+fullrmc is designed to model complex atomic and molecular system. We believe
+that one should be able to interact with the atomic system and torture out
+useful insights when doing the stochastic modeling. For this particular reason
+creating a run, plot and visualize scripts is very useful to do so.\n
+
+run.py script example for Nickel-Titanium alloy.
+
+.. code-block:: python
+
+    # Import operating system package
+    import os
+
+    # Import fullrmc's stochastic engine
+    from fullrmc.Engine import Engine
+
+    # Import needed constraints
+    from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
+    from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
+    from fullrmc.Constraints.AtomicCoordinationConstraints import AtomicCoordinationNumberConstraint
+    from fullrmc.Constraints.StructureFactorConstraints import ReducedStructureFactorConstraint
+
+    # Import needed move generators
+    from fullrmc.Generators.Swaps import SwapPositionsGenerator
+
+    # Create run.py script global variables
+    ENGINE_PATH = "ni-ti_engine"
+    PDF_PATH    = "experimental_pdf.gr"
+    PDB_PATH    = "ni-ti_structure.pdb"
+    FRESH_START = False
+
+    # Check whether stochastic engine is already created at ENGINE_PATH
+    created = Engine(path=None).is_engine(ENGINE_PATH)
+
+    # Create engine if this is the first run or starting fresh engine is requested
+    if not created or FRESH_START:
+        # Create and instantiate stochastic engine
+        ENGINE = Engine(path=ENGINE_PATH, FRESH_START=True)
+
+        # Set atomic structure pdb file
+        ENGINE.set_pdb(PDB_PATH)
+
+        # Create constraints
+        PDF = PairDistributionConstraint(experimentalData=PDF_PATH, weighting="atomicNumber")
+        IMD = InterMolecularDistanceConstraint(defaultDistance=2.2, flexible=True)
+        ACN = AtomicCoordinationNumberConstraint()
+
+        # Add constraints to the stochastic engine
+        ENGINE.add_constraints([PDF,IMD,ACN])
+
+        # Customize constraints
+        ACN.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8),
+                                                  ('ti','ni',2.2, 3.1, 6, 10),
+                                                  ('ni','ni',2.5, 3.5, 4, 8),
+                                                  ('ni','ti',2.2, 3.1, 6, 10) ] )
+
+        # save engine to disk
+        ENGINE.save()
+
+    # If engine is already created, load saved engine
+    else:
+        ENGINE = ENGINE.load(ENGINE_PATH)
+
+        # unpack constraints so later in the script they can be tweaked if needed
+        PDF,IMD,ACN = ENGINE.constraints
+
+
+    # Define run functions that can be called later to start stochastic engine
+    def run_normal(nsteps, saveFrequency):
+        # Set groups as atoms
+        ENGINE.set_groups_as_atoms()
+
+        # This run mode has all groups as atoms and all move generators
+        # as random translation. This mode is very similar to traditional
+        # Eeverse Monte Carlo.
+        # Run stochastic engine
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
+
+
+    def run_swap(nsteps, saveFrequency):
+        # Set swapping move generators Ni-->Ti and Ti-->Ni
+        # Set groups as atoms
+        ENGINE.set_groups_as_atoms()
+
+        # Get all atoms element list to use and identify atomic elements
+        allElements = ENGINE.allElements
+
+        # Get all Nickel atoms index
+        niSwapList = [[idx] for idx in range(len(allElements)) if allElements[idx]=='ni']
+
+        # Get all Titanium atoms index
+        tiSwapList = [[idx] for idx in range(len(allElements)) if allElements[idx]=='ti']
+
+        # Create swap generator from Titanium to Nickel
+        toNiSG = SwapPositionsGenerator(swapList=niSwapList)
+
+        # Create swap generator from Nickel to Titanium
+        toTiSG = SwapPositionsGenerator(swapList=tiSwapList)
+
+        # Set swap generator to groups
+        for g in ENGINE.groups:
+            # Get group atom index
+            atomIndex = g.indexes[0]
+            # Check whether group's atom is Nickel or Titanium
+            # Set Swap to Titanium Nickel atoms
+            if allElements[atomIndex]=='ni':
+                g.set_move_generator(toTiSG)
+            # Set Swap to Nickel Titanium atoms
+            elif allElements[atomIndex]=='ti':
+                g.set_move_generator(toNiSG)
+
+        # Run stochastic engine
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
+
+
+    # run stochastic engine
+    run_normal(nsteps=100000, saveFrequency=10000)
+    run_swap(nsteps=100000, saveFrequency=10000)
+
+
+More or less run functions can be created depending on the system being
+studied. At any point in time, one should stop the run script execution and
+create new run functions or alternate between them, tweak constraints,
+change groups, and move generators. The reason why we like to adopt this
+way of setting a stochastic fit is because once it's set it becomes very
+easy to run the stochastic engine by simply calling a run function rather
+than writing and deleting code.
+We highly recommend copying this exact script every time a new system needs
+to be studied, change global variables value, add or remove constraints as
+needed.
+Look at the examples in the standard distribution, all run.py scripts
+look very similar to this one. Get inspired by the run functions and their
+is no shame in copying and adopting a function.
+
+
+plot.py script example for Nickel-Titanium alloy. This script can be launched
+at any time even when the stochastic engine is running. This way one can
+follow the fitting process and decide whether to proceed, or stop the engine
+and tweak the fitting parameters, modes, groups or generators.
+
+    .. code-block:: python
+
+        # Import stochastic engine
+        from fullrmc import Engine
+
+        # Set engine path
+        ENGINE_PATH = "ni-ti_engine"
+
+        # Check whether engine is already saved or not.
+        ENGINE = Engine(path=None)
+        result, mes = ENGINE.is_engine(ENGINE_PATH, mes=True)
+
+        # If engine exists
+        if result:
+            # load engine
+            ENGINE = ENGINE.load(ENGINE_PATH)
+            # unpack constraints
+            PDF,IMD,ACN = ENGINE.constraints
+            # plot pair distribution constraint
+            PDF.plot(intra=False,show=False)
+            # plot atomic coordination numberOfSteps
+            ACN.plot(show=False)
+            # plot inter-molecular distance constraint
+            IMD.plot(show=True)
+        # if engine not found, print message
+        else:
+            print mes
+
+
+visualize.py script example for Nickel-Titanium alloy. This script can be
+launched at any time even when the stochastic engine is running. This way one
+can visualize the atomic configuration system using
+`VMD <http://www.ks.uiuc.edu/Research/vmd/>`_.
+
+.. code-block:: python
+
+    # standard libraries imports
+    import os
+
+    # Import stochastic engine
+    from fullrmc import Engine
+
+    # Set engine path
+    ENGINE_PATH = "ni-ti_engine"
+
+    # Check whether engine is already saved or not.
+    ENGINE = Engine(path=None)
+    result, mes = ENGINE.is_engine(ENGINE_PATH, mes=True)
+
+    # If engine exists
+    if result:
+        # load engine
+        ENGINE = ENGINE.load(ENGINE_PATH)
+        # visualize configuration
+        ENGINE.visualize(foldIntoBox=True, representationParams='VDW 0.1 20')
+    # if engine not found, print message
+    else:
+        print mes

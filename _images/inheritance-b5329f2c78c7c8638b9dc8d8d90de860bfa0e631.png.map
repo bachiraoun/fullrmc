@@ -1,0 +1,7 @@
+<map id="inheritancedfc0fe7ea3" name="inheritancedfc0fe7ea3">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
+<area shape="rect" id="node2" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title=".. py:class::InterMolecularDistanceConstraint" alt="" coords="314,5,533,29"/>
+<area shape="rect" id="node5" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title="Its controls the intra&#45;molecular distances between atoms." alt="" coords="314,53,533,77"/>
+</map>

@@ -259,7 +259,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                 coreDef = str(coreDef)
                 assert coreDef in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%coreDef)
                 coreIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==coreDef]
-            elif isnstance(coreDef, dict):
+            elif isinstance(coreDef, dict):
                 assert len(coreDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
                 key, value = coreDef.keys()[0], coreDef.values()[0]
                 if key is "name":
@@ -270,7 +270,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                     coreIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==coreDef]
                 else:
                     raise LOGGER.error("core atom definition dictionary key must be either 'name' or 'element'")
-            elif isnstance(coreDef, (list, tuple, set, np.ndarray)):
+            elif isinstance(coreDef, (list, tuple, set, np.ndarray)):
                 coreIndexes = []
                 if isinstance(coreDef, np.ndarray):
                     assert len(coreDef.shape)==1, LOGGER.error("core atom definition numpy.ndarray must be 1D")
@@ -285,7 +285,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                 shellDef = str(shellDef)
                 assert shellDef in ELEMENTS, LOGGER.error("core atom definition '%s' is not a valid element"%shellDef)
                 shellIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==shellDef]
-            elif isnstance(shellDef, dict):
+            elif isinstance(shellDef, dict):
                 assert len(shellDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
                 key, value = shellDef.keys()[0], shellDef.values()[0]
                 if key is "name":
@@ -296,7 +296,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                     shellIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==shellDef]
                 else:
                     raise LOGGER.error("core atom definition dictionary key must be either 'name' or 'element'")
-            elif isnstance(shellDef, (list, tuple, set, np.ndarray)):
+            elif isinstance(shellDef, (list, tuple, set, np.ndarray)):
                 shellIndexes = []
                 if isinstance(shellDef, np.ndarray):
                     assert len(shellDef.shape)==1, LOGGER.error("core atom definition numpy.ndarray must be 1D")
@@ -690,7 +690,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         ind    = np.arange(1,len(self.data)+1)  # the x locations for the groups
         bottom = self.minAtoms
         height = [self.maxAtoms[idx]-self.minAtoms[idx] for idx in xrange(len(self.maxAtoms))]
-        p = AXES.bar(ind, height, width, bottom=self.minAtoms, color=barColor, label="boundaries")
+        p = AXES.bar(ind+width/2., height, width, bottom=self.minAtoms, color=barColor, label="boundaries")
         # add coordination number points
         CN = self.data/self.__numberOfCores
         AXES.plot(ind+width/2., CN, 'o', label="mean coord num", color=cnColor, markersize=cnPtSize, markevery=1 )

@@ -522,9 +522,24 @@ Fixes and improvements:
     #. :class:`.Engine` set_number_density method PeriodicBoundaries bug fixed.
     #. :class:`.StructureFactorConstraint` set_weighting xrays and neutron
        recognized.
+
+
+
+
+`Version 3.1.2 <https://pypi.python.org/pypi/fullrmc/3.1.2>`_:
+--------------------------------------------------------------
+Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FUaDZSOdeN28%2FUdnX8yKOBAAJ>`_
+bug fixed.
+
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~
+    #. :class:`.AtomicCoordinationNumberConstraint` set_coordination_number_definition
+       bug fixed.
+    #. :class:`.AtomicCoordinationNumberConstraint` plot bar position fixed.
+    #. Distance constraints plot xticks position fixed.
 """
 
-__version__    = '3.1.1'
+__version__    = '3.1.2'
 
 __author__     = "Bachir Aoun"
 

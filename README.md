@@ -13,18 +13,6 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 
 Next on the list
 ================
-* Just In Time (jit) compilation using numba. Users must install and compile numba manually, otherwise no jit will be used. e.g. For mac users installing numba can be done using the following
-```bash
-brew install llvm
-brew link --force llvm
-pip install numba
-```
-maybe a certain llvm version is needed if so, additional steps are required.
-```bash
-brew install llvm@version
-brew unlink --force llvm
-brew link --force llvm@version
-```
 * Super-computing
 
 News
@@ -46,8 +34,7 @@ Installation
 * matplotlib (lowest version tested is 1.4)
 * pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
   0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
-* pysimplelog (lowest version tested is 0.1.7 - 0.1.4 is used starting from fullrmc 1.2.0 - 
-  0.3.0 is used starting from fullrmc 3.1.0 )
+* pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
 * pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is 
   used starting from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
 

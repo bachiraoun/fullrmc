@@ -854,7 +854,7 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         AXES.set_xlim(0,len(numbers)+1.5)
         AXES.set_ylim(0, max(stats)+0.15*max(stats))
         # set ticks
-        plt.xticks(ind+width/2., ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs])
+        plt.xticks(ind, ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs])
         # ratio labels
         data = self._get_constraint_value()
         for d, rect in zip(data, AXES.patches):

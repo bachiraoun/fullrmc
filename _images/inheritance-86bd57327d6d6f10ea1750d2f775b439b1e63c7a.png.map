@@ -1,6 +1,0 @@
-<map id="inheritance8a1175d00c" name="inheritance8a1175d00c">
-<area shape="rect" id="node1" href="#fullrmc.Constraints.BondConstraints.BondConstraint" target="_top" title="Controls the bond length defined between 2 defined atoms." alt="" coords="314,29,428,53"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total standardError of the Engine." alt="" coords="145,5,257,29"/>
-<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple instances in the same engine." alt="" coords="135,53,266,77"/>
-<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the configuration towards the desired and most meaningful one." alt="" coords="5,29,87,53"/>
-</map>

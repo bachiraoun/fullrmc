@@ -19,31 +19,31 @@ from fullrmc.Core.GroupSelector import GroupSelector
 class DefinedOrderSelector(GroupSelector):
     """
     DefinedOrderSelector is a group selector with a defined order of selection.
-    
+
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
            If None, order is set automatically to all groups indexes list.
-    
+
     .. code-block:: python
-        
+
         # import external libraries
         import numpy as np
-        
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Selectors.OrderedSelectors import DefinedOrderSelector
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups generators as needed ...
-        
+
         ##### set the order of selection from closest to the origin to the further. #####
         # compute groups centers
         centers   = [np.sum(ENGINE.realCoordinates[g.indexes], axis=0)/len(g) for g in ENGINE.groups]
@@ -52,8 +52,8 @@ class DefinedOrderSelector(GroupSelector):
         # compute increasing order
         order     = np.argsort(distances)
         # set group selector
-        ENGINE.set_group_selector( DefinedOrderSelector(engine=ENGINE, order=order) )         
-    
+        ENGINE.set_group_selector( DefinedOrderSelector(engine=ENGINE, order=order) )
+
     """
     def __init__(self, engine, order=None):
         # initialize GroupSelector
@@ -62,24 +62,24 @@ class DefinedOrderSelector(GroupSelector):
         self.set_order(order)
         # initialize selector
         self.__initialize_selector__()
-           
+
     def __initialize_selector__(self):
         if self.__order is None:
             self.__index = None
         else:
             self.__index = 0
-        
+
     def _runtime_initialize(self):
-        """   
+        """
         Automatically sets the selector order at the engine runtime.
         """
         assert self.engine is not None, LOGGER.error("engine must be set prior to calling _runtime_initialize")
         if self.__order is None:
             self.__order = np.array(range(len(self.engine.groups)), dtype=INT_TYPE)
             self.__initialize_selector__()
-        elif self.__order[-1] != len(self.engine.groups)-1:
-            raise LOGGER.error("Groups are modified, must set GroupSelector order using set_order method")
-            
+        else:
+            assert max(self.__order) < len(self.engine.groups), LOGGER.error("Groups in engine are modified, must re-set GroupSelector order using set_order method")
+
     @property
     def order(self):
         """ List copy of the order of selection."""
@@ -88,16 +88,16 @@ class DefinedOrderSelector(GroupSelector):
         else:
             order = list(self.__order)
         return order
-    
+
     @property
     def index(self):
         """The current selection index."""
         return self.__index
-        
+
     def set_order(self, order):
         """
         Set selector groups order.
-        
+
         :Parameters:
             #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
         """
@@ -121,39 +121,39 @@ class DefinedOrderSelector(GroupSelector):
         self.__order = newOrder
         # re-initialize selector
         self.__initialize_selector__()
-        
+
     def select_index(self):
         """
         Select index.
-        
+
         :Returns:
             #. index (integer): The selected group index in engine groups list.
         """
         # get group index
-        groupIndex = self.__order[self.__index]
-        # update order index 
-        self.__index = (self.__index+1)%len(self.__order)
+        groupIndex = self.__order[self.__index%len(self.__order)]
+        # update order index
+        self.__index += 1
         # return group index
-        return groupIndex 
-        
-        
-class DirectionalOrderSelector(DefinedOrderSelector):        
+        return groupIndex
+
+
+class DirectionalOrderSelector(DefinedOrderSelector):
     """
     DirectionalOrderSelector is a group selector with a defined order of selection.
     The order of selection is computed automatically at engine runtime by computing
-    Groups distance to center, and setting the order from the further to the closest 
-    if expand argument is True or from the closest to the further if expand is False. 
-    
+    Groups distance to center, and setting the order from the further to the closest
+    if expand argument is True or from the closest to the further if expand is False.
+
     :Parameters:
         #. engine (None, fullrmc.Engine): The selector RMC engine.
         #. center (None, list, set, tuple, numpy.ndarray): The center of expansion.
            If None, the center is automatically set to the origin (0,0,0).
-        #. expand (bool): Whether to set the order from the the further to the closest 
-           or from the closest to the further if it is set to False. 
+        #. expand (bool): Whether to set the order from the the further to the closest
+           or from the closest to the further if it is set to False.
         #. adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-           be changed automatically at engine runtime to a MoveGeneratorCollector of 
-           TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
-           Generators parameters can be given by generatorsParams. It is advisable to 
+           be changed automatically at engine runtime to a MoveGeneratorCollector of
+           TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
+           Generators parameters can be given by generatorsParams. It is advisable to
            set this flag to True in order to take advantage of an automatic and intelligent directional moves.
         #. generatorsParams (None, dict): The automatically created moves generators parameters.
            If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
@@ -161,51 +161,51 @@ class DirectionalOrderSelector(DefinedOrderSelector):
            for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
            is not the same for all groups but intelligently allowing certain groups to move more than
            others according to damping parameter.
-           
+
            **Parameters are the following:**\n
            * TG_amp = generatorsParams['TG']['amplitude']: Used for TranslationTowardsCenterGenerator amplitude parameters.
            * TG_ang = generatorsParams['TG']['angle']: Used as TranslationTowardsCenterGenerator angle parameters.
            * TG_dam = generatorsParams['TG']['damping']: Also used for TranslationTowardsCenterGenerator amplitude parameters.
            * RG_ang = generatorsParams['RG']['amplitude']: Used as RotationGenerator angle parameters.
-           
+
            **Parameters are used as the following:**\n
            * TG = TranslationTowardsCenterGenerator(center={"fixed":center}, amplitude=AMPLITUDE, angle=TG_ang)\n
              Where TG_amp < AMPLITUDE < TG_amp.TG_dam
-           * RG = RotationGenerator(amplitude=RG_ang)         
+           * RG = RotationGenerator(amplitude=RG_ang)
            * MoveGeneratorCollector(collection=[TG,RG], randomize=True)
-           
-           **NB: The parameters are not checked for errors until engine runtime.**           
-    
+
+           **NB: The parameters are not checked for errors until engine runtime.**
+
     .. raw:: html
 
-        <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0" 
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0"
         frameborder="0" allowfullscreen>
         </iframe>
-       
-    
+
+
     .. code-block:: python
-        
+
         # import fullrmc modules
         from fullrmc.Engine import Engine
         from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
-        
-        # create engine 
+
+        # create engine
         ENGINE = Engine(path='my_engine.rmc')
-        
+
         # set pdb file
         ENGINE.set_pdb('system.pdb')
-        
+
         # Add constraints ...
         # Re-define groups if needed ...
         # Re-define groups generators as needed ...
-        
+
         # Set the order of selection from further to the closest to a (1,1,1).
         # Automatically adjust the groups move generators allowing modulation of amplitudes.
-        ENGINE.set_group_selector( DirectionalOrderSelector(engine = ENGINE, 
+        ENGINE.set_group_selector( DirectionalOrderSelector(engine = ENGINE,
                                                             center = (1,1,1),
-                                                            adjustMoveGenerators = True) )         
-        
+                                                            adjustMoveGenerators = True) )
+
     """
     def __init__(self, engine, center=None, expand=True,
                        adjustMoveGenerators=False,
@@ -216,14 +216,14 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         # set center
         self.set_center(center)
         # set expand
-        self.set_expand(expand)  
+        self.set_expand(expand)
         # set expand
-        self.set_adjust_move_generators(adjustMoveGenerators)  
+        self.set_adjust_move_generators(adjustMoveGenerators)
         # set expand
-        self.set_generators_parameters(generatorsParams)          
-        
+        self.set_generators_parameters(generatorsParams)
+
     def _runtime_initialize(self):
-        """   
+        """
         Automatically sets the selector order at the engine runtime.
         """
         diffs = np.array([(np.sum(self.engine.realCoordinates[g.indexes], axis=0)/len(g))-self.__center for g in self.engine.groups], dtype=FLOAT_TYPE)
@@ -252,51 +252,51 @@ class DirectionalOrderSelector(DefinedOrderSelector):
                     coll.append(RotationGenerator(amplitude=RG_ang))
                 mg = MoveGeneratorCollector(collection=coll, randomize=True)
                 g.set_move_generator( mg )
-                                
+
     @property
     def expand(self):
         """ expand flag."""
         return self.__expand
-    
+
     @property
     def center(self):
         """ center (X,Y,Z) coordinates."""
         return self.__center
-    
+
     @property
     def adjustMoveGenerators(self):
         """ adjustMoveGenerators flag."""
-        return self.__adjustMoveGenerators    
-    
+        return self.__adjustMoveGenerators
+
     @property
     def generatorsParams(self):
         """ Automatic generators parameters."""
-        return self.__generatorsParams 
-        
+        return self.__generatorsParams
+
     def set_generators_parameters(self, generatorsParams):
         """
         Set move generators parameters.
-        
+
         #. generatorsParams (None, dict): The automatically created moves generators parameters.
            If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
            'TG' key is for TranslationTowardsCenterGenerator parameters and 'RG' key is
            for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
            is not the same for all groups but intelligently allowing certain groups to move more than
            others according to damping parameter.
-           
+
            **Parameters are the following:**\n
            * TG_amp = generatorsParams['TG']['amplitude']: Used for TranslationTowardsCenterGenerator amplitude parameters.
            * TG_ang = generatorsParams['TG']['angle']: Used as TranslationTowardsCenterGenerator angle parameters.
            * TG_dam = generatorsParams['TG']['damping']: Also used for TranslationTowardsCenterGenerator amplitude parameters.
            * RG_ang = generatorsParams['RG']['amplitude']: Used as RotationGenerator angle parameters.
-           
+
            **Parameters are used as the following:**\n
            * TG = TranslationTowardsCenterGenerator(center={"fixed":center}, amplitude=AMPLITUDE, angle=TG_ang)\n
              Where TG_amp < AMPLITUDE < TG_amp.TG_dam
-           * RG = RotationGenerator(amplitude=RG_ang)         
+           * RG = RotationGenerator(amplitude=RG_ang)
            * MoveGeneratorCollector(collection=[TG,RG], randomize=True)
-           
-           **NB: The parameters are not checked for errors until engine runtime.** 
+
+           **NB: The parameters are not checked for errors until engine runtime.**
         """
         if generatorsParams is None:
             generatorsParams = {}
@@ -316,12 +316,12 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         assert generatorsParams["TG"]["damping"]>=0, LOGGER.error("generatorsParams['TG']['damping'] must be bigger than 0")
         assert generatorsParams["TG"]["damping"]<=1, LOGGER.error("generatorsParams['TG']['damping'] must be smaller than 1")
         # set generatorsParams
-        self.__generatorsParams = newGenParams   
-        
+        self.__generatorsParams = newGenParams
+
     def set_center(self, center):
         """
         Set the center.
-        
+
         :Parameters:
             #. center (None, list, set, tuple, numpy.ndarray): The center of expansion.
                If None, the center is automatically set to the origin (0,0,0).
@@ -341,29 +341,27 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         # set center
         self.__center = center
 
-    def set_expand(self, expand): 
+    def set_expand(self, expand):
         """
         Set expand.
-        
+
         :Parameters:
-            #. expand (bool): Whether to set the order from the the further to the closest 
-               or from the closest to the further if it is set to False.   
-        """  
+            #. expand (bool): Whether to set the order from the the further to the closest
+               or from the closest to the further if it is set to False.
+        """
         assert isinstance(expand, bool), LOGGER.error("expand must be boolean")
         self.__expand = expand
-    
+
     def set_adjust_move_generators(self, adjustMoveGenerators):
         """
         Set expand.
-        
+
         :Parameters:
             #. adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-               be changed automatically at engine runtime to a MoveGeneratorCollector of 
-               TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
-               Generators parameters can be given by generatorsParams. It is advisable to 
-               set this flag to True in order to take advantage of an automatic and intelligent directional moves.  
-        """  
+               be changed automatically at engine runtime to a MoveGeneratorCollector of
+               TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
+               Generators parameters can be given by generatorsParams. It is advisable to
+               set this flag to True in order to take advantage of an automatic and intelligent directional moves.
+        """
         assert isinstance(adjustMoveGenerators, bool), LOGGER.error("adjustMoveGenerators must be boolean")
         self.__adjustMoveGenerators = adjustMoveGenerators
-        
-    

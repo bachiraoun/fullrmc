@@ -529,17 +529,18 @@ Fixes and improvements:
 `Version 3.1.2 <https://pypi.python.org/pypi/fullrmc/3.1.2>`_:
 --------------------------------------------------------------
 Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FUaDZSOdeN28%2FUdnX8yKOBAAJ>`_
-bug fixed.
+bug fixed
 
-Fixes and improvements:
-~~~~~~~~~~~~~~~~~~~~~~~
-    #. :class:`.AtomicCoordinationNumberConstraint` set_coordination_number_definition
-       bug fixed.
-    #. :class:`.AtomicCoordinationNumberConstraint` plot bar position fixed.
-    #. Distance constraints plot xticks position fixed.
+
+
+
+`Version 3.2.0 <https://pypi.python.org/pypi/fullrmc/3.2.0>`_:
+--------------------------------------------------------------
+Raised `issue <https://groups.google.com/forum/#!topic/fullrmc/4L1SCEbcAi0>`_
+bug fixed
 """
 
-__version__    = '3.1.2'
+__version__    = '3.2.0'
 
 __author__     = "Bachir Aoun"
 

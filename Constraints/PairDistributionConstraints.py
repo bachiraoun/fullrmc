@@ -529,10 +529,10 @@ class PairDistributionConstraint(ExperimentalConstraint):
                must be given in atomsWeight dictionary argument.
         """
         if weighting.lower() in ["xrays","x-rays","xray","x-ray"]:
-            LOGGER.fixed("'%s' weighting is set to atomicNumber")
+            LOGGER.fixed("'%s' weighting is set to atomicNumber"%weighting)
             weighting = "atomicNumber"
         elif weighting.lower() in ["neutron","neutrons"]:
-            LOGGER.fixed("'%s' weighting is set to neutronCohb")
+            LOGGER.fixed("'%s' weighting is set to neutronCohb"%weighting)
             weighting = "neutronCohb"
         assert is_element_property(weighting),LOGGER.error( "weighting is not a valid pdbParser atoms database entry")
         assert weighting != "atomicFormFactor", LOGGER.error("atomicFormFactor weighting is not allowed")

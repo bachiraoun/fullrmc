@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Selectors package &mdash; fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Selectors package &mdash; fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.1.2',
+        VERSION:     '3.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
             <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" />
     
@@ -110,7 +112,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -679,7 +681,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DefinedOrderSelector</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
@@ -697,7 +699,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <span class="c1"># compute increasing order</span>
 <span class="n">order</span>     <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
 <span class="c1"># set group selector</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="p">)</span>         
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -754,7 +756,7 @@ If None, order is set automatically to all groups indexes list.</li>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></code></a></p>
 <p>DirectionalOrderSelector is a group selector with a defined order of selection.
 The order of selection is computed automatically at engine runtime by computing
-Groups distance to center, and setting the order from the further to the closest 
+Groups distance to center, and setting the order from the further to the closest
 if expand argument is True or from the closest to the further if expand is False.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -766,13 +768,13 @@ if expand argument is True or from the closest to the further if expand is False
 <li><p class="first">center (None, list, set, tuple, numpy.ndarray): The center of expansion.
 If None, the center is automatically set to the origin (0,0,0).</p>
 </li>
-<li><p class="first">expand (bool): Whether to set the order from the the further to the closest 
+<li><p class="first">expand (bool): Whether to set the order from the the further to the closest
 or from the closest to the further if it is set to False.</p>
 </li>
 <li><p class="first">adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-be changed automatically at engine runtime to a MoveGeneratorCollector of 
-TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
-Generators parameters can be given by generatorsParams. It is advisable to 
+be changed automatically at engine runtime to a MoveGeneratorCollector of
+TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
+Generators parameters can be given by generatorsParams. It is advisable to
 set this flag to True in order to take advantage of an automatic and intelligent directional moves.</p>
 </li>
 <li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
@@ -805,14 +807,14 @@ others according to damping parameter.</p>
 </tr>
 </tbody>
 </table>
-<iframe width="560" height="315" 
-src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0" 
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0"
 frameborder="0" allowfullscreen>
 </iframe><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
@@ -824,9 +826,9 @@ frameborder="0" allowfullscreen>
 
 <span class="c1"># Set the order of selection from further to the closest to a (1,1,1).</span>
 <span class="c1"># Automatically adjust the groups move generators allowing modulation of amplitudes.</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">engine</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="p">,</span> 
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">engine</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="p">,</span>
                                                     <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                                                    <span class="n">adjustMoveGenerators</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="p">)</span>         
+                                                    <span class="n">adjustMoveGenerators</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -913,7 +915,7 @@ If None, the center is automatically set to the origin (0,0,0).</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>expand (bool): Whether to set the order from the the further to the closest 
+<li>expand (bool): Whether to set the order from the the further to the closest
 or from the closest to the further if it is set to False.</li>
 </ol>
 </td>
@@ -932,9 +934,9 @@ or from the closest to the further if it is set to False.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-be changed automatically at engine runtime to a MoveGeneratorCollector of 
-TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups). 
-Generators parameters can be given by generatorsParams. It is advisable to 
+be changed automatically at engine runtime to a MoveGeneratorCollector of
+TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
+Generators parameters can be given by generatorsParams. It is advisable to
 set this flag to True in order to take advantage of an automatic and intelligent directional moves.</li>
 </ol>
 </td>
@@ -1374,7 +1376,7 @@ This method is empty must be overloaded when needed.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

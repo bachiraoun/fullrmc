@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -12,7 +12,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.1.2',
+        VERSION:     '3.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,9 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
     
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -96,7 +98,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
          
@@ -523,10 +525,10 @@ except for small modifications that were made and that are listed below.</p>
 <div class="section" id="modifications">
 <h4>Modifications:<a class="headerlink" href="#modifications" title="Permalink to this headline">¶</a></h4>
 <blockquote>
-<div><ol class="arabic">
+<div><ol class="arabic simple">
 <li><dl class="first docutils">
 <dt><code class="xref py py-class docutils literal"><span class="pre">Engine</span></code>: Several modification happened to fullrmc.Engine class definition.</dt>
-<dd><ul class="first last simple">
+<dd><ul class="first last">
 <li>Instanciating engine arguments have changed. We found that it&#8217;s a bad practice
 to set the pdb structure, the constraints, the groups and all other attributes
 at the engine instanciation. Therefore, now engine&#8217;s instanciation takes more
@@ -545,11 +547,10 @@ Engine.run method.</li>
 </dd>
 </dl>
 </li>
-<li><p class="first"><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change
 engine and therefore Constraint.set_engine method is now deprecated. Also
 Constraints are now instanciated without engine argument. Constraint&#8217;s engine is
-set automatically when a constraint is added to an engine.</p>
-</li>
+set automatically when a constraint is added to an engine.</li>
 </ol>
 </div></blockquote>
 </div>
@@ -699,18 +700,12 @@ recognized.</li>
 <div class="section" id="id39">
 <h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.2">Version 3.1.2</a>:<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FUaDZSOdeN28%2FUdnX8yKOBAAJ">issue</a>
-bug fixed.</p>
-<div class="section" id="id40">
-<h4>Fixes and improvements:<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h4>
-<blockquote>
-<div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> set_coordination_number_definition
-bug fixed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> plot bar position fixed.</li>
-<li>Distance constraints plot xticks position fixed.</li>
-</ol>
-</div></blockquote>
+bug fixed</p>
 </div>
+<div class="section" id="id40">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.2.0">Version 3.2.0</a>:<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+<p>Raised <a class="reference external" href="https://groups.google.com/forum/#!topic/fullrmc/4L1SCEbcAi0">issue</a>
+bug fixed</p>
 </div>
 </div>
 </div>
@@ -803,10 +798,8 @@ bug fixed.</li>
 <li><a class="reference internal" href="#id38">Fixes and improvements:</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id39">Version 3.1.2:</a><ul>
-<li><a class="reference internal" href="#id40">Fixes and improvements:</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#id39">Version 3.1.2:</a></li>
+<li><a class="reference internal" href="#id40">Version 3.2.0:</a></li>
 </ul>
 </li>
 </ul>
@@ -841,7 +834,7 @@ bug fixed.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.1.2, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 3.2.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

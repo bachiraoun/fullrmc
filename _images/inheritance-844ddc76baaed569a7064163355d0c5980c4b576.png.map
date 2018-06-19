@@ -1,6 +1,0 @@
-<map id="inheritance35cb12d385" name="inheritance35cb12d385">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="GroupSelector is the parent class that selects groups to perform moves upon engine runtime." alt="" coords="5,5,113,29"/>
-<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="161,5,281,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="329,5,506,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="554,5,710,29"/>
-</map>

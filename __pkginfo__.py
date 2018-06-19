@@ -536,11 +536,19 @@ bug fixed
 
 `Version 3.2.0 <https://pypi.python.org/pypi/fullrmc/3.2.0>`_:
 --------------------------------------------------------------
-Raised `issue <https://groups.google.com/forum/#!topic/fullrmc/4L1SCEbcAi0>`_
+Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2F4L1SCEbcAi0%2FsOqvPhiSAgAJ>`_
+bug fixed
+
+
+
+
+`Version 3.3.0 <https://pypi.python.org/pypi/fullrmc/3.3.0>`_:
+--------------------------------------------------------------
+Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FC0Vmt4Qs4bI%2FIu1guEXMAwAJ>`_
 bug fixed
 """
 
-__version__    = '3.2.0'
+__version__    = '3.3.0'
 
 __author__     = "Bachir Aoun"
 

@@ -1243,7 +1243,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             return
         # start creating header and data
         header = ["inv_distances",]
-        data   = [self.experimentalDistances,]
+        data   = [self.experimentalQValues,]
         # add all intra data
         for key, val in output.items():
             if "inter" in key:
@@ -1264,7 +1264,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             data.append(output["sf_total"])
         # add experimental data
         header.append("experimental")
-        data.append(self.experimentalPDF)
+        data.append(self.experimentalSF)
         # create array and export
         data =np.transpose(data).astype(float)
         # save

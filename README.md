@@ -52,22 +52,23 @@ Ensure all fullrmc required packages are installed and up to data by executing t
 following python script:
 ```python
 # check whether all packages are already installed
+from __future__ import print_function
 from pkg_resources import parse_version as PV
 for name, ver in [('numpy'      ,'1.7.1') ,
                   ('cython'     ,'0.21.1'),
                   ('pyrep'      ,'1.0.4') ,
-                  ('pdbParser'  ,'0.1.5') ,
+                  ('pdbparser'  ,'0.1.5') ,
                   ('pysimplelog','0.2.1') ,
                   ('matplotlib' ,'1.4'  )]:
     try:
         lib = __import__(name)
     except:
-        print '%s must be installed for fullrmc to run properly.'%(name)
+        print('%s must be installed for fullrmc to run properly.'%(name))
     else:
         if PV(lib.__version__) < PV(ver):
-            print '%s installed version %s is below minimum suggested version %s. Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
+            print('%s installed version %s is below minimum suggested version %s. Updating %s is highly) recommended.'%(name, lib.__version__, ver, name)
         else:
-            print '%s is installed properly and minimum version requirement is met.'%(name)
+            print('%s is installed properly and minimum version requirement is met.'%(name))
 ```
 Locate python's site-packages by executing the following python script:
 ```python

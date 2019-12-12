@@ -1,10 +1,10 @@
-from pdbParser.pdbParser import pdbParser
-from pdbParser.Utilities.Construct import AmorphousSystem
-from pdbParser.Utilities.Database import __WATER__
-from pdbParser.Utilities.Geometry import translate, get_center
+from pdbparser.pdbparser import pdbparser
+from pdbparser.Utilities.Construct import AmorphousSystem
+from pdbparser.Utilities.Database import __WATER__
+from pdbparser.Utilities.Geometry import translate, get_center
 
 # create pdbWATER of a single molecule of water
-pdbWATER = pdbParser()
+pdbWATER = pdbparser()
 pdbWATER.records = __WATER__
 pdbWATER.set_name("water")
 

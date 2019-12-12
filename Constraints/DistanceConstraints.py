@@ -6,16 +6,19 @@ distances between atoms.
     :parts: 1
 """
 # standard libraries imports
+from __future__ import print_function
 import itertools
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_number, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.atomic_distances import multiple_atomic_distances_coords, full_atomic_distances_coords, pair_elements_stats
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from ..Core.atomic_distances import multiple_atomic_distances_coords, full_atomic_distances_coords, pair_elements_stats
 
 class _DistanceConstraint(RigidConstraint, SingularConstraint):
     """
@@ -299,31 +302,31 @@ class _DistanceConstraint(RigidConstraint, SingularConstraint):
                     LOGGER.warn("pairsDistanceDefinition list pair item '%s' is not a valid engine type '%s', definition item omitted"%(pair[1], self.__typeDefinition) )
                     continue
                 # create elements keys
-                if not newPairsDistance.has_key(pair[0]):
+                if not pair[0] in newPairsDistance:
                     newPairsDistance[pair[0]] = {}
-                if not newPairsDistance.has_key(pair[1]):
+                if not pair[1] in newPairsDistance:
                     newPairsDistance[pair[1]] = {}
                 assert is_number(pair[2]), LOGGER.error("pairsDistanceDefinition list pair item list third item must be a number")
                 distance = FLOAT_TYPE(pair[2])
                 assert distance>=0, LOGGER.error("pairsDistanceDefinition list pair item list third item must be bigger than 0")
                 # set minimum distance
-                if newPairsDistance[pair[0]].has_key(pair[1]):
+                if pair[1] in newPairsDistance[pair[0]]:
                     LOGGER.warn("types pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[0], pair[1], pair))
                 else:
                     newPairsDistance[pair[0]][pair[1]] = distance
-                if newPairsDistance[pair[1]].has_key(pair[0]) and pair[0]!=pair[1]:
+                if pair[0] in newPairsDistance[pair[1]] and pair[0]!=pair[1]:
                     LOGGER.warn("types pair ('%s','%s') distance definition is redundant, '%s' is omitted"%(pair[1], pair[0], pair))
                 else:
                     newPairsDistance[pair[1]][pair[0]] = distance
             # complete not defined distances
             for el1 in self.__types:
-                if not newPairsDistance.has_key(el1):
+                if not el1 in newPairsDistance:
                     newPairsDistance[el1] = {}
                 for el2 in self.__types:
-                    if not newPairsDistance.has_key(el2):
+                    if not el2 in newPairsDistance:
                         newPairsDistance[el2] = {}
-                    if not newPairsDistance[el1].has_key(el2):
-                        if newPairsDistance[el2].has_key(el1):
+                    if not el2 in newPairsDistance[el1]:
+                        if el1 in newPairsDistance[el2]:
                             newPairsDistance[el1][el2] = newPairsDistance[el2][el1]
                         else:
                             LOGGER.warn("types pair ('%s','%s') distance definition is not defined and therefore it is set to the default distance '%s'"%(el1, el2, self.__defaultDistance))
@@ -818,13 +821,6 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes): matplotlib used axes.
-
-        +----------------------------------------------------------------------+
-        |.. figure:: molecular_distances_constraint_plot_method.png            |
-        |   :width: 530px                                                      |
-        |   :height: 400px                                                     |
-        |   :align: left                                                       |
-        +----------------------------------------------------------------------+
         """
         # get constraint value
         if self.data is None:
@@ -875,7 +871,7 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         if title:
             FIG.canvas.set_window_title('Molecular Distances Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:
@@ -937,6 +933,14 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
 class InterMolecularDistanceConstraint(_MolecularDistanceConstraint):
     """
     Its controls the inter-molecular distances between atoms.
+
+    +----------------------------------------------------------------------+
+    |.. figure:: molecular_distances_constraint_plot_method.png            |
+    |   :width: 530px                                                      |
+    |   :height: 400px                                                     |
+    |   :align: left                                                       |
+    +----------------------------------------------------------------------+
+
 
     :Parameters:
         #. defaultDistance (number): The minimum distance allowed set by
@@ -1040,6 +1044,15 @@ class IntraMolecularDistanceConstraint(_MolecularDistanceConstraint):
     .. py:class::IntraMolecularDistanceConstraint
 
     Its controls the intra-molecular distances between atoms.
+
+
+    +----------------------------------------------------------------------+
+    |.. figure:: molecular_distances_constraint_plot_method.png            |
+    |   :width: 530px                                                      |
+    |   :height: 400px                                                     |
+    |   :align: left                                                       |
+    +----------------------------------------------------------------------+
+
 
     :Parameters:
         #. defaultDistance (number): The minimum distance allowed set by

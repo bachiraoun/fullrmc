@@ -1,7 +1,7 @@
 ##########################################################################################
 #############################  IMPORTING USEFUL DEFINITIONS  #############################
 # standard distribution imports
-import os
+import os, sys
 
 # external libraries imports
 
@@ -20,10 +20,21 @@ from fullrmc.Generators.Rotations import RotationGenerator
 
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
-# file names
-expDataPath = "Xrays.gr"
-pdbPath     = "CO2.pdb"
-enginePath  = "CO2.rmc"
+try:
+    DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+except:
+    DIR_PATH = ''
+
+# engine file names
+engineFileName = "CO2.rmc"
+expFileName    = "Xrays.gr"
+pdbFileName    = "CO2.pdb"
+freshStart     = False
+
+# engine variables
+expDataPath = os.path.join(DIR_PATH, expFileName)
+pdbPath     = os.path.join(DIR_PATH, pdbFileName)
+enginePath  = os.path.join(DIR_PATH, engineFileName)
 FRESH_START = False
 
 ENGINE = Engine(path=None)
@@ -50,7 +61,7 @@ else:
     PDF_CONSTRAINT, IMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT = ENGINE.constraints
 
 
-# set all constraints as used. Used value is True by default! 
+# set all constraints as used. Used value is True by default!
 # Now you know you can deactivate any constraint at any time though.
 PDF_CONSTRAINT.set_used(True)
 IMD_CONSTRAINT.set_used(True)
@@ -58,9 +69,9 @@ B_CONSTRAINT.set_used(True)
 BA_CONSTRAINT.set_used(True)
 
 ##########################################################################################
-#####################################  DIFFERENT RUNS  ################################### 
+#####################################  DIFFERENT RUNS  ###################################
 def run_atoms(ENGINE, rang=None, recur=None, xyzFrequency=500):
-    ENGINE.set_groups(None)  
+    ENGINE.set_groups(None)
     # set selector
     if recur is None: recur = 10
     ENGINE.set_group_selector(RandomSelector(ENGINE))
@@ -82,9 +93,9 @@ def run_molecules(ENGINE, rang=5, recur=100, refine=False, explore=True, exportP
     for stepIdx in range(rang):
         LOGGER.info("Running 'molecules' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="moleculeTraj.xyz", restartPdb=None)
-         
+
 def run_recurring_atoms(ENGINE, rang=None, recur=None, explore=True, refine=False, xyzFrequency=500):
-    ENGINE.set_groups(None)  
+    ENGINE.set_groups(None)
     # set selector
     if recur is None: recur = 10
     gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=refine, explore=explore)
@@ -96,11 +107,11 @@ def run_recurring_atoms(ENGINE, rang=None, recur=None, explore=True, refine=Fals
         LOGGER.info("Running 'explore' mode step %i"%(stepIdx))
         if explore:
             ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="exploreTraj.xyz", restartPdb=None)
-        elif refine:            
+        elif refine:
             ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="refineTraj.xyz", restartPdb=None)
         else:
             ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, xyzFrequency=xyzFrequency, xyzPath="recurTraj.xyz", restartPdb=None)
-            
+
 ##########################################################################################
 ####################################  RUN SIMULATION  ####################################
 ## remove all .xyz trajectory files
@@ -109,15 +120,11 @@ files = [f for f in os.listdir(".") if os.path.isfile(f) and ".xyz" in f]
 ## run atoms
 run_atoms(ENGINE, rang=4, xyzFrequency=None)
 #run_molecules(ENGINE, xyzFrequency=None)
-run_recurring_atoms(ENGINE, rang=50, explore=True, refine=False, xyzFrequency=None) 
-run_recurring_atoms(ENGINE, rang=4, explore=False, refine=True, xyzFrequency=None) 
-run_atoms(ENGINE, rang=4, xyzFrequency=None)
+run_recurring_atoms(ENGINE, rang=50, explore=True, refine=False, xyzFrequency=None)
+run_recurring_atoms(ENGINE, rang=4, explore=False, refine=True, xyzFrequency=None)
+run_atoms(ENGINE, rang=10, xyzFrequency=None)
+
 
 ##########################################################################################
-##################################  PLOT PDF CONSTRAINT  #################################
-IMD_CONSTRAINT.plot(show=False)
-B_CONSTRAINT.plot(show=False)
-BA_CONSTRAINT.plot(show=False)
-PDF_CONSTRAINT.plot(show=True)
-    
-    
+###################################### CALL plot.py ######################################
+os.system("%s %s"%(sys.executable, os.path.join(DIR_PATH, 'plot.py')))

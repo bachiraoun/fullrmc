@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # fullrmc library imports
@@ -19,4 +20,4 @@ if result:
     BA.plot(show=False)
     PDF.plot(show=True)
 else:
-    print mes
+    print(mes)

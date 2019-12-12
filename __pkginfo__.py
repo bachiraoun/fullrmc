@@ -3,11 +3,11 @@ Must know
 =========
 - fullrmc supported version is always the newest one. Older version are
   never supported as updating is very simple.
-- fullrmc uses pdbParser library to parse input pdb files and to visualize
+- fullrmc uses pdbparser library to parse input pdb files and to visualize
   system's atomic structure using `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_.
   VMD which stands for Visual Molecular Dynamics is a free software for
   displaying and animating large molecular systems.
-- pdbParser in general automatically detects VMD executable when installed.
+- pdbparser in general automatically detects VMD executable when installed.
   fullrmc will work fine without VMD, but make sure it's installed if you
   want to use the convenient visualize method of fullrmc's Engine.
 - Unless :class:`.Engine` set_molecules_indexes method is used explicitly,
@@ -38,13 +38,14 @@ Here we describe two methods to installing fullrmc.
 
 
 For your general understanding, fullrmc requires the following:
-   #. Python (>= 2.7 and < 3),
+   #. Python (>= 2.7 and 3),
    #. NumPy (lowest version tested is 1.7.1)
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
    #. pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting
-      from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
-   #. pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting
+      from fullrmc 3.0.0 - 1.0.4 is used starting from fullrmc 3.1.0
+      - 3.0.3 is used starting from fullrmc 3.1.0)
+   #. pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting
       from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
       - 0.1.5 is used starting from fullrmc 1.0.1)
    #. pysimplelog (lowest version tested is 0.2.1)
@@ -77,21 +78,19 @@ automatically installed and updated while fullrmc is being installed.
         from pkg_resources import parse_version as PV
         for name, ver in [('numpy'      ,'1.7.1') ,
                           ('cython'     ,'0.21.1'),
-                          ('pyrep'      ,'1.0.4') ,
-                          ('pdbParser'  ,'0.1.5') ,
+                          ('pyrep'      ,'3.0.0') ,
+                          ('pdbparser'  ,'0.1.5') ,
                           ('pysimplelog','0.3.0') ,
                           ('matplotlib' ,'1.4'  )]:
             try:
                 lib = __import__(name)
             except:
-                print '%s must be installed for fullrmc to run properly'%(name)
+                print('%s must be installed for fullrmc to run properly'%(name))
             else:
                 if PV(lib.__version__) < PV(ver):
-                    print '%s installed version %s is below minimum suggested version %s.\
-Updating %s is highly recommended.'%(name, lib.__version__, ver, name)
+                    print('%s installed version %s is below minimum suggested version %s. Updating %s is highly recommended.'%(name, lib.__version__, ver, name))
                 else:
-                    print '%s is properly installed and minimum version requirement is \
-met.'%(name)
+                    print('%s is properly installed and minimum version requirement is met.'%(name)
 
 
    * Locate python's site-packages by executing the following python script:
@@ -177,18 +176,18 @@ Known bugs and issues:
 ~~~~~~~~~~~~~~~~~~~~~~
    #. Boundary conditions handling for all non cubic, tetragonal nor
       orthorhombic systems is prone to distances calculation errors
-      caused by pdbParser (<=0.1.2).
+      caused by pdbparser (<=0.1.2).
 
 
 
 
 `Version 0.3.0 <https://pypi.python.org/pypi/fullrmc/0.3.0>`_:
 --------------------------------------------------------------
-Starting from this version, pdbParser (>=0.1.3) is used.
+Starting from this version, pdbparser (>=0.1.3) is used.
 
 Fixes and improvements:
 ~~~~~~~~~~~~~~~~~~~~~~~
-   #. Periodic boundary conditions handling fixed and separated from pdbParser.
+   #. Periodic boundary conditions handling fixed and separated from pdbparser.
    #. :class:`.InterMolecularDistanceConstraint` squared deviation computation
       changed from square law to absolute value. Therefore small values are not
       under-represented in the total squared deviation calculation.
@@ -270,7 +269,7 @@ computing angles for :class:`.BondsAngleConstraint` can in some cases be wrong.
 We recommend updating to this version if :class:`.BondsAngleConstraint` is needed
 for fitting molecular systems.
 
-Starting from this version, pdbParser (>=0.1.4) is used.
+Starting from this version, pdbparser (>=0.1.4) is used.
 
 New Modules and definitions:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -297,7 +296,7 @@ Fixes and improvements:
 
 `Version 1.0.1 <https://pypi.python.org/pypi/fullrmc/1.0.1>`_:
 --------------------------------------------------------------
-Starting from this version, pdbParser (>=0.1.5) is used. There is no bugs
+Starting from this version, pdbparser (>=0.1.5) is used. There is no bugs
 fixed in this version comparably to version 1.0.0.
 This version corrects for cell visualization compatibility between fullrmc
 and `VMD <http://www.ks.uiuc.edu/Research/vmd/>`_.
@@ -546,9 +545,37 @@ bug fixed
 --------------------------------------------------------------
 Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FC0Vmt4Qs4bI%2FIu1guEXMAwAJ>`_
 bug fixed
+
+
+
+
+`Version 4.0.0 <https://pypi.python.org/pypi/fullrmc/4.0.0>`_:
+--------------------------------------------------------------
+Starting from this version, fullrmc has become grid computing capable.
+multiframe is implemented to generate a statistical solution of multiple
+frames instead of a single frame solution. Along with this version,
+an instance of fullrmc will be available on a cloud service that can be
+used to launch fullrmc and perform multiframe computations. We will update
+all user in the Q&A group when and where this service will be available
+
+
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. MultiframeUtils module added which will be used to launch fullrmc
+      on computation grids
+   #. ExperimentalConstraints plot and data export methods factored
+
+
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~
+    #. :class:`.StructureFactorConstraint` scale factor bug fixed
+    #. :class:`.PairCorrelationConstraint` scale factor bug fixed
+    #. Engine run method explore bug fixed
+    #. Amputation number density bug fixed for InfiniteBoundaryConditions
 """
 
-__version__    = '3.3.0'
+
+__version__    = '4.0.0'
 
 __author__     = "Bachir Aoun"
 

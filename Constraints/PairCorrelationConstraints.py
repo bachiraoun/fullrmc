@@ -5,22 +5,23 @@ experimental pair correlation functions.
 .. inheritance-diagram:: fullrmc.Constraints.PairCorrelationConstraints
     :parts: 1
 """
-
 # standard libraries imports
-import itertools
+from __future__ import print_function
+import itertools, os, copy, re
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.Database import is_element_property, get_element_property
-from pdbParser.Utilities.Collection import get_normalized_weighting
+from pdbparser.Utilities.Database import is_element_property, get_element_property
+from pdbparser.Utilities.Collection import get_normalized_weighting
 
 # fullrmc imports
-from fullrmc.Globals import FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, ExperimentalConstraint
-from fullrmc.Core.pairs_histograms import multiple_pairs_histograms_coords, full_pairs_histograms_coords
-from fullrmc.Constraints.Collection import ShapeFunction
-from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
+from ..Globals import FLOAT_TYPE, LOGGER, PI
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import reset_if_collected_out_of_date, get_caller_frames
+from ..Core.Constraint import Constraint, ExperimentalConstraint
+from ..Core.pairs_histograms import multiple_pairs_histograms_coords, full_pairs_histograms_coords
+from ..Constraints.Collection import ShapeFunction
+from ..Constraints.PairDistributionConstraints import PairDistributionConstraint
 
 class PairCorrelationConstraint(PairDistributionConstraint):
     """
@@ -54,6 +55,16 @@ class PairCorrelationConstraint(PairDistributionConstraint):
     :math:`N_{i,j}` is the total number of atoms i and j in the system. \n
 
     :Parameters: Refer to :class:`.PairDistributionConstraint`
+
+
+    +----------------------------------------------------------------------+
+    |.. figure:: pair_correlation_constraint_plot_method.png               |
+    |   :width: 530px                                                      |
+    |   :height: 400px                                                     |
+    |   :align: left                                                       |
+    +----------------------------------------------------------------------+
+
+
 
     .. code-block:: python
 
@@ -91,7 +102,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                 distances    = np.sqrt( np.sum(coordinates**2, axis=1) )
                 maxDistance  = 2.*np.max(distances)
                 rmax = FLOAT_TYPE( maxDistance + 10 )
-                LOGGER.warn("Better set shape function rmax with infinite boundary conditions. Here value is automatically set to %s"%rmax)
+                LOGGER.warn("@%s Better set shape function rmax with infinite boundary conditions. Here value is automatically set to %s"%(self.engine.usedFrame, rmax))
         shapeFunc  = ShapeFunction(engine    = self.engine,
                                    weighting = self.weighting,
                                    qmin=qmin, qmax=qmax, dq=dq,
@@ -102,10 +113,17 @@ class PairCorrelationConstraint(PairDistributionConstraint):
     def _reset_standard_error(self):
         # recompute squared deviation
         if self.data is not None:
-            totalPCF = self.__get_total_gr(self.data)
+            totalPCF = self.__get_total_gr(self.data, rho0=self.engine.numberDensity)
             self.set_standard_error(self.compute_standard_error(modelData = totalPCF))
 
-    def __get_total_gr(self, data):
+    def update_standard_error(self):
+        """ Compute and set constraint's standardError."""
+        # set standardError
+        totalPDF = self.get_constraint_value()["total"]
+        self.set_standard_error(self.compute_standard_error(modelData = totalPDF))
+
+
+    def __get_total_gr(self, data, rho0):
         """This method is created just to speed up the computation of
         the total gr upon fitting.
         """
@@ -138,25 +156,44 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         if self._shapeArray is not None:
             gr -= self._shapeArray
         # Multiply by scale factor
-        self._fittedScaleFactor = self.get_adjusted_scale_factor(self.experimentalPDF, gr, self._usedDataWeights)
+        self._fittedScaleFactor = self.get_adjusted_scale_factor(experimentalData=self.experimentalPDF, modelData=gr, dataWeights=self._usedDataWeights, rho0=rho0)
         if self._fittedScaleFactor != 1:
-            gr *= self._fittedScaleFactor
+            Gr = (4.*PI*self.shellCenters*rho0)*(gr-1)
+            Gr *= self._fittedScaleFactor
+            gr  = 1. +  Gr/(4.*PI*self.shellCenters*rho0)
+        # apply multiframe prior and weight
+        gr = self._apply_multiframe_prior(gr)
         # convolve total with window function
         if self.windowFunction is not None:
             gr = np.convolve(gr, self.windowFunction, 'same')
         return gr
 
+    def get_adjusted_scale_factor(self, experimentalData, modelData, dataWeights, rho0):
+        """Overload to bring back g(r) to G(r) prior to fitting scale factor.
+        g(r) -> 1 at high r and this will create a wrong scale factor.
+        Overloading can be avoided but it's better to for performance reasons
+        """
+        #r    = self.shellCenters
+        SF = self.scaleFactor
+        # check to update scaleFactor
+        if self.adjustScaleFactorFrequency:
+            if not self.engine.accepted%self.adjustScaleFactorFrequency:
+                expGr = (4.*PI*self.shellCenters*rho0)*(experimentalData-1)
+                Gr    = (4.*PI*self.shellCenters*rho0)*(modelData-1)
+                SF = self.fit_scale_factor(expGr, Gr, dataWeights)
+        return SF
+
     def _on_collector_reset(self):
         pass
 
-    def _get_constraint_value(self, data):
+    def _get_constraint_value(self, data, applyMultiframePrior=True):
         # http://erice2011.docking.org/upload/Other/Billinge_PDF/03-ReadingMaterial/BillingePDF2011.pdf     page 6
         output = {}
         for pair in self.elementsPairs:
             output["rdf_intra_%s-%s" % pair] = np.zeros(self.histogramSize, dtype=FLOAT_TYPE)
             output["rdf_inter_%s-%s" % pair] = np.zeros(self.histogramSize, dtype=FLOAT_TYPE)
             output["rdf_total_%s-%s" % pair] = np.zeros(self.histogramSize, dtype=FLOAT_TYPE)
-        output["pcf_total"] = np.zeros(self.histogramSize, dtype=FLOAT_TYPE)
+        output["total_no_window"] = np.zeros(self.histogramSize, dtype=FLOAT_TYPE)
         for pair in self.elementsPairs:
             # get weighting scheme
             wij = self.weightingScheme.get(pair[0]+"-"+pair[1], None)
@@ -183,30 +220,44 @@ class PairCorrelationConstraint(PairDistributionConstraint):
             output["rdf_intra_%s-%s" % pair] *= intensityFactor
             output["rdf_inter_%s-%s" % pair] *= intensityFactor
             output["rdf_total_%s-%s" % pair]  = output["rdf_intra_%s-%s" % pair] + output["rdf_inter_%s-%s" % pair]
-            output["pcf_total"]              += output["rdf_total_%s-%s" % pair]
+            output["total_no_window"]        += output["rdf_total_%s-%s" % pair]
         # remove shape function
         if self._shapeArray is not None:
-            output["pcf_total"] -= self._shapeArray
-        # multiply total by scale factor
-        output["pcf_total"] *= self.scaleFactor
+            output["total_no_window"] -= self._shapeArray
+        # multiply by scale factor
+        if self.scaleFactor != 1:
+            Gr = (4.*PI*self.shellCenters*self.engine.numberDensity)*(output["total_no_window"]-1)
+            Gr *= self.scaleFactor
+            output["total_no_window"]  = 1. +  Gr/(4.*PI*self.shellCenters*self.engine.numberDensity)
+        # apply multiframe prior and weight
+        if applyMultiframePrior:
+            output["total_no_window"] = self._apply_multiframe_prior(output["total_no_window"])
         # convolve total with window function
         if self.windowFunction is not None:
-            output["pcf"] = np.convolve(output["pcf_total"], self.windowFunction, 'same')
+            output["total"] = np.convolve(output["total_no_window"], self.windowFunction, 'same')
         else:
-            output["pcf"] = output["pcf_total"]
+            output["total"] = output["total_no_window"]
         return output
 
-    def get_constraint_value(self):
+    def get_constraint_value(self, applyMultiframePrior=True):
         """
         Get constraint's data dictionary value.
 
+        :Parameters:
+            #. applyMultiframePrior (boolean): Whether to apply subframe weight
+               and prior to the total. This will only have an effect when used
+               frame is a subframe and in case subframe weight and prior is
+               defined.
+
         :Returns:
-            #. data (dictionary): Constraint's data dictionary.
+            #. PDFs (dictionary): The PDFs dictionnary, where keys are the
+               element wise intra and inter molecular PDFs and values are the
+               computed PDFs.
         """
         if self.data is None:
             LOGGER.warn("data must be computed first using 'compute_data' method.")
             return {}
-        return self._get_constraint_value(self.data)
+        return self._get_constraint_value(self.data, applyMultiframePrior=applyMultiframePrior)
 
     @reset_if_collected_out_of_date
     def compute_data(self):
@@ -227,7 +278,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
         # set standardError
-        totalPCF = self.__get_total_gr(self.data)
+        totalPCF = self.__get_total_gr(self.data, rho0=self.engine.numberDensity)
         self.set_standard_error(self.compute_standard_error(modelData = totalPCF))
         # set original data
         if self.originalData is None:
@@ -316,7 +367,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         # compute standardError after move
         dataIntra = self.data["intra"]-self.activeAtomsDataBeforeMove["intra"]+self.activeAtomsDataAfterMove["intra"]
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
-        totalPCF = self.__get_total_gr({"intra":dataIntra, "inter":dataInter})
+        totalPCF = self.__get_total_gr({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         # set after move standard error
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPCF) )
 
@@ -338,20 +389,19 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         data      = {"intra":dataIntra, "inter":dataInter}
         # temporarily adjust self.__weightingScheme
         weightingScheme = self.weightingScheme
-        #relativeIndex   = self.engine._atomsCollector.get_relative_index(relativeIndex[0])
         relativeIndex = relativeIndex[0]
         selectedElement = self.engine.allElements[relativeIndex]
         self.engine.numberOfAtomsPerElement[selectedElement] -= 1
-        #elementsWeight        = dict([(el,float(get_element_property(el,self.__weighting))) for el in self.engine.elements])
         WS = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeight )
-        for k, v in WS.items():
-            WS[k] = FLOAT_TYPE(v)
+        for k in WS:
+            WS[k] = FLOAT_TYPE(WS[k])
         self._set_weighting_scheme(WS)
         # compute standard error
         if not self.engine._RT_moveGenerator.allowFittingScaleFactor:
             SF = self.adjustScaleFactorFrequency
             self._set_adjust_scale_factor_frequency(0)
-        totalPCF      = self.__get_total_gr(data)
+        rho0     = ((self.engine.numberOfAtoms-1)/self.engine.volume).astype(FLOAT_TYPE)
+        totalPCF = self.__get_total_gr(data, rho0=rho0)
         standardError = self.compute_standard_error(modelData = totalPCF)
         if not self.engine._RT_moveGenerator.allowFittingScaleFactor:
             self._set_adjust_scale_factor_frequency(SF)
@@ -359,8 +409,9 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         self.set_active_atoms_data_before_move(None)
         # set data
         self.set_amputation_data( {'data':data, 'weightingScheme':self.weightingScheme} )
+        # compute standard error
         self.set_amputation_standard_error( standardError )
-        # reset weightingScheme
+        # reset weightingScheme and number of atoms per element
         self._set_weighting_scheme(weightingScheme)
         self.engine.numberOfAtomsPerElement[selectedElement] += 1
 
@@ -370,170 +421,8 @@ class PairCorrelationConstraint(PairDistributionConstraint):
     def _on_collector_release_atom(self, realIndex):
         pass
 
-    def plot(self, ax=None, intra=True, inter=True, shapeFunc=True,
-                   legend=True, legendCols=2, legendLoc='best',
-                   title=True, titleStdErr=True,
-                   titleScaleFactor=True, titleAtRem=True,
-                   titleUsedFrame=True, show=True):
-        """
-        Plot pair correlation constraint's data.
 
-        :Parameters:
-            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If None is given a new plot figure will be created.
-            #. intra (boolean): Whether to add intra-molecular pair
-               distribution function features to the plot.
-            #. inter (boolean): Whether to add inter-molecular pair
-               distribution function features to the plot.
-            #. shapeFunc (boolean): Whether to add shape function to the plot
-               only when exists.
-            #. legend (boolean): Whether to create the legend or not.
-            #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best',
-               'center', 'lower left', 'center right', 'upper left',
-               'upper center', 'lower center' is accepted.
-            #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard
-               error value in title.
-            #. titleScaleFactor (boolean): Whether to show contraint's scale
-               factor value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of
-               removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name
-               in title.
-            #. show (boolean): Whether to render and show figure before
-               returning.
 
-        :Returns:
-            #. figure (matplotlib Figure): matplotlib used figure.
-            #. axes (matplotlib Axes): matplotlib used axes.
 
-        +----------------------------------------------------------------------+
-        |.. figure:: pair_correlation_constraint_plot_method.png               |
-        |   :width: 530px                                                      |
-        |   :height: 400px                                                     |
-        |   :align: left                                                       |
-        +----------------------------------------------------------------------+
-        """
-        # get constraint value
-        output = self.get_constraint_value()
-        if not len(output):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        # import matplotlib
-        import matplotlib.pyplot as plt
-        # get axes
-        if ax is None:
-            FIG  = plt.figure()
-            AXES = plt.gca()
-        else:
-            AXES = ax
-            FIG  = AXES.get_figure()
-        # Create plotting styles
-        COLORS  = ["b",'g','r','c','y','m']
-        MARKERS = ["",'.','+','^','|']
-        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(['--'], list(reversed(COLORS)))]
-        INTRA_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTRA_STYLES)]
-        INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
-        INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
-        # plot experimental
-        AXES.plot(self.experimentalDistances,self.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
-        AXES.plot(self.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-        # plot without window function
-        if self.windowFunction is not None:
-            AXES.plot(self.shellCenters, output["pcf_total"], 'k', linewidth=1.0,  markevery=5, label="total - no window" )
-        if shapeFunc and self._shapeArray is not None:
-            AXES.plot(self.shellCenters, self._shapeArray, '--k', linewidth=1.0,  markevery=5, label="shape function" )
-        # plot partials
-        intraStyleIndex = 0
-        interStyleIndex = 0
-        for key, val in output.items():
-            if key in ("pcf_total", "pcf"):
-                continue
-            elif "intra" in key and intra:
-                AXES.plot(self.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key )
-                intraStyleIndex+=1
-            elif "inter" in key and inter:
-                AXES.plot(self.shellCenters, val, INTER_STYLES[interStyleIndex], markevery=5, label=key )
-                interStyleIndex+=1
-        # plot legend
-        if legend:
-            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
-        # set title
-        if title:
-            FIG.canvas.set_window_title('Pair Correlation Constraint')
-            if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
-            else:
-                t = ''
-            if titleAtRem:
-                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
-            if titleStdErr and self.standardError is not None:
-                t += "$std$ $error=%.6f$ "%(self.standardError)
-            if titleScaleFactor:
-                t += " - "*(len(t)>0) + "$scale$ $factor=%.6f$"%(self.scaleFactor)
-            if len(t):
-                AXES.set_title(t)
-        # set axis labels
-        AXES.set_xlabel("$r(\AA)$", size=16)
-        AXES.set_ylabel("$g(r)(\AA^{-2})$", size=16)
-        # set background color
-        FIG.patch.set_facecolor('white')
-        #show
-        if show:
-            plt.show()
-        return FIG, AXES
 
-    def export(self, fname, format='%12.5f', delimiter=' ', comments='# '):
-        """
-        Export pair correlation constraint's data.
-
-        :Parameters:
-            #. fname (path): full file name and path.
-            #. format (string): string format to export the data.
-               format is as follows (%[flag]width[.precision]specifier)
-            #. delimiter (string): String or character separating columns.
-            #. comments (string): String that will be prepended to the header.
-        """
-        # get constraint value
-        output = self.get_constraint_value()
-        if not len(output):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        # start creating header and data
-        header = ["distances",]
-        data   = [self.experimentalDistances,]
-        # add all intra data
-        for key, val in output.items():
-            if "inter" in key:
-                continue
-            header.append(key.replace(" ","_"))
-            data.append(val)
-        # add all inter data
-        for key, val in output.items():
-            if "intra" in key:
-                continue
-            header.append(key.replace(" ","_"))
-            data.append(val)
-        # add total
-        header.append("total")
-        data.append(output["pcf"])
-        if self.windowFunction is not None:
-            header.append("total_no_window")
-            data.append(output["pcf_total"])
-        if self._shapeArray is not None:
-            header.append("shape_function")
-            data.append(self._shapeArray)
-        # add experimental data
-        header.append("experimental")
-        data.append(self.experimentalPDF)
-        # create array and export
-        data =np.transpose(data).astype(float)
-        # save
-        np.savetxt(fname     = fname,
-                   X         = data,
-                   fmt       = format,
-                   delimiter = delimiter,
-                   header    = " ".join(header),
-                   comments  = comments)
+#

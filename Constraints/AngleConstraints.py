@@ -5,17 +5,19 @@ between atoms.
 .. inheritance-diagram:: fullrmc.Constraints.AngleConstraints
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.angles import full_angles_coords
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from ..Core.angles import full_angles_coords
 
 
 
@@ -41,6 +43,14 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         src="https://www.youtube.com/embed/ezBbbO9IVig"
         frameborder="0" allowfullscreen>
         </iframe>
+
+
+    +----------------------------------------------------------------------+
+    |.. figure:: bonds_angle_constraint_plot_method.png                    |
+    |   :width: 530px                                                      |
+    |   :height: 400px                                                     |
+    |   :align: left                                                       |
+    +----------------------------------------------------------------------+
 
 
     :Parameters:
@@ -258,7 +268,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create central angle
-        if not self.__angles.has_key(centralIdx):
+        if not centralIdx in self.__angles:
             anglesCentral = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
             anglesCentral = {"left"       :self.__angles[centralIdx]["left"],
@@ -266,7 +276,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                              "centralMap" :self.__angles[centralIdx]["centralMap"],
                              "otherMap"   :self.__angles[centralIdx]["otherMap"] }
         # create left angle
-        if not self.__angles.has_key(leftIdx):
+        if not leftIdx in self.__angles:
             anglesLeft = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
             anglesLeft = {"left"       :self.__angles[leftIdx]["left"],
@@ -274,7 +284,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                           "centralMap" :self.__angles[leftIdx]["centralMap"],
                           "otherMap"   :self.__angles[leftIdx]["otherMap"] }
         # create right angle
-        if not self.__angles.has_key(rightIdx):
+        if not rightIdx in self.__angles:
             anglesRight = {"left":[],"right":[],"centralMap":[],"otherMap":[]}
         else:
             anglesRight = {"left"       :self.__angles[rightIdx]["left"],
@@ -353,14 +363,15 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if self.engine is None:
             raise Exception(LOGGER.error("Engine is not defined. Can't create angles by definition"))
         assert isinstance(anglesDefinition, dict), LOGGER.error("anglesDefinition must be a dictionary")
-        ALL_NAMES         = self.engine.get_original_data("allNames")
-        NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-        MOLECULES_NAME   = self.engine.get_original_data("moleculesName")
+        ALL_NAMES       = self.engine.get_original_data("allNames")
+        NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
+        MOLECULES_NAME  = self.engine.get_original_data("moleculesName")
         MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
         # check map definition
         existingmoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
-        for mol, angles in anglesDefinition.items():
+        for mol in anglesDefinition:
+            angles = anglesDefinition[mol]
             if mol not in existingmoleculesName:
                 LOGGER.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
@@ -387,10 +398,10 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
             molName = MOLECULES_NAME[idx]
-            if not molName in anglesDef.keys():
+            if not molName in anglesDef:
                 continue
             molIdx = MOLECULES_INDEX[idx]
-            if not mols.has_key(molIdx):
+            if not molIdx in mols:
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
@@ -728,13 +739,6 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
-
-        +----------------------------------------------------------------------+
-        |.. figure:: bonds_angle_constraint_plot_method.png                    |
-        |   :width: 530px                                                      |
-        |   :height: 400px                                                     |
-        |   :align: left                                                       |
-        +----------------------------------------------------------------------+
         """
         def _get_bins(dmin, dmax, boundaries, nbins):
             # create bins
@@ -794,7 +798,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # get axes
         if ax is None:
             if subplots and ncategories>1:
@@ -815,7 +819,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3, L,U  = key
                 L = L*180./np.pi
                 U = U*180./np.pi
@@ -853,7 +857,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3, L,U  = key
                 L = L*180./np.pi
                 U = U*180./np.pi
@@ -893,7 +897,7 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
         if title:
             FIG.canvas.set_window_title('Bonds Angle Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:
@@ -958,20 +962,21 @@ class BondsAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # create data
-        for idx, key in enumerate(categories.keys()):
+        for idx, key in enumerate(categories):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
         # adjust data size
         maxSize = max( [len(v) for v in categories.values()] )
-        for key, data in categories.items():
-            add =  maxSize-len(data)
+        for key in categories:
+            data = categories[key]
+            add  = maxSize-len(data)
             if add > 0:
                 categories[key] = data + ['']*add
         # start creating header and data
-        sortCa = sorted( categories.keys() )
+        sortCa = sorted( categories )
         header = [("%s%s%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,L,U)).replace(" ","_") for a1,a2,a3,L,U in sortCa]
         data   = [categories[key] for key in sortCa]
         # save

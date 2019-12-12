@@ -1,15 +1,16 @@
 """
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_integer, is_number, generate_random_integer
-from fullrmc.Core.MoveGenerator import RemoveGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_integer, is_number, generate_random_integer
+from ..Core.MoveGenerator import RemoveGenerator
 
 
 class AtomsRemoveGenerator(RemoveGenerator):

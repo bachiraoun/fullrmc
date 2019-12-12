@@ -4,16 +4,17 @@ OrderedSelectors contains GroupSelector classes of defined order of selection.
 .. inheritance-diagram:: fullrmc.Selectors.OrderedSelectors
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports=
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_integer, is_number
-from fullrmc.Core.GroupSelector import GroupSelector
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_integer, is_number
+from ..Core.GroupSelector import GroupSelector
 
 
 class DefinedOrderSelector(GroupSelector):
@@ -226,7 +227,9 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         """
         Automatically sets the selector order at the engine runtime.
         """
-        diffs = np.array([(np.sum(self.engine.realCoordinates[g.indexes], axis=0)/len(g))-self.__center for g in self.engine.groups], dtype=FLOAT_TYPE)
+        #diffs = np.array([(np.sum(self.engine.realCoordinates[g.indexes], axis=0)/len(g))-self.__center for g in self.engine.groups], dtype=FLOAT_TYPE)
+        diffs = np.array([(np.sum(self.engine.realCoordinates[self.engine._atomsCollector.get_relative_indexes(g.indexes)], axis=0)/len(g))-self.__center
+                          for g in self.engine.groups], dtype=FLOAT_TYPE) # FIXED 2019-03-18
         dists = np.array([np.sqrt(np.add.reduce(diff**2)) for diff in diffs])
         order = np.argsort(dists).astype(INT_TYPE)
         if self.__expand:
@@ -304,11 +307,11 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         newGenParams = {"TG":{"amplitude":0.1, "damping":0.1, "angle":90},
                         "RG":{"amplitude":10}}
         # update  TranslationTowardsCenterGenerator values
-        for gkey in newGenParams.keys():
-            if not generatorsParams.has_key(gkey):
+        for gkey in newGenParams:
+            if not gkey in generatorsParams:
                 continue
             assert isinstance(generatorsParams[gkey], dict), LOGGER.error("generatorsParams value must be a python dictionary")
-            for key in newGenParams[gkey].keys():
+            for key in newGenParams[gkey]:
                 newGenParams[gkey][key] = generatorsParams[gkey].get(key, newGenParams[gkey][key])
         # check generatorsParams damping parameters
         assert is_number(generatorsParams["TG"]["damping"]), LOGGER.error("generatorsParams['TG']['damping'] must be a number")

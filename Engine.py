@@ -10,6 +10,7 @@ bond-angles, dihedral angles, inter-molecular-distances, etc.
 """
 
 # standard libraries imports
+from __future__ import print_function
 import os
 import time
 import sys
@@ -17,6 +18,8 @@ import uuid
 import tempfile
 import multiprocessing
 import copy
+import inspect
+
 
 # external libraries imports
 import numpy as np
@@ -24,30 +27,31 @@ try:
     import cPickle as pickle
 except:
     import pickle
-from pdbParser.pdbParser import pdbParser
-from pdbParser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
+from pdbparser.pdbparser import pdbparser
+from pdbparser.Utilities.BoundaryConditions import InfiniteBoundaries, PeriodicBoundaries
 from pyrep import Repository
 
 # fullrmc library imports
-from __pkginfo__ import __version__
-from Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from Core.boundary_conditions_collection import transform_coordinates
-from Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
-from Core.Collection import _AtomsCollector, _Container
-from Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from Core.Group import Group, EmptyGroup
-from Core.MoveGenerator import SwapGenerator, RemoveGenerator
-from Core.GroupSelector import GroupSelector
-from Selectors.RandomSelectors import RandomSelector
+from .__pkginfo__ import __version__
+from .Globals import INT_TYPE, FLOAT_TYPE, LOGGER, WATER_NUMBER_DENSITY
+from .Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from .Core.boundary_conditions_collection import transform_coordinates
+from .Core.Collection import Broadcaster, is_number, is_integer, get_elapsed_time, generate_random_float
+from .Core.Collection import _AtomsCollector, _Container, get_caller_frames
+from .Core.Constraint import Constraint, SingularConstraint, RigidConstraint, ExperimentalConstraint
+from .Core.Group import Group, EmptyGroup
+from .Core.MoveGenerator import SwapGenerator, RemoveGenerator
+from .Core.GroupSelector import GroupSelector
+from .Selectors.RandomSelectors import RandomSelector
 
 
 class Engine(object):
     """
     fulrmc's engine, is used to launch a stochastic modelling which is
     different than traditional Reverse Monte Carlo (RMC).
-    It has the capability to use and fit simultaneously
-    multiple sets of experimental data. One can also define constraints such
-    as distances, bonds length, angles and many others.
+    It has the capability to use and fit simultaneously multiple sets of
+    experimental data. One can also define constraints such as distances,
+    bonds length, angles and many others.
 
     :Parameters:
         #. path (None, string): Engine repository (directory) path to save the
@@ -55,12 +59,6 @@ class Engine(object):
            using Engine.save method. If a non-empty directory is found at the
            given path an error will be raised unless freshStart flag attribute
            is set to True.
-        #. frames (None, list): List of frames name. Frames are used to store
-           fitting data. Multiple frames can be used to create a fitting story
-           or to fit multiple structures simultaneously. Also multiple frames
-           can be used to launch multiple simulations at the same time and
-           merge structures at some predefined merging frequency.
-           If None is given, a single frame '0' is initialized automatically.
         #. logFile (None, string): Logging file basename. A logging file full
            name will be the given logFile appended '.log' extension
            automatically. If None is given, logFile is left unchanged.
@@ -68,6 +66,8 @@ class Engine(object):
            at the given path if found. If set to False, an error will be raise
            if a fullrmc engine or a non-empty directory is found at the given
            path.
+        #. timeout (number): The maximum delay or time allowed to successfully
+           set the lock upon reading or writing the engine repository
 
     .. code-block:: python
 
@@ -89,64 +89,68 @@ class Engine(object):
         ENGINE.save()
 
         # run engine for 10000 steps and save only at the end
-        ENGINE.run(numberOfSteps=10000, saveFrequency=10000, savePath="system.rmc")
+        ENGINE.run(numberOfSteps=10000, saveFrequency=10000)
 
     """
-    def __init__(self, path=None, frames=None, logFile=None, freshStart=False):
+    def __init__(self, path=None, logFile=None, freshStart=False, timeout=10):
         # set repository and frame data
         ENGINE_DATA   = ('_Engine__frames', '_Engine__usedFrame', )
         ## MUST ADD ORIGINAL DATA TO STORE ALL ORIGINAL PDB ATTRIBUTES
         ## THIS IS NEEDED TO SET GROUPS AND ETC ESPECIALLY AFTER REMOVING
         ## ATOMS FROM SYSTEM.
         self.__frameOriginalData = {}
-        FRAME_DATA    = ('_Engine__pdb', '_Engine__tolerance', ### MIGHT NEED TO MOVE _Engine__pdb TO ENGINE_DATA
-                         '_Engine__boundaryConditions', '_Engine__isPBC', '_Engine__isIBC',
-                         '_Engine__basisVectors', '_Engine__reciprocalBasisVectors',
-                         '_Engine__numberDensity', '_Engine__volume',
-                         '_Engine__realCoordinates','_Engine__boxCoordinates',
-                         '_Engine__groups', '_Engine__groupSelector', '_Engine__state',
-                         '_Engine__generated', '_Engine__tried', '_Engine__accepted',
-                         '_Engine__removed', '_Engine__tolerated', '_Engine__totalStandardError',
-                         '_Engine__lastSelectedGroupIndex', '_Engine__numberOfMolecules',
-                         '_Engine__moleculesIndex', '_Engine__moleculesName',
-                         '_Engine__allElements', '_Engine__elements',
-                         '_Engine__elementsIndex', '_Engine__numberOfAtomsPerElement',
-                         '_Engine__allNames', '_Engine__names',
-                         '_Engine__namesIndex', '_Engine__numberOfAtomsPerName',
-                         '_atomsCollector',)
-                         #'_atomsCollector', '_Container')
-        RUNTIME_DATA  = ('_Engine__realCoordinates','_Engine__boxCoordinates',
-                         '_Engine__state', '_Engine__generated', '_Engine__tried',
-                         '_Engine__accepted','_Engine__tolerated', '_Engine__removed',
-                         '_Engine__totalStandardError', '_Engine__lastSelectedGroupIndex',
-                         '_atomsCollector',  # RUNTIME_DATA must have all atomsCollector data keys and affected attributes upon amputating atoms
-                         '_Engine__moleculesIndex', '_Engine__moleculesName',
-                         '_Engine__elementsIndex', '_Engine__allElements',
-                         '_Engine__namesIndex', '_Engine__allNames',
-                         '_Engine__numberOfAtomsPerName',
-                         '_Engine__numberOfAtomsPerElement',
-                         '_Engine__names','_Engine__elements',
-                         '_Engine__numberOfMolecules','_Engine__numberDensity',)
+        FRAME_DATA      = ('_Engine__pdb', '_Engine__tolerance', ### MIGHT NEED TO MOVE _Engine__pdb TO ENGINE_DATA
+                           '_Engine__boundaryConditions', '_Engine__isPBC', '_Engine__isIBC',
+                           '_Engine__basisVectors', '_Engine__reciprocalBasisVectors',
+                           '_Engine__numberDensity', '_Engine__volume',
+                           '_Engine__realCoordinates','_Engine__boxCoordinates',
+                           '_Engine__groups', '_Engine__groupSelector', '_Engine__state',
+                           '_Engine__generated', '_Engine__tried', '_Engine__accepted',
+                           '_Engine__removed', '_Engine__tolerated', '_Engine__totalStandardError',
+                           '_Engine__lastSelectedGroupIndex', '_Engine__numberOfMolecules',
+                           '_Engine__moleculesIndex', '_Engine__moleculesName',
+                           '_Engine__allElements', '_Engine__elements',
+                           '_Engine__elementsIndex', '_Engine__numberOfAtomsPerElement',
+                           '_Engine__allNames', '_Engine__names',
+                           '_Engine__namesIndex', '_Engine__numberOfAtomsPerName',
+                           '_atomsCollector',)
+                           #'_atomsCollector', '_Container')
+        MULTIFRAME_DATA = ('_Engine__constraints',)#'_Engine__broadcaster') # multiframe data will be save appart with ENGINE_DATA and pulled for traditional frames
+        RUNTIME_DATA    = ('_Engine__realCoordinates','_Engine__boxCoordinates',
+                           '_Engine__state', '_Engine__generated', '_Engine__tried',
+                           '_Engine__accepted','_Engine__tolerated', '_Engine__removed',
+                           '_Engine__totalStandardError', '_Engine__lastSelectedGroupIndex',
+                           '_atomsCollector',  # RUNTIME_DATA must have all atomsCollector data keys and affected attributes upon amputating atoms
+                           '_Engine__moleculesIndex', '_Engine__moleculesName',
+                           '_Engine__elementsIndex', '_Engine__allElements',
+                           '_Engine__namesIndex', '_Engine__allNames',
+                           '_Engine__numberOfAtomsPerName',
+                           '_Engine__numberOfAtomsPerElement',
+                           '_Engine__names','_Engine__elements',
+                           '_Engine__numberOfMolecules','_Engine__numberDensity',)
 
         # might need to add groups to FRAME_DATA
-        object.__setattr__(self, 'ENGINE_DATA', tuple( ENGINE_DATA)  )
-        object.__setattr__(self, 'FRAME_DATA',  tuple( FRAME_DATA)   )
-        object.__setattr__(self, 'RUNTIME_DATA',tuple( RUNTIME_DATA) )
+        object.__setattr__(self, 'ENGINE_DATA',     tuple( ENGINE_DATA)     )
+        object.__setattr__(self, 'FRAME_DATA',      tuple( FRAME_DATA)      )
+        object.__setattr__(self, 'MULTIFRAME_DATA', tuple( MULTIFRAME_DATA) )
+        object.__setattr__(self, 'RUNTIME_DATA',    tuple( RUNTIME_DATA)    )
 
         # initialize engine' info
-        if frames is None:
-            self.__frames = ('0')
-        else:
-            self.__frames = []
-            self.__frames = tuple( self.__get_normalized_frames_name(frames) )
-        self.__usedFrame  = self.__frames[0]
-        self.__id         = str(uuid.uuid1())
-        self.__version    = __version__
+        self.__frames    = {'0':None}
+        self.__usedFrame = '0'
+        self.__id        = str(uuid.uuid1())
+        self.__version   = __version__
+
+        # set timeout
+        self.set_timeout(timeout)
 
         # check whether an engine exists at this path
         if self.is_engine(path):
             if freshStart:
-                Repository(ACID=False).remove_repository(path, relatedFiles=True, relatedFolders=True)
+                #Repository().remove_repository(path, relatedFiles=True, relatedFolders=True)
+                rep = Repository(timeout=self.__timeout)
+                rep.DEBUG_PRINT_FAILED_TRIALS = False
+                rep.remove_repository(path, removeEmptyDirs=True)
             else:
                 m  = "An Engine is found at '%s'. "%path
                 m += "If you wish to override it set freshStart argument to True. "
@@ -179,7 +183,7 @@ class Engine(object):
         self.__tolerance     = 0.
 
         # set mustSave flag, it indicates  whether saving whole engine is needed before running
-        self.__mustSave = False
+        self.__mustSave       = False
         self.__saveGroupsFlag = True
 
         # set pdb
@@ -192,54 +196,101 @@ class Engine(object):
         if logFile is not None:
             self.set_log_file(logFile)
 
+    def __repr__(self):
+        repr = "fullrmc %s (Version %s)"%(self.__class__.__name__, self.__version)
+        if self.__repository is None:
+            return repr
+        repoStats = self.__repository.get_stats()[:2]
+        ndirs    = repoStats[0]
+        nfiles   = repoStats[1]
+        nframes  = sum([1 for f in self.__frames if self.__frames[f] is None])
+        nmframes = sum([1 for f in self.__frames if self.__frames[f] is not None])
+        repr = "%s @%s [%i directories] [%i files] (%i frames) (%i multiframes)"%(repr,self.__repository.path, ndirs, nfiles, nframes, nmframes)
+        return repr
+
+    def __str__(self):
+        return self.__repr__()
+
     def __setattr__(self, name, value):
-        if name in ('ENGINE_DATA', 'FRAME_DATA', 'RUNTIME_DATA'):
-            raise LOGGER.error("Setting '%s' is not allowed."%name)
+        if name in ('ENGINE_DATA', 'FRAME_DATA', 'RUNTIME_DATA', 'MULTIFRAME_DATA'):
+            raise Exception(LOGGER.error("Setting '%s' is not allowed."%name))
         else:
             object.__setattr__(self, name, value)
 
     def __getstate__(self):
         state = {}
-        for k, v in self.__dict__.items():
+        for k in self.__dict__:
             if k in self.ENGINE_DATA:
                 continue
-            if k in self.FRAME_DATA:
+            elif k in self.FRAME_DATA:
                 continue
-            state[k] = v
+            elif k in self.MULTIFRAME_DATA:
+                continue
+            state[k] = self.__dict__[k]
+        # no need to pickle repository. This might cause locker problems. It
+        # will be instanciated upon loading
+        state['_Engine.__repository'] = None
+        # return state
         return state
 
-    def __get_normalized_frames_name(self, frames, raiseExisting=True):
+    #def __setstate__(self, d):
+    #    self.__dict__ = d
+
+    def __check_get_frame_name(self, name):
+        assert isinstance(name, basestring), "Frame name must be a string"
+        name = str(name)
+        assert name.replace('_','').replace('-','').replace(' ','').isalnum(), LOGGER.error("Frame name must be strictly alphanumeric with the exception of '-' and '_'")
+        return name
+
+    def __check_frames(self, frames, raiseExisting=True):
         if not isinstance(frames, (list,set,tuple)):
             frames = [frames]
         else:
             frames = list(frames)
         assert len(frames), LOGGER.error("frames must be a non-empty list.")
-        for idx, f in enumerate(frames):
-            if isinstance(f, basestring):
-                f = str(f)
-                assert str(f).replace('_','').replace('-','').replace(' ','').isalnum(), LOGGER.error("String frame must be strictly alphanumeric allowing only '-' and '_'")
+        for idx, frm in enumerate(frames):
+            if isinstance(frm, basestring):
+                frameName = self.__check_get_frame_name(frm)
+            elif isinstance(frm, dict):
+                #assert self.__repository is not None, LOGGER.error("Creating multiframe is not allowed before initializing repository. Save engine then proceed.")
+                assert 'name' in frm, "multiframe dictionary must contain 'name'"
+                frameName = self.__check_get_frame_name(frm['name'])
+                assert 'frames_name' in frm, "multiframe dictionary must contain 'frames_name'"
+                multiFramesName = frm['frames_name']
+                if not isinstance(multiFramesName, (list,set,tuple)):
+                    assert isinstance(multiFramesName, int), LOGGER.error("multiframe dictionary 'frames_name' value must be a list of names of an integer indicating number of frames")
+                    assert multiFramesName>=1, LOGGER.error("multiframe dictionary integer 'frames_name' value must be >=1")
+                    multiFramesName = [str(i) for i in range(multiFramesName)]
+                assert len(multiFramesName)>=1, LOGGER.error("multiframe dictionary 'frames_name' list number of items must be >=1")
+                multiFramesName = [self.__check_get_frame_name(str(i)) for i in multiFramesName]
+                assert len(multiFramesName) == len(set(multiFramesName)),  LOGGER.error("Multiframe dictionary 'frames_name' list redundancy is not allowed")
+                #if 'type' not in frm:
+                #    frm['type'] = 'statistical'
+                #assert isinstance(frm['type'], basestring), LOGGER.error("Multiframe dictionary 'type' value must be a string")
+                #assert frm['type'] in ('statistical',), LOGGER.error("known multiframe types are 'statistical'")
+                frm = copy.deepcopy(frm)
+                frm['frames_name'] = tuple(multiFramesName)
+                frm['name']        = str(frameName)
+                #frm['type']        = str(frm['type'])
             else:
-                assert isinstance(f, int), LOGGER.error('Each frame must be either interger or string')
-            f = str(f)
+                assert isinstance(frm, int), LOGGER.error('Each frame must be either interger a string or a dict')
+                frameName = self.__check_get_frame_name(str(frm))
             if raiseExisting:
-                assert f not in self.__frames, LOGGER.error("frame '%s' exists already."%f)
-            frames[idx] = f
+                assert frameName not in self.__frames, LOGGER.error("frame name '%s' exists already."%frameName)
+            frames[idx] = frm
         # check for redundancy
-        assert len(frames) == len(set(frames)), "Redundancy is not allowed in frame names."
+        assert len(frames) == len(set([i if isinstance(i, basestring) else i['name'] for i in frames])), LOGGER.error("Redundancy is not allowed in frame names.")
         # all is good
         return frames
 
     def __check_path_to_create_repository(self, path):
         # check for string
         if not isinstance(path, basestring):
-             return False, "path must be a string. '%s' is given"%path
+             return False, "Repository path must be a string. '%s' is given"%path
         # test if directory is empty
-        if os.path.exists(path):
-            # test directory
-            if not os.path.isdir(path):
-                return False, "path must be a directory. '%s' is given"%path
+        if os.path.isdir(path):
             if len(os.listdir(path)):
-                return False, "path directory at '%s' is not empty"%path
+                return False, "Repository path directory at '%s' is not empty"%path
         # all is good unless directory is not writable.
         return True, ""
 
@@ -279,15 +330,27 @@ class Engine(object):
         self.set_group_selector(None)
         # update constraints in repository
         if self.__repository is not None:
-            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
-            self.__repository.dump(value=self.__state, relativePath=self.__usedFrame, name='_Engine__state', replace=True)
-            self.__repository.dump(value=self.__lastSelectedGroupIndex, relativePath=self.__usedFrame, name='_Engine__lastSelectedGroupIndex', replace=True)
-            self.__repository.dump(value=self.__generated, relativePath=self.__usedFrame, name='_Engine__generated', replace=True)
-            self.__repository.dump(value=self.__removed, relativePath=self.__usedFrame, name='_Engine__removed', replace=True)
-            self.__repository.dump(value=self.__tried, relativePath=self.__usedFrame, name='_Engine__tried', replace=True)
-            self.__repository.dump(value=self.__accepted, relativePath=self.__usedFrame, name='_Engine__accepted', replace=True)
-            self.__repository.dump(value=self.__tolerated, relativePath=self.__usedFrame, name='_Engine__tolerated', replace=True)
-            self.__repository.dump(value=self.__totalStandardError, relativePath=self.__usedFrame, name='_Engine__totalStandardError', replace=True)
+            #from pprint import pprint;pprint(self.__getstate__())
+            self.__repository.update_file(value=self, relativePath='engine')
+            self.__repository.update_file(value=self.__state, relativePath=os.path.join(self.__usedFrame, '_Engine__state'))
+            self.__repository.update_file(value=self.__lastSelectedGroupIndex, relativePath=os.path.join(self.__usedFrame, '_Engine__lastSelectedGroupIndex'))
+            self.__repository.update_file(value=self.__generated, relativePath=os.path.join(self.__usedFrame, '_Engine__generated'))
+            self.__repository.update_file(value=self.__removed, relativePath=os.path.join(self.__usedFrame, '_Engine__removed'))
+            self.__repository.update_file(value=self.__tried, relativePath=os.path.join(self.__usedFrame, '_Engine__tried'))
+            self.__repository.update_file(value=self.__accepted, relativePath=os.path.join(self.__usedFrame, '_Engine__accepted'))
+            self.__repository.update_file(value=self.__tolerated, relativePath=os.path.join(self.__usedFrame, '_Engine__tolerated'))
+            self.__repository.update_file(value=self.__totalStandardError, relativePath=os.path.join(self.__usedFrame, '_Engine__totalStandardError'))
+
+    def _dump_to_repository(self, value, relativePath, repository=None):
+        if repository is None:
+            repository = self.__repository
+        if repository is None:
+            return
+        isRepoFile, fileOnDisk, infoOnDisk, classOnDisk = repository.is_repository_file(relativePath)
+        if isRepoFile and fileOnDisk and infoOnDisk and classOnDisk:
+            repository.update(value=value, relativePath=relativePath)
+        else:
+            repository.dump(value=value, relativePath=relativePath, replace=True)
 
     def _set_path(self, path):
         self.__path = path
@@ -309,14 +372,14 @@ class Engine(object):
         relativeIndex = self._atomsCollector.get_relative_index(realIndex)
         # create dataDict and remove
         dataDict = {}
-        dataDict['realCoordinates']  = self.__realCoordinates[relativeIndex,:]
-        dataDict['boxCoordinates']   = self.__boxCoordinates[relativeIndex, :]
-        dataDict['moleculesIndex'] = self.__moleculesIndex[relativeIndex]
+        dataDict['realCoordinates'] = self.__realCoordinates[relativeIndex,:]
+        dataDict['boxCoordinates']  = self.__boxCoordinates[relativeIndex, :]
+        dataDict['moleculesIndex']  = self.__moleculesIndex[relativeIndex]
         dataDict['moleculesName']   = self.__moleculesName[relativeIndex]
-        dataDict['elementsIndex']  = self.__elementsIndex[relativeIndex]
-        dataDict['allElements']      = self.__allElements[relativeIndex]
-        dataDict['namesIndex']     = self.__namesIndex[relativeIndex]
-        dataDict['allNames']         = self.__allNames[relativeIndex]
+        dataDict['elementsIndex']   = self.__elementsIndex[relativeIndex]
+        dataDict['allElements']     = self.__allElements[relativeIndex]
+        dataDict['namesIndex']      = self.__namesIndex[relativeIndex]
+        dataDict['allNames']        = self.__allNames[relativeIndex]
         assert self.__numberOfAtomsPerElement[dataDict['allElements']]-1>0, LOGGER.error("Collecting last atom of any element type is not allowed. It's better to restart your simulation without any '%s' rather than removing them all!"%dataDict['allElements'])
         # collect atom
         self._atomsCollector.collect(index=realIndex, dataDict=dataDict)
@@ -336,9 +399,11 @@ class Engine(object):
         self.__numberOfAtomsPerName[dataDict['allNames']]       -= 1
         self.__numberOfAtomsPerElement[dataDict['allElements']] -= 1
         #self.__elements = sorted(set(self.__allElements)) # no element should disappear
-        self.__names = sorted(set(self.__names))
+        self.__names             = sorted(set(self.__names))
         self.__numberOfMolecules = len(set(self.__moleculesIndex))
-        self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
+        # update number density in periodic boundary conditions only
+        if self.__isPBC:
+            self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
 
     def _on_collector_release_atom(self, realIndex):
         # get relative index
@@ -361,9 +426,16 @@ class Engine(object):
         self.__numberOfAtomsPerName[dataDict['allNames']]       += 1
         self.__numberOfAtomsPerElement[dataDict['allElements']] += 1
         self.__elements = list(set(self.__allElements))
-        self.__names = sorted(set(self.__names))
+        self.__names    = sorted(set(self.__names))
         self.__numberOfMolecules = len(set(self.__moleculesIndex))
-        self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
+        # update number density in periodic boundary conditions only
+        if self.__isPBC:
+            self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
+
+    @property
+    def path(self):
+        """ Engine's repository path if set or save."""
+        return self.__path
 
     @property
     def info(self):
@@ -373,12 +445,12 @@ class Engine(object):
     @property
     def frames(self):
         """ Engine's frames list copy."""
-        return [f for f in self.__frames]
+        return copy.deepcopy(self.__frames)
 
     @property
     def usedFrame(self):
         """ Engine's frame in use."""
-        return self.__usedFrame
+        return copy.deepcopy(self.__usedFrame)
 
     @property
     def lastSelectedGroupIndex(self):
@@ -442,7 +514,7 @@ class Engine(object):
 
     @property
     def pdb(self):
-        """ Engine's pdbParser instance. """
+        """ Engine's pdbparser instance. """
         return self.__pdb
 
     @property
@@ -584,6 +656,23 @@ class Engine(object):
         configuration. """
         return self.__totalStandardError
 
+    def timeout(self):
+        """Timeout to successfully acquire the lock upon reading or writing to
+        the repository"""
+        return self.__timeout
+
+    def set_timeout(self, timeout):
+        """Set repository access timeout
+
+        :Parameters:
+           #. timeout (number): The maximum delay or time allowed to successfully
+              set the lock upon reading or writing the engine repository
+        """
+        assert isinstance(timeout, (float,int)),"timeout must be a number"
+        assert timeout>1, "timeout is not allowed below 1 second"
+        self.__timeout = timeout
+
+
     def get_original_data(self, name):
         """
         Get original data as initialized and parsed from pdb.
@@ -596,16 +685,20 @@ class Engine(object):
         """
         dname = "_original__"+name
         if self.__repository is None:
-            assert self.__frameOriginalData.has_key(dname), LOGGER.error("data '%s' doesn't exist, available data are %s"%(name,self.__frameOriginalData.keys()))
+            assert dname in self.__frameOriginalData, LOGGER.error("data '%s' doesn't exist, available data are %s"%(name,list(self.__frameOriginalData)))
             value = self.__frameOriginalData[dname]
             assert value is not None, LOGGER.error("data '%s' value seems to be deleted"%name)
         else:
-            info, m = self.__repository.get_file_info(relativePath=self.__usedFrame, name=dname)
-            assert info is not None, LOGGER.error("unable to pull data '%s' (%s)"%(name, m) )
-            value = self.__repository.pull(relativePath=self.__usedFrame, name=dname)
+            #info, m = self.__repository.get_file_info(relativePath=os.path.join(self.__usedFrame,dname))
+            #assert info is not None, LOGGER.error("unable to pull data '%s' (%s)"%(name, m) )
+            #value = self.__repository.pull(relativePath=self.__usedFrame, name=dname)
+            isRepoFile,fileOnDisk, infoOnDisk, classOnDisk = self.__repository.is_repository_file(os.path.join(self.__usedFrame,dname))
+            assert isRepoFile, LOGGER.error("Original data '%s' is not a repository file"%(dname, ) )
+            assert fileOnDisk, LOGGER.error("Original data '%s' is a repository file but not found on disk"%(dname, ) )
+            value = self.__repository.pull(relativePath=os.path.join(self.__usedFrame,dname))
         return value
 
-    def is_engine(self, path, repo=False, mes=False):
+    def is_engine(self, path, repo=False, mes=False, safeMode=True):
         """
         Get whether a fullrmc engine is stored in the given path.
 
@@ -622,10 +715,14 @@ class Engine(object):
                This is returned only if 'repo' argument is set to True.
             #. message (string): The explanatory message.
                This is returned only if 'mes' argument is set to True.
+            #. safeMode (boolean): whether to acquire the lock upon loading.
+               this is not necessary unless another process is writing the
+               to the repository at the same time
         """
         assert isinstance(repo, bool), LOGGER.error("repo must be boolean")
         assert isinstance(mes, bool), LOGGER.error("mes must be boolean")
-        rep = Repository(ACID=False)
+        rep = Repository(timeout=self.__timeout)
+        rep.DEBUG_PRINT_FAILED_TRIALS = False
         # check if this is a repository
         if path is None:
             result  = False
@@ -642,30 +739,29 @@ class Engine(object):
         else:
             # check if this repository is a fullrmc's engine
             info = {'repository type':'fullrmc engine', 'fullrmc version':__version__, 'engine id':self.__id}
-            rep = rep.load_repository(path)
+            rep  = rep.load_repository(path, safeMode=safeMode)
             if not isinstance(rep.info, dict):
                 result  = False
                 rep     = None
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+                message = "Existing repository at '%s' is not a known fullrmc engine. Info must be a dictionary while '%s' is given"%(path, type(rep.info))
             elif len(rep.info) < 3:
                 result  = False
                 rep     = None
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+                message = "Existing repository at '%s' is not a known fullrmc engine. Info dictionary length must be >3"%path
             elif rep.info.get('repository type', None) != 'fullrmc engine':
                 result  = False
                 rep     = None
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
-            elif rep.info.get('fullrmc version', None) is None:
+                message = "Existing repository at '%s' is not a known fullrmc engine. Info dictionary 'repository_type' key value must be 'fullrmc engine'"%path
+            elif 'fullrmc version' not in rep.info:
                 result  = False
                 rep     = None
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
-            elif rep.info.get('engine id', None) is None:
+                message = "Existing repository at '%s' is not a known fullrmc engine. Info dictionary 'fullrmc version' key is not found"%path
+            elif 'engine id' not in rep.info:
                 result  = False
                 rep     = None
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
+                message = "Existing repository at '%s' is not a known fullrmc engine. Info dictionary 'engine id' key was not found"%path
             else:
                 result  = True
-                message = "Existing repository at '%s' is not a known fullrmc engine"%path
                 # check repository version
                 message = ""
                 if info['fullrmc version'] != rep.info['fullrmc version']:
@@ -681,29 +777,20 @@ class Engine(object):
             return result
 
     def __runtime_save(self, frame):
-        LOGGER.saved("Runtime saving frame %s... DON'T INTERRUPT"%frame)
+        LOGGER.saved("@%s Runtime saving ... DON'T INTERRUPT"%frame)
         # dump engine's used frame FRAME_DATA
         for dname in self.RUNTIME_DATA:
             value = self.__dict__[dname]
-            #name  = dname.split('_Engine__')[1]
             name = dname
-            #tic = time.time()
-            self.__repository.dump(value=value, relativePath=frame, name=name, replace=True)
-            #print "engine: %s - %s"%(name, time.time()-tic)
+            self.__repository.update_file(value=value, relativePath=os.path.join(frame, dname))
         # dump constraints' used frame FRAME_DATA
         for c in self.__constraints:
-            cp = os.path.join(frame, 'constraints', c.constraintId)
-            #print c.__class__.__name__, cp
-            #self.__repository.add_directory( cp )
+            cp = os.path.join(frame, 'constraints', c.constraintName)
             for dname in c.RUNTIME_DATA:
                 value = c.__dict__[dname]
-                #name  = dname.split('__')[1]
-                name = dname
-                #tic = time.time()
-                self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
-                #print "%s: %s - %s"%(c.__class__.__name__, name, time.time()-tic)
+                self.__repository.update_file(value=value, relativePath=os.path.join(cp, dname))
         # engine saved
-        LOGGER.saved("Runtime frame %s is successfuly saved"%(frame,) )
+        LOGGER.saved("@%s Runtime save is successful"%(frame,) )
 
     def save(self, path=None, copyFrames=True):
         """
@@ -723,6 +810,7 @@ class Engine(object):
         N.B. If path is given, it will automatically update engine's path to
         point towards given path.
         """
+        assert isinstance(copyFrames, bool), LOGGER.error("copyFrames must be boolean")
         LOGGER.saved("Saving Engine and frame %s data... DON'T INTERRUPT"%self.__usedFrame)
         # create info dict
         info = {'repository type':'fullrmc engine', 'fullrmc version':__version__, 'engine id':self.__id}
@@ -730,61 +818,77 @@ class Engine(object):
         if path is not None:
             result, message = self.__check_path_to_create_repository(path)
             assert result, LOGGER.error(message)
-            REP = Repository(ACID=False)
+            REP = Repository(timeout=self.__timeout)
+            REP.DEBUG_PRINT_FAILED_TRIALS = False
             REP.create_repository(path, info=info)
             self.__path = path
         # first time saving this engine
         elif self.__repository is None:
             assert self.__path is not None, LOGGER.error("Given path and engine's path are both None, must give a valid path for saving.")
-            REP = Repository(ACID=False)
+            REP = Repository(timeout=self.__timeout)
+            REP.DEBUG_PRINT_FAILED_TRIALS = False
             REP.create_repository(self.__path, info=info)
         # engine loaded or saved before
         else:
             REP = self.__repository
         # create repository frames
-        if (self.__repository is None) or (path is not None and copyFrames):
-            for frame in self.__frames:
-                REP.add_directory( os.path.join(frame, 'constraints') )
-        elif path is not None:
-            self.__frames = (self.__usedFrame, )
-            REP.add_directory( os.path.join(self.__usedFrame, 'constraints') )
+        if self.__repository is None:
+            for frameName in self.__frames:
+                REP.add_directory( frameName )
         # dump engine
-        REP.dump(value=self, relativePath='.', name='engine', replace=True)
+        #REP.dump(value=self, relativePath='engine', replace=True)
+        self._dump_to_repository(value=self, relativePath='engine', repository=REP)
         # dump used frame ENGINE_DATA
         for dname in self.ENGINE_DATA:
             value = self.__dict__[dname]
-            #name  = dname.split('_Engine__')[1]
-            name = dname
-            REP.dump(value=value, relativePath='.', name=name, replace=True)
+            #REP.dump(value=value, relativePath=dname, replace=True)
+            self._dump_to_repository(value=value, relativePath=dname, repository=REP)
         # dump engine's used frame FRAME_DATA
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        assert not isMultiframe, LOGGER.report("Used frame '%s' is a multiframe. This should have never had happened. Please report issue"%self.__usedFrame)
+        #if isNormalFrame or isSubframe:
         for dname in self.FRAME_DATA:
             value = self.__dict__[dname]
-            #name  = dname.split('_Engine__')[1]
-            name = dname
-            REP.dump(value=value, relativePath=self.__usedFrame, name=name, replace=True)
+            #REP.dump(value=value, relativePath=os.path.join(self.__usedFrame, dname), replace=True)
+            self._dump_to_repository(value=value, relativePath=os.path.join(self.__usedFrame, dname), repository=REP)
+        for dname in self.MULTIFRAME_DATA:
+            value = self.__dict__[dname]
+            rpath = dname if isNormalFrame else os.path.join(self.__usedFrame, dname)
+            #REP.dump(value=value, relativePath=rpath, replace=True)
+            self._dump_to_repository(value=value, relativePath=rpath, repository=REP)
         # dump original frame data
-        for name, value in self.__frameOriginalData.items():
+        #if isNormalFrame or isSubframe:
+        for name in self.__frameOriginalData:
+            value = self.__frameOriginalData[name]
             if value is not None:
-                REP.dump(value=value, relativePath=self.__usedFrame, name=name, replace=True)
+                if isinstance(self.__usedFrame, basestring):
+                    #REP.dump(value=value, relativePath=os.path.join(self.__usedFrame, name), replace=True)
+                    self._dump_to_repository(value=value, relativePath=os.path.join(self.__usedFrame, name), repository=REP)
+                else:
+                    for i in self.__usedFrame['frames_name']:
+                        #REP.dump(value=value, relativePath=os.path.join(self.__usedFrame, i,name), replace=True)
+                        self._dump_to_repository(value=value, relativePath=os.path.join(self.__usedFrame, i,name), repository=REP)
                 self.__frameOriginalData[name] = None
         # dump constraints' used frame FRAME_DATA
+        #if isNormalFrame or isSubframe:
         for c in self.__constraints:
-            cp = os.path.join(self.__usedFrame, 'constraints', c.constraintId)
-            REP.add_directory( cp )
+            REP.add_directory( os.path.join(self.__usedFrame, 'constraints', c.constraintName) )
             for dname in c.FRAME_DATA:
                 value = c.__dict__[dname]
-                #name  = dname.split('__')[1]
-                name = dname
-                REP.dump(value=value, relativePath=cp, name=name, replace=True)
+                #REP.dump(value=value, relativePath=os.path.join(self.__usedFrame, 'constraints', c.constraintName, dname), replace=True)
+                self._dump_to_repository(value=value, relativePath=os.path.join(self.__usedFrame, 'constraints', c.constraintName, dname), repository=REP)
         # copy rest of frames
         if (self.__repository is not None) and (path is not None and copyFrames):
+            raise Exception("MUST IMPLEMENT copy_directory_from_repository in REPOSITORY")
             # dump rest of frames
-            for frame in self.__frames:
-                if frame == self.__usedFrame:
+            for frameName in self.__frames:
+                if frameName == self.__usedFrame:
                     continue
-                for rp, _ in self.__repository.walk_files_info(relativePath=frame):
-                    value = self.__repository.pull(relativePath=frame, name=rp)
-                    REP.dump(value=value, relativePath=frame, name=rp, replace=True)
+                REP.copy_directory_from_repository(fromRepository=self.__repository, fromRelativePath=frameName, relativePath=frameName, repository=REP)
+                #for rp, _ in self.__repository.walk_files_path(relativePath=frameName, recursive=True):
+                #    value = self.__repository.pull(relativePath=os.path.join(frameName,rp))
+                #    REP.dump(value=value, relativePath=os.path.join(frameName, rp), replace=True)
+                #    self._dump_to_repository(value=value, relativePath=os.path.join(frameName, rp), repository=REP)
         # set repository
         self.__repository = REP
         # set mustSave flag
@@ -792,7 +896,8 @@ class Engine(object):
         # engine saved
         LOGGER.saved("Engine and frame %s data saved successfuly to '%s'"%(self.__usedFrame, self.__path) )
 
-    def load(self, path):
+
+    def load(self, path, safeMode=True):
         """
         Load and return engine instance. None of the current engine attribute
         will be updated. must be used as the following:
@@ -809,38 +914,62 @@ class Engine(object):
 
         :Parameters:
             #. path (string): Directory path to save the engine.
+            #. safeMode (boolean): whether to acquire the lock upon loading.
+               this is not necessary unless another process is writing the
+               to the repository at the same time
 
         :Returns:
             #. engine (Engine): Engine instance.
         """
+        #with open(os.path.join(path, '.pyreplock')) as fd:
+        #    print('start',time.time(),fd.readlines(),os.getpid())
         # check whether an engine exists at this path
-        isEngine, REP, message = self.is_engine(path=path, repo=True, mes=True)
+        isEngine, REP, message = self.is_engine(path=path, repo=True, mes=True, safeMode=safeMode)
+        #with open(os.path.join(path, '.pyreplock')) as fd:
+        #    print('is engine',message,fd.readlines(),time.time(),os.getpid())
         if not isEngine:
-            raise LOGGER.error(message)
+            raise Exception(LOGGER.error(message))
         if len(message):
             LOGGER.warn(message)
         # load engine
-        engine = REP.pull(relativePath='.', name='engine')
+        #if self.__repository is not None:
+        #    self.__repository.locker.stop()
+        #REP.locker.start()
+        engine = REP.pull(relativePath='engine')
         engine._set_repository(REP)
         engine._set_path(path)
         # pull engine's ENGINE_DATA
         for name in engine.ENGINE_DATA:
-            value = REP.pull(relativePath='.', name=name)
+            value = REP.pull(relativePath=name)
             object.__setattr__(engine, name, value)
+        # convert all frames to new version
+        if isinstance(engine._Engine__frames, (list,set,tuple)):
+            engine._Engine__frames = dict([(f,None) for f in engine._Engine__frames])
         # pull engine's FRAME_DATA
-        for name in engine.FRAME_DATA:
-            value = REP.pull(relativePath=engine.usedFrame, name=name)
-            object.__setattr__(engine, name, value)
-        # pull constraints' used frame FRAME_DATA
+        isNormalFrame, isMultiframe, isSubframe = engine.get_frame_category(engine.usedFrame)
+        assert not isMultiframe, LOGGER.report("Used frame '%s' is a multiframe. This should have never had happened. Please report issue"%engine.usedFrame)
+        # add frame data
+        for dname in engine.FRAME_DATA:
+            value = REP.pull(relativePath=os.path.join(engine.usedFrame,dname))
+            object.__setattr__(engine, dname, value)
+        for dname in engine.MULTIFRAME_DATA:
+            rpath = dname if isNormalFrame else os.path.join(engine.usedFrame,dname)
+            value = REP.pull(relativePath=rpath)
+            object.__setattr__(engine, dname, value)
+        # set constraints engine
+        [object.__setattr__(c, '_Constraint__engine', engine) for c in engine._Engine__constraints]
+        # remove old constraints from broadcaster and add new ones
+        # pull constraints data
         for c in engine.constraints:
-            cp = os.path.join(engine.usedFrame, 'constraints', c.constraintId)
-            for name in c.FRAME_DATA:
-                value = REP.pull(relativePath=cp, name=name)
-                object.__setattr__(c, name, value)
-        # set engine must save to false
-        object.__setattr__(engine, '_Engine__mustSave', False)
+            for dname in c.FRAME_DATA:
+                value = REP.pull(relativePath=os.path.join(engine.usedFrame, 'constraints', c.constraintName, dname))
+                object.__setattr__(c, dname, value)
+        [getattr(engine, '_Engine__broadcaster').remove_listener(l) for l in getattr(engine, '_Engine__broadcaster').listeners if isinstance(l, Constraint)]
+        [getattr(engine, '_Engine__broadcaster').add_listener(c)    for c in getattr(engine, '_Engine__constraints')]
         # set engine group selector
         engine.groupSelector.set_engine(engine)
+        # set engine must save to false
+        object.__setattr__(engine, '_Engine__mustSave', False)
         # return engine instance
         return engine
 
@@ -857,41 +986,82 @@ class Engine(object):
         LOGGER.set_log_file_basename(logFile)
 
     def __create_frame_data(self, frame):
-        def check_set_or_raise(this, relativePath):
-            # find missing data
-            missing = []
-            for name in this.FRAME_DATA:
-                info, _ = self.__repository.get_file_info(relativePath=relativePath, name=name)
-                if info is None:
-                    missing.append(name)
-            # check all or None missing
-            if len(missing) == 0:
-                return
+        # THIS METHOD IS CALLED in set_used_frame. IT WILL BEEXECUTED AFTER ENGINE HAS BEEN SAVED
+        def check_create_or_raise(this, relativePath, isMultiFrame, originalData=False):
+            if isMultiFrame:
+                frameData = [fd for fd in this.FRAME_DATA] + [fd for fd in this.MULTIFRAME_DATA]
             else:
-                assert len(missing) == len(this.FRAME_DATA), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missing,frame,))
-                LOGGER.warn("Using frame '%s' data to create '%s' frame '%s' data."%(self.__usedFrame, this.__class__.__name__, frame))
+                frameData = [fd for fd in this.FRAME_DATA] # this is a traditional frame
+            # find missing data
+            missingFrameData    = []
+            missingOriginalData = []
+            if not self.__repository.is_repository_directory(relativePath):
+                self.__repository.add_directory( relativePath )
+                missingFrameData = [item for item in frameData]
+                if originalData:
+                    missingOriginalData = list(self.__frameOriginalData)
+            else:
+                # check for abnormalities in missing frame data files
+                for name in frameData:
+                    response = self.__repository.is_repository_file(os.path.join(relativePath,name))
+                    if not response[0]:
+                        missingFrameData.append(name)
+                if len(missingFrameData):
+                    assert self.__frames[self.__usedFrame.split(os.sep)[0]] is None, LOGGER.error("Creating frame '%s' data for the first time when used frame is a multiframe is not allowed."%(relativePath,))
+                    assert len(missingFrameData) == len(frameData), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missingFrameData,relativePath,))
+                # check original missing data
+                if originalData:
+                    for name in self.__frameOriginalData:
+                        response = self.__repository.is_repository_file(os.path.join(relativePath,name))
+                        if not response[0]:
+                            missingOriginalData.append(name)
+                    if len(missingOriginalData):
+                        assert self.__frames[self.__usedFrame.split(os.sep)[0]] is None, LOGGER.error("Creating frame '%s' original data for the first time when used frame is a multiframe is not allowed."%(relativePath,))
+                        assert len(missingFrameData), LOGGER.error("Frame '%s' original data is missing while other data are not"%(relativePath,))
+                        assert len(missingOriginalData) == len(self.__frameOriginalData), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missingFrameData,frame,))
+            # if nothing is missing then frame is already built
+            if not len(missingFrameData) and not len(missingOriginalData):
+                return False
+            isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+            _normalFrames = sorted([f for f in self.__frames if self.__frames[f] is None])
+            assert isNormalFrame, LOGGER.error("It's not allowed to create frame data when used frame is a multiframe or a multiframe subframe. Use set_used_frame to a normal frame (%s) then attend to create '%s' data"%(_normalFrames, relativePath,))
+            # check all or None missing
+            if len(missingFrameData):
+                LOGGER.frame("Using frame '%s' data to create '%s' frame '%s' data."%(self.__usedFrame, this.__class__.__name__, relativePath))
                 # create frame data
-                for name in this.FRAME_DATA:
+                for name in frameData:
                     value = this.__dict__[name]
-                    self.__repository.dump(value=value, relativePath=relativePath, name=name, replace=True)
-        # check engine frame data
-        check_set_or_raise(this=self, relativePath=frame)
-        # create original data
-        missing = []
-        for name in self.__frameOriginalData.keys():
-            info, _ = self.__repository.get_file_info(relativePath=frame, name=name)
-            if info is None:
-                missing.append(name)
-        if len(missing):
-            assert len(missing) == len(self.__frameOriginalData.keys()), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missing,frame,))
-            LOGGER.warn("Using frame '%s' data to create frame '%s' original data."%(self.__usedFrame, frame))
-            for name in self.__frameOriginalData.keys():
-                value = self.__repository.pull(relativePath=self.__usedFrame, name=name)
-                self.__repository.dump(value=value, relativePath=frame, name=name, replace=True)
+                    #self.__repository.dump(value=value, relativePath=os.path.join(relativePath, name), replace=True)
+                    self._dump_to_repository(value=value, relativePath=os.path.join(relativePath, name))
+            if len(missingOriginalData):
+                LOGGER.frame("Using frame '%s' data to create frame '%s' original data."%(self.__usedFrame, relativePath))
+                for name in self.__frameOriginalData:
+                    value = self.__repository.pull(relativePath=os.path.join(self.__usedFrame,name))
+                    #self.__repository.dump(value=value, relativePath=os.path.join(relativePath, name),replace=True)
+                    self._dump_to_repository(value=value, relativePath=os.path.join(relativePath, name))
+            # return
+            return True
+        # get frame paths from frameName
+        firstLevel = frame.split(os.sep)[0]
+        # get frame paths list
+        if self.__frames[firstLevel] is None:
+            isMultiFrame = False
+            paths        = [frame]
+        else:
+            isMultiFrame = True
+            paths        = [os.path.join(firstLevel,fn) for fn in self.__frames[firstLevel]['frames_name']]
+        # check and create first frame data in path
+        built = check_create_or_raise(this=self, relativePath=paths[0], isMultiFrame=isMultiFrame, originalData=True)
         # create constraints frame data
         for c in self.__constraints:
-            cp = os.path.join(frame, 'constraints', c.constraintId)
-            check_set_or_raise(this=c, relativePath=cp)
+            # isMultiFrame for constraint shall be always False because MULTIFRAME_DATA is not defined
+            _ = check_create_or_raise(this=c, relativePath=os.path.join(paths[0],'constraints',c.constraintName), isMultiFrame=False, originalData=False)
+        # duplicate multiframe data
+        if len(paths) > 1 and built:
+            for relativePath in paths[1:]:
+                LOGGER.frame("Creating '%s' by duplicating '%s'"%(relativePath, paths[0]))
+                success, error = self.__repository.copy_directory(relativePath=paths[0], newRelativePath=relativePath, raiseError=False)
+                assert success, LOGGER.error(error)
 
     def is_frame(self, frame):
         """
@@ -903,35 +1073,45 @@ class Engine(object):
         :Returns:
             #. result (boolean): True if frame exists False otherwise.
         """
+        assert isinstance(frame, basestring), LOGGER.error("frame must be a string, '%s' is given instead"%frame)
         return frame in self.__frames
+        #return frame in self.__frames
 
     def add_frames(self, frames):
         """
-        Add a single or multiple frames to engine.
+        Add a one or many (multi)frame to engine.
 
         :Parameters:
-            #. frames (string, list): Frames name. It can be a string to
-               add a single frame or a list of strings to add multiple frames.
+            #. frames (string, dict, list): It can be a string to add a single
+               frame, a dictionary to add a single multiframe or a list of
+               strings and/or dictionaries to add multiple (multi)frames.
         """
-        frames = self.__get_normalized_frames_name(frames, raiseExisting=False)
+        _frames = []
+        for frm in self.__check_frames(frames, raiseExisting=False):
+            fname = frm if isinstance(frm, basestring) else frm['name']
+            if fname in self.__frames:
+                LOGGER.frame("frame '%s' exists already. Adding ommitted"%(fname,))
+                continue
+            else:
+                _frames.append(frm)
         # create frames directories
         if self.__repository is not None:
-            for frame in frames:
-                if frame in self.__frames:
-                    LOGGER.warn("frame '%s' exists already. Adding ommitted"%frame)
-                    continue
-                self.__repository.add_directory( os.path.join(frame, 'constraints') )
+            for frm in _frames:
+                fname = frm if isinstance(frm, basestring) else frm['name']
+                self.__repository.add_directory( fname )
         # append frames to list
-        self.__frames = list(self.__frames)
-        self.__frames.extend(frames)
-        self.__frames = tuple( self.__frames )
+        for frm in _frames:
+            if isinstance(frm, basestring):
+                self.__frames[frm] = None
+            else:
+                self.__frames[frm['name']] = frm
         # save frames
         if self.__repository is not None:
-            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
+            self._dump_to_repository(value=self.__frames, relativePath='_Engine__frames')
 
     def add_frame(self, frame):
         """
-        Add a single frame to engine.
+        Add a single (multi)frame to engine.
 
         :Parameters:
             #. frame (string): Frame name.
@@ -945,54 +1125,113 @@ class Engine(object):
         :Parameters:
             #. frame (string): The frame name to set.
         """
-        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
         if self.__repository is None and frame != self.__usedFrame:
-            raise LOGGER.error("It's not allowed to re-initialize frame other than usedFrame prior to building engine's repository. Save engine using Engine.save method first.")
+            raise Exception(LOGGER.error("It's not allowed to re-initialize frame other than usedFrame prior to building engine's repository. Save engine using Engine.save method first."))
+        # get frame type
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        if isNormalFrame or isSubframe:
+            allFrames = [frame]
+        else:
+            LOGGER.usage("Re-init multiframe '%s' all %i subframes"%(frame,len(self.__frames[frame]['frames_name']),) )
+            allFrames = [os.path.join(frame, frm) for frm in self.__frames[frame]['frames_name']]
+        # get old used frame
         oldUsedFrame = self.__usedFrame
-        # temporarily set used frame
-        if frame != self.__usedFrame:
-            self.set_used_frame(frame)
-        # reset pdb
-        self.set_pdb(self.__pdb)
-        #  re-set old used frame
+        for frm in allFrames:
+            LOGGER.info("Re-init frame '%s'"%(frm,) )
+            # temporarily set used frame
+            if frm != self.__usedFrame:
+                self.set_used_frame(frm)
+            # reset pdb
+            self.set_pdb(self.__pdb)
+            #  re-set old used frame
         if self.__usedFrame != oldUsedFrame:
             self.set_used_frame(oldUsedFrame)
 
-    def set_used_frame(self, frame):
+    def __validate_frame_name(self, frame):
+        assert isinstance(frame, basestring), LOGGER.error("Frame must be a string, '%s' is given instead"%frame)
+        splitFrame = frame.split(os.sep)
+        assert len(splitFrame) <=2, LOGGER.error("Frame must be 1 level deep or at most 2 levels deep if multiframe")
+        if splitFrame[0] not in self.__frames:
+            if len(splitFrame) ==1:
+                raise Exception(LOGGER.error("Unkown frame name '%s'"%frame))
+            else:
+                raise Exception(LOGGER.error("Unkown multiframe '%s'"%splitFrame[0]))
+        if self.__frames[splitFrame[0]] is not None and len(splitFrame)==2:
+            assert splitFrame[1] in self.__frames[splitFrame[0]]['frames_name'], LOGGER.error("Unkown subframe '%s' of registered multiframe '%s'"%(splitFrame[1],splitFrame[0]))
+        #return tuple(frame)
+
+    def get_frame_category(self, frame):
+        """Get whether a given frame name is a normal frame or a multiframe or
+        a multiframe subframe. If frame does not exist an error will be raised.
+
+        :Parameters:
+            #. frame (string): Frame name or repository relative path
+
+        :Returns:
+            #. isNormalFrame (boolean): Whether it's a normal single frame
+            #. isMultiframe (boolean): Whether it's a multiframe
+            #. isSubframe (boolean): Whether it's a multiframe subframe path
+        """
+        self.__validate_frame_name(frame)
+        isNormalFrame = self.__frames.get(frame, -1) is None
+        isMultiframe  = isinstance(self.__frames.get(frame, None), dict)
+        isSubframe    = not (isMultiframe or isNormalFrame)
+        # return
+        return isNormalFrame, isMultiframe, isSubframe
+
+    def set_used_frame(self, frame, updateRepo=True):
         """
         Switch engine frame.
 
         :Parameters:
             #. frame (string): The frame to switch to and use from now on.
+            #. updateRepo (boolean): whether to update repository usedFrame
+               value
         """
         if frame == self.__usedFrame:
             return
-        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
+        assert isinstance(updateRepo, bool), "updateRepo must be boolean"
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        if isMultiframe:
+            _frame = os.path.join(frame, self.__frames[frame]['frames_name'][0])
+            LOGGER.usage("Given frame '%s' is a multiframe, using multiple frames at the same time is not allowed, used frame is adjusted to first subframe '%s'"%(frame,_frame))
+            frame        = _frame
+            isMultiframe = False
+            isSubframe   = True
+        firstLevel = frame.split(os.sep)[0]
         if self.__repository is None:
-            raise LOGGER.error("It's not allowed to set used frame prior to building engine's repository. Save engine using Engine.save method first.")
-        else:
-            # create frame data if missing or raise if partially missing
-            self.__create_frame_data(frame=frame)
-            self.__usedFrame = frame
-            # pull engine's FRAME_DATA
-            for dname in self.FRAME_DATA:
-                #name  = dname.split('_Engine__')[1]
-                name = dname
-                value = self.__repository.pull(relativePath=self.__usedFrame, name=name)
-                # set data
-                object.__setattr__(self, dname, value)
-            # pull constraints' used frame FRAME_DATA
-            for c in self.__constraints:
-                cp = os.path.join(self.usedFrame, 'constraints', c.constraintId)
-                for dname in c.FRAME_DATA:
-                    name = dname
-                    value = self.__repository.pull(relativePath=cp, name=name)
-                    # set data
-                    object.__setattr__(c, dname, value)
-        # set engine to specific frame data
+            raise Exception(LOGGER.error("It's not allowed to set used frame prior to building engine's repository. Save engine using Engine.save method first."))
+        # create frame data in repository if not yet created
+        self.__create_frame_data(frame=frame)
+        # pull engine's FRAME_DATA
+        for dname in self.FRAME_DATA:
+            value = self.__repository.pull(relativePath=os.path.join(frame,dname))
+            object.__setattr__(self, dname, value)
+        for dname in self.MULTIFRAME_DATA:
+            rpath = dname if isNormalFrame else os.path.join(frame, dname)
+            value = self.__repository.pull(rpath)
+            object.__setattr__(self, dname, value)
+        # set constraints engine
+        [object.__setattr__(c, '_Constraint__engine', self) for c in self.__constraints]
+        # remove old constraints from broadcaster and add new ones
+        [self.__broadcaster.remove_listener(l) for l in self.__broadcaster.listeners if isinstance(l, Constraint)]
+        [self.__broadcaster.add_listener(c) for c in self.__constraints]
+        # pull constraints' used frame FRAME_DATA
+        for c in self.__constraints:
+            for dname in c.FRAME_DATA:
+                value = self.__repository.pull(relativePath=os.path.join(frame, 'constraints', c.constraintName, dname))
+                object.__setattr__(c, dname, value)
+        # set group selector engine
         self.__groupSelector.set_engine(self)
-        # save used frames to disk
-        self.__repository.dump(value=self.__usedFrame, relativePath='.', name='_Engine__usedFrame', replace=True)
+        # save used frame
+        self.__usedFrame = frame
+        # update repository
+        if updateRepo:
+            self.__repository.update_file(value=self.__usedFrame, relativePath='_Engine__usedFrame')
+
+    def use_frame(self, *args, **kwargs):
+        """alias to set_used_frame."""
+        self.set_used_frame(*args, **kwargs)
 
     def delete_frame(self, frame):
         """
@@ -1001,70 +1240,151 @@ class Engine(object):
         :Parameters:
             #. frame (string): The frame to delete.
         """
-        assert frame != self.__usedFrame, LOGGER.error("Can't delete used frame '%s'"%frame)
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        assert frame != self.__usedFrame, LOGGER.error("It's not safe to delete the used frame '%s'"%frame)
+        if isNormalFrame:
+            _f = [f for f in self.__frames if self.__frames[f] is None]
+            assert len(_f)>=1, LOGGER.error("No traditional frames found. This shouldn't have happened. Report issue ...")
+            assert len(_f)>=2, LOGGER.error("It's not allowed to delete the last traditional frame in engine '%s'"%(_f[0],))
+        if isSubframe:
+            _name = frame.split(os.sep)[0]
+            if len(self.__frames[_name]['frames_name']) == 1:
+                LOGGER.usage("Deleting last subframe '%s' of multiframe '%s' has resulted in deleting the multiframe"%(frame, _name))
+                frame         = _name
+                isNormalFrame = False
+                isSubframe    = False
+                isMultiframe  = True
         # remove frame directory
         if self.__repository is not None:
-            self.__repository.remove_directory(relativePath=frame, removeFromSystem=True)
+            self.__repository.remove_directory(relativePath=frame, clean=True)
         # reset frames
-        self.__frames = tuple([f for f in self.__frames if f != frame])
+        if isNormalFrame or isMultiframe:
+            self.__frames.pop(frame)
+        else:
+            _multiframe, _subframe = frame.split(os.sep)
+            self.__frames[_multiframe]['frames_name'] = [frm for frm in self.__frames[_multiframe]['frames_name'] if frm !=_subframe]
         # save frames
         if self.__repository is not None:
-            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
+            self.__repository.update_file(value=self.__frames, relativePath='_Engine__frames')
 
     def rename_frame(self, frame, newName):
         """
-        Rename frame.
+        Rename (multi)frame.
 
         :Parameters:
             #. frame (string): The frame to rename.
             #. newName (string): The new name.
         """
-        assert frame in self.__frames, LOGGER.error("Unkown given frame '%s'"%frame)
-        newName = self.__get_normalized_frames_name(newName)[0]
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        newName = self.__check_get_frame_name(newName)
+        if isNormalFrame or isMultiframe:
+           assert newName not in self.__frames, LOGGER.error("Give frame new name '%s' already exists"%newName)
+           newFrame = newName
+        else:
+           _multiframe, _= frame.split(os.sep)
+           assert newName not in self.__frames[_multiframe]['frames_name'], LOGGER.error("Give frame new name '%s' already exists in multiframe '%s'"%(newName,_multiframe))
+           newFrame = os.path.join(_multiframe, newName)
         # rename frame in repository
         if self.__repository is not None:
             try:
-                self.__repository.rename_directory(relativePath=frame, newName=newName, replace=False)
-            except Exception as e:
-                raise LOGGER.error("Unable to rename frame (%s)"%e)
+                self.__repository.rename_directory(relativePath=frame, newName=newName)
+            except Exception as err:
+                raise Exception(LOGGER.error("Unable to rename frame (%s)"%(str(err),)) )
         # reset frames
-        self.__frames = tuple([f if f != frame else newName for f in self.__frames])
+        if isNormalFrame or isMultiframe:
+            self.__frames[newFrame] = self.__frames.pop(frame)
+        else:
+            _multiframe, _subframe = frame.split(os.sep)
+            self.__frames[_multiframe]['frames_name'] = [frm if frm!=_subframe else newName for frm in self.__frames[_multiframe]['frames_name']]
         # check used frame
         if self.__usedFrame == frame:
-            self.__usedFrame = newName
+            self.__usedFrame = newFrame
+        elif self.__usedFrame.split(os.sep)[0] == frame:
+            self.__usedFrame = os.path.join(newName, self.__usedFrame.split(os.sep)[1])
         # save frames
         if self.__repository is not None:
-            self.__repository.dump(value=self.__frames, relativePath='.', name='_Engine__frames', replace=True)
-            self.__repository.dump(value=self.__usedFrame, relativePath='.', name='_Engine__usedFrame', replace=True)
+            self.__repository.update_file(value=self.__frames, relativePath='_Engine__frames')
+            self.__repository.update_file(value=self.__usedFrame, relativePath='_Engine__usedFrame')
 
-    def export_pdb(self, path):
+    def export_pdb(self, path, frame=None):
         """
         Export a pdb file of the last refined and saved configuration state.
 
         :Parameters:
             #. path (string): the pdb file path.
+            #. frame (None, string): Target frame name. If None, engine used
+               frame is used.
         """
-        # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
-        if len(self._atomsCollector.indexes):
-            indexes = sorted(set(self.__pdb.indexes)-set(self._atomsCollector.indexes))
-            pdb = self.__pdb.get_copy(indexes=indexes)
+        if frame is None:
+            frame = self.__usedFrame
         else:
-            pdb = self.__pdb
-        pdb.export_pdb(path, coordinates=self.__realCoordinates, boundaryConditions=self.__boundaryConditions )
+            isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+            assert not isMultiframe, LOGGER.error("Given frame is a multiframe, only normal frame or subframe is allowed")
+        # get data
+        if frame == self.__usedFrame:
+            _ac  = self._atomsCollector
+            _pdb = self.__pdb
+            _rc  = self.__realCoordinates
+            _bc  = self.__boundaryConditions
+        else:
+            assert self.__repository is not None, LOGGER.error("Repository is not built yet. Save engine before attempting to export pdb")
+            assert self.__repository.is_repository_directory(frame), LOGGER.error("Frame is not found in repository. Try using set_used_frame('%s') prior to exporting pdb"%(frame,))
+            try:
+                _ac  = self.__repository.pull(relativePath=os.path.join(frame,'_atomsCollector'))
+                _pdb = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__pdb'))
+                _rc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__realCoordinates'))
+                _bc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__boundaryConditions'))
+            except Exception as err:
+                assert False, LOGGER.error("Unable to pull data to export pdb (%s)"%(str(err),))
+        # export pdb
+        # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
+        if len(_ac.indexes):
+            indexes = sorted(set(_pdb.indexes)-set(_ac.indexes))
+            pdb = _pdb.get_copy(indexes=indexes)
+        else:
+            pdb = _pdb
+        pdb.export_pdb(path, coordinates=_rc, boundaryConditions=_bc )
 
-    def get_pdb(self):
+
+    def get_pdb(self, frame=None):
         """
         Get a pdb instance of the last refined and save configuration state.
 
+        :Parameters:
+            #. frame (None, string): Target frame name. If None, engine used
+               frame is used.
+
         :Returns:
-            #. pdb (pdbParser): The pdb instance.
+            #. pdb (pdbparser): The pdb instance.
         """
+        if frame is None:
+            frame = self.__usedFrame
+        else:
+            isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+            assert not isMultiframe, LOGGER.error("Given frame is a multiframe, only normal frame or subframe is allowed")
+        # get data
+        if frame == self.__usedFrame:
+            _ac  = self._atomsCollector
+            _pdb = self.__pdb
+            _rc  = self.__realCoordinates
+            _bc  = self.__boundaryConditions
+        else:
+            assert self.__repository is not None, LOGGER.error("Repository is not built yet. Save engine before attempting to export pdb")
+            assert self.__repository.is_repository_directory(frame), LOGGER.error("Frame is not found in repository. Try using set_used_frame('%s') prior to exporting pdb"%(frame,))
+            try:
+                _ac  = self.__repository.pull(relativePath=os.path.join(frame,'_atomsCollector'))
+                _pdb = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__pdb'))
+                _rc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__realCoordinates'))
+                _bc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__boundaryConditions'))
+            except Exception as err:
+                assert False, LOGGER.error("Unable to pull data to export pdb (%s)"%(str(err),))
+        # create and return pdb
         indexes = None
-        if len(self._atomsCollector.indexes):
-            indexes = sorted(set(self.__pdb.indexes)-set(self._atomsCollector.indexes))
-        pdb = self.__pdb.get_copy(indexes=indexes)
-        pdb.set_coordinates(self.__realCoordinates)
-        pdb.set_boundary_conditions(self.__boundaryConditions)
+        if len(_ac.indexes):
+            indexes = sorted(set(_pdb.indexes)-set(_ac.indexes))
+        pdb = _pdb.get_copy(indexes=indexes)
+        pdb.set_coordinates(_rc)
+        pdb.set_boundary_conditions(_bc)
         return pdb
 
     def set_tolerance(self, tolerance):
@@ -1073,42 +1393,57 @@ class Engine(object):
 
         :Parameters:
             #. tolerance (number): The runtime tolerance parameters.
-               It's the percentage of allowed unsatisfactory 'tried' moves.
+               It's the percentage [0,100] of allowed unsatisfactory 'tried'
+               moves.
         """
         assert is_number(tolerance), LOGGER.error("tolerance must be a number")
         tolerance = FLOAT_TYPE(tolerance)
         assert tolerance>=0, LOGGER.error("tolerance must be positive")
         assert tolerance<=100, LOGGER.error("tolerance must be smaller than 100")
         self.__tolerance = FLOAT_TYPE(tolerance/100.)
-        # save tolerance to disk
+        # dump to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__tolerance, relativePath='.', name='_Engine__tolerance', replace=True)
+            self.__repository.update_file(value=self.__tolerance, relativePath=os.path.join(self.__usedFrame,'_Engine__tolerance'))
 
-    def set_group_selector(self, selector):
+    def set_group_selector(self, selector, frame=None):
         """
         Set engine's group selector instance.
 
         :Parameters:
             #. selector (None, GroupSelector): The GroupSelector instance.
                If None is given, RandomSelector is set automatically.
+            #. frame (None, string): Target frame name. If None, engine used
+               frame is used.
         """
         if selector is None:
             selector = RandomSelector(self)
         else:
-            assert isinstance(selector, GroupSelector), LOGGER.error("selector must a GroupSelector instance")
+            assert isinstance(selector, GroupSelector), LOGGER.error("Given selector must a GroupSelector instance")
+        # get frames
+        usedIncluded, frame, allFrames = get_caller_frames(engine=self,
+                                                           frame=frame,
+                                                           subframeToAll=False,
+                                                           caller="%s.%s"%(self.__class__.__name__,inspect.stack()[0][3]) )
         # change old selector engine instance to None
-        if self.__groupSelector is not None:
-            self.__groupSelector.set_engine(None)
+        if usedIncluded:
+            if self.__groupSelector is not None:
+                self.__groupSelector.set_engine(None)
             # remove from broadcaster listeners list
             #self.__broadcaster.remove_listener(self.__groupSelector)
-        # set new selector
-        selector.set_engine(self)
-        self.__groupSelector = selector
+            # set new selector
+            selector.set_engine(self)
+            self.__groupSelector = selector
         # add to broadcaster listeners list
         #self.__broadcaster.add_listener(self.__groupSelector)
         # save selector to repository
+        if frame != self.__usedFrame:
+            assert self.__repository is not None, LOGGER.error("Repository is not created. Unable to set tolerance for other than engine used frame")
         if self.__repository is not None:
-            self.__repository.dump(value=self.__groupSelector, relativePath=self.__usedFrame, name='_Engine__groupSelector', replace=True)
+            for frm in allFrames:
+                self.__repository.update_file(value=selector, relativePath=os.path.join(frm,'_Engine__groupSelector'))
+        #if self.__repository is not None:
+        #    #self.__repository.dump(value=self.__groupSelector, relativePath=self.__usedFrame, name='_Engine__groupSelector', replace=True)
+        #    self.__repository.update_file(value=self.__groupSelector, relativePath=os.path.join(self.__usedFrame,'_Engine__groupSelector'))
 
     def clear_groups(self):
         """ Clear all engine's defined groups.
@@ -1116,7 +1451,9 @@ class Engine(object):
         self.__groups = []
         # save groups to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
 
     def add_group(self, g, broadcast=True):
         """
@@ -1130,7 +1467,9 @@ class Engine(object):
                This is to be used interally only. Keep default value unless
                you know what you are doing.
         """
-        if isinstance(g, Group):
+        if isinstance(g, EmptyGroup):
+            gr = g
+        elif isinstance(g, Group):
             assert np.max(g.indexes)<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in system")
             gr = g
         elif is_integer(g):
@@ -1164,7 +1503,9 @@ class Engine(object):
             self.__broadcaster.broadcast("update groups")
          # save groups
         if self.__repository is not None and self.__saveGroupsFlag:
-            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'), replace=True)
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
 
     def set_groups(self, groups):
         """
@@ -1193,11 +1534,13 @@ class Engine(object):
         except Exception as e:
             self.__saveGroupsFlag = True
             self.__groups         = lastGroups
-            raise LOGGER.error(e)
+            raise Exception(LOGGER.error(e))
             return
         # save groups to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
 
@@ -1222,11 +1565,13 @@ class Engine(object):
         except Exception as e:
             self.__saveGroupsFlag = True
             self.__groups = lastGroups
-            raise LOGGER.error(e)
+            raise Exception(LOGGER.error(e))
             return
         # save groups to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
 
@@ -1242,11 +1587,11 @@ class Engine(object):
         moleculesIndex = {}
         for idx in range(len(self.__moleculesIndex)):
             mol = self.__moleculesIndex[idx]
-            if not moleculesIndex.has_key(mol):
+            if not mol in moleculesIndex:
                 moleculesIndex[mol] = []
             moleculesIndex[mol].append(idx)
         # create groups
-        keys = sorted(moleculesIndex.keys())
+        keys = sorted(moleculesIndex)
         # reset groups
         self.__groups = []
         # add groups
@@ -1254,7 +1599,9 @@ class Engine(object):
             self.add_group(np.array(moleculesIndex[k], dtype=INT_TYPE), broadcast=False)
         # save groups to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
+            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
         # broadcast to constraints
         self.__broadcaster.broadcast("update groups")
 
@@ -1262,7 +1609,7 @@ class Engine(object):
         """
         Set used frame pdb configuration. Engine and constraints data will be
         automatically reset but not constraints definitions. If pdb was already
-        set and this is a resetting of a different atomic configuration, with
+        set and this is a resetting to a different atomic configuration, with
         different elements or atomic order, or different size and number of
         atoms, constraints definitions must be reset manually. In general,
         their is no point in changing the atomic configuration of a completely
@@ -1270,7 +1617,7 @@ class Engine(object):
         scratch or redefining all constraints definitions.
 
         :Parameters:
-            #. pdb (pdbParser, string): the configuration pdb as a pdbParser
+            #. pdb (pdbparser, string): the configuration pdb as a pdbparser
                instance or a path string to a pdb file.
             #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
                numpy.ndarray, number): The configuration's boundary conditions.
@@ -1295,23 +1642,23 @@ class Engine(object):
                automatically generated as the pdb residues name.
         """
         if pdb is None:
-            pdb = pdbParser()
+            pdb = pdbparser()
             bc  = PeriodicBoundaries()
             bc.set_vectors(1)
             pdb.set_boundary_conditions(bc)
-        if not isinstance(pdb, pdbParser):
+        if not isinstance(pdb, pdbparser):
             try:
-                pdb = pdbParser(pdb)
+                pdb = pdbparser(pdb)
             except:
-                raise Exception( LOGGER.error("pdb must be None, pdbParser instance or a string path to a protein database (pdb) file.") )
+                raise Exception( LOGGER.error("pdb must be None, pdbparser instance or a string path to a protein database (pdb) file.") )
         # set pdb
         self.__pdb = pdb
         # get coordinates
         self.__realCoordinates = np.array(self.__pdb.coordinates, dtype=FLOAT_TYPE)
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__pdb, relativePath=self.__usedFrame, name='_Engine__pdb', replace=True)
-            self.__repository.dump(value=self.__realCoordinates, relativePath=self.__usedFrame, name='_Engine__realCoordinates', replace=True)
+            self.__repository.update_file(value=self.__pdb, relativePath=os.path.join(self.__usedFrame,'_Engine__pdb'))
+            self.__repository.update_file(value=self.__realCoordinates, relativePath=os.path.join(self.__usedFrame,'_Engine__realCoordinates'))
         # reset AtomsCollector
         self._atomsCollector.reset()
         # set boundary conditions
@@ -1331,9 +1678,21 @@ class Engine(object):
 
     def set_boundary_conditions(self, boundaryConditions):
         """
-        Sets the configuration's boundary conditions. Any type of periodic
-        boundary conditions is allowed and not restricted to cubic. Engine
-        and constraints data will be automatically reset.
+        Sets the configuration's boundary conditions. Any type of periodic or
+        infinite boundary conditions is allowed and not restricted to cubic.
+        Engine and constraints data will be automatically reset. Number density
+        will be automatically calculated upon setting boundary conditions. In
+        the case where inifinite boundaries are set, which is needed to
+        simulate isolated atomic systems such as nano-particles, the volume
+        is theoretically infinite and therefore number density must be 0.
+        But experimentally the measured samples are diluted in solvants and the
+        actual number density must be the experimental one. To avoid numerical
+        instabilities, number density will be automatically set to water's one
+        equal to 0.0333679 and volume will be adjusted to the ratio of number
+        of atoms devided to the given water number density. If this number is
+        not accurate, user can always set the appropriate number density using
+        the stochastic engine 'set_number_density' method
+
 
         :Parameters:
             #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
@@ -1361,7 +1720,7 @@ class Engine(object):
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
             self.__reciprocalBasisVectors = np.array([[1,0,0],[0,1,0],[0,0,1]], dtype=FLOAT_TYPE)
-            self.__volume = FLOAT_TYPE( 1./.0333679 * self.numberOfAtoms )
+            self.__volume = FLOAT_TYPE( 1./WATER_NUMBER_DENSITY * self.numberOfAtoms )
         elif isinstance(boundaryConditions, PeriodicBoundaries):
             self.__boundaryConditions = boundaryConditions
             self.__basisVectors = np.array(boundaryConditions.get_vectors(), dtype=FLOAT_TYPE)
@@ -1383,17 +1742,17 @@ class Engine(object):
         self.__numberDensity = FLOAT_TYPE(self.numberOfAtoms) / FLOAT_TYPE(self.__volume)
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__boundaryConditions, relativePath=self.__usedFrame, name='_Engine__boundaryConditions', replace=True)
-            self.__repository.dump(value=self.__basisVectors, relativePath=self.__usedFrame, name='_Engine__basisVectors', replace=True)
-            self.__repository.dump(value=self.__reciprocalBasisVectors, relativePath=self.__usedFrame, name='_Engine__reciprocalBasisVectors', replace=True)
-            self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_Engine__numberDensity', replace=True)
-            self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_Engine__volume', replace=True)
-            self.__repository.dump(value=self.__isPBC, relativePath=self.__usedFrame, name='_Engine__isPBC', replace=True)
-            self.__repository.dump(value=self.__isIBC, relativePath=self.__usedFrame, name='_Engine__isIBC', replace=True)
-            self.__repository.dump(value=self.__boxCoordinates, relativePath=self.__usedFrame, name='_Engine__boxCoordinates', replace=True)
-            self.__repository.dump(value=self.numberOfAtoms, relativePath=self.__usedFrame, name='_original__numberOfAtoms', replace=True)
-            self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_original__volume', replace=True)
-            self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_original__numberDensity', replace=True)
+            self.__repository.update_file(value=self.__boundaryConditions, relativePath=os.path.join(self.__usedFrame,'_Engine__boundaryConditions'))
+            self.__repository.update_file(value=self.__basisVectors, relativePath=os.path.join(self.__usedFrame,'_Engine__basisVectors'))
+            self.__repository.update_file(value=self.__reciprocalBasisVectors, relativePath=os.path.join(self.__usedFrame,'_Engine__reciprocalBasisVectors'))
+            self.__repository.update_file(value=self.__numberDensity, relativePath=os.path.join(self.__usedFrame,'_Engine__numberDensity'))
+            self.__repository.update_file(value=self.__volume, relativePath=os.path.join(self.__usedFrame,'_Engine__volume'))
+            self.__repository.update_file(value=self.__isPBC, relativePath=os.path.join(self.__usedFrame,'_Engine__isPBC'))
+            self.__repository.update_file(value=self.__isIBC, relativePath=os.path.join(self.__usedFrame,'_Engine__isIBC'))
+            self.__repository.update_file(value=self.__boxCoordinates, relativePath=os.path.join(self.__usedFrame,'_Engine__boxCoordinates'))
+            self.__repository.update_file(value=self.numberOfAtoms, relativePath=os.path.join(self.__usedFrame,'_original__numberOfAtoms'))
+            self.__repository.update_file(value=self.__volume, relativePath=os.path.join(self.__usedFrame,'_original__volume'))
+            self.__repository.update_file(value=self.__numberDensity, relativePath=os.path.join(self.__usedFrame,'_original__numberDensity'))
             self.__frameOriginalData['_original__numberOfAtoms'] = None
             self.__frameOriginalData['_original__volume']        = None
             self.__frameOriginalData['_original__numberDensity'] = None
@@ -1435,8 +1794,8 @@ class Engine(object):
         self.__volume = FLOAT_TYPE( 1./numberDensity * self.numberOfAtoms )
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__numberDensity, relativePath=self.__usedFrame, name='_Engine__numberDensity', replace=True)
-            self.__repository.dump(value=self.__volume, relativePath=self.__usedFrame, name='_Engine__volume', replace=True)
+            self.__repository.update_file(value=self.__numberDensity, relativePath=os.path.join(self.__usedFrame,'_Engine__numberDensity'))
+            self.__repository.update_file(value=self.__volume, relativePath=os.path.join(self.__usedFrame,'_Engine__volume'))
         # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
 #        # set mustSave flag
 #        self.__mustSave = True
@@ -1506,24 +1865,24 @@ class Engine(object):
                     molIndex = newMolIndex
         # set moleculesIndex
         self.__numberOfMolecules = len(set(moleculesIndex))
-        self.__moleculesIndex  = np.array(moleculesIndex, dtype=INT_TYPE)
-        self.__moleculesName    = list(moleculesName)
+        self.__moleculesIndex    = np.array(moleculesIndex, dtype=INT_TYPE)
+        self.__moleculesName     = list(moleculesName)
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__numberOfMolecules, relativePath=self.__usedFrame, name='_Engine__numberOfMolecules', replace=True)
-            self.__repository.dump(value=self.__moleculesIndex, relativePath=self.__usedFrame, name='_Engine__moleculesIndex', replace=True)
-            self.__repository.dump(value=self.__moleculesName, relativePath=self.__usedFrame, name='_Engine__moleculesName', replace=True)
+            self.__repository.update_file(value=self.__numberOfMolecules, relativePath=os.path.join(self.__usedFrame,'_Engine__numberOfMolecules'))
+            self.__repository.update_file(value=self.__moleculesIndex, relativePath=os.path.join(self.__usedFrame,'_Engine__moleculesIndex'))
+            self.__repository.update_file(value=self.__moleculesName, relativePath=os.path.join(self.__usedFrame,'_Engine__moleculesName'))
             # save original data
-            self.__repository.dump(value=self.__numberOfMolecules, relativePath=self.__usedFrame, name='_original__numberOfMolecules', replace=True)
-            self.__repository.dump(value=self.__moleculesIndex, relativePath=self.__usedFrame, name='_original__moleculesIndex', replace=True)
-            self.__repository.dump(value=self.__moleculesName, relativePath=self.__usedFrame, name='_original__moleculesName', replace=True)
+            self.__repository.update_file(value=self.__numberOfMolecules, relativePath=os.path.join(self.__usedFrame,'_original__numberOfMolecules'))
+            self.__repository.update_file(value=self.__moleculesIndex, relativePath=os.path.join(self.__usedFrame,'_original__moleculesIndex'))
+            self.__repository.update_file(value=self.__moleculesName, relativePath=os.path.join(self.__usedFrame,'_original__moleculesName'))
             self.__frameOriginalData['_original__numberOfMolecules'] = None
-            self.__frameOriginalData['_original__moleculesIndex']  = None
-            self.__frameOriginalData['_original__moleculesName']    = None
+            self.__frameOriginalData['_original__moleculesIndex']    = None
+            self.__frameOriginalData['_original__moleculesName']     = None
         else:
             self.__frameOriginalData['_original__numberOfMolecules'] = copy.deepcopy( self.__numberOfMolecules )
-            self.__frameOriginalData['_original__moleculesIndex']  = copy.deepcopy( self.__moleculesIndex  )
-            self.__frameOriginalData['_original__moleculesName']    = copy.deepcopy( self.__moleculesName    )
+            self.__frameOriginalData['_original__moleculesIndex']    = copy.deepcopy( self.__moleculesIndex  )
+            self.__frameOriginalData['_original__moleculesName']     = copy.deepcopy( self.__moleculesName    )
         # broadcast to constraints
         self.__broadcaster.broadcast("update molecules indexes")
 
@@ -1558,28 +1917,28 @@ class Engine(object):
         # number of atoms per element
         self.__numberOfAtomsPerElement = {}
         for el in self.__allElements:
-            if not self.__numberOfAtomsPerElement.has_key(el):
+            if not el in self.__numberOfAtomsPerElement:
                 self.__numberOfAtomsPerElement[el] = 0
             self.__numberOfAtomsPerElement[el] += 1
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__allElements, relativePath=self.__usedFrame, name='_Engine__allElements', replace=True)
-            self.__repository.dump(value=self.__elements, relativePath=self.__usedFrame, name='_Engine__elements', replace=True)
-            self.__repository.dump(value=self.__elementsIndex, relativePath=self.__usedFrame, name='_Engine__elementsIndex', replace=True)
-            self.__repository.dump(value=self.__numberOfAtomsPerElement, relativePath=self.__usedFrame, name='_Engine__numberOfAtomsPerElement', replace=True)
+            self.__repository.update_file(value=self.__allElements, relativePath=os.path.join(self.__usedFrame,'_Engine__allElements'))
+            self.__repository.update_file(value=self.__elements, relativePath=os.path.join(self.__usedFrame,'_Engine__elements'))
+            self.__repository.update_file(value=self.__elementsIndex, relativePath=os.path.join(self.__usedFrame,'_Engine__elementsIndex'))
+            self.__repository.update_file(value=self.__numberOfAtomsPerElement, relativePath=os.path.join(self.__usedFrame,'_Engine__numberOfAtomsPerElement'))
             # save original data
-            self.__repository.dump(value=self.__allElements, relativePath=self.__usedFrame, name='_original__allElements', replace=True)
-            self.__repository.dump(value=self.__elements, relativePath=self.__usedFrame, name='_original__elements', replace=True)
-            self.__repository.dump(value=self.__elementsIndex, relativePath=self.__usedFrame, name='_original__elementsIndex', replace=True)
-            self.__repository.dump(value=self.__numberOfAtomsPerElement, relativePath=self.__usedFrame, name='_original__numberOfAtomsPerElement', replace=True)
+            self.__repository.update_file(value=self.__allElements, relativePath=os.path.join(self.__usedFrame,'_original__allElements'))
+            self.__repository.update_file(value=self.__elements, relativePath=os.path.join(self.__usedFrame,'_original__elements'))
+            self.__repository.update_file(value=self.__elementsIndex, relativePath=os.path.join(self.__usedFrame,'_original__elementsIndex'))
+            self.__repository.update_file(value=self.__numberOfAtomsPerElement, relativePath=os.path.join(self.__usedFrame,'_original__numberOfAtomsPerElement'))
             self.__frameOriginalData['_original__allElements']             = None
             self.__frameOriginalData['_original__elements']                = None
-            self.__frameOriginalData['_original__elementsIndex']         = None
+            self.__frameOriginalData['_original__elementsIndex']           = None
             self.__frameOriginalData['_original__numberOfAtomsPerElement'] = None
         else:
             self.__frameOriginalData['_original__allElements']             = copy.deepcopy( self.__allElements )
             self.__frameOriginalData['_original__elements']                = copy.deepcopy( self.__elements )
-            self.__frameOriginalData['_original__elementsIndex']         = copy.deepcopy( self.__elementsIndex )
+            self.__frameOriginalData['_original__elementsIndex']           = copy.deepcopy( self.__elementsIndex )
             self.__frameOriginalData['_original__numberOfAtomsPerElement'] = copy.deepcopy( self.__numberOfAtomsPerElement )
         # broadcast to constraints
         self.__broadcaster.broadcast("update elements indexes")
@@ -1595,7 +1954,7 @@ class Engine(object):
 
         :Parameters:
             #. names (None, list): The names list. If None is given, names
-            will be generated automatically by parsing pdbParser instance.
+            will be generated automatically by parsing pdbparser instance.
         """
         if names is None:
             names = self.__pdb.names
@@ -1612,45 +1971,47 @@ class Engine(object):
         # number of atoms per name
         self.__numberOfAtomsPerName = {}
         for n in self.__allNames:
-            if not self.__numberOfAtomsPerName.has_key(n):
+            if not n in self.__numberOfAtomsPerName:
                 self.__numberOfAtomsPerName[n] = 0
             self.__numberOfAtomsPerName[n] += 1
         # save data to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self.__allNames, relativePath=self.__usedFrame, name='_Engine__allNames', replace=True)
-            self.__repository.dump(value=self.__names, relativePath=self.__usedFrame, name='_Engine__names', replace=True)
-            self.__repository.dump(value=self.__namesIndex, relativePath=self.__usedFrame, name='_Engine__namesIndex', replace=True)
-            self.__repository.dump(value=self.__numberOfAtomsPerName, relativePath=self.__usedFrame, name='_Engine__numberOfAtomsPerName', replace=True)
+            self.__repository.update_file(value=self.__allNames, relativePath=os.path.join(self.__usedFrame,'_Engine__allNames'))
+            self.__repository.update_file(value=self.__names, relativePath=os.path.join(self.__usedFrame,'_Engine__names'))
+            self.__repository.update_file(value=self.__namesIndex, relativePath=os.path.join(self.__usedFrame,'_Engine__namesIndex'))
+            self.__repository.update_file(value=self.__numberOfAtomsPerName, relativePath=os.path.join(self.__usedFrame,'_Engine__numberOfAtomsPerName'))
             # save original data
-            self.__repository.dump(value=self.__allNames, relativePath=self.__usedFrame, name='_original__allNames', replace=True)
-            self.__repository.dump(value=self.__names, relativePath=self.__usedFrame, name='_original__names', replace=True)
-            self.__repository.dump(value=self.__namesIndex, relativePath=self.__usedFrame, name='_original__namesIndex', replace=True)
-            self.__repository.dump(value=self.__numberOfAtomsPerName, relativePath=self.__usedFrame, name='_original__numberOfAtomsPerName', replace=True)
+            self.__repository.update_file(value=self.__allNames, relativePath=os.path.join(self.__usedFrame,'_original__allNames'))
+            self.__repository.update_file(value=self.__names, relativePath=os.path.join(self.__usedFrame,'_original__names'))
+            self.__repository.update_file(value=self.__namesIndex, relativePath=os.path.join(self.__usedFrame,'_original__namesIndex'))
+            self.__repository.update_file(value=self.__numberOfAtomsPerName, relativePath=os.path.join(self.__usedFrame,'_original__numberOfAtomsPerName'))
             self.__frameOriginalData['_original__allNames']             = None
             self.__frameOriginalData['_original__names']                = None
-            self.__frameOriginalData['_original__namesIndex']         = None
+            self.__frameOriginalData['_original__namesIndex']           = None
             self.__frameOriginalData['_original__numberOfAtomsPerName'] = None
         else:
             self.__frameOriginalData['_original__allNames']             = copy.deepcopy( self.__allNames )
             self.__frameOriginalData['_original__names']                = copy.deepcopy( self.__names )
-            self.__frameOriginalData['_original__namesIndex']         = copy.deepcopy( self.__namesIndex )
+            self.__frameOriginalData['_original__namesIndex']           = copy.deepcopy( self.__namesIndex )
             self.__frameOriginalData['_original__numberOfAtomsPerName'] = copy.deepcopy( self.__numberOfAtomsPerName )
         # broadcast to constraints
         self.__broadcaster.broadcast("update names indexes")
 
-        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
+        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IF
         # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
 #        # set mustSave flag
 #        self.__mustSave = True
 
-    def visualize(self, commands=None, foldIntoBox=False, boxToCenter=False,
+    def visualize(self, frame=None, commands=None, foldIntoBox=False, boxToCenter=False,
                         boxWidth=2, boxStyle="solid", boxColor="yellow",
                         bgColor="black", displayParams=None,
                         representationParams="Lines", otherParams=None):
         """
-        Visualize the last configuration using pdbParser visualize_vmd method.
+        Visualize the last configuration using pdbparser visualize_vmd method.
 
         :Parameters:
+            #. frame (None, string): The frame to visualize. If None, used frame
+               will be visualized. If given, frame must be created in repostory.
             #. commands (None, list, tuple): List of commands to pass
                upon calling vmd.
             #. foldIntoBox (boolean): Whether to fold all atoms into
@@ -1698,6 +2059,11 @@ class Engine(object):
                e.g. ['display resize 700 700', 'rotate x to 45',
                'scale to 0.02', 'axes location off']
         """
+        # check frame
+        if frame is None:
+            frame = self.usedFrame
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        assert not isMultiframe, LOGGER.error("Given frame '%s' is a multiframe. Visualize is only possible with a normal frame or a subframe."%(frame,))
         # check boxWidth argument
         assert is_integer(boxWidth), LOGGER.error("boxWidth must be an integer")
         boxWidth = int(boxWidth)
@@ -1719,190 +2085,379 @@ class Engine(object):
         reprParams.pop(0)
         reprParams = " ".join(reprParams)
         assert reprMethod in reps, LOGGER.error("representation method is not a recognized among allowed ones %s"%str(reps))
+        # get needed data for visualization
+        if frame == self.usedFrame:
+            _pdb = self.__pdb
+            _bc  = self.__boundaryConditions
+            _rc  = self.__realCoordinates
+            _ac  = self._atomsCollector
+        else:
+            assert self.__repository is not None, LOGGER.error("Repository is not built yet. Save engine before attempting to visualize")
+            assert self.__repository.is_repository_directory(frame), LOGGER.error("Frame is not found in repository. Try using set_used_frame('%s') prior to visualize"%(frame,))
+            try:
+                _pdb = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__pdb'))
+                _bc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__boundaryConditions'))
+                _rc  = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__realCoordinates'))
+                _ac  = self.__repository.pull(relativePath=os.path.join(frame,'_atomsCollector'))
+            except Exception as err:
+                assert False, LOGGER.error("Unable to pull data to export pdb (%s)"%(str(err),))
         # create .tcl file
         (vmdfd, tclFile) = tempfile.mkstemp()
         # write tclFile
         tclFile += ".tcl"
-        fd = open(tclFile, "w")
-        # visualize box
-        if boxWidth>0 and isinstance(self.__boundaryConditions, PeriodicBoundaries):
-            if foldIntoBox and boxToCenter:
-                foldIntoBox = False
-                LOGGER.fixed("foldIntoBox and boxToCenter cannot both be set to True. foldIntoBox is reset to False.")
-            try:
-                X,Y,Z = self.__boundaryConditions.get_vectors()
-                lines = []
-                ### Z=0 plane
-                # 000 -> 100
-                lines.append( [0.,0.,0.,  X[0],X[1],X[2]] )
-                # 000 -> 010
-                lines.append( [0.,0.,0.,  Y[0],Y[1],Y[2]] )
-                # 100 -> 110
-                lines.append( [X[0],X[1],X[2],  X[0]+Y[0],X[1]+Y[1],X[2]+Y[2]] )
-                # 110 -> 010
-                lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  Y[0],Y[1],Y[2]] )
-                ### Z=1 plane
-                # 001 -> 101
-                lines.append( [Z[0],Z[1],Z[2],  Z[0]+X[0],Z[1]+X[1],Z[2]+X[2]] )
-                # 001 -> 011
-                lines.append( [Z[0],Z[1],Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
-                # 101 -> 111
-                lines.append( [Z[0]+X[0],Z[1]+X[1],Z[2]+X[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )
-                # 111 -> 011
-                lines.append( [X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
-                ### Z=1 verticals
-                # 000 -> 001
-                lines.append( [0.,0.,0.,  Z[0],Z[1],Z[2]] )
-                # 100 -> 101
-                lines.append( [X[0],X[1],X[2],  X[0]+Z[0],X[1]+Z[1],X[2]+Z[2]] )
-                # 010 -> 011
-                lines.append( [Y[0],Y[1],Y[2],  Y[0]+Z[0],Y[1]+Z[1],Y[2]+Z[2]] )
-                # 110 -> 111
-                lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )
-                # translate box
-                if boxToCenter:
-                    bc = (X+Y+Z)/2.
-                    cc = np.sum(self.__realCoordinates, axis=0)/self.__realCoordinates.shape[0]
-                    tv = cc-bc
-                    for idx, line in enumerate(lines):
-                        lines[idx] = [item+tv[i%3] for i,item in enumerate(line)]
-                # write box
-                fd.write("draw color %s\n"%(boxColor,))
-                for l in lines:
-                    fd.write( "draw line {%s %s %s} {%s %s %s} width %s style %s\n"%(l[0],l[1],l[2],l[3],l[4],l[5],boxWidth,boxStyle,) )
-            except:
-                LOGGER.warn("Unable to write simulation box .tcl script for visualization.")
-        # representation
-        fd.write("mol delrep 0 top\n")
-        fd.write("mol representation %s %s\n"%(reprMethod, reprParams) )
-        fd.write("mol delrep 0 top\n")
-        fd.write('mol addrep top\n')
-        # display parameters
-        if displayParams is None:
-            displayParams = {}
-        depthCueing = displayParams.get("depth cueing", True)
-        cueDensity  = displayParams.get("cue density",  0.1)
-        cueMode     = displayParams.get("cue mode",  'Exp')
-        assert bgColor in colors, LOGGER.error("display background color is not a recognized color name among %s"%str(colors))
-        assert depthCueing in [True, False], LOGGER.error("depth cueing must be boolean")
-        assert is_number(cueDensity), LOGGER.error("cue density must be a number")
-        assert cueMode in ['linear','Exp','Exp2'], LOGGER.error("cue mode must be either 'linear','Exp' or 'Exp2'")
-        fd.write('color Display Background %s \n'%bgColor)
-        if depthCueing is True:
-            depthCueing = 'on'
+        try:
+            fd = open(tclFile, "w")
+            # visualize box
+            if boxWidth>0 and isinstance(_bc, PeriodicBoundaries):
+                if foldIntoBox and boxToCenter:
+                    foldIntoBox = False
+                    LOGGER.fixed("foldIntoBox and boxToCenter cannot both be set to True. foldIntoBox is reset to False.")
+                try:
+                    X,Y,Z = _bc.get_vectors()
+                    lines = []
+                    ### Z=0 plane
+                    # 000 -> 100
+                    lines.append( [0.,0.,0.,  X[0],X[1],X[2]] )
+                    # 000 -> 010
+                    lines.append( [0.,0.,0.,  Y[0],Y[1],Y[2]] )
+                    # 100 -> 110
+                    lines.append( [X[0],X[1],X[2],  X[0]+Y[0],X[1]+Y[1],X[2]+Y[2]] )
+                    # 110 -> 010
+                    lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  Y[0],Y[1],Y[2]] )
+                    ### Z=1 plane
+                    # 001 -> 101
+                    lines.append( [Z[0],Z[1],Z[2],  Z[0]+X[0],Z[1]+X[1],Z[2]+X[2]] )
+                    # 001 -> 011
+                    lines.append( [Z[0],Z[1],Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
+                    # 101 -> 111
+                    lines.append( [Z[0]+X[0],Z[1]+X[1],Z[2]+X[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )
+                    # 111 -> 011
+                    lines.append( [X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2],  Z[0]+Y[0],Z[1]+Y[1],Z[2]+Y[2]] )
+                    ### Z=1 verticals
+                    # 000 -> 001
+                    lines.append( [0.,0.,0.,  Z[0],Z[1],Z[2]] )
+                    # 100 -> 101
+                    lines.append( [X[0],X[1],X[2],  X[0]+Z[0],X[1]+Z[1],X[2]+Z[2]] )
+                    # 010 -> 011
+                    lines.append( [Y[0],Y[1],Y[2],  Y[0]+Z[0],Y[1]+Z[1],Y[2]+Z[2]] )
+                    # 110 -> 111
+                    lines.append( [X[0]+Y[0],X[1]+Y[1],X[2]+Y[2],  X[0]+Y[0]+Z[0],X[1]+Y[1]+Z[1],X[2]+Y[2]+Z[2]] )
+                    # translate box
+                    if boxToCenter:
+                        bc = (X+Y+Z)/2.
+                        cc = np.sum(_rc, axis=0)/_rc.shape[0]
+                        tv = cc-bc
+                        for idx, line in enumerate(lines):
+                            lines[idx] = [item+tv[i%3] for i,item in enumerate(line)]
+                    # write box
+                    fd.write("draw color %s\n"%(boxColor,))
+                    for l in lines:
+                        fd.write( "draw line {%s %s %s} {%s %s %s} width %s style %s\n"%(l[0],l[1],l[2],l[3],l[4],l[5],boxWidth,boxStyle,) )
+                except:
+                    LOGGER.warn("Unable to write simulation box .tcl script for visualization.")
+            # representation
+            fd.write("mol delrep 0 top\n")
+            fd.write("mol representation %s %s\n"%(reprMethod, reprParams) )
+            fd.write("mol delrep 0 top\n")
+            fd.write('mol addrep top\n')
+            # display parameters
+            if displayParams is None:
+                displayParams = {}
+            depthCueing = displayParams.get("depth cueing", True)
+            cueDensity  = displayParams.get("cue density",  0.1)
+            cueMode     = displayParams.get("cue mode",  'Exp')
+            assert bgColor in colors, LOGGER.error("display background color is not a recognized color name among %s"%str(colors))
+            assert depthCueing in [True, False], LOGGER.error("depth cueing must be boolean")
+            assert is_number(cueDensity), LOGGER.error("cue density must be a number")
+            assert cueMode in ['linear','Exp','Exp2'], LOGGER.error("cue mode must be either 'linear','Exp' or 'Exp2'")
+            fd.write('color Display Background %s \n'%bgColor)
+            if depthCueing is True:
+                depthCueing = 'on'
+            else:
+                depthCueing = 'off'
+            fd.write('display depthcue %s \n'%depthCueing)
+            fd.write('display cuedensity  %s \n'%cueDensity)
+            fd.write('display cuemode  %s \n'%cueMode)
+            # other parameters
+            if otherParams is None:
+                otherParams = []
+            for op in otherParams:
+                fd.write('%s \n'%op)
+            fd.close()
+            coords = _rc
+            # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
+            if foldIntoBox and isinstance(_bc, PeriodicBoundaries):
+                coords = _bc.fold_real_array(_rc)
+            # copy pdb if atoms where amputated
+            if len(_ac.indexes):
+                indexes = sorted(set(_pdb.indexes)-set(_ac.indexes))
+                pdb = _pdb.get_copy(indexes=indexes)
+            else:
+                pdb = _pdb
+            pdb.visualize(commands=commands, coordinates=coords, startupScript=tclFile)
+        except Exception as err:
+            print("unable to visualize (%s)"%err)
+            # remove tclFile
+            os.remove(tclFile)
         else:
-            depthCueing = 'off'
-        fd.write('display depthcue %s \n'%depthCueing)
-        fd.write('display cuedensity  %s \n'%cueDensity)
-        fd.write('display cuemode  %s \n'%cueMode)
-        # other parameters
-        if otherParams is None:
-            otherParams = []
-        for op in otherParams:
-            fd.write('%s \n'%op)
-        fd.close()
-        coords = self.__realCoordinates
-        # MUST TRANSFORM TO PDB COORDINATES SYSTEM FIRST
-        if foldIntoBox and isinstance(self.__boundaryConditions, PeriodicBoundaries):
-            coords = self.__boundaryConditions.fold_real_array(self.__realCoordinates)
-        # copy pdb if atoms where amputated
-        if len(self._atomsCollector.indexes):
-            indexes = sorted(set(self.__pdb.indexes)-set(self._atomsCollector.indexes))
-            pdb = self.__pdb.get_copy(indexes=indexes)
-        else:
-            pdb = self.__pdb
-        pdb.visualize(commands=commands, coordinates=coords, startupScript=tclFile)
-        # remove .tcl file
-        os.remove(tclFile)
+            # remove tclFile
+            os.remove(tclFile)
 
-    def add_constraints(self, constraints):
+
+    def add_constraints(self, constraints, toAllSubframes=False):
         """
-        Add constraints to the engine.
+        Add constraints to the engine. If used frame is a normal frame, all
+        other normal frames will have the constraints added. If used frame
+        is a subframe, all other subframes of the same multiframe will have
+        the experimental constraints added to. But given non-experimental
+        constraints will be only added to the used frame.
 
         :Parameters:
             #. constraints (Constraint, list, set, tuple): A constraint instance or
                list of constraints instances
+            #. toAllSubframes (boolean): Whether to also add non-experimental
+               constraints to all other multiframe subframes in case engine
+               used frame is a multiframe subframe.
         """
+        # check arguments
+        assert isinstance(toAllSubframes, bool), LOGGER.usage("toAllSubframes must be boolean")
         if isinstance(constraints,(list,set,tuple)):
             constraints = list(constraints)
         else:
             constraints = [constraints]
-        # check all constraints
+        ## check all constraints and real constraint instance
         for c in constraints:
-            assert isinstance(c, Constraint), LOGGER.error("constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been added to the engine.")
-            # check for singularity
-            if isinstance(c, SingularConstraint):
-                assert c.is_singular(self), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine. None of the constraints have been added to the engine."%self.__class__.__name__)
-        # set constraints
+            assert isinstance(c, Constraint), LOGGER.error("Constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been added to the engine.")
+            assert not c.is_in_engine(self), LOGGER.error("Constraint '%s' of unique id '%s' already exist in engine. None of the constraints have been added to the engine."%(c.__class__.__name__,c.constraintId))
+
+        ## get used frame category
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        ## copy engine just for testing purposes
+        _engine = copy.deepcopy(self)
+        _engine._Engine__constraints = self.constraints
+        ## check singular constraints
+        if isNormalFrame:
+            _engine._Engine__constraints.extend(constraints)
+            [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in constraints]
+            for _c in _engine._Engine__constraints:
+                if isinstance(_c, SingularConstraint):
+                    assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine. None of the constraints have been added to the engine."%_c.__class__.__name__)
+            LOGGER.info("Given constraints will be added to all normal frames in engine")
+
+        else:
+            assert self.__repository is not None, LOGGER.error("Adding constraints to multiframe is not allowed before building repository. Use engine save method first.")
+            _multi  = self.__usedFrame.split(os.sep)[0]
+            _frames = [os.path.join(_multi, frm) for frm in self.__frames[_multi]['frames_name']]
+            for frm in _frames:
+                _constraints = self.__repository.pull(relativePath=os.path.join(frm,'_Engine__constraints'))
+                [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in _constraints]
+                _engine._Engine__constraints = _constraints
+                for c in constraints:
+                    assert not c.is_in_engine(_engine), LOGGER.error("Constraint '%s' of unique id '%s' already exist in frame '%s' engine. None of the constraints have been added to the engine."%(c.__class__.__name__,c.constraintId,frm))
+                _engine._Engine__constraints.extend(constraints)
+                [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in constraints]
+                # check constraints being singular
+                if frm == self.usedFrame:
+                    _notExpConsts = [_c for _c in getattr(_engine, '_Engine__constraints') if not isinstance(_c, ExperimentalConstraint)]
+                    for _c in _engine._Engine__constraints:
+                        if isinstance(_c, SingularConstraint):
+                            assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine for frame '%s'. None of the constraints have been added to the engine."%(_c.__class__.__name__,frm))
+                else:
+                    _expConsts = [_c for _c in getattr(_engine, '_Engine__constraints') if isinstance(_c, ExperimentalConstraint)]
+                    for _c in _expConsts:
+                        if isinstance(_c, SingularConstraint):
+                            assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine for frame '%s'. None of the constraints have been added to the engine."%(_c.__class__.__name__,frm))
+            if toAllSubframes:
+                LOGGER.info("All given constraints will be added all of %i subframes of multiframe '%s'"%(len(self.__frames[_multi]['frames_name']),_multi))
+            else:
+                LOGGER.info("All given constraints will be added to the used subframe '%s'. But experimental constraints only will be added to all other '%i' subframes of multiframe '%s'"%(self.__usedFrame,len(self.__frames[_multi]['frames_name'])-1,_multi))
+        ## add constraints to current used frame
         for c in constraints:
-            # check whether same instance added twice
-            if c in self.__constraints:
-                LOGGER.warn("constraint '%s' already exist in list of constraints"%c)
-                continue
+            c._Constraint__engine = None
             # add engine to constraint
             c._set_engine(self)
             # add to broadcaster listeners list
             self.__broadcaster.add_listener(c)
             # add constraint to engine
             self.__constraints.append(c)
-            # broadcast 'engine changed' to constraint
+            # broadcast 'engine changed' to constraint this will create some of constraints files if repository is not None
             c.listen("engine set")
-        # add constraints to repository
         if self.__repository is not None:
-            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
-            for frame in self.__frames:
-                for c in constraints:
-                    # Add constraint to all frames
-                    cp = os.path.join(frame, 'constraints', c.constraintId)
-                    self.__repository.add_directory( cp )
-                    for dname in c.FRAME_DATA:
-                        value = c.__dict__[dname]
-                        #name  = dname.split('__')[1]
-                        name = dname
-                        self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
+            # add constraints to used frame
+            for c in constraints:
+                cp = os.path.join(self.__usedFrame, 'constraints', c.constraintName)
+                self.__repository.add_directory( cp )
+                for dname in c.FRAME_DATA:
+                    value = c.__dict__[dname]
+                    #self.__repository.dump(value=value, relativePath=os.path.join(cp,dname), replace=True) # set replace to True because of early listen method call
+                    self._dump_to_repository(value=value, relativePath=os.path.join(cp,dname))
+            # Add constraint to all traditional frames
+            if isNormalFrame:
+                self.__repository.update_file(value=self.__constraints, relativePath='_Engine__constraints')
+                for frame in self.__frames:
+                    if self.__frames[frame] is not None:
+                        continue
+                    if frame == self.__usedFrame:
+                        continue
+                    # copy constraints directory
+                    for c in constraints:
+                        tpath = os.path.join(self.__usedFrame, 'constraints', c.constraintName)
+                        cpath = os.path.join(frame, 'constraints', c.constraintName)
+                        success, error = self.__repository.copy_directory(relativePath=tpath, newRelativePath=cpath, raiseError=False)
+                        assert success, LOGGER.error(error)
+            else:
+                # update _Engine__constraints file
+                self.__repository.update_file(value=self.__constraints, relativePath=os.path.join(self.__usedFrame,'_Engine__constraints'))
+                if toAllSubframes:
+                    toAddConstraints = constraints
+                    toAddConstsName  = [_c.constraintName for _c in toAddConstraints]
+                else:
+                    toAddConstraints = [_c for _c in constraints if isinstance(_c, ExperimentalConstraint)]
+                    toAddConstsName  = [_c.constraintName for _c in toAddConstraints]
+                if len(toAddConstraints):
+                    for subframe in self.__frames[_multi]['frames_name']:
+                        frame = os.path.join(_multi,subframe)
+                        if frame == self.__usedFrame:
+                            continue
+                        _constraints = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__constraints'))
+                        _engine._Engine__constraints = _constraints
+                        [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in _constraints]
+                        [object.__setattr__(_c, '_Constraint__engine',None) for _c in toAddConstraints]
+                        [_c._set_engine(_engine) for _c in toAddConstraints]
+                        _engine._Engine__constraints.extend(toAddConstraints)
+                        # copy constraints directory
+                        for c, cn in zip(toAddConstraints,toAddConstsName):
+                            tpath = os.path.join(self.__usedFrame, 'constraints', cn)
+                            cpath = os.path.join(frame, 'constraints', c.constraintName)
+                            success, error = self.__repository.copy_directory(relativePath=tpath, newRelativePath=cpath, raiseError=False)
+                            assert success, LOGGER.error(error)
+                        # update _Engine__constraints file
+                        self.__repository.update_file(value=_engine._Engine__constraints, relativePath=os.path.join(frame,'_Engine__constraints'))
 
-    def remove_constraints(self, constraints):
+
+    def remove_constraints(self, constraints, toAllSubframes=False):
         """
         Remove constraints from engine list of constraints.
 
         :Parameters:
             #. constraints (Constraint, list, set, tuple): A constraint
-               instance or list of constraints instances
+               instance or list of constraints instances.
+            #. toAllSubframes (boolean): Whether to also remove non-experimental
+               constraints from all other multiframe subframes in case engine
+               used frame is a multiframe subframe.
         """
+        assert isinstance(toAllSubframes, bool), LOGGER.usage("toAllSubframes must be boolean")
+        if not len(self.__constraints):
+            LOGGER.warn("No constraint found in engine")
+            return
         if isinstance(constraints,(list,set,tuple)):
             constraints = list(constraints)
         else:
             constraints = [constraints]
         for c in constraints:
-            if c in self.__constraints:
-                self.__constraints.remove(c)
-                #c.set_engine(None) # COMMENTED 2016-DEC-18
-                # add to broadcaster listeners list
+            assert isinstance(c, Constraint), LOGGER.error("Constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been removed engine.")
+        removingIds = [c.constraintId for c in constraints]
+        ## get used frame category
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        if isSubframe:
+            assert self.__repository is not None, LOGGER.error("Removing constraints to multiframe is not allowed before building repository. Use engine save method first.")
+        ## loop engine constraints
+        engineConstraints  = []
+        removedConstraints = []
+        for c in self.__constraints:
+            if c.constraintId in removingIds:
+                c._Constraint__engine = None
                 self.__broadcaster.remove_listener(c)
-        # remove constraints from all frames in repository
-        if self.__repository is not None:
-            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
-            for frame in self.__frames:
+                removedConstraints.append(c)
+            else:
+                engineConstraints.append(c)
+        if not len(removedConstraints):
+            LOGGER.warn("None of the given constraints were found in frame '%s' engine list of constraints"%(self.__usedFrame,))
+        else:
+            self.__constraints = engineConstraints
+            if len(removedConstraints)<len(constraints):
+                _removedIds = [c.constraintId for c in removedConstraints]
                 for c in constraints:
-                    # Add constraint to all frames
-                    cp = os.path.join(frame, 'constraints', c.constraintId)
-                    self.__repository.remove_directory(relativePath=cp, removeFromSystem=True)
+                    if c.constraintId not in _removedIds:
+                        LOGGER.warn("Constraint '%s' of id '%s' is not found in frame '%s' engine list of constraints"%(c.__class__.__name__, c.constraintId, self.__usedFrame,))
+        # save changes to repository
+        if self.__repository is not None:
+            if len(removedConstraints):
+                self.__repository.update_file(value=self.__constraints, relativePath=os.path.join(self.__usedFrame, '_Engine__constraints'))
+                for c in removedConstraints:
+                    cp = os.path.join(self.__usedFrame, 'constraints', c.constraintName)
+                    self.__repository.remove_directory(relativePath=cp, clean=True)
+            if isNormalFrame:
+                for c in removedConstraints:
+                    for fn in self.__frames:
+                        if self.__frames[fn] is not None:
+                            continue
+                        if fn == self.__usedFrame:
+                            continue
+                        cp = os.path.join(fn, 'constraints', c.constraintName)
+                        self.__repository.remove_directory(relativePath=cp, clean=True)
+            else:
+                if not toAllSubframes:
+                    constraints = [_c for _c in constraints if isinstance(_c, ExperimentalConstraint)]
+                    removingIds = [c.constraintId for c in constraints]
+                if len(constraints):
+                    _multi = self.__usedFrame.split(os.sep)[0]
+                    for subframe in self.__frames[_multi]['frames_name']:
+                        frame = os.path.join(_multi,subframe)
+                        if frame == self.__usedFrame:
+                            continue
+                        _constraints       = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__constraints'))
+                        engineConstraints  = []
+                        removedConstraints = []
+                        for c in _constraints:
+                            if c.constraintId in removingIds:
+                                removedConstraints.append(c)
+                            else:
+                                engineConstraints.append(c)
+                        if not len(removedConstraints):
+                            LOGGER.warn("None of the given constraints were found in frame '%s' engine list of constraints"%(frame,))
+                        else:
+                            if len(removedConstraints)<len(_constraints):
+                                _removedIds = [c.constraintId for c in removedConstraints]
+                                for c in _constraints:
+                                    if c.constraintId not in _removedIds:
+                                        LOGGER.warn("Constraint '%s' of id '%s' is not found in frame '%s' engine list of constraints"%(c.__class__.__name__, c.constraintId,frame,))
+                            # update repostory
+                            self.__repository.update_file(value=engineConstraints, relativePath=os.path.join(frame, '_Engine__constraints'))
+                            for c in removedConstraints:
+                                cp = os.path.join(frame, 'constraints', c.constraintName)
+                                self.__repository.remove_directory(relativePath=cp, clean=True)
+
 
     def reset_constraints(self):
         """ Reset constraints flags. """
         for c in self.__constraints:
             c.reset_constraint(reinitialize=True)
         # update constraints in repository used frame only
+        #if self.__repository is not None:
+        #    #self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
+        #    self.__repository.dump(value=self, relativePath='engine', replace=True)
+        #    for c in self.__constraints:
+        #        cp = os.path.join(self.__usedFrame, 'constraints', c.constraintName)
+        #        for dname in c.FRAME_DATA:
+        #            value = c.__dict__[dname]
+        #            #name  = dname.split('__')[1]
+        #            name = dname
+        #            #self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
+        #            self.__repository.dump(value=value, relativePath=os.path.join(cp,name), replace=True)
         if self.__repository is not None:
-            self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
+            #self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
+            #self.__repository.update_file(value=self, relativePath='engine') ### NOT NEEDED ANYMORE SINCE __constraints is a MULTIFRAME_DATA
             for c in self.__constraints:
-                # Add constraint to all frames
-                cp = os.path.join(self.__usedFrame, 'constraints', c.constraintId)
+                if isinstance(self.__usedFrame, basestring):
+                    _framep = [self.__usedFrame]
+                else:
+                    _framep = [os.path.join(self.__usedFrame['name'], i) for i in self.__usedFrame['frames_name']]
                 for dname in c.FRAME_DATA:
                     value = c.__dict__[dname]
-                    #name  = dname.split('__')[1]
-                    name = dname
-                    self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
+                    for _fp in _framep:
+                        rp = os.path.join(_fp, 'constraints', c.constraintName, dname)
+                        self.__repository.update_file(value=value, relativePath=rp)
 #        # set mustSave flag
 #        self.__mustSave = True
 
@@ -1945,9 +2500,9 @@ class Engine(object):
             TSE.append(SD/c.varianceSquared)
         return np.sum(TSE)
 
-    def set_total_standard_error(self):
+    def update_total_standard_error(self):
         """
-        Compute and set engine's total totalStandardError of active constraints.
+        Compute and set engine's total totalStandardError of used constraints.
         """
         # get and initialize used constraints
         _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints()
@@ -2027,7 +2582,7 @@ class Engine(object):
         # initialize out-of-dates constraints
         for c in usedConstraints:
             if c.state != self.__state or force:
-                LOGGER.info("Initializing constraint data '%s'"%c.__class__.__name__)
+                LOGGER.info("@%s Initializing constraint data '%s'"%(self.__usedFrame, c.__class__.__name__))
                 c.compute_data()
                 c.set_state(self.__state)
                 if c.originalData is None:
@@ -2038,7 +2593,7 @@ class Engine(object):
     def __runtime_get_number_of_steps(self, numberOfSteps):
         # check numberOfSteps
         assert is_integer(numberOfSteps), LOGGER.error("numberOfSteps must be an integer")
-        assert numberOfSteps<=sys.maxint, LOGGER.error("number of steps must be smaller than maximum integer number allowed by the system '%i'"%sys.maxint)
+        assert numberOfSteps<=maxint, LOGGER.error("number of steps must be smaller than maximum integer number allowed by the system '%i'"%maxint)
         assert numberOfSteps>=0, LOGGER.error("number of steps must be positive")
         # return
         return int(numberOfSteps)
@@ -2080,7 +2635,7 @@ class Engine(object):
 ##########################################################################################
 #### NEW RUN METHOD IS PARTITIONED AND SPLIT INTO DIFFERENT __on_runtime_step METHODS ####
 
-    def __on_runtime_step_select_group(self, _coordsBeforeMove, movedRealCoordinates, _moveTried):
+    def __on_runtime_step_select_group(self, _coordsBeforeMove, _movedRealCoordinates, _moveTried):
         # get group
         self.__lastSelectedGroupIndex = self.__groupSelector.select_index()
         self._RT_selectedGroup = self.__groups[self.__lastSelectedGroupIndex]
@@ -2088,8 +2643,8 @@ class Engine(object):
         self._RT_moveGenerator = self._RT_selectedGroup.moveGenerator
         # remove generator
         if isinstance(self._RT_moveGenerator, RemoveGenerator):
-            movedRealCoordinates = None
-            movedBoxCoordinates  = None
+            _movedRealCoordinates = None
+            _movedBoxCoordinates  = None
             self._RT_groupAtomsIndexes    = self._RT_moveGenerator.pick_from_list(self)
             notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
             self._RT_groupAtomsIndexes    = self._RT_groupAtomsIndexes[ notCollectedAtomsIndexes ]
@@ -2107,7 +2662,6 @@ class Engine(object):
                 _coordsBeforeMove             = np.array([], dtype=self.__realCoordinates.dtype).reshape((0,3))
             # get group atoms coordinates before applying move
             elif isinstance(self._RT_moveGenerator, SwapGenerator):
-            #if isinstance(self._RT_moveGenerator, SwapGenerator):
                 if len(self._RT_groupAtomsIndexes) == self._RT_moveGenerator.swapLength:
                     self._RT_groupAtomsIndexes    = self._RT_moveGenerator.get_ready_for_move(engine=self,  groupAtomsIndexes=self._RT_groupAtomsIndexes)
                     notCollectedAtomsIndexes      = np.array(self._atomsCollector.are_not_collected(self._RT_groupAtomsIndexes), dtype=bool)
@@ -2124,7 +2678,7 @@ class Engine(object):
             elif self.__groupSelector.explore:
                 self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
                 if _moveTried:
-                    _coordsBeforeMove = movedRealCoordinates
+                    _coordsBeforeMove = _movedRealCoordinates
             elif not self.__groupSelector.refine:
                 self._RT_groupRelativeIndexes = np.array([self._atomsCollector.get_relative_index(idx) for idx in self._RT_groupAtomsIndexes], dtype=INT_TYPE)
                 _coordsBeforeMove = np.array(self.__realCoordinates[self._RT_groupRelativeIndexes], dtype=self.__realCoordinates.dtype)
@@ -2137,21 +2691,21 @@ class Engine(object):
             #    raise Exception(LOGGER.critical(m))
             # compute moved coordinates
             if len(_coordsBeforeMove):
-                movedRealCoordinates = self._RT_moveGenerator.move(_coordsBeforeMove)
-                movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=movedRealCoordinates)
+                _movedRealCoordinates = self._RT_moveGenerator.move(_coordsBeforeMove)
+                _movedBoxCoordinates  = transform_coordinates(transMatrix=self.__reciprocalBasisVectors , coords=_movedRealCoordinates)
             else:
-                movedRealCoordinates = _coordsBeforeMove
-                movedBoxCoordinates  = _coordsBeforeMove
+                _movedRealCoordinates = _coordsBeforeMove
+                _movedBoxCoordinates  = _coordsBeforeMove
         # return
-        return _coordsBeforeMove, movedRealCoordinates, movedBoxCoordinates
+        return _coordsBeforeMove, _movedRealCoordinates, _movedBoxCoordinates
 
 
     def __on_runtime_step_try_remove(self, _constraints, _usedConstraints, _rigidConstraints):
         ###################################### reject remove atoms #####################################
-        self.__tried += 1
+        self.__tried      += 1
         self.__removed[0] += 1.
         self.__removed[2]  = self.__removed[1]/self.__removed[0]
-        rejectRemove = False
+        _rejectRemove = False
         for c in _constraints:
             c.compute_as_if_amputated(realIndex=self._RT_groupAtomsIndexes, relativeIndex=self._RT_groupRelativeIndexes)
         ################################ compute new totalStandardError ################################
@@ -2159,20 +2713,20 @@ class Engine(object):
         newTotalStandardError = self.compute_total_standard_error(_constraints, current="amputationStandardError")
         if newTotalStandardError > self.__totalStandardError:
             if generate_random_float() > self.__tolerance:
-                rejectRemove = True
+                _rejectRemove = True
             else:
                 self.__tolerated += 1
                 self.__totalStandardError  = newTotalStandardError
         else:
             self.__totalStandardError = newTotalStandardError
         ################################# reject tried remove #################################
-        if rejectRemove:
+        if _rejectRemove:
             # set selector move rejected
             self.__groupSelector.move_rejected(self.__lastSelectedGroupIndex)
             for c in _constraints:
                 c.reject_amputation(realIndex=self._RT_groupAtomsIndexes, relativeIndex=self._RT_groupRelativeIndexes)
             # log tried move rejected
-            LOGGER.rejected("Tried remove %i is rejected"%self.__generated)
+            LOGGER.rejected("@%s Tried remove %i is rejected"%(self.__usedFrame, self.__generated))
         ################################# accept tried remove #################################
         else:
             self.__accepted += 1
@@ -2188,19 +2742,22 @@ class Engine(object):
             # log new successful move
             triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
             acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
-            LOGGER.accepted("Gen:%i - Tr:%i(%.3f%%) - Acc:%i(%.3f%%) - Rem:%i(%.3f%%) - Err:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__removed[1], 100.*self.__removed[2], self.__totalStandardError))
+            LOGGER.accepted("@%s Gen:%i - Tr:%i(%.3f%%) - Acc:%i(%.3f%%) - Rem:%i(%.3f%%) - Err:%.6f" %(self.__usedFrame, self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__removed[1], 100.*self.__removed[2], self.__totalStandardError))
+        # return _moveTried and _rejectRemove flags
+        return True, _rejectRemove
 
-    def __on_runtime_step_try_move(self, _constraints, _usedConstraints, _rigidConstraints, movedRealCoordinates, movedBoxCoordinates):
+
+    def __on_runtime_step_try_move(self, _constraints, _usedConstraints, _rigidConstraints, _movedRealCoordinates, _movedBoxCoordinates):
         ########################### compute rigidConstraints ############################
         rejectMove      = False
         for c in _rigidConstraints:
             # compute before move
             c.compute_before_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes = self._RT_groupRelativeIndexes)
             # compute after move
-            c.compute_after_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes = self._RT_groupRelativeIndexes, movedBoxCoordinates=movedBoxCoordinates)
+            c.compute_after_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes = self._RT_groupRelativeIndexes, movedBoxCoordinates=_movedBoxCoordinates)
             # get rejectMove
             rejectMove = c.should_step_get_rejected(c.afterMoveStandardError)
-            #print c.__class__.__name__, c.standardError, c.afterMoveStandardError, rejectMove
+            #print(c.__class__.__name__, c.standardError, c.afterMoveStandardError, rejectMove)
             if rejectMove:
                 break
         _moveTried = not rejectMove
@@ -2210,7 +2767,7 @@ class Engine(object):
             for c in _rigidConstraints:
                 c.reject_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes=self._RT_groupRelativeIndexes)
             # log generated move rejected before getting tried
-            LOGGER.nottried("Generated move %i is not tried"%self.__generated)
+            LOGGER.nottried("@%s Generated move %i is not tried"%(self.__usedFrame,self.__generated))
         ###################################### try move #######################################
         else:
             self.__tried += 1
@@ -2218,7 +2775,7 @@ class Engine(object):
                 # compute before move
                 c.compute_before_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes=self._RT_groupRelativeIndexes)
                 # compute after move
-                c.compute_after_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes = self._RT_groupRelativeIndexes, movedBoxCoordinates=movedBoxCoordinates)
+                c.compute_after_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes = self._RT_groupRelativeIndexes, movedBoxCoordinates=_movedBoxCoordinates)
         ################################ compute new totalStandardError ################################
             newTotalStandardError = self.compute_total_standard_error(_constraints, current="afterMoveStandardError")
             #if len(_constraints) and (newTotalStandardError >= self.__totalStandardError):
@@ -2239,7 +2796,7 @@ class Engine(object):
                 for c in _constraints:
                     c.reject_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes=self._RT_groupRelativeIndexes)
                 # log tried move rejected
-                LOGGER.rejected("Tried move %i is rejected"%self.__generated)
+                LOGGER.rejected("@%s Tried move %i is rejected"%(self.__usedFrame,self.__generated))
         ##################################### accept move #####################################
         else:
             self.__accepted  += 1
@@ -2249,20 +2806,21 @@ class Engine(object):
             for c in _usedConstraints:
                 c.accept_move(realIndexes=self._RT_groupAtomsIndexes, relativeIndexes=self._RT_groupRelativeIndexes)
             # set new coordinates
-            self.__realCoordinates[self._RT_groupRelativeIndexes] = movedRealCoordinates
-            self.__boxCoordinates[self._RT_groupRelativeIndexes]  = movedBoxCoordinates
+            self.__realCoordinates[self._RT_groupRelativeIndexes] = _movedRealCoordinates
+            self.__boxCoordinates[self._RT_groupRelativeIndexes]  = _movedBoxCoordinates
             # log new successful move
             triedRatio    = 100.*(float(self.__tried)/float(self.__generated))
             acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
-            LOGGER.accepted("Gen:%i - Tr:%i(%.3f%%) - Acc:%i(%.3f%%) - Rem:%i(%.3f%%) - Err:%.6f" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__removed[1], 100.*self.__removed[2],self.__totalStandardError))
-
+            LOGGER.accepted("@%s Gen:%i - Tr:%i(%.3f%%) - Acc:%i(%.3f%%) - Rem:%i(%.3f%%) - Err:%.6f" %(self.__usedFrame,self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.__removed[1], 100.*self.__removed[2],self.__totalStandardError))
+        # return _moveTried and rejectMove flags
+        return _moveTried, rejectMove
 
     def __on_runtime_step_save_engine(self, _saveFrequency, step, _frame, _usedConstraints, _lastSavedTotalStandardError):
         ##################################### save engine #####################################
         if _saveFrequency is not None:
             if not(step+1)%_saveFrequency:
                 if _lastSavedTotalStandardError==self.__totalStandardError:
-                    LOGGER.saved("Save engine omitted because no improvement made since last save.")
+                    LOGGER.saved("@%s Save engine omitted because no improvement made since last save."%(self.__usedFrame,))
                 else:
                     # update state
                     self.__state  = time.time()
@@ -2318,13 +2876,16 @@ class Engine(object):
                This argument is only effective if fullrmc is compiled with
                openmp.
         """
+        # make sure it's a normal frame
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        assert isNormalFrame or isSubframe, LOGGER.error("Calling run is only allowed when used frame is a traditional frame or a subframe")
         # get arguments
         _numberOfSteps          = self.__runtime_get_number_of_steps(numberOfSteps)
         _saveFrequency, _frame  = self.__runtime_get_save_engine(saveFrequency, frame)
         _xyzFrequency, _xyzPath = self.__runtime_get_save_xyz(xyzFrequency, xyzPath)
         assert _frame == self.__usedFrame, LOGGER.error("Must save engine before changing frame.")
         if _saveFrequency<=_numberOfSteps:
-            assert self.__repository is not None, LOGGER.error("engine might be saving during this run but repository is not defined. Use Engine.save method before calling run method.")
+            assert self.__repository is not None, LOGGER.error("Engine might be saving during this run but repository is not defined. Use Engine.save method before calling run method.")
         # set runtime ncores
         self.__set_runtime_ncores(ncores)
         # create xyz file
@@ -2343,7 +2904,7 @@ class Engine(object):
         # get and initialize used constraints
         _usedConstraints, _constraints, _rigidConstraints = self.initialize_used_constraints(sortConstraints=sortConstraints)
         if not len(_usedConstraints):
-            LOGGER.warn("No constraints are used. Configuration will be randomized")
+            LOGGER.warn("@%s No constraints are used. Configuration will be randomized"%self.__usedFrame)
         # runtime initialize group selector
         self.__groupSelector._runtime_initialize()
         # runtime initialize constraints
@@ -2355,13 +2916,16 @@ class Engine(object):
         _lastSavedTotalStandardError = self.__totalStandardError
         _coordsBeforeMove            = None
         _moveTried                   = False
-        movedRealCoordinates         = None
+        _rejectMove                  = False
+        _rejectRemove                = False
+        _movedRealCoordinates        = None
+        _movedBoxCoordinates         = None
         # save whole engine if must be done
         if self.__mustSave: # Currently it is always False. will check and fix it later
             self.save()
         #   #####################################################################################   #
         #   #################################### RUN ENGINE #####################################   #
-        LOGGER.info("Engine started %i steps, total standard error is: %.6f"%(_numberOfSteps, self.__totalStandardError) )
+        LOGGER.info("Engine @%s started %i steps, total standard error is: %.6f"%( self.__usedFrame, _numberOfSteps, self.__totalStandardError) )
         for step in xrange(_numberOfSteps):
             ## constraint runtime_on_step
             [c._runtime_on_step() for c in _usedConstraints]
@@ -2369,27 +2933,28 @@ class Engine(object):
             self.__generated += 1
             ## get selected indexes and coordinates
             _coordsBeforeMove,     \
-            movedRealCoordinates,  \
-            movedBoxCoordinates =  \
-            self.__on_runtime_step_select_group(_coordsBeforeMove    = _coordsBeforeMove,
-                                                movedRealCoordinates = movedRealCoordinates,
-                                                _moveTried           = _moveTried)
+            _movedRealCoordinates, \
+            _movedBoxCoordinates =  \
+            self.__on_runtime_step_select_group(_coordsBeforeMove     = _coordsBeforeMove,
+                                                _movedRealCoordinates = _movedRealCoordinates,
+                                                _moveTried            = _moveTried)
             if not len(self._RT_groupAtomsIndexes):
-                LOGGER.nottried("Generated move %i can't be tried because all atoms are collected."%self.__generated)
+                LOGGER.nottried("@%s Generated move %i can't be tried because all atoms are collected."%(self.__usedFrame,self.__generated))
             else:
                 # try move atom
-                if movedRealCoordinates is None:
-                    self.__on_runtime_step_try_remove(_constraints         = _constraints,
+                if _movedRealCoordinates is None:
+                    _moveTried, _rejectRemove = self.__on_runtime_step_try_remove(_constraints = _constraints,
                                                       _rigidConstraints    = _rigidConstraints,
-                                                      _usedConstraints     = _usedConstraints, )
+                                                      _usedConstraints     = _usedConstraints)
                 # try remove atom
                 else:
-                    self.__on_runtime_step_try_move(_constraints         = _constraints,
-                                                    _rigidConstraints    = _rigidConstraints,
-                                                    _usedConstraints     = _usedConstraints,
-                                                    movedRealCoordinates = movedRealCoordinates,
-                                                    movedBoxCoordinates  = movedBoxCoordinates)
+                    _moveTried, _rejectMove = self.__on_runtime_step_try_move(_constraints = _constraints,
+                                                    _rigidConstraints     = _rigidConstraints,
+                                                    _usedConstraints      = _usedConstraints,
+                                                    _movedRealCoordinates = _movedRealCoordinates,
+                                                    _movedBoxCoordinates  = _movedBoxCoordinates)
             ## save engine
+            ## MUST CHECK __totalStandardError IF IT'S SAVED !!! SEEMS NOT TO BE SAVED
             _lastSavedTotalStandardError = \
             self.__on_runtime_step_save_engine(_saveFrequency               = _saveFrequency,
                                                step                         = step,
@@ -2408,4 +2973,59 @@ class Engine(object):
 
         #   #####################################################################################   #
         #   ################################# FINISH ENGINE RUN #################################   #
-        LOGGER.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
+        LOGGER.info("Engine @%s finishes executing all '%i' steps in %s"%(self.__usedFrame,_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
+
+
+
+    def plot_constraints(self, frame=None, constraintsID=None, plotKwargs=None):
+        """
+        Plot constraints
+        """
+        # check plotKwargs
+        if plotKwargs is not None:
+            assert isinstance(plotKwargs, dict), "plotKwargs must be None or a dict"
+        else:
+            plotKwargs = {}
+        # check frame
+        if frame is None:
+            frame = self.__usedFrame
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
+        # get contsraints
+        if constraintsID is not None:
+            assert isinstance(constraintsID, (list,set,tuple)), LOGGER.error("constraintsID must be None or a list")
+            assert len(constraintsID)>=1, LOGGER.error("constraintsID list length must be >=1")
+            assert all([isinstance(cid, basestring) for cid in constraintsID]), LOGGER.error("constraintsID lits items must be string")
+        if frame == self.__usedFrame:
+            _constraints = self.__constraints
+        elif isNormalFrame:
+            _constraints = self.__repository.pull(relativePath='_Engine__constraints')
+        elif isSubframe:
+            _constraints = self.__repository.pull(relativePath=os.path.join(frame,'_Engine__constraints'))
+        else:
+            _sf = self.__frames[frame]['frames_name'][0]
+            _constraints = self.__repository.pull(relativePath=os.path.join(_sf,'_Engine__constraints'))
+        # filter constraints
+        if constraintsID is not None:
+            _constraints = [c for c in _constraints if c.constraintName in constraintsID]
+        assert len(_constraints), LOGGER.error("No constraints are left after keeping only given constraintsID")
+
+        # plot normal frame
+        if isNormalFrame or isSubframe:
+            _oldFrame = self.__usedFrame
+            self.set_used_frame(frame)
+            for c in _constraints[:-1]:
+                _kw = plotKwargs.get(c.constraintName,{})
+                _kw['show'] = False
+                c.plot(**_kw)
+            self.set_used_frame(_oldFrame)
+            c = _constraints[-1]
+            _kw = plotKwargs.get(c.constraintName,{})
+            _kw['show'] = True
+            c.plot(**_kw)
+        print(_constraints)
+
+
+
+
+
+#

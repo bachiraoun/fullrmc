@@ -2,6 +2,7 @@
 It contains a collection of methods and classes that are useful for the package.
 """
 # standard libraries imports
+from __future__ import print_function
 import os
 import sys
 import time
@@ -11,17 +12,87 @@ from random import randint as generate_random_integer # generates a random integ
 
 # external libraries imports
 import numpy as np
-from pdbParser.Utilities.Database import is_element_property, get_element_property
+from pdbparser.Utilities.Database import is_element_property, get_element_property
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+
+
+def get_caller_frames(engine, frame, subframeToAll, caller):
+    """
+    Get list of frames for a function caller.
+
+    :Parameters:
+        #. engine (None, Engine): The stochastic engine in consideration.
+        #. frame (None, string): The frame name. If engine is given as
+           None, only None will be accepted as frame value.
+        #. subframeToAll (boolean): If frame is a subframe then all multiframe
+           subframes must be considered.
+        #. caller (string): Caller name for logging and debugging purposes.
+
+    :Returns:
+        #. usedIncluded (boolean): Whether engine used frame is included in
+           the built frames list. If frame is given as None, True will always
+           be returned.
+        #. frame (string): The given frame in parameters. If subframe is given
+           and subframeToAll is True, then multiframe is returned.
+        #. allFrames (list): List of all frames.
+
+
+    .. code-block:: python
+
+        import inspect
+        from fullrmc.Core.Collection import get_caller_frames
+
+        # Assuming self is a constraint and get_caller_frames is called from within a method ...
+        usedIncluded, frame, allFrames = get_caller_frames(engine=self.engine,
+                                                           frame='frame_name',
+                                                           subframeToAll=True,
+                                                           caller="%s.%s"%(self.__class__.__name__,inspect.stack()[0][3]) )
+    """
+    usedFrame = None
+    if engine is not None:
+        usedFrame = engine.usedFrame
+    if frame is None:
+        frame        = usedFrame
+        usedIncluded = True
+        if frame is not None:
+            isNormalFrame, isMultiframe, isSubframe = engine.get_frame_category(frame=frame)
+            assert not isMultiframe, LOGGER.error("This should have never happened @%s._get_method_frames_from_frame_argument. Please report issue ..."%(caller,))
+            if isSubframe and subframeToAll:
+                _frame = frame.split(os.sep)[0]
+                LOGGER.usage("Given frame is None while engine used frame '%s' is a subframe. %s will be applied to all subframes of '%s'"%(frame, caller, _frame))
+                frame     = _frame
+                allFrames = [os.path.join(frame, frm) for frm in engine.frames[frame]['frames_name']]
+            else:
+                allFrames = [frame]
+        else:
+            allFrames = []
+    else:
+        assert engine is not None, LOGGER.error("Engine is not given, frame must be None where '%s' is given"%(frame,))
+        isNormalFrame, isMultiframe, isSubframe = engine.get_frame_category(frame=frame)
+        assert usedFrame is not None, LOGGER.error("This should have never happened @%s._get_method_frames_from_frame_argument. Please report issue ..."%(caller,))
+        if isMultiframe or (subframeToAll and isSubframe):
+            if isMultiframe:
+                LOGGER.usage("Given frame '%s' is a multiframe. %s will be applied to all subframes"%(frame, caller))
+            else:
+                _frame = frame.split(os.sep)[0]
+                LOGGER.usage("Given frame '%s' is a subframe. %s will be applied to all subframes of '%s'"%(frame, caller, _frame))
+                frame = _frame
+            allFrames = [os.path.join(frame, frm) for frm in engine.frames[frame]['frames_name']]
+        else:
+            allFrames = [frame]
+        usedIncluded = usedFrame==frame or usedFrame.split(os.sep)[0] == frame
+    # return
+    return usedIncluded, frame, allFrames
 
 
 def get_real_elements_weight(elements, weightsDict, weighting):
     """
     Get elements weights given a dictionary of weights and a weighting scheme.
     If element weight is not defined in weightsDict then weight is fetched
-    from pdbParser elements database using weighting scheme.
+    from pdbparser elements database using weighting scheme.
 
     :Parameters:
         #. elements (list): List of elements.
@@ -196,7 +267,7 @@ def get_path(key=None):
     if key is None:
         return paths
     else:
-        assert paths.has_key(key), LOGGER.error("key is not defined")
+        assert key in paths, LOGGER.error("key is not defined")
         return paths[key]
 
 
@@ -713,8 +784,8 @@ def find_extrema(x, max = True, min = True, strict = False, withend = False):
     :Parameters:
         #. max (boolean): Whether to index the maxima.
         #. min (boolean): Whether to index the minima.
-    	#. strict (boolean): Whether not to index changes to zero gradient.
-    	#. withend (boolean): Whether to always include x[0] and x[-1].
+        #. strict (boolean): Whether not to index changes to zero gradient.
+        #. withend (boolean): Whether to always include x[0] and x[-1].
 
     :Returns:
         #. indexes (numpy.ndarray): Extrema indexes.
@@ -729,17 +800,17 @@ def find_extrema(x, max = True, min = True, strict = False, withend = False):
     # define the threshold for whether to pick out changes to zero gradient
     threshold = 0
     if strict:
-    	threshold = 1
+        threshold = 1
     # Second order diff to pick out the spikes
     d2x = np.diff(dx)
     if max and min:
-    	d2x = abs(d2x)
+        d2x = abs(d2x)
     elif max:
-    	d2x = -d2x
+        d2x = -d2x
     # Take care of the two ends
     if withend:
-    	d2x[0] = 2
-    	d2x[-1] = 2
+        d2x[0] = 2
+        d2x[-1] = 2
     # Sift out the list of extremas
     ind = np.nonzero(d2x > threshold)[0]
     return ind, x[ind]
@@ -772,7 +843,7 @@ def convert_Gr_to_gr(Gr, minIndex):
         # peak indexes can be different, adjust according to your data
         minPeaksIndex = [1,3,4]
         minimas, slope, rho0, gr =  convert_Gr_to_gr(Gr, minIndex=minPeaksIndex)
-        print 'slope: %s --> rho0: %s'%(slope,rho0)
+        print('slope: %s --> rho0: %s'%(slope,rho0))
         import matplotlib.pyplot as plt
         line = np.transpose( [[0, Gr[-1,0]], [0, slope*Gr[-1,0]]] )
         plt.plot(Gr[:,0],Gr[:,1], label='G(r)')
@@ -1013,7 +1084,7 @@ class _Container(object):
     @property
     def containersName(self):
         """The containers name list."""
-        return self.__containers.keys()
+        return list(self.__containers)
 
     @property
     def containers(self):
@@ -1039,7 +1110,8 @@ class _Container(object):
             #. location (None, tuple): The object location given a hint.
                If hint not found, the None is returned
         """
-        for location, h in self.__hints.items():
+        for location in self.__hints:
+            h = self.__hints[location]
             if h is hint:
                 return location
         # return None when nothing is found
@@ -1055,7 +1127,7 @@ class _Container(object):
         :Returns:
             #. result (boolean): Whether container exists.
         """
-        return self.__containers.has_key(name)
+        return name in self.__containers
 
     def assert_location(self, location):
         """
@@ -1070,7 +1142,7 @@ class _Container(object):
         assert len(location) == 2, LOGGER.error("location must contain 2 items")
         name, uniqueKey = location
         assert self.is_container(name), LOGGER.error("container name '%s' doesn't exists"%name)
-        assert self.__containers[name].has_key(uniqueKey), LOGGER.error("container name '%s' key '%s' doesn't exist"%(name,uniqueKey))
+        assert uniqueKey in self.__containers[name], LOGGER.error("container name '%s' key '%s' doesn't exist"%(name,uniqueKey))
 
     def add_container(self, name):
         """
@@ -1191,7 +1263,7 @@ class _AtomsCollector(object):
         self.reset()
 
     def __len__(self):
-        return len(self.__collectedData.keys())
+        return len(self.__collectedData)
 
     @property
     def dataKeys(self):
@@ -1201,7 +1273,7 @@ class _AtomsCollector(object):
     @property
     def indexes(self):
         """Collected atoms indexes."""
-        return self.__collectedData.keys()
+        return list(self.__collectedData)
 
     @property
     def indexesSortedArray(self):
@@ -1250,7 +1322,7 @@ class _AtomsCollector(object):
         :Returns:
             #. result (bool): Whether it is collected or not.
         """
-        return self.__collectedData.has_key(index)
+        return index in self.__collectedData
 
     def is_not_collected(self, index):
         """
@@ -1263,7 +1335,7 @@ class _AtomsCollector(object):
         :Returns:
             #. result (bool): Whether it is not collected or it is.
         """
-        return not self.__collectedData.has_key(index)
+        return not index in self.__collectedData
 
     def are_collected(self, indexes):
         """
@@ -1277,7 +1349,7 @@ class _AtomsCollector(object):
             #. result (list): List of booleans defining whether atoms are
                collected or not.
         """
-        return [self.__collectedData.has_key(idx) for idx in indexes]
+        return [idx in self.__collectedData for idx in indexes]
 
     def any_collected(self, indexes):
         """
@@ -1291,7 +1363,7 @@ class _AtomsCollector(object):
             #. result (boolean): Whether any collected atom is found collected.
         """
         for idx in indexes:
-            if self.__collectedData.has_key(idx):
+            if idx in self.__collectedData:
                 return True
         return False
 
@@ -1308,7 +1380,7 @@ class _AtomsCollector(object):
                collected.
         """
         for idx in indexes:
-            if not self.__collectedData.has_key(idx):
+            if not idx in self.__collectedData:
                 return True
         return False
 
@@ -1324,7 +1396,7 @@ class _AtomsCollector(object):
             #. result (boolean): Whether all atoms are collected.
         """
         for idx in indexes:
-            if not self.__collectedData.has_key(idx):
+            if not idx in self.__collectedData:
                 return False
         return True
 
@@ -1340,7 +1412,7 @@ class _AtomsCollector(object):
             #. result (boolean): Whether all atoms are not collected.
         """
         for idx in indexes:
-            if self.__collectedData.has_key(idx):
+            if idx in self.__collectedData:
                 return False
         return True
 
@@ -1356,7 +1428,7 @@ class _AtomsCollector(object):
             #. result (list): List of booleans defining whether atoms are
                not collected or they are.
         """
-        return [not self.__collectedData.has_key(idx) for idx in indexes]
+        return [not idx in self.__collectedData for idx in indexes]
 
     def set_data_keys(self, dataKeys):
         """
@@ -1441,8 +1513,8 @@ class _AtomsCollector(object):
             #. data (dict): dictionary of atoms indexes where values are the collected data.
         """
         data = {}
-        for k,d in self.__collectedData.items():
-            data[k] = d[key]
+        for k in self.__collectedData:
+            data[k] = self.__collectedData[k][key]
         return data
 
     def collect(self, index, dataDict, check=True):
@@ -1460,7 +1532,7 @@ class _AtomsCollector(object):
         # add data
         if check:
             assert isinstance(dataDict, dict), LOGGER.error("dataDict must be a dictionary of data where keys are dataKeys")
-            assert tuple(sorted(dataDict.keys())) == self.__dataKeys, LOGGER.error("dataDict keys don't match promised dataKeys")
+            assert tuple(sorted(dataDict)) == self.__dataKeys, LOGGER.error("dataDict keys don't match promised dataKeys")
         self.__collectedData[index] = dataDict
         # set indexes sorted array
         idx = np.searchsorted(a=self.__indexesSortedArray, v=index, side='left')

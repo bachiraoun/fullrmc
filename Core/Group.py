@@ -8,19 +8,20 @@ on groups rather than on single atoms.
 .. inheritance-diagram:: fullrmc.Core.Group
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 import inspect
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path
-from fullrmc.Core.MoveGenerator import MoveGenerator, RemoveGenerator
-from fullrmc.Generators.Translations import TranslationGenerator
-from fullrmc.Generators.Removes import AtomsRemoveGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, get_path
+from ..Core.MoveGenerator import MoveGenerator, RemoveGenerator
+from ..Generators.Translations import TranslationGenerator
+from ..Generators.Removes import AtomsRemoveGenerator
 
 class Group(object):
     """
@@ -187,7 +188,7 @@ class EmptyGroup(Group):
 
     @property
     def indexes(self):
-        """ Atoms index array."""
+        """ Always returns None for EmptyGroup"""
         return self.__indexes
 
     def set_move_generator(self, generator):

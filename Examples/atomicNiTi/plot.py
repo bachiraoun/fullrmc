@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # fullrmc library imports
@@ -20,6 +21,4 @@ if result:
     CN.plot(show=False)
     MD.plot(show=True)
 else:
-    print mes
- 
- 
+    print(mes)

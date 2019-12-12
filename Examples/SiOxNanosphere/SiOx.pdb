@@ -1,4 +1,4 @@
-REMARK    this file is generated using 'pdbParser' package
+REMARK    this file is generated using 'pdbparser' package
 CRYST1    1.000    1.000    1.000  90.00  90.00  90.00 P 1           1
 ORIGX1      1.000000  0.000000  0.000000        0.00000
 ORIGX2      0.000000  1.000000  0.000000        0.00000

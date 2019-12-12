@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 import itertools
 
@@ -44,7 +45,7 @@ if result:
     ENGINE = ENGINE.load(engineFilePath)
     PDF = ENGINE.constraints[0]
 else:
-    print mes
+    print(mes)
 
 
 # plot total
@@ -55,11 +56,12 @@ highRAx.plot(PDF.experimentalDistances, ENGINE.constraints[0].experimentalPDF, '
 totalAx.plot(PDF.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
 lowRAx.plot(PDF.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
 highRAx.plot(PDF.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25, label="total" )
- 
-# plot inter and intra 
+
+# plot inter and intra
 #intraStyleIndex = 0
 #interStyleIndex = 0
-#for key, val in output.items():
+#for key in output:
+#    val = output[key]
 #    if key in ("pdf_total", "pdf"):
 #        continue
 #    elif "intra" in key:
@@ -73,11 +75,11 @@ highRAx.plot(PDF.shellCenters, output["pcf"], 'k', linewidth=3.0,  markevery=25,
 #        highRAx.plot(PDF.shellCenters, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key.split("rdf_")[1] )
 #        interStyleIndex+=1
 
-# set legend        
+# set legend
 totalAx.legend(ncol=2, frameon=False, fontsize=20)#, loc=(1.05,-1.25))
 totalAx.set_xlim([0,16])
 totalAx.set_ylim([-1,6.2])
-        
+
 # remove y ticks labels
 lowRAx.set_yticklabels([])
 highRAx.set_yticklabels([])
@@ -94,8 +96,4 @@ highRAx.set_ylim([0.25, 1.25])
 plt.suptitle("$stdErr=%.6f$"%ENGINE.totalStandardError, fontsize=20)
 
 # show plot
-plt.show()  
- 
-
-    
-    
+plt.show()

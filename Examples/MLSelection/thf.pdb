@@ -1,4 +1,4 @@
-REMARK    this file is generated using 'pdbParser' package
+REMARK    this file is generated using 'pdbparser' package
 REMARK    Boundary Conditions: 49.959616  0.0  0.0  0.0  49.959616  0.0  0.0  0.0  49.959616 
 CRYST1   49.960   49.960   49.960  90.00  90.00  90.00 P 1           1
 ORIGX1      1.000000  0.000000  0.000000        0.00000

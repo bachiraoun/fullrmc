@@ -7,7 +7,7 @@ import os, sys
 import numpy as np
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER, FLOAT_TYPE
+from fullrmc.Globals import LOGGER, FLOAT_TYPE, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Core.Collection import generate_random_float, get_rotation_matrix, rotate
 from fullrmc.Generators.Translations import TranslationGenerator
@@ -17,7 +17,7 @@ from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstr
 
 ##########################################################################################
 ##################################  SHUT DOWN LOGGING  ###################################
-LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+LOGGER.set_minimum_level(maxint, stdoutFlag=True, fileFlag=True)
 
 
 ##########################################################################################

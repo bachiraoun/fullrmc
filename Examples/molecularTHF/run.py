@@ -1,7 +1,7 @@
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
-import os
+import os, sys
 
 # external libraries imports
 import numpy as np
@@ -28,12 +28,16 @@ from fullrmc.Generators.Agitations import DistanceAgitationGenerator, AngleAgita
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
 # dirname
-DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+try:
+    DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+except:
+    DIR_PATH = ''
 
+    
 # engine file names
 engineFileName = "thf_engine.rmc"
 expFileName    = "thf_pdf.exp"
-pdbFileName    = "thf.pdb" 
+pdbFileName    = "thf.pdb"
 freshStart     = False
 
 # engine variables
@@ -49,7 +53,7 @@ if freshStart or not ENGINE.is_engine(engineFilePath):
     #PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=expPath, weighting="atomicNumber")
     _,_,_, gr = convert_Gr_to_gr(np.loadtxt(expPath), minIndex=[4,5,6])
     dataWeights = np.ones(gr.shape[0])
-    dataWeights[:np.nonzero(gr[:,1]>0)[0][0]] = 0  
+    dataWeights[:np.nonzero(gr[:,1]>0)[0][0]] = 0
     PDF_CONSTRAINT = PairCorrelationConstraint(experimentalData=gr.astype(FLOAT_TYPE), weighting="atomicNumber", dataWeights=dataWeights)
     # create and define molecular constraints
     EMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=1.5)
@@ -82,7 +86,7 @@ if freshStart or not ENGINE.is_engine(engineFilePath):
                                                                           ('C1' ,'H11','O'  , 100, 120),
                                                                           ('C1' ,'H12','O'  , 100, 120),
                                                                           ('C4' ,'H41','O'  , 100, 120),
-                                                                          ('C4' ,'H42','O'  , 100, 120),                                                                           
+                                                                          ('C4' ,'H42','O'  , 100, 120),
                                                                           # H-C-C
                                                                           ('C1' ,'H11','C2' , 80, 123),
                                                                           ('C1' ,'H12','C2' , 80, 123),
@@ -103,12 +107,12 @@ if freshStart or not ENGINE.is_engine(engineFilePath):
 else:
     ENGINE = ENGINE.load(engineFilePath)
     PDF_CONSTRAINT, EMD_CONSTRAINT, B_CONSTRAINT, BA_CONSTRAINT, IA_CONSTRAINT = ENGINE.constraints
- 
- 
+
+
 ##########################################################################################
-#####################################  DIFFERENT RUNS  ###################################    
+#####################################  DIFFERENT RUNS  ###################################
 # ############ RUN C-H BONDS ############ #
-def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True): 
+def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True):
     groups = []
     for idx in range(0,ENGINE.pdb.numberOfAtoms, 13):
         groups.append( np.array([idx+1 ,idx+2 ], dtype=np.int32) ) # C1-H11
@@ -130,17 +134,17 @@ def bonds_CH(ENGINE, rang=10, recur=10, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'bonds_CH' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
-# ############ RUN H-C-H ANGLES ############ #   
-def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True):  
+
+# ############ RUN H-C-H ANGLES ############ #
+def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True):
     groups = []
     for idx in range(0,ENGINE.pdb.numberOfAtoms, 13):
         groups.append( np.array([idx+1 ,idx+2, idx+3 ], dtype=np.int32) ) # H11-C1-H12
         groups.append( np.array([idx+4 ,idx+5, idx+6 ], dtype=np.int32) ) # H21-C2-H22
         groups.append( np.array([idx+7 ,idx+8, idx+9 ], dtype=np.int32) ) # H31-C3-H32
         groups.append( np.array([idx+10,idx+11,idx+12], dtype=np.int32) ) # H41-C4-H42
-    ENGINE.set_groups(groups)   
-    [g.set_move_generator(AngleAgitationGenerator(amplitude=5)) for g in ENGINE.groups] 
+    ENGINE.set_groups(groups)
+    [g.set_move_generator(AngleAgitationGenerator(amplitude=5)) for g in ENGINE.groups]
     # set selector
     if refine or explore:
         gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=refine, explore=explore)
@@ -150,8 +154,8 @@ def angles_HCH(ENGINE, rang=5, recur=10, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'angles_HCH' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
-# ############ RUN ATOMS ############ #    
+
+# ############ RUN ATOMS ############ #
 def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True):
     allElements = ENGINE.allElements
     groups = []
@@ -168,10 +172,10 @@ def atoms_type(ENGINE, type='C', rang=30, recur=20, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-              
-# ############ RUN ATOMS ############ #    
+
+# ############ RUN ATOMS ############ #
 def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True):
-    ENGINE.set_groups_as_atoms()  
+    ENGINE.set_groups_as_atoms()
     # set selector
     if refine or explore:
         gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=refine, explore=explore)
@@ -181,9 +185,9 @@ def atoms(ENGINE, rang=30, recur=20, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'atoms' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
+
 # ############ RUN ROTATION ABOUT SYMM AXIS 0 ############ #
-def about0(ENGINE, rang=5, recur=100, refine=True, explore=False):  
+def about0(ENGINE, rang=5, recur=100, refine=True, explore=False):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=0, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -197,9 +201,9 @@ def about0(ENGINE, rang=5, recur=100, refine=True, explore=False):
     for stepIdx in range(rang):
         LOGGER.info("Running 'about0' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
+
 # ############ RUN ROTATION ABOUT SYMM AXIS 1 ############ #
-def about1(ENGINE, rang=5, recur=10, refine=True, explore=False):  
+def about1(ENGINE, rang=5, recur=10, refine=True, explore=False):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=1, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -213,9 +217,9 @@ def about1(ENGINE, rang=5, recur=10, refine=True, explore=False):
     for stepIdx in range(rang):
         LOGGER.info("Running 'about1' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-         
+
 # ############ RUN ROTATION ABOUT SYMM AXIS 2 ############ #
-def about2(ENGINE, rang=5, recur=100, refine=True, explore=False): 
+def about2(ENGINE, rang=5, recur=100, refine=True, explore=False):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(RotationAboutSymmetryAxisGenerator(axis=2, amplitude=180)) for g in ENGINE.groups]
     # set selector
@@ -229,9 +233,9 @@ def about2(ENGINE, rang=5, recur=100, refine=True, explore=False):
     for stepIdx in range(rang):
         LOGGER.info("Running 'about2' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
+
 # ############ RUN TRANSLATION ALONG SYMM AXIS 0 ############ #
-def along0(ENGINE, rang=5, recur=100, refine=False, explore=True):  
+def along0(ENGINE, rang=5, recur=100, refine=False, explore=True):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=0, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -245,9 +249,9 @@ def along0(ENGINE, rang=5, recur=100, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'along0' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
+
 # ############ RUN TRANSLATION ALONG SYMM AXIS 1 ############ #
-def along1(ENGINE, rang=5, recur=100, refine=False, explore=True):  
+def along1(ENGINE, rang=5, recur=100, refine=False, explore=True):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=1, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -262,9 +266,9 @@ def along1(ENGINE, rang=5, recur=100, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'along1' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
-# ############ RUN TRANSLATION ALONG SYMM AXIS 2 ############ # 
-def along2(ENGINE, rang=5, recur=100, refine=False, explore=True):   
+
+# ############ RUN TRANSLATION ALONG SYMM AXIS 2 ############ #
+def along2(ENGINE, rang=5, recur=100, refine=False, explore=True):
     ENGINE.set_groups_as_molecules()
     [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(axis=2, amplitude=0.1)) for g in ENGINE.groups]
     # set selector
@@ -278,7 +282,7 @@ def along2(ENGINE, rang=5, recur=100, refine=False, explore=True):
     for stepIdx in range(rang):
         LOGGER.info("Running 'along2' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
-        
+
 # ############ RUN MOLECULES ############ #
 def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True):
     ENGINE.set_groups_as_molecules()
@@ -292,11 +296,11 @@ def molecules(ENGINE, rang=5, recur=100, refine=False, explore=True):
         LOGGER.info("Running 'molecules' mode step %i"%(stepIdx))
         ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps)
 
-# ############ SHRINK SYSTEM ############ #   
+# ############ SHRINK SYSTEM ############ #
 def shrink(ENGINE, newDim):
-    ENGINE.set_groups_as_molecules()  
+    ENGINE.set_groups_as_molecules()
     [g.set_move_generator( MoveGeneratorCollector(collection=[TranslationGenerator(amplitude=0.2),RotationGenerator(amplitude=5)],randomize=True) ) for g in ENGINE.groups]
-    # get groups order    
+    # get groups order
     centers   = [np.sum(ENGINE.realCoordinates[g.indexes], axis=0)/len(g) for g in ENGINE.groups]
     distances = [np.sqrt(np.add.reduce(c**2)) for c in centers]
     order     = np.argsort(distances)
@@ -348,7 +352,7 @@ along2(ENGINE)
 molecules(ENGINE)
 atoms(ENGINE, explore=True, refine=False)
 # allow scale adjustment
-PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
+PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2))
 about0(ENGINE)
 about1(ENGINE)
 about2(ENGINE)
@@ -360,12 +364,5 @@ atoms(ENGINE, explore=True, refine=False)
 
 
 ##########################################################################################
-####################################  PLOT CONSTRAINTS  ##################################
-PDF_CONSTRAINT.plot(show=False)
-EMD_CONSTRAINT.plot(show=False)
-B_CONSTRAINT.plot(lineWidth=2,  nbins=20,  split='element', show=False)
-BA_CONSTRAINT.plot(lineWidth=2, nbins=20,  split='element', show=False)
-IA_CONSTRAINT.plot(lineWidth=2, nbins=20,  split='element', show=True)
-
-
-
+###################################### CALL plot.py ######################################
+os.system("%s %s"%(sys.executable, os.path.join(DIR_PATH, 'plot.py')))

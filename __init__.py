@@ -320,8 +320,9 @@ positions separately.
 
 """
 # import package info
-from __pkginfo__ import __version__, __author__, __email__, __onlinedoc__, __repository__, __pypi__
-from Engine import Engine
+from __future__ import print_function
+from .__pkginfo__ import __version__, __author__, __email__, __onlinedoc__, __repository__, __pypi__
+from .Engine import Engine
 
 def get_version():
     """Get fullrmc's version number."""
@@ -346,3 +347,9 @@ def get_repository():
 def get_pypi():
     """Get fullrmc's official online repository link."""
     return __pypi__
+
+### python version checker
+import sys
+if sys.version_info.major == 3:
+    if sys.version_info.minor<7:
+        print("Only minor verion '7' of python major '3' is tested. You are running python 3.%i we recommend updating your python"%(sys.version_info.minor))

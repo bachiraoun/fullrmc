@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # fullrmc library imports
@@ -21,5 +22,4 @@ if result:
     BA.plot(lineWidth=2, nbins=20, split='element', show=False)
     IA.plot(lineWidth=2, nbins=20, split='element', show=True )
 else:
-    print mes
- 
+    print(mes)

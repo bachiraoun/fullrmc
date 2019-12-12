@@ -5,7 +5,7 @@ import time, sys, os
 
 # external libraries imports
 import numpy as np
-from pdbParser.pdbParser import pdbParser
+from pdbparser.pdbparser import pdbparser
 
 # fullrmc library imports
 from fullrmc.Globals import LOGGER

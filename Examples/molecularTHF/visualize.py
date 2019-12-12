@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # fullrmc library imports
@@ -13,10 +14,6 @@ ENGINE = Engine(path=None)
 result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if result:
     ENGINE = ENGINE.load(engineFilePath)
-    ENGINE.visualize( boxToCenter=True)  
+    ENGINE.visualize( boxToCenter=True)
 else:
-    print mes
-  
-    
-    
-    
+    print(mes)

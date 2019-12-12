@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 import itertools
 
@@ -36,7 +37,7 @@ ENGINE.initialize_used_constraints()
 ENGINE.set_chi_square()
 
 
-    
+
 def create_figure(PDF, show=False, savePath=None):
     # get output
     output = PDF.get_constraint_value()
@@ -58,7 +59,8 @@ def create_figure(PDF, show=False, savePath=None):
     # plot partials
     intraStyleIndex = 0
     interStyleIndex = 0
-    for key, val in output.items():
+    for key in output:
+        val = output[key]
         if key in ("pdf_total", "pdf"):
             continue
         elif "intra" in key:
@@ -74,8 +76,8 @@ def create_figure(PDF, show=False, savePath=None):
     # plot totals
     totalAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
     lowRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-    highRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )  
-    # set legend        
+    highRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+    # set legend
     totalAx.legend(ncol=2, frameon=False, fontsize=12)#, loc=(1.05,-1.25))
     # remove y ticks labels
     lowRAx.set_yticklabels([])
@@ -91,42 +93,42 @@ def create_figure(PDF, show=False, savePath=None):
     highRAx.set_ylim(top=1.5)
     # set title
     if ENGINE.totalStandardError is not None:  plt.suptitle("$\chi^2=%.6f$"%ENGINE.totalStandardError, fontsize=20)
-    return FIG, totalAx, lowRAx, highRAx 
+    return FIG, totalAx, lowRAx, highRAx
 
 def add_low_r_ax_annotations(ax):
     # annotate lowRAx
     ax.annotate('', xy=(0.67, 1.1), xytext=(1.35, -0.45), ha="right",
-                    arrowprops=dict(facecolor='black', 
-                                    arrowstyle="simple", 
+                    arrowprops=dict(facecolor='black',
+                                    arrowstyle="simple",
                                     fc="w", ec="k",
                                     connectionstyle="arc3,rad=1.6") )
     ax.text(0.45, 3.4,'explore allows tunneling\n and going through energy\n barriers from a peak \nto another.',
             horizontalalignment='center',
             verticalalignment='center')
 
-def add_total_ax_annotations(ax):                
+def add_total_ax_annotations(ax):
     ax.annotate('', xy=(0.725, 1.1), xytext=(3.5, 2), ha="right",
-                    arrowprops=dict(facecolor='black', 
-                                    arrowstyle="-|>", 
+                    arrowprops=dict(facecolor='black',
+                                    arrowstyle="-|>",
                                     fc="w", ec="k",
                                     connectionstyle="arc3,rad=-0.2") )
-    
+
     ax.annotate('', xy=(1.1, 4), xytext=(3.5, 3.5), ha="right",
-                    arrowprops=dict(facecolor='black', 
-                                    arrowstyle="-|>", 
+                    arrowprops=dict(facecolor='black',
+                                    arrowstyle="-|>",
                                     fc="w", ec="k",
                                     connectionstyle="arc3,rad=0.2") )
-                                    
+
     ax.text(3.5, 2.75,'Bonding electron density\n polarizability measured by X-rays',
             horizontalalignment='center',
             verticalalignment='center')
-                 
+
 # get output
-FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT)  
-FIG.savefig(os.path.join("figures","00000.png")) 
+FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT)
+FIG.savefig(os.path.join("figures","00000.png"))
 FIG.clear()
 plt.close(FIG)
-    
+
 frames = 0
 for t in trajectories:
     tname = t.split(".xyz")[0]
@@ -139,19 +141,19 @@ for t in trajectories:
         line = l.split()
         if natoms == 0:
             if len(coords):
-                print "export figure of frame %i"%frames
+                print("export figure of frame %i"%frames)
                 frames += 1
                 coords = np.array(coords)
                 ENGINE.pdb.set_coordinates(coords)
                 ENGINE.set_pdb(ENGINE.pdb)
                 ENGINE.initialize_used_constraints()
                 ENGINE.set_chi_square()
-                FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT) 
+                FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT)
                 if frames>=75:
-                    add_total_ax_annotations(totalAx)  
+                    add_total_ax_annotations(totalAx)
                 if exploreInTraj:
                     add_low_r_ax_annotations(lowRAx)
-                FIG.savefig(os.path.join("figures",tname+"_"+str(frames).rjust(5,"0")+".png")) 
+                FIG.savefig(os.path.join("figures",tname+"_"+str(frames).rjust(5,"0")+".png"))
                 FIG.clear()
                 plt.close(FIG)
             coords = []
@@ -162,9 +164,4 @@ for t in trajectories:
             continue
         else:
             natoms -= 1
-            coords.append([line[1],line[2],line[3]]) 
-            
-            
-        
-
-    
+            coords.append([line[1],line[2],line[3]])

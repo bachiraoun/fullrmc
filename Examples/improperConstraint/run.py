@@ -9,7 +9,7 @@ import os, sys
 import numpy as np
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER
+from fullrmc.Globals import LOGGER, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Constraints.BondConstraints import BondConstraint
 from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
@@ -18,7 +18,7 @@ from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
 
 ##########################################################################################
 ##################################  SHUT DOWN LOGGING  ###################################
-LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+LOGGER.set_minimum_level(maxint, stdoutFlag=True, fileFlag=True)
 
 
 ##########################################################################################

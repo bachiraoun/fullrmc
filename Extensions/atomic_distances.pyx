@@ -1,6 +1,6 @@
 """
 This is a C compiled module to compute atomic inter-molecular distances.
-"""                
+"""
 from libc.math cimport sqrt
 import cython
 cimport cython
@@ -31,9 +31,9 @@ cdef extern from "math.h":
     C_FLOAT32 ceil(C_FLOAT32 x)  nogil
     C_FLOAT32 sqrt(C_FLOAT32 x)  nogil
     C_FLOAT32 abs(C_FLOAT32 x)   nogil # not sure why abs(-1.1) = 1 not 1.1, it is rounding. so we won't use it.
-    C_FLOAT32 fabs(C_FLOAT32 x)  nogil 
+    C_FLOAT32 fabs(C_FLOAT32 x)  nogil
 
-            
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -82,7 +82,7 @@ cdef void _single_atomic_distances_dists( C_INT32          atomIndex,
         # whether atoms are not of the same molecule and intermolecular is not needed
         if (not interMolecular) and (not inLoopMoleculeIndex==atomMoleculeIndex):
            continue
-        # get distance         
+        # get distance
         distance = distances[i]
         # get in loop element index
         inLoopElementIndex = elementIndex[i]
@@ -107,25 +107,25 @@ cdef void _single_atomic_distances_dists( C_INT32          atomIndex,
             else:
                 distance = fabs(lower-distance)
         # increment histograms
-        #with gil: print atomIndex, atomIndex, lower, upper, distances[i], distance
+        #with gil: print(atomIndex, atomIndex, lower, upper, distances[i], distance)
         if inLoopMoleculeIndex == atomMoleculeIndex:
             dintra[atomElementIndex,inLoopElementIndex,0] += distance
             nintra[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
         else:
-            #with gil: print atomIndex, i, atomElementIndex,inLoopElementIndex, ' distance: ',distance, distances[i], ' lower, upper: ',lower, upper, upper-distances[i], abs(upper-distances[i]), fabs(upper-distances[i])
+            #with gil: print(atomIndex, i, atomElementIndex,inLoopElementIndex, ' distance: ',distance, distances[i], ' lower, upper: ',lower, upper, upper-distances[i], abs(upper-distances[i]), fabs(upper-distances[i]))
             dinter[atomElementIndex,inLoopElementIndex,0] += distance
             ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
-            
 
 
 
-            
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def single_atomic_distances_dists_serial( C_INT32                       atomIndex, 
+def single_atomic_distances_dists_serial( C_INT32                       atomIndex,
                                           ndarray[C_FLOAT32, ndim=1]    distances not None,
                                           ndarray[C_INT32, ndim=1]      moleculeIndex not None,
                                           ndarray[C_INT32, ndim=1]      elementIndex not None,
@@ -144,7 +144,7 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
                                           bint                          allAtoms = True):
     """
     Computes the inter-molecular distances constraint of a single atom given a distances array.
-    
+
     :Arguments:
        #. atomIndex (int32): The index of the atom.
        #. distances (float32 array): The distances array of the atom with the rest of atoms.
@@ -196,7 +196,7 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
         # whether atoms are not of the same molecule and intermolecular is not needed
         if (not interMolecular) and (not inLoopMoleculeIndex==atomMoleculeIndex):
            continue
-        # get distance         
+        # get distance
         distance = distances[i]
         # get in loop element index
         inLoopElementIndex = elementIndex[i]
@@ -221,11 +221,11 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
             else:
                 distance = fabs(lower-distance)
         # increment histograms
-        #print startIndex, i, inLoopElementIndex,atomElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance
+        #print(startIndex, i, inLoopElementIndex,atomElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance)
         if inLoopMoleculeIndex == atomMoleculeIndex:
             dintra[atomElementIndex,inLoopElementIndex,0] += distance
             nintra[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
-            #print startIndex, i, atomElementIndex, inLoopElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance
+            #print(startIndex, i, atomElementIndex, inLoopElementIndex, lower, upper,  <C_FLOAT32>sqrt(real_dx*real_dx + real_dy*real_dy + real_dz*real_dz), distance)
         else:
             dinter[atomElementIndex,inLoopElementIndex,0] += distance
             ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
@@ -238,7 +238,7 @@ def single_atomic_distances_dists_serial( C_INT32                       atomInde
 @cython.wraparound(False)
 @cython.cdivision(True)
 @cython.always_allow_keywords(False)
-def single_atomic_distances_dists( C_INT32                       atomIndex, 
+def single_atomic_distances_dists( C_INT32                       atomIndex,
                                    ndarray[C_FLOAT32, ndim=1]    distances not None,
                                    ndarray[C_INT32, ndim=1]      moleculeIndex not None,
                                    ndarray[C_INT32, ndim=1]      elementIndex not None,
@@ -258,7 +258,7 @@ def single_atomic_distances_dists( C_INT32                       atomIndex,
                                    C_INT32                       ncores = 1 ):
     """
     Computes the inter-molecular distances constraint of a single atom given a distances array.
-    
+
     :Arguments:
        #. atomIndex (int32): The index of the atom.
        #. distances (float32 array): The distances array of the atom with the rest of atoms.
@@ -313,11 +313,11 @@ def single_atomic_distances_dists( C_INT32                       atomIndex,
                                     reduceDistance        = reduceDistance,
                                     allAtoms              = allAtoms,
                                     ncores                = ncores)
-            
-            
-            
-            
-            
+
+
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -339,10 +339,10 @@ def multiple_atomic_distances_coords( ndarray[C_INT32, ndim=1]      indexes not 
                                       bint                          reduceDistanceToLower = False,
                                       bint                          reduceDistance = False,
                                       bint                          allAtoms=True,
-                                      C_INT32                       ncores = 1 ):    
+                                      C_INT32                       ncores = 1 ):
     """
     Computes multiple atoms inter-molecular distances constraint given coordinates.
-    
+
     :Arguments:
        #. indexes (int32 array): The atoms indexes array.
        #. boxCoords (float32 array): The whole system box coordinates.
@@ -360,8 +360,8 @@ def multiple_atomic_distances_coords( ndarray[C_INT32, ndim=1]      indexes not 
        #. reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
-       #. ncores (int32) [default=1]: The number of cores to use. 
-       
+       #. ncores (int32) [default=1]: The number of cores to use.
+
     :Returns:
        #. dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.
        #. dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.
@@ -382,14 +382,14 @@ def multiple_atomic_distances_coords( ndarray[C_INT32, ndim=1]      indexes not 
     cdef ndarray[C_INT32,    mode="c", ndim=3] ninter = np.zeros((numberOfElements,numberOfElements,1), dtype=NUMPY_INT32)
     # loop atoms
     for i in indexes:
-        distances = pairs_distances_to_indexcoords( atomIndex = i, 
+        distances = pairs_distances_to_indexcoords( atomIndex = i,
                                                     coords    = boxCoords,
                                                     basis     = basis,
                                                     isPBC     = isPBC,
                                                     allAtoms  = allAtoms,
-                                                    ncores    = ncores)    
-        # compute single atomic distances 
-        single_atomic_distances_dists( atomIndex             = i, 
+                                                    ncores    = ncores)
+        # compute single atomic distances
+        single_atomic_distances_dists( atomIndex             = i,
                                        distances             = distances,
                                        moleculeIndex         = moleculeIndex,
                                        elementIndex          = elementIndex,
@@ -408,7 +408,7 @@ def multiple_atomic_distances_coords( ndarray[C_INT32, ndim=1]      indexes not 
                                        allAtoms              = allAtoms,
                                        ncores                = ncores )
     return nintra, dintra, ninter, dinter
-    
+
 
 
 @cython.nonecheck(False)
@@ -430,10 +430,10 @@ def multiple_atomic_distances_dists( ndarray[C_INT32, ndim=1]      indexes not N
                                      bint                          reduceDistanceToLower = False,
                                      bint                          reduceDistance = False,
                                      bint                          allAtoms=True,
-                                     C_INT32                       ncores = 1 ):    
+                                     C_INT32                       ncores = 1 ):
     """
     Computes multiple atoms inter-molecular distances constraint given distances.
-    
+
     :Arguments:
        #. indexes (int32 array): The atoms indexes array.
        #. distances (float32 array): The distances array of the atoms with the rest of atoms.
@@ -450,7 +450,7 @@ def multiple_atomic_distances_dists( ndarray[C_INT32, ndim=1]      indexes not N
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
        #. allAtoms (bool): Perform the calculation over all the atoms. If False calculation starts from the given atomIndex. DEFAULT: True
        #. ncores (int32) [default=1]: The number of cores to use.
-       
+
     :Returns:
        #. dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.
        #. dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.
@@ -470,7 +470,7 @@ def multiple_atomic_distances_dists( ndarray[C_INT32, ndim=1]      indexes not N
     cdef ndarray[C_INT32,    mode="c", ndim=3] ninter = np.zeros((numberOfElements,numberOfElements,1), dtype=NUMPY_INT32)
     # loop atoms
     for i from <C_INT32>0 <= i < <C_INT32>indexes.shape[0]:
-        single_atomic_distances_dists( atomIndex             = indexes[i], 
+        single_atomic_distances_dists( atomIndex             = indexes[i],
                                        distances             = distances[:,i],
                                        moleculeIndex         = moleculeIndex,
                                        elementIndex          = elementIndex,
@@ -491,7 +491,7 @@ def multiple_atomic_distances_dists( ndarray[C_INT32, ndim=1]      indexes not N
     return nintra, dintra, ninter, dinter
 
 
-    
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -511,10 +511,10 @@ def full_atomic_distances_coords( np.ndarray[C_FLOAT32, ndim=2] boxCoords not No
                                   bint                          reduceDistanceToLower=False,
                                   bint                          reduceDistance=False,
                                   bint                          countWithinLimits=True,
-                                  C_INT32                       ncores = 1):    
+                                  C_INT32                       ncores = 1):
     """
     Computes all atoms inter-molecular distances constraint given coordinates.
-    
+
     :Arguments:
        #. boxCoords (float32 array): The whole system box coordinates.
        #. basis (float32 array): The box vectors.
@@ -530,8 +530,8 @@ def full_atomic_distances_coords( np.ndarray[C_FLOAT32, ndim=2] boxCoords not No
        #. reduceDistanceToUpper (bool): Whether to reduce counted distances to the difference between the found distance and the upper limit. When True, this flag has the higher priority. DEFAULT: False
        #. reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
-       #. ncores (int32) [default=1]: The number of cores to use. 
-       
+       #. ncores (int32) [default=1]: The number of cores to use.
+
     :Returns:
        #. dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.
        #. dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.
@@ -558,9 +558,9 @@ def full_atomic_distances_coords( np.ndarray[C_FLOAT32, ndim=2] boxCoords not No
                                              reduceDistanceToUpper = reduceDistanceToUpper,
                                              allAtoms              = False,
                                              ncores                = ncores)
-                                           
-   
- 
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -577,10 +577,10 @@ def full_atomic_distances_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
                                  bint                          reduceDistanceToUpper=False,
                                  bint                          reduceDistanceToLower=False,
                                  bint                          reduceDistance=False,
-                                 bint                          countWithinLimits=True):    
+                                 bint                          countWithinLimits=True):
     """
     Computes all atoms inter-molecular distances constraint given distances.
-    
+
     :Arguments:
        #. distances (float32 array): The distances array of the atoms with the rest of atoms.
        #. moleculeIndex (int32 array): The molecule's index array, assigning a molecule index for every atom.
@@ -594,8 +594,8 @@ def full_atomic_distances_dists( np.ndarray[C_FLOAT32, ndim=2] distances not Non
        #. reduceDistanceToUpper (bool): Whether to reduce counted distances to the difference between the found distance and the upper limit. When True, this flag has the higher priority. DEFAULT: False
        #. reduceDistanceToLower (bool): Whether to reduce counted distances to the difference between the found distance and the lower limit. When True, this flag may lose its priority for reduceDistanceToUpper if the later is True. DEFAULT: False
        #. reduceDistance (bool): Whether to reduce counted distances to the difference between the found distance and the closest limit. When True, this flag may lose its priority if any of reduceDistanceToLower or reduceDistanceToUpper is True. DEFAULT: False
-       #. ncores (int32) [default=1]: The number of cores to use. 
-       
+       #. ncores (int32) [default=1]: The number of cores to use.
+
     :Returns:
        #. dintra (float32 array): The created (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.
        #. dinter (float32 array): The created (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.
@@ -635,7 +635,7 @@ cdef void _pair_elements_stats( C_INT32[:]     elementIndex,
                                 C_INT32[:,:,:] nintra,
                                 C_INT32[:,:,:] ninter):
     # declare variables
-    cdef C_INT32 atomMoleculeIndex, inLoopMoleculeIndex, atomElementIndex, inLoopElementIndex    
+    cdef C_INT32 atomMoleculeIndex, inLoopMoleculeIndex, atomElementIndex, inLoopElementIndex
     # double loops
     for i from <C_INT32>0 <= i < <C_INT32>elementIndex.shape[0]-1:
         atomElementIndex  =  elementIndex[i]
@@ -647,7 +647,7 @@ cdef void _pair_elements_stats( C_INT32[:]     elementIndex,
             if inLoopMoleculeIndex == atomMoleculeIndex:
                 nintra[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
             else:
-                ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE 
+                ninter[atomElementIndex,inLoopElementIndex,0] += INT32_ONE
 
 
 
@@ -668,10 +668,5 @@ def pair_elements_stats( ndarray[C_INT32, ndim=1] elementIndex not None,
                          numberOfElements = numberOfElements,
                          nintra           = nintra,
                          ninter           = ninter)
-    # return 
+    # return
     return nintra, ninter
-    
-            
-            
-            
-                                     

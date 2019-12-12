@@ -1,8 +1,8 @@
 # USAGE: python setup.py build_ext --inplace
 
 # standard libraries imports
-import os
-import shutil
+from __future__ import print_function
+import os, shutil, glob
 try:
     from setuptools import setup, Extension
 except:
@@ -17,9 +17,9 @@ import numpy as np
 try:
     from fullrmc.Core.Collection import get_path
     fullrmc_PATH = get_path("fullrmc")
-# this only means that fullrmc has never been compiled and hopefully 
+# this only means that fullrmc has never been compiled and hopefully
 # it's been pulled from github and correctly handled.
-except: 
+except:
     setupPath = os.path.split( os.path.abspath(__file__) )[0]
     fullrmc_PATH = os.path.split( setupPath )[0]
 
@@ -44,6 +44,19 @@ EXTRA_LINK_ARGS.append("-fopenmp")
 
 ##########################################################################################
 ################################# CREATE EXTENSIONS LIST #################################
+# cleaning all .so or .pyd files
+files = glob.glob(os.path.join(EXTENSIONS_PATH,'*.so')) + glob.glob(os.path.join(EXTENSIONS_PATH,'*.pyd'))
+if len(files):
+    print("+++ Info --> Cleaning %i compiled files found in '%s'"%(len(files), EXTENSIONS_PATH))
+    for fpath in files:
+        try:
+            os.remove(fpath)
+        except Exception as err:
+            print("+++ Error --> Unable to remove '%s' (%s). Stopping compilation."%(fpath, str(err)))
+            exit()
+        else:
+            print("+++ Info --> Compiled file '%s' successfully removed"%fpath)
+
 
 c_cpp = []
 
@@ -136,30 +149,36 @@ def compile_extention(E, extensionsPath, destinationPath, cmdclass, infoList):
             # try to compile without openmp
             t = "\n--- --- COMPILATION ERROR --- ---\n"
             m = "--- Info --> Compilation of '%s' with fopenmp failed: %s\n             Trying to compile without fopenmp ..."%(E.name,e)
-            print t+m
+            print(t+m)
             infoList.append(m)
-            compile_extention( E               = E, 
-                               extensionsPath  = extensionsPath, 
-                               destinationPath = destinationPath, 
+            compile_extention( E               = E,
+                               extensionsPath  = extensionsPath,
+                               destinationPath = destinationPath,
                                cmdclass        = cmdclass,
                                infoList        = infoList)
-        else:                   
+        else:
             t = "\n--- --- COMPILATION ERROR --- ---\n"
             m = "--- Error --> Compilation of '%s': %s"%(E.name,e)
             infoList.append(m)
-            print t+m
+            print(t+m)
     # move compiled file to fullrmc.Core
     else:
         ldir = os.listdir(extensionsPath)
-        if (E.name+".so" in ldir):
-            fname = E.name+".so"
-        elif (E.name+".pyd" in ldir):
-            fname = E.name+".pyd"
+        fname = [f for f in ldir if f.startswith(E.name+'.') and (f.endswith('.so') or f.endswith('.pyd'))]
+        if len(fname) == 1:
+            fname = fname[0]
+        #if (E.name+".so" in ldir):
+        #    fname = E.name+".so"
+        #elif (E.name+".pyd" in ldir):
+        #    fname = E.name+".pyd"
         else:
             t = "\n--- --- COMPILATION WARNING --- ---\n"
-            m = "--- Warning -->  Extension not found: '%s' .so or .pyd extension is not created in '%s'"%(E.name, extensionsPath)
+            if not len(fname):
+                m = "--- Warning -->  Extension not found: '%s' .so or .pyd extension is not created in '%s'"%(E.name, extensionsPath)
+            else:
+                m = "--- Warning -->  Multiple Extensions found: '%s.*.' .so or .pyd %i extensions are found in '%s'"%(E.name, len(fname),extensionsPath)
             infoList.append(m)
-            print t+m
+            print(t+m)
             return
         # try to move compiled file to fullrmc core directory
         try:
@@ -170,15 +189,15 @@ def compile_extention(E, extensionsPath, destinationPath, cmdclass, infoList):
             else:
                 m = "+++ Info --> Compiled file '%s' moved to '%s'"%(fname, destinationPath)
             infoList.append(m)
-            print t+m
+            print(t+m)
         # intercept error
         except Exception as e:
             t = "\n--- --- COMPILATION WARNING --- ---\n"
             m = "--- Warning --> Unable to copy compiled file '%s'. Try recompiling as admin (%s)"%(fname,e)
             infoList.append(m)
-            print t+m
-                
-                     
+            print(t+m)
+
+
 def compile_all(extensions, extensionsPath, destinationPath, cmdclass, infoList):
     if cmdclass is None:
         cmdclass = {}
@@ -192,34 +211,34 @@ def compile_all(extensions, extensionsPath, destinationPath, cmdclass, infoList)
     for E in extensions:
         m = prefix+"%s"%E.name
         m = "="*maxLen + "\n" + m + "\n" + "="*maxLen
-        print "\n\n"+m
-        compile_extention( E               = E, 
-                           extensionsPath  = extensionsPath, 
-                           destinationPath = destinationPath, 
+        print("\n\n"+m)
+        compile_extention( E               = E,
+                           extensionsPath  = extensionsPath,
+                           destinationPath = destinationPath,
                            cmdclass        = cmdclass,
                            infoList        = infoList)
-        
-            
+
+
 # change directory to extensions' one
 try:
-    os.chdir(EXTENSIONS_PATH) 
+    os.chdir(EXTENSIONS_PATH)
 except:
-    print "Unable to change directory to '%s'. \
+    print("Unable to change directory to '%s'. \
 Extension are built in place and need to be move \
-by hand to '%s'"%(EXTENSIONS_PATH, DESTINATION_PATH)
-    
+by hand to '%s'"%(EXTENSIONS_PATH, DESTINATION_PATH))
+
 # Compile c and cpp files
-compile_all(extensions      = c_cpp, 
-            extensionsPath  = EXTENSIONS_PATH, 
-            destinationPath = DESTINATION_PATH, 
+compile_all(extensions      = c_cpp,
+            extensionsPath  = EXTENSIONS_PATH,
+            destinationPath = DESTINATION_PATH,
             cmdclass        = None,
             infoList        = COMPILATION_INFO)
 
 # Compile cython files
-compile_all(extensions      = pyx, 
-            extensionsPath  = EXTENSIONS_PATH, 
-            destinationPath = DESTINATION_PATH, 
+compile_all(extensions      = pyx,
+            extensionsPath  = EXTENSIONS_PATH,
+            destinationPath = DESTINATION_PATH,
             cmdclass        = {'build_ext': build_ext},
             infoList        = COMPILATION_INFO )
-        
-print "\n".join(COMPILATION_INFO)
+
+print("\n".join(COMPILATION_INFO))

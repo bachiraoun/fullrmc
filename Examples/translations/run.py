@@ -1,12 +1,13 @@
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
+from __future__ import print_function
 import os, sys
 
 # external libraries imports
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER
+from fullrmc.Globals import LOGGER, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Generators.Translations import TranslationGenerator, TranslationAlongSymmetryAxisGenerator
 from fullrmc.Core.Collection import get_principal_axis
@@ -14,7 +15,7 @@ from fullrmc.Core.Collection import get_principal_axis
 
 ##########################################################################################
 ##################################  SHUT DOWN LOGGING  ###################################
-LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+LOGGER.set_minimum_level(maxint, stdoutFlag=True, fileFlag=True)
 
 
 ##########################################################################################
@@ -24,7 +25,7 @@ ENGINE = Engine(path=None)
 ENGINE.set_pdb(pdbPath)
 
 # set groups as the whole molecule
-ENGINE.set_groups_as_molecules()   
+ENGINE.set_groups_as_molecules()
 
 nsteps = 500
 xyzFrequency = 1
@@ -37,8 +38,8 @@ def along_axis_0():
     xyzPath="along0.xyz"
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
-    print "Translation along symmetry axis 0: ",X
-    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=0)) for g in ENGINE.groups]    
+    print("Translation along symmetry axis 0: ",X)
+    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=0)) for g in ENGINE.groups]
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
 def along_axis_1():
@@ -46,46 +47,38 @@ def along_axis_1():
     xyzPath="along1.xyz"
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
-    print "Translation along symmetry axis 1: ", Y
-    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=1)) for g in ENGINE.groups]    
+    print("Translation along symmetry axis 1: ", Y)
+    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=1)) for g in ENGINE.groups]
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
-def along_axis_2():    
+def along_axis_2():
     # run engine translation along axis 2
     xyzPath="along2.xyz"
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     _,_,_,_,X,Y,Z =get_principal_axis(ENGINE.realCoordinates)
-    print "Translation along symmetry axis 2: ", Z
-    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=2)) for g in ENGINE.groups]    
+    print("Translation along symmetry axis 2: ", Z)
+    [g.set_move_generator(TranslationAlongSymmetryAxisGenerator(amplitude=0.5, axis=2)) for g in ENGINE.groups]
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
 
-def random():    
+def random():
     # run engine random translations
     xyzPath="random.xyz"
-    print "Random translation"
+    print("Random translation")
     if os.path.isfile(xyzPath): os.remove(xyzPath)
     [g.set_move_generator(TranslationGenerator(amplitude=0.5)) for g in ENGINE.groups]
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps, xyzFrequency=xyzFrequency, xyzPath=xyzPath, restartPdb=None)
- 
- 
+
+
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
 along_axis_0()
 along_axis_1()
 along_axis_2()
-random() 
+random()
 
 
 ##########################################################################################
 ##################################  VISUALIZE SIMULATION  ################################
 ENGINE.set_pdb(pdbPath)
 ENGINE.visualize( commands = ["along0.xyz", "along1.xyz", "along2.xyz", "random.xyz"],
-                  boxWidth=0, representationParams='CPK 1.0 0.2 50 50')    
-    
- 
-
-
-
-
-
-
+                  boxWidth=0, representationParams='CPK 1.0 0.2 50 50')

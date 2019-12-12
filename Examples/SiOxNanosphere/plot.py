@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # fullrmc library imports
@@ -16,7 +17,6 @@ if result:
     PDF, EMD, ACN = ENGINE.constraints
     ACN.plot(show=False)
     EMD.plot(show=False)
-    PDF.plot(inter=False, intra=False, shapeFunc=True, legendLoc='upper left')
+    PDF.plot(inter=False, intra=False, shapeFunc=True, legendParams={'loc':'upper left'})
 else:
-    print mes
- 
+    print(mes)

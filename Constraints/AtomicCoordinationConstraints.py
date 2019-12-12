@@ -7,16 +7,19 @@ to coordination number in spherical shells around atoms.
 
 """
 # standard libraries imports
+from __future__ import print_function
 import copy
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import SingularConstraint, RigidConstraint
-from fullrmc.Core.atomic_coordination import all_atoms_coord_number_coords, multi_atoms_coord_number_coords
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import SingularConstraint, RigidConstraint
+from ..Core.atomic_coordination import all_atoms_coord_number_coords, multi_atoms_coord_number_coords
 
 
 class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
@@ -29,6 +32,14 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         src="https://www.youtube.com/embed/R8t-_XwizOI?rel=0"
         frameborder="0" allowfullscreen>
         </iframe>
+
+
+    +----------------------------------------------------------------------+
+    |.. figure:: atomic_coordination_number_constraint_plot_method.png     |
+    |   :width: 530px                                                      |
+    |   :height: 400px                                                     |
+    |   :align: left                                                       |
+    +----------------------------------------------------------------------+
 
 
     :Parameters:
@@ -261,7 +272,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                 coreIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==coreDef]
             elif isinstance(coreDef, dict):
                 assert len(coreDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
-                key, value = coreDef.keys()[0], coreDef.values()[0]
+                key, value = list(coreDef)[0], list(coreDef.values())[0]
                 if key is "name":
                     assert value in NAMES, LOGGER.error("core atom definition '%s' is not a valid name"%coreDef)
                     coreIndexes = [idx for idx, el in enumerate(ALL_NAMES) if el==coreDef]
@@ -287,7 +298,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                 shellIndexes = [idx for idx, el in enumerate(ALL_ELEMENTS) if el==shellDef]
             elif isinstance(shellDef, dict):
                 assert len(shellDef) == 1, LOGGER.error("core atom definition dictionary must be of length 1")
-                key, value = shellDef.keys()[0], shellDef.values()[0]
+                key, value = list(shellDef)[0], list(shellDef.values())[0]
                 if key is "name":
                     assert value in NAMES, LOGGER.error("core atom definition '%s' is not a valid name"%shellDef)
                     shellIndexes = [idx for idx, el in enumerate(ALL_NAMES) if el==shellDef]
@@ -663,13 +674,6 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes): matplotlib used axes.
-
-        +----------------------------------------------------------------------+
-        |.. figure:: atomic_coordination_number_constraint_plot_method.png     |
-        |   :width: 530px                                                      |
-        |   :height: 400px                                                     |
-        |   :align: left                                                       |
-        +----------------------------------------------------------------------+
         """
         # get constraint value
         if all([d is None for d in self.data]):
@@ -729,7 +733,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         if title:
             FIG.canvas.set_window_title('Atomic Coordination Number Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:

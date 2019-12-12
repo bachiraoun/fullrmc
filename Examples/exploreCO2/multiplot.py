@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 import itertools
 
@@ -31,9 +32,9 @@ engineFilePath = os.path.join(DIR_PATH, "CO2.rmc")
 ENGINE = Engine(path=None)
 result, mes = ENGINE.is_engine(engineFilePath, mes=True)
 if not result:
-    print mes
+    print(mes)
     exit()
-    
+
 # load engine and get pdf constraint engine
 ENGINE = ENGINE.load(engineFilePath)
 PDF_CONSTRAINT = ENGINE.constraints[0]
@@ -59,7 +60,8 @@ def create_figure(PDF):
     # plot partials
     intraStyleIndex = 0
     interStyleIndex = 0
-    for key, val in output.items():
+    for key in output:
+        val = output[key]
         if key in ("pdf_total", "pdf"):
             continue
         elif "intra" in key:
@@ -75,8 +77,8 @@ def create_figure(PDF):
     # plot totals
     totalAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
     lowRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-    highRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )  
-    # set legend        
+    highRAx.plot(PDF.shellCenters, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
+    # set legend
     totalAx.legend(ncol=2, frameon=False, fontsize=12)#, loc=(1.05,-1.25))
     # remove y ticks labels
     lowRAx.set_yticklabels([])
@@ -97,40 +99,36 @@ def create_figure(PDF):
 def add_low_r_ax_annotations(ax):
     # annotate lowRAx
     ax.annotate('', xy=(0.67, 1.1), xytext=(1.35, -0.45), ha="right",
-                      arrowprops=dict(facecolor='black', 
-                                      arrowstyle="simple", 
+                      arrowprops=dict(facecolor='black',
+                                      arrowstyle="simple",
                                       fc="w", ec="k",
                                       connectionstyle="arc3,rad=1.7") )
     ax.text(0.45, 3.6,'explore allows tunneling\n and going through energy\n barriers from a peak \nto another.',
                 horizontalalignment='center',
                 verticalalignment='center')
 
-def add_total_ax_annotations(ax):                
+def add_total_ax_annotations(ax):
     ax.annotate('', xy=(0.725, 1.1), xytext=(3.5, 2), ha="right",
-                         arrowprops=dict(facecolor='black', 
-                                         arrowstyle="-|>", 
+                         arrowprops=dict(facecolor='black',
+                                         arrowstyle="-|>",
                                          fc="w", ec="k",
                                          connectionstyle="arc3,rad=-0.2") )
-    
+
     ax.annotate('', xy=(1.1, 4), xytext=(3.5, 3.5), ha="right",
-                         arrowprops=dict(facecolor='black', 
-                                         arrowstyle="-|>", 
+                         arrowprops=dict(facecolor='black',
+                                         arrowstyle="-|>",
                                          fc="w", ec="k",
                                          connectionstyle="arc3,rad=0.2") )
-                                         
+
     ax.text(3.5, 2.75,'Bonding electron density\n polarizability measured by X-rays',
                  horizontalalignment='center',
                  verticalalignment='center')
-                 
+
 # get output
-FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT)  
+FIG, totalAx, lowRAx, highRAx = create_figure(PDF_CONSTRAINT)
 add_low_r_ax_annotations(lowRAx)
 add_total_ax_annotations(totalAx)
 
-                
-# show
-plt.show()  
-            
-        
 
-    
+# show
+plt.show()

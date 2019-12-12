@@ -1,10 +1,11 @@
 """
 In order to work properly, this script must be put one layer or directory
 outside of fullrmc package directory.
-""" 
+"""
 ##########################################################################################
-########################################  IMPORTS  ####################################### 
+########################################  IMPORTS  #######################################
 # standard distribution imports
+from __future__ import print_function
 import os, sys, subprocess
 import fnmatch
 
@@ -21,7 +22,7 @@ try:
     from Cython.Distutils import build_ext
 except:
     raise Exception("must install cython first. Try pip install cython")
-    
+
 # import numpy
 try:
     import numpy as np
@@ -30,13 +31,37 @@ except:
 
 
 # check python version
-if sys.version_info[:2] < (2, 7) or sys.version_info[:2] >= (3,):
-    raise RuntimeError("Python version 2.7 required.")
+if sys.version_info.major == 2:
+    assert sys.version_info.minor>=7, "Only ython 2.7.y is accepted in the 2.x.y version of python"
+else:
+    assert sys.version_info.major == 3, "Only python 2.7.y or python 3.7.y and above are accepted versions"
+    #assert sys.version_info.minor>=7, "Only python 3.7.y and above is accepted in the 3.x.y version of python"
 
-    
-    
+## get python 2 and 3 compatibilities
+if sys.version_info.major==3:
+    # THIS IS PYTHON 3
+    str        = str
+    long       = int
+    unicode    = str
+    bytes      = bytes
+    basestring = str
+    xrange     = range
+    range      = lambda *args: list( xrange(*args) )
+    maxint     = sys.maxsize
+else:
+    # THIS IS PYTHON 2
+    str        = str
+    unicode    = unicode
+    bytes      = str
+    long       = long
+    basestring = basestring
+    xrange     = xrange
+    range      = range
+    maxint     = sys.maxint
+
+
 ##########################################################################################
-#################################  PACKAGE PATH AND NAME  ################################   
+#################################  PACKAGE PATH AND NAME  ################################
 PACKAGE_PATH    = '.'
 PACKAGE_NAME    = 'fullrmc'
 EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
@@ -44,7 +69,7 @@ EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
 
 
 ##########################################################################################
-######################################  MANIFEST.in  ##################################### 
+######################################  MANIFEST.in  #####################################
 commands = [# include MANIFEST.in
             '# include this file, to ensure we can recreate source distributions',
             'include MANIFEST.in'
@@ -57,7 +82,7 @@ commands = [# include MANIFEST.in
             'global-exclude *.cpp',
             'global-exclude *.so',
             'global-exclude *.rmc',
-            # exclude all other non necessary files 
+            # exclude all other non necessary files
             '\n# exclude all other non necessary files ',
             'global-exclude .project',
             'global-exclude .pydevproject',
@@ -68,7 +93,7 @@ commands = [# include MANIFEST.in
             'global-exclude *.git*',
             'global-exclude .git/*',
             # exclude all
-            'global-exclude %s/Examples/*.dat'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*.dat'%PACKAGE_NAME,
             # include all Example files
             '\n# include all Example files',
             'global-include %s/Examples/*.py'%PACKAGE_NAME,
@@ -83,14 +108,14 @@ commands = [# include MANIFEST.in
             'global-include %s/*README.*'%PACKAGE_NAME,
             'global-include %s/*readme.*'%PACKAGE_NAME,
             # exclude unnecessary files
-            'global-exclude %s/Examples/*/*.dat'%PACKAGE_NAME, 
-            'global-exclude %s/Examples/*/visualizeTrajectory.py'%PACKAGE_NAME, 
-            'global-exclude %s/Examples/*/plotFigures.py'%PACKAGE_NAME, 
-            'global-exclude %s/Examples/*/extractTrajectory.py'%PACKAGE_NAME, 
-            'global-exclude %s/Examples/*/exportTrajectoryFigures.py'%PACKAGE_NAME, 
+            'global-exclude %s/Examples/*/*.dat'%PACKAGE_NAME,
+            'global-exclude %s/Examples/*/visualizeTrajectory.py'%PACKAGE_NAME,
+            'global-exclude %s/Examples/*/plotFigures.py'%PACKAGE_NAME,
+            'global-exclude %s/Examples/*/extractTrajectory.py'%PACKAGE_NAME,
+            'global-exclude %s/Examples/*/exportTrajectoryFigures.py'%PACKAGE_NAME,
             'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME,
             'global-exclude %s/Examples/*/restart.pdb'%PACKAGE_NAME,
-            ]         
+            ]
 
 
 with open('MANIFEST.in','w') as fd:
@@ -99,9 +124,9 @@ with open('MANIFEST.in','w') as fd:
         fd.write('\n')
 
 
-        
+
 ##########################################################################################
-######################################  CLASSIFIERS  ##################################### 
+######################################  CLASSIFIERS  #####################################
 CLASSIFIERS = """\
 Development Status :: 4 - Beta
 Intended Audience :: Science/Research
@@ -110,6 +135,8 @@ Intended Audience :: Developers
 Natural Language :: English
 License :: OSI Approved :: GNU Affero General Public License v3
 Programming Language :: Python :: 2.7
+Programming Language :: Python :: 3
+Programming Language :: Python :: 3.7
 Programming Language :: Cython
 Topic :: Software Development
 Topic :: Software Development :: Build Tools
@@ -128,7 +155,7 @@ Operating System :: MacOS
 
 
 ##########################################################################################
-######################################  DESCRIPION  ###################################### 
+######################################  DESCRIPION  ######################################
 # create descriptions
 LONG_DESCRIPTION = ["FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/atomic stochastic fitting platform to reverse modeling experimental data. ",
                     "fullrmc is not a standard RMC software but exceeds in its capabilities and functionalities traditional RMC and Metropolis-Hastings algoritm. ",
@@ -142,17 +169,19 @@ LONG_DESCRIPTION = ["FUndamental Library Language for Reverse Monte Carlo or ful
                     "fullrmc >= 1.2.y can be compiled with 'openmp' allowing multithreaded fitting. ",
                     "fullrmc >= 2.x.y engine is a single file no more but a pyrep repository. ",
                     "fullrmc >= 3.x.y dynamically removing atoms upon fitting is enabled. ",]
-DESCRIPTION      = [ LONG_DESCRIPTION[0] ]             
+DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 
 # get package info
 PACKAGE_INFO={}
-execfile(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') ), PACKAGE_INFO)
- 
- 
- 
+if sys.version_info.major == 2:
+    execfile(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') ), PACKAGE_INFO)
+else:
+    exec(open(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') )).read(), PACKAGE_INFO)
+
+
 ##########################################################################################
-################################### USEFUL DEFINITIONS ###################################                         
+################################### USEFUL DEFINITIONS ###################################
 def is_package(path):
     return (os.path.isdir(path) and os.path.isfile(os.path.join(path, '__init__.py')))
 
@@ -172,13 +201,13 @@ def get_packages(path, base="", exclude=None):
             else:
                 module_name = item
             packages[module_name] = d
-            packages.update(get_packages(d, module_name, exclude))   
+            packages.update(get_packages(d, module_name, exclude))
     return packages
 
-DATA_EXCLUDE = ('*.rmc','*.data','*.png','*.xyz','*.log','*.pyc', '*~', '.*', '*.so', '*.pyd')
+DATA_EXCLUDE = ('*.rmc','*.data','*.png','*.xyz','*.log','*.pyc', '*~', '.*', '*.so', '*.pyd','*MultiframeUtils.py')
 EXCLUDE_DIRECTORIES = ('*svn','*git','dist', 'EGG-INFO', '*.egg-info',"*.rmc")
 def find_package_data(where='.', package='', relativePath='',
-                      exclude=DATA_EXCLUDE, excludeDirectories=EXCLUDE_DIRECTORIES, 
+                      exclude=DATA_EXCLUDE, excludeDirectories=EXCLUDE_DIRECTORIES,
                       onlyInPackages=True, showIgnored=False):
     out = {}
     stack = [(convert_path(where), '', package, onlyInPackages)]
@@ -222,10 +251,10 @@ def find_package_data(where='.', package='', relativePath='',
                     out.setdefault(package, []).append(prefix+name)
     return out
 
-    
-    
+
+
 ##########################################################################################
-######################################  EXTENSIONS  ###################################### 
+######################################  EXTENSIONS  ######################################
 EXTENSIONS = [# boundary conditions collection
               Extension('fullrmc.Core.boundary_conditions_collection',
                         include_dirs=[np.get_include()],
@@ -278,26 +307,27 @@ EXTENSIONS = [# boundary conditions collection
                         sources = [os.path.join(EXTENSIONS_PATH,"improper_angles.pyx")]),
               ]
 CMDCLASS = {'build_ext' : build_ext}
-       
-       
-       
+
+
+
 ##########################################################################################
-#####################################  PACKAGE DATA  #####################################        
+#####################################  PACKAGE DATA  #####################################
 # get packages and remove everything that is not fullrmc
 docs = os.path.join(PACKAGE_NAME,"docs")
 PACKAGES = get_packages(path=PACKAGE_PATH, exclude=(docs, ) )
-for package in PACKAGES.keys():
+
+for package in list(PACKAGES):
     if PACKAGE_NAME not in package:
         PACKAGES.pop(package)
 # get package data
-PACKAGE_DATA = find_package_data(where=os.path.join(PACKAGE_NAME, "Examples"), 
+PACKAGE_DATA = find_package_data(where=os.path.join(PACKAGE_NAME, "Examples"),
                                  relativePath="Examples",
-                                 package='fullrmc', 
+                                 package='fullrmc',
                                  showIgnored=False)
 # metadata
 metadata = dict(# package
                 name             = PACKAGE_NAME,
-                packages         = PACKAGES.keys(),
+                packages         = list(PACKAGES),
                 package_dir      = PACKAGES,
                 # package data
                 package_data     = PACKAGE_DATA,
@@ -319,17 +349,18 @@ metadata = dict(# package
                 classifiers      = [_f for _f in CLASSIFIERS.split('\n') if _f],
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
-                install_requires = ["pysimplelog>=0.3.0",
-                                    "pdbParser>=0.1.5",
-                                    "pyrep>=1.0.4",
-                                    "matplotlib>=1.4" ], # numpy and cython are also needed, but this is left out for the user to install.
-                setup_requires   = [''], 
+                install_requires = ["pysimplelog>=2.0.0",
+                                    "pdbparser>=0.1.7",
+                                    "pylocker>=2.0.0",
+                                    "pyrep>=3.1.0",
+                                    "matplotlib>=2.2.3" ], # numpy and cython are also needed, but this is left out for the user to install.
+                setup_requires   = [''],
                 )
 
 
-                
+
 ##########################################################################################
-#####################################  LAUNCH SETUP  #####################################  
+#####################################  LAUNCH SETUP  #####################################
 setup(**metadata)
 
 
@@ -349,10 +380,3 @@ setup(**metadata)
 #except (Exception, SystemExit) as e:
 #    raise "Unable to build extension files: %s"%e
 #
-        
-    
-    
-
-    
-    
-    

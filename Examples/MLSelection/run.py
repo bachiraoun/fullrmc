@@ -8,7 +8,7 @@ import wx
 import numpy as np
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER
+from fullrmc.Globals import LOGGER, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
 from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
@@ -23,7 +23,7 @@ from fullrmc.Selectors.RandomSelectors import RandomSelector, SmartRandomSelecto
 ####################################  SHUT DOWN LOGGING  ##################################
 #LOGGER.set_log_to_stdout_flag(False)
 ## set very high logging level and force 'move accepted'.
-#LOGGER.set_minimum_level(sys.maxint)
+#LOGGER.set_minimum_level(maxint)
 #LOGGER.force_log_type_flags("move accepted", stdoutFlag=False, fileFlag=True)
 #
 ###########################################################################################
@@ -72,7 +72,7 @@ def create_engine():
                                                                           ('C1' ,'H11','O'  , 100, 120),
                                                                           ('C1' ,'H12','O'  , 100, 120),
                                                                           ('C4' ,'H41','O'  , 100, 120),
-                                                                          ('C4' ,'H42','O'  , 100, 120),                                                                           
+                                                                          ('C4' ,'H42','O'  , 100, 120),
                                                                           # H-C-C
                                                                           ('C1' ,'H11','C2' , 103, 123),
                                                                           ('C1' ,'H12','C2' , 103, 123),
@@ -101,7 +101,7 @@ def create_engine():
 
 
 ##########################################################################################
-#####################################  DIFFERENT RUNS  ################################### 
+#####################################  DIFFERENT RUNS  ###################################
 #################### run normal selector ####################
 def normal_run():
     LOGGER.force_log("info", "normal selection %i started... DON'T INTERRUPT"%numberOfSteps, stdout=True, file=False)
@@ -117,7 +117,7 @@ def normal_run():
     # run engine
     engine.run(numberOfSteps=numberOfSteps, saveFrequency=2*numberOfSteps, restartPdb=None)
     LOGGER.force_log("info", "normal selection finished", stdout=True, file=False)
-    
+
 ############### run machine learning selector ###############
 def ML_run():
     LOGGER.force_log("info", "machine learning selection %i started... DON'T INTERRUPT"%numberOfSteps, stdout=True, file=False)
@@ -151,12 +151,12 @@ for log in MLSelLog:
     mlLines = fd.readlines()
     fd.close()
     mlGenerated.extend([float(l.split("Gen:")[1].split("-")[0]) for l in mlLines])
-    mlAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])    
+    mlAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])
 mlGenerated = np.array(mlGenerated)
 mlAccepted = np.array(mlAccepted)
 mlAccepted = 100.*mlAccepted/mlGenerated
-np.savetxt(X=np.transpose([mlGenerated,mlAccepted]), 
-           fname="MLSelection.dat", 
+np.savetxt(X=np.transpose([mlGenerated,mlAccepted]),
+           fname="MLSelection.dat",
            fmt='%.3f', delimiter="   ",
            header="Generated    Accepted(%)")
 # normal logs
@@ -168,18 +168,18 @@ for log in normalLogs:
     mlLines = fd.readlines()
     fd.close()
     nGenerated.extend([float(l.split("Gen:")[1].split("-")[0]) for l in mlLines])
-    nAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])    
+    nAccepted.extend([float(l.split("Acc:")[1].split("(")[0]) for l in mlLines])
 nGenerated = np.array(nGenerated)
 nAccepted = np.array(nAccepted)
 nAccepted = 100.*nAccepted/nGenerated
-np.savetxt(X=np.transpose([nGenerated,nAccepted]), 
-           fname="traditionalSelection.dat", 
+np.savetxt(X=np.transpose([nGenerated,nAccepted]),
+           fname="traditionalSelection.dat",
            fmt='%.3f', delimiter="   ",
            header="Generated    Accepted(%)")
-           
+
 
 ##########################################################################################
-##################################  PLOT LOGGING DATA ####################################    
+##################################  PLOT LOGGING DATA ####################################
 import matplotlib.pyplot as plt
 plt.plot(mlGenerated, mlAccepted, 'black',linewidth=3, label="machine learning selection")
 plt.plot(nGenerated, nAccepted, 'red', linewidth=3, label="traditional selection")
@@ -187,11 +187,3 @@ plt.xlabel("Generated moves")
 plt.ylabel("Accepted moves (%)")
 plt.legend(frameon=False, loc="upper left")
 plt.show()
-
-  
-    
-
-
-
-
-

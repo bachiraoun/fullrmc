@@ -1,6 +1,6 @@
 """
 This is a C compiled module to compute atomic bonds.
-"""                      
+"""
 import cython
 cimport cython
 import numpy as np
@@ -39,10 +39,10 @@ cdef C_FLOAT32 _single_atom_single_shell_dists( C_FLOAT32[:] distances,
     # loop
     for i in prange(INT32_ZERO, <C_INT32>distances.shape[0], INT32_ONE, nogil=True, schedule="static", num_threads=num_threads):
     #for i from 0 <= i < <C_INT32>distances.shape[0]:
-        if lowerShell <= distances[i] <= upperShell:      
+        if lowerShell <= distances[i] <= upperShell:
             coordNumber += FLOAT_ONE
             #with gil:
-            #    print i, lowerShell, upperShell, distances[i]
+            #    print(i, lowerShell, upperShell, distances[i])
     return coordNumber
 
 
@@ -62,7 +62,7 @@ def single_atom_single_shell_subdists( C_FLOAT32[:] distances,
                                             ncores     = ncores)
 
 
-    
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -78,9 +78,9 @@ def single_atom_single_shell_totdists( ndarray[C_FLOAT32, ndim=1] distances,
                                             lowerShell = lowerShell,
                                             upperShell = upperShell,
                                             ncores     =  ncores)
-    
-    
-    
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -95,19 +95,19 @@ def single_atom_single_shell_coords( C_INT32                    coreIndex,
                                      C_FLOAT32                  upperShell,
                                      C_INT32                    ncores = 1):
     # declare variables
-    distances = pairs_distances_to_point( point  = boxCoords[ coreIndex ], 
+    distances = pairs_distances_to_point( point  = boxCoords[ coreIndex ],
                                           coords = boxCoords[ shellIndexes ],
                                           basis  = basis,
                                           isPBC  = isPBC,
-                                          ncores = ncores)  
+                                          ncores = ncores)
     # compute and return
     return single_atom_single_shell_subdists(distances  = distances,
                                              lowerShell = lowerShell,
                                              upperShell = upperShell,
-                                             ncores     = ncores)    
-    
-    
-    
+                                             ncores     = ncores)
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -128,9 +128,9 @@ def single_atom_multi_shells_totdists( ndarray[C_FLOAT32, ndim=1] distances,
                                                            upperShell  = upperShells[i],
                                                            ncores      = ncores)
     return coordNumbers
-    
-    
-    
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -150,19 +150,19 @@ def single_atom_multi_shells_coords( C_INT32                    coreIndex,
     # compute coordination numbers
     for i from 0 <= i < <C_INT32>len(shellsIndexes):
         # declare variables
-        distances = pairs_distances_to_point( point  = boxCoords[ coreIndex ], 
+        distances = pairs_distances_to_point( point  = boxCoords[ coreIndex ],
                                               coords = boxCoords[ shellsIndexes[i] ],
                                               basis  = basis,
                                               isPBC  = isPBC,
-                                              ncores = ncores)      
+                                              ncores = ncores)
         coordNumbers[i] = _single_atom_single_shell_dists( distances   = distances,
                                                            lowerShell  = lowerShells[i],
                                                            upperShell  = upperShells[i],
                                                            ncores      = ncores)
-    return coordNumbers        
-    
-    
-    
+    return coordNumbers
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -196,9 +196,9 @@ def single_atom_coord_number_totdists( C_INT32                    atomIndex,
                                                         upperShell   = upperShells[defIdx],
                                                         ncores       = ncores)
         coordNumData[defIdx] += coordNumber
-    
-    
-    
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -237,10 +237,10 @@ def single_atom_coord_number_coords( C_INT32                    atomIndex,
                                                        lowerShell   = lowerShells[defIdx],
                                                        upperShell   = upperShells[defIdx],
                                                        ncores       = ncores)
-        coordNumData[defIdx] += coordNumber    
-        
-        
-            
+        coordNumData[defIdx] += coordNumber
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -269,8 +269,8 @@ def multi_atoms_coord_number_totdists( C_INT32[:]   indexes,
                                            inShellDefIdxs = inShellDefIdxs,
                                            coordNumData   = coordNumData,
                                            ncores         = ncores)
-    
-    
+
+
 
 @cython.nonecheck(False)
 @cython.boundscheck(False)
@@ -304,11 +304,11 @@ def multi_atoms_coord_number_coords( C_INT32[:]                 indexes,
                                          inShellDefIdxs = inShellDefIdxs,
                                          coordNumData   = coordNumData,
                                          ncores         = ncores)
-    
-    
 
-    
-    
+
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -338,9 +338,9 @@ def all_atoms_coord_number_totdists( ndarray[C_FLOAT32, ndim=2] distances,
                                        inShellDefIdxs = inShellDefIdxs,
                                        coordNumData   = coordNumData,
                                        ncores         = ncores)
-    
-    
-    
+
+
+
 @cython.nonecheck(False)
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -374,10 +374,3 @@ def all_atoms_coord_number_coords( ndarray[C_FLOAT32, ndim=2] boxCoords not None
                                      inShellDefIdxs = inShellDefIdxs,
                                      coordNumData   = coordNumData,
                                      ncores         = ncores)
-
-
-            
-    
-    
-    
-    

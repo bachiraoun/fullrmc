@@ -7,7 +7,7 @@ import os, sys
 import numpy as np
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER
+from fullrmc.Globals import LOGGER, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Constraints.BondConstraints import BondConstraint
 from fullrmc.Constraints.AngleConstraints import BondsAngleConstraint
@@ -16,12 +16,12 @@ from fullrmc.Constraints.DihedralAngleConstraints import DihedralAngleConstraint
 
 ##########################################################################################
 ##################################  SHUT DOWN LOGGING  ###################################
-LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+LOGGER.set_minimum_level(maxint, stdoutFlag=True, fileFlag=True)
 
 
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
-pdbPath = "system.pdb" 
+pdbPath = "system.pdb"
 ENGINE = Engine(path=None)
 ENGINE.set_pdb(pdbPath)
 
@@ -29,7 +29,7 @@ ENGINE.set_pdb(pdbPath)
 B_CONSTRAINT   = BondConstraint()
 BA_CONSTRAINT  = BondsAngleConstraint()
 DA_CONSTRAINT  = DihedralAngleConstraint()
-ENGINE.add_constraints([B_CONSTRAINT, BA_CONSTRAINT, DA_CONSTRAINT]) 
+ENGINE.add_constraints([B_CONSTRAINT, BA_CONSTRAINT, DA_CONSTRAINT])
 B_CONSTRAINT.create_bonds_by_definition( bondsDefinition={"BUT": [# C-C bonds
                                                                   ('C1' ,'C2' , 1.33, 1.73),
                                                                   ('C2' ,'C3' , 1.33, 1.73),
@@ -132,15 +132,13 @@ run_third_shell(100000,   xyzPath)
 ##################################  VISUALIZE SIMULATION  ################################
 ENGINE.set_pdb(pdbPath)
 # VMD dihedral angle calculation is between -180 and 180 and direction is arbitrary.
-# Therefore dihedral angle label can be anything as angle, -angle, 360+angle and 
+# Therefore dihedral angle label can be anything as angle, -angle, 360+angle and
 # 360-angle
-ENGINE.visualize(commands = ["trajectory.xyz"], 
+ENGINE.visualize(commands = ["trajectory.xyz"],
                  boxWidth=0, bgColor="white",
                  representationParams='CPK 1.0 0.2 50 50',
                  otherParams = ["axes location off",
                                 "label add Dihedrals 0/0 0/1 0/2 0/3",
                                 "label textsize 1.5",
                                 "label textthickness 2",
-                                "color Labels Dihedrals black"] ) 
-
-
+                                "color Labels Dihedrals black"] )

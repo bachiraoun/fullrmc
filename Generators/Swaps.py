@@ -5,17 +5,18 @@ Swaps contains all swap or atoms position exchange MoveGenerator classes.
     :parts: 1
 
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer
-from fullrmc.Core.MoveGenerator import  MoveGenerator, SwapGenerator
-from fullrmc.Core.Collection import _Container
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer
+from ..Core.MoveGenerator import  MoveGenerator, SwapGenerator
+from ..Core.Collection import _Container
 
 class SwapPositionsGenerator(SwapGenerator):
     """

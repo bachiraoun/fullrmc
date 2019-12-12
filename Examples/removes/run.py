@@ -1,12 +1,12 @@
 #  ####################################################################################  #
 #  ########################### IMPORTING USEFUL DEFINITIONS ###########################  #
 ## standard library imports
-import os
+import os, sys
 
 ## external libraries imports
 import numpy as np
-from pdbParser.pdbParser import pdbParser
-from pdbParser.Utilities.Modify import set_records_attribute_values
+from pdbparser.pdbparser import pdbparser
+from pdbparser.Utilities.Modify import set_records_attribute_values
 
 ## fullrmc imports
 from fullrmc.Engine import Engine
@@ -19,10 +19,25 @@ from fullrmc.Generators.Swaps import SwapPositionsGenerator
 
 #  ####################################################################################  #
 #  ############################# DECLARE USEFUL VARIABLES #############################  #
-experimentalDataPath = "pdf.exp"
-structurePdbPath     = "system.pdb"
-engineSavePath       = "system.rmc"
-FRESH_START          = False
+# dirname
+try:
+    DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+except:
+    DIR_PATH = ''
+
+# files name
+grFileName     = "pdf.exp"
+pdbFileName    = "system.pdb"
+engineFileName = "system.rmc"
+NCORES         = 1
+FRESH_START    = False
+
+# engine variables
+experimentalDataPath = os.path.join(DIR_PATH, grFileName)
+structurePdbPath     = os.path.join(DIR_PATH, pdbFileName)
+engineSavePath       = os.path.join(DIR_PATH, engineFileName)
+
+
 
 #  ####################################################################################  #
 #  ################################### CREATE ENGINE ##################################  #
@@ -48,7 +63,7 @@ else:
     ENGINE = ENGINE.load(engineSavePath)
     ## unpack constraints before fitting in case tweaking is needed
     PDF_CONSTRAINT, EMD_CONSTRAINT = ENGINE.constraints
-    
+
 #  ####################################################################################  #
 #  ############################### DEFINE DIFFERENT RUNS ##############################  #
 def normal_run(numberOfSteps=100000, saveFrequency=10000):
@@ -56,14 +71,14 @@ def normal_run(numberOfSteps=100000, saveFrequency=10000):
     ENGINE.set_groups_as_atoms()
     ## run engine
     ENGINE.run(numberOfSteps=numberOfSteps, saveFrequency=saveFrequency)
-    
+
 def swaps_run(numberOfSteps=100000, saveFrequency=10000):
     ## reset groups as atoms
     ENGINE.set_groups_as_atoms()
     ## build swap lists
     ALL_ELEMENTS = ENGINE.get_original_data('allElements')
-    liSwaps = [[idx] for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='li' or ALL_ELEMENTS[idx]=='Li']
-    meSwaps = [[idx] for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('co','ni','mn') or ALL_ELEMENTS[idx] in ('Co','Ni','Mn')]
+    liSwaps = [[idx] for idx in range(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='li' or ALL_ELEMENTS[idx]=='Li']
+    meSwaps = [[idx] for idx in range(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('co','ni','mn') or ALL_ELEMENTS[idx] in ('Co','Ni','Mn')]
     ## set swap generators
     for g in ENGINE.groups:
         idx   = g.indexes[0]
@@ -82,11 +97,11 @@ def swaps_run(numberOfSteps=100000, saveFrequency=10000):
 def removes_run(numberOfSteps=100, saveFrequency=100):
     ## compute indexes lists
     ALL_ELEMENTS = ENGINE.get_original_data('allElements')
-    oIndexes  = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='o'  or ALL_ELEMENTS[idx]=='O']
-    liIndexes = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='li' or ALL_ELEMENTS[idx]=='Li']
-    meIndexes = [idx for idx in xrange(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('co','ni','mn') or ALL_ELEMENTS[idx] in ('Co','Ni','Mn')]
-    ## create empty group to remove oxygen. 
-    ## By default EmptyGroup move generator is AtomsRemoveGenerator with its atomsList 
+    oIndexes  = [idx for idx in range(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='o'  or ALL_ELEMENTS[idx]=='O']
+    liIndexes = [idx for idx in range(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx]=='li' or ALL_ELEMENTS[idx]=='Li']
+    meIndexes = [idx for idx in range(len(ALL_ELEMENTS)) if ALL_ELEMENTS[idx] in ('co','ni','mn') or ALL_ELEMENTS[idx] in ('Co','Ni','Mn')]
+    ## create empty group to remove oxygen.
+    ## By default EmptyGroup move generator is AtomsRemoveGenerator with its atomsList
     ## None which means it will remove any atom from system.
     RO  = EmptyGroup()
     RO.moveGenerator.set_maximum_collected(20)
@@ -103,13 +118,13 @@ def removes_run(numberOfSteps=100, saveFrequency=100):
     ENGINE.set_groups([RO,RLi,RCo])
     ## run engine
     ENGINE.run(numberOfSteps=numberOfSteps, saveFrequency=saveFrequency)
-    
-    
+
+
 #  ####################################################################################  #
 #  ################################## RUN SIMULATION ##################################  #
-## run normal 
+## run normal
 normal_run(numberOfSteps=100000, saveFrequency=50000)
-PDF_CONSTRAINT.set_adjust_scale_factor((10,0.7,1.3)) 
+PDF_CONSTRAINT.set_adjust_scale_factor((10,0.7,1.3))
 normal_run(numberOfSteps=250000, saveFrequency=50000)
 
 ## add first swapping frame
@@ -134,3 +149,7 @@ for _ in range(20):
 
 
 
+
+##########################################################################################
+###################################### CALL plot.py ######################################
+os.system("%s %s"%(sys.executable, os.path.join(DIR_PATH, 'plot.py')))

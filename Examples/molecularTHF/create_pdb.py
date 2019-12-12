@@ -1,11 +1,11 @@
 import os
-from pdbParser.pdbParser import pdbParser
-from pdbParser.Utilities.Construct import AmorphousSystem
-from pdbParser.Utilities.Collection import get_path
+from pdbparser.pdbparser import pdbparser
+from pdbparser.Utilities.Construct import AmorphousSystem
+from pdbparser.Utilities.Collection import get_path
 
 
 # create thf amorphous box
-pdb = pdbParser(os.path.join(get_path("pdbparser"),"Data/Tetrahydrofuran.pdb" ))
+pdb = pdbparser(os.path.join(get_path("pdbparser"),"Data/Tetrahydrofuran.pdb" ))
 #pdb.visualize()
 #exit()
 pdb = AmorphousSystem(pdb, boxSize=[48,48,48], 

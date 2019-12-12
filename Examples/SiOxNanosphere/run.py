@@ -1,7 +1,7 @@
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # imports
-import os
+import os, sys
 import numpy as np
 from fullrmc.Engine import Engine
 from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
@@ -12,11 +12,15 @@ from fullrmc.Core.GroupSelector import RecursiveGroupSelector
 from fullrmc.Selectors.OrderedSelectors import DirectionalOrderSelector
 
 
-  
+
 ##########################################################################################
 #####################################  CREATE ENGINE  ####################################
 # dirname
-DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+try:
+    DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
+except:
+    DIR_PATH = ''
+
 # files name
 grFileName     = "SiOx.gr"
 pdbFileName    = "SiOx.pdb"
@@ -75,8 +79,8 @@ def run_explore(recur=50, saveFreq=10000, ncores=1):
      # number of steps
     nsteps = recur*len(ENGINE.groups)
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=nsteps, ncores=ncores, restartPdb=None)
-        
-def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1): 
+
+def expand_nanoparticule(recur=50, explore=True, refine=False, ncores=1):
     # create expansion selector and explore creating shell layer
     center = np.sum(ENGINE.realCoordinates, axis=0)/ENGINE.realCoordinates.shape[0]
     GS  = DirectionalOrderSelector(ENGINE, center=center, expand=True, adjustMoveGenerators=True)
@@ -102,15 +106,11 @@ run_normal_rmc(nsteps=100000, ncores=NCORES)
 expand_nanoparticule(ncores=NCORES)
 run_normal_rmc(nsteps=100000, ncores=NCORES)
 expand_nanoparticule(ncores=NCORES)
-run_normal_rmc(nsteps=100000, ncores=NCORES)  
-run_normal_rmc(nsteps=100000, ncores=NCORES)  
-run_normal_rmc(nsteps=100000, ncores=NCORES)    
-    
-    
+run_normal_rmc(nsteps=100000, ncores=NCORES)
+run_normal_rmc(nsteps=100000, ncores=NCORES)
+run_normal_rmc(nsteps=100000, ncores=NCORES)
+
+
 ##########################################################################################
-####################################  PLOT CONSTRAINTS  ##################################
-ACNC_CONSTRAINT.plot(show=False)
-EMD_CONSTRAINT.plot(show=False)
-PDF_CONSTRAINT.plot(inter=False, intra=False, shapeFunc=True, legendLoc='upper left')
-
-
+###################################### CALL plot.py ######################################
+os.system("%s %s"%(sys.executable, os.path.join(DIR_PATH, 'plot.py')))

@@ -5,17 +5,19 @@ improper angles between atoms.
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.improper_angles import full_improper_angles_coords
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from ..Core.improper_angles import full_improper_angles_coords
 
 
 
@@ -28,6 +30,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     plane to the improper atom. Therefore the improper angle is defined between
     the improper vector and the plane.
 
+
     +--------------------------------------------------------------------------+
     |.. figure:: improperSketch.png                                            |
     |   :width: 269px                                                          |
@@ -37,13 +40,13 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
     |   Improper angle sketch defined between four atoms.                      |
     +--------------------------------------------------------------------------+
 
+
      .. raw:: html
 
         <iframe width="560" height="315"
         src="https://www.youtube.com/embed/qVATE-9cIBg"
         frameborder="0" allowfullscreen>
         </iframe>
-
 
     :Parameters:
         #. rejectProbability (Number): rejecting probability of all steps
@@ -276,7 +279,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         lower *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         upper *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create improper angle
-        if not self.__angles.has_key(improperIdx):
+        if not improperIdx in self.__angles:
             anglesImproper = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
             anglesImproper = {"oIdx"        :self.__angles[improperIdx]["oIdx"],
@@ -285,7 +288,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                               "improperMap" :self.__angles[improperIdx]["improperMap"],
                               "otherMap"    :self.__angles[improperIdx]["otherMap"] }
         # create anglesO angle
-        if not self.__angles.has_key(oIdx):
+        if not oIdx in self.__angles:
             anglesO = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
             anglesO = {"oIdx"        :self.__angles[oIdx]["oIdx"],
@@ -294,7 +297,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                        "improperMap" :self.__angles[oIdx]["improperMap"],
                        "otherMap"    :self.__angles[oIdx]["otherMap"] }
         # create anglesX angle
-        if not self.__angles.has_key(xIdx):
+        if not xIdx in self.__angles:
             anglesX = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
             anglesX = {"oIdx"        :self.__angles[xIdx]["oIdx"],
@@ -303,7 +306,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                        "improperMap" :self.__angles[xIdx]["improperMap"],
                        "otherMap"    :self.__angles[xIdx]["otherMap"] }
         # create anglesY angle
-        if not self.__angles.has_key(yIdx):
+        if not yIdx in self.__angles:
             anglesY = {"oIdx":[],"xIdx":[],"yIdx":[],"improperMap":[],"otherMap":[]}
         else:
             anglesY = {"oIdx"        :self.__angles[yIdx]["oIdx"],
@@ -405,7 +408,8 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
         existingMoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
-        for mol, angles in anglesDefinition.items():
+        for mol in anglesDefinition:
+            angles = anglesDefinition[mol]
             if mol not in existingMoleculesName:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
@@ -433,10 +437,10 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
             molName = MOLECULES_NAME[idx]
-            if not molName in anglesDef.keys():
+            if not molName in anglesDef:
                 continue
             molIdx = MOLECULES_INDEX[idx]
-            if not mols.has_key(molIdx):
+            if not molIdx in mols:
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
@@ -843,7 +847,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # import matplotlib
         import matplotlib.pyplot as plt
         # get axes
@@ -866,7 +870,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3,a4, L,U  = key
                 L  = L*180./np.pi
                 U  = U*180./np.pi
@@ -905,7 +909,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3,a4, L,U  = key
                 L  = L*180./np.pi
                 U  = U*180./np.pi
@@ -947,7 +951,7 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
         if title:
             FIG.canvas.set_window_title('Improper Angle Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:
@@ -1015,20 +1019,21 @@ class ImproperAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # create data
-        for idx, key in enumerate(categories.keys()):
+        for idx, key in enumerate(categories):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
         # adjust data size
         maxSize = max( [len(v) for v in categories.values()] )
-        for key, data in categories.items():
-            add =  maxSize-len(data)
+        for key in categories:
+            data = categories[key]
+            add  = maxSize-len(data)
             if add > 0:
                 categories[key] = data + ['']*add
         # start creating header and data
-        sortCa = sorted( categories.keys() )
+        sortCa = sorted( categories )
         header = []
         for key in sortCa:
             a1,a2,a3,a4, L,U   = key

@@ -29,16 +29,17 @@ structures such as distances, angles, etc.
     </iframe>
 
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_rotation_matrix, generate_random_float, generate_random_vector
-from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, get_rotation_matrix, generate_random_float, generate_random_vector
+from ..Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
 class DistanceAgitationGenerator(MoveGenerator):

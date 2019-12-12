@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 
 # import matplotlib
@@ -20,6 +21,4 @@ if result:
     EMD.plot(show=False)
     PDF.plot(intra=False, show=True)
 else:
-    print mes
- 
- 
+    print(mes)

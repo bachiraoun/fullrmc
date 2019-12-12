@@ -1,6 +1,7 @@
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
+from __future__ import print_function
 import os, sys, time
 
 # external libraries imports
@@ -8,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER
+from fullrmc.Globals import LOGGER, maxint
 from fullrmc.Engine import Engine
 from fullrmc.Constraints.PairDistributionConstraints import PairDistributionConstraint
 from fullrmc.Constraints.DistanceConstraints import InterMolecularDistanceConstraint
@@ -19,7 +20,7 @@ from fullrmc.Constraints.ImproperAngleConstraints import ImproperAngleConstraint
 
 ##########################################################################################
 ##################################  SHUT DOWN LOGGING  ###################################
-LOGGER.set_minimum_level(sys.maxint, stdoutFlag=True, fileFlag=True)
+LOGGER.set_minimum_level(maxint, stdoutFlag=True, fileFlag=True)
 
 
 ##########################################################################################
@@ -63,7 +64,7 @@ BA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('O'  ,'C1
                                                                       ('C1' ,'H11','O'  , 100, 120),
                                                                       ('C1' ,'H12','O'  , 100, 120),
                                                                       ('C4' ,'H41','O'  , 100, 120),
-                                                                      ('C4' ,'H42','O'  , 100, 120),                                                                           
+                                                                      ('C4' ,'H42','O'  , 100, 120),
                                                                       # H-C-C
                                                                       ('C1' ,'H11','C2' , 103, 123),
                                                                       ('C1' ,'H12','C2' , 103, 123),
@@ -83,7 +84,7 @@ IA_CONSTRAINT.create_angles_by_definition( anglesDefinition={"THF": [ ('C2','O',
 
 ##########################################################################################
 ####################################  DIFFERENT RUNS  ####################################
-def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, improper=False, message=""):                                                                   
+def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, improper=False, message=""):
     # reset pdb
     ENGINE.set_pdb(pdbPath)
     ENGINE.set_groups(groups)
@@ -103,53 +104,53 @@ def run(nsteps, groups=None, pdf=False, vdw=False, bond=False, angle=False, impr
     if pdf:
         message += "pdf,"
     if vdw:
-        message += "vdw,"    
+        message += "vdw,"
     if bond:
-        message += "bond,"    
+        message += "bond,"
     if angle:
-        message += "angle,"      
+        message += "angle,"
     if improper:
-        message += "improper," 
+        message += "improper,"
     message += ") steps (%i) time (%i sec) \n"%(nsteps, spentTime)
     LOGGER.info("generated:%i - tried:%i - accepted:%i"%(ENGINE.generated, ENGINE.tried, ENGINE.accepted))
     LOGGER.info(message)
     return float(spentTime)/float(nsteps), ENGINE.tried , ENGINE.accepted
 
 def benchmark_constraints(groupsList):
-    print "================ Benchmark constraints ================"   
+    print("================ Benchmark constraints ================")
     # run benchmark
     benchmark = {}
     accepted  = {}
     tried     = {}
     for GN in groupsList:
-        print "++++++++ %i atoms per group"%GN   
+        print("++++++++ %i atoms per group"%GN)
         groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,GN) for idx in range(GN)] )]
         benchmark[GN] = {}
         tried[GN]     = {}
         accepted[GN]  = {}
-        print "---- No constraints"
+        print("---- No constraints")
         benchmark[GN]['0001_none'],     tried[GN]['0001_none'] ,     accepted[GN]['0001_none']     = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
-        print "---- PairDistributionConstraint"
+        print("---- PairDistributionConstraint")
         benchmark[GN]['0002_pdf'],      tried[GN]['0002_pdf'] ,      accepted[GN]['0002_pdf']      = run(nsteps=NSTEPS, groups=groups, pdf=True,  vdw=False, bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
-        print "---- InterMolecularDistanceConstraint"
+        print("---- InterMolecularDistanceConstraint")
         benchmark[GN]['0003_vdw'],      tried[GN]['0003_vdw'] ,      accepted[GN]['0003_vdw']      = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=True,  bond=False, angle=False, improper=False, message="atoms (%i) "%GN)
-        print "---- BondConstraint"
+        print("---- BondConstraint")
         benchmark[GN]['0004_bond'],     tried[GN]['0004_bond'] ,     accepted[GN]['0004_bond']     = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=True,  angle=False, improper=False, message="atoms (%i) "%GN)
-        print "---- BondsAngleConstraint"
+        print("---- BondsAngleConstraint")
         benchmark[GN]['0005_angle'],    tried[GN]['0005_angle'] ,    accepted[GN]['0005_angle']    = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=True,  improper=False, message="atoms (%i) "%GN)
-        print "---- ImproperAngleConstraint"
+        print("---- ImproperAngleConstraint")
         benchmark[GN]['0006_improper'], tried[GN]['0006_improper'] , accepted[GN]['0006_improper'] = run(nsteps=NSTEPS, groups=groups, pdf=False, vdw=False, bond=False, angle=False, improper=True,  message="atoms (%i) "%GN)
-        print "---- All constraints"
+        print("---- All constraints")
         benchmark[GN]['0007_all'],      tried[GN]['0007_all'] ,      accepted[GN]['0007_all']      = run(nsteps=NSTEPS, groups=groups, pdf=True,  vdw=True,  bond=True,  angle=True,  improper=True,  message="atoms (%i) "%GN)
-    
+
     # plot
     plt.figure()
-    atoms = sorted(benchmark.keys())
+    atoms = sorted(benchmark)
     bench = [np.array(atoms)]
     accep = [np.array(atoms)]
     tri   = [np.array(atoms)]
     header = "groups "
-    for key in sorted(benchmark[atoms[0]].keys()):
+    for key in sorted(benchmark[atoms[0]]):
         times = np.array( [ benchmark[n][key] for n in atoms] )
         header += " %s"%key.split("_")[1]
         bench.append(times)
@@ -171,15 +172,15 @@ def benchmark_constraints(groupsList):
 
 
 def benchmark_nsteps(constraint, groupSize=13, stepsList=range(5000,105000,5000)):
-    print "================ Benchmark number of steps ================"   
+    print("================ Benchmark number of steps ================")
     CS = {'pdf':False, 'vdw':False, 'bond':False, 'angle':False, 'improper':False}
-    if not constraint in CS.keys():
+    if not constraint in CS:
         if constraint == "all":
-            for k in CS.keys():
+            for k in CS:
                 CS[k]=True
         else:
             assert constraint == "none"
-    print  "++++++++ Used constraints are %s"%CS  
+    print( "++++++++ Used constraints are %s"%CS)
     # set groups
     groups = [np.array(item, dtype=np.int32) for item in zip( *[range(idx,ENGINE.numberOfAtoms,groupSize) for idx in range(groupSize)] )]
     # run benchmark
@@ -188,12 +189,12 @@ def benchmark_nsteps(constraint, groupSize=13, stepsList=range(5000,105000,5000)
     tried     = []
     stepsList = sorted(stepsList)
     for ns in stepsList:
-        print "---- %i steps"%ns
+        print("---- %i steps"%ns)
         bench, tri, accep = run(nsteps=ns, groups=groups, pdf=CS['pdf'], vdw=CS['vdw'], bond=CS['bond'], angle=CS['angle'], improper=CS['improper'], message="atoms (%i) "%groupSize)
         benchmark.append( bench )
         tried.append( tri )
         accepted.append( accep )
-    
+
     # create data
     benchmark = [np.array(stepsList), np.array(benchmark)]
     tried     = [np.array(stepsList), np.array(tried)]
@@ -212,7 +213,7 @@ def benchmark_nsteps(constraint, groupSize=13, stepsList=range(5000,105000,5000)
     np.savetxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize),     X=np.transpose(benchmark), fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
     np.savetxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize),    X=np.transpose(tried),     fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
     np.savetxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize), X=np.transpose(accepted),  fmt='%.10f', delimiter='    ', newline='\n', header="steps timePerStep(s)")
-    
+
 def load_and_plot_constraints_benchmark():
     benchmark = np.loadtxt(fname='benchmark_constraints_time.dat')
     tried     = np.loadtxt(fname='benchmark_constraints_tried.dat')
@@ -221,7 +222,7 @@ def load_and_plot_constraints_benchmark():
     keys = open('benchmark_constraints_time.dat').readlines()[0].split("#")[1].split()
     minY = 0
     maxY = 0
-    for idx in range(1,len(keys)): 
+    for idx in range(1,len(keys)):
         style = '-'
         if keys[idx] == 'all':
             style = '.-'
@@ -230,15 +231,15 @@ def load_and_plot_constraints_benchmark():
         plt.plot(benchmark[:,0], benchmark[:,idx], style, label=keys[idx]+" (%i)"%meanAccepted)
         minY = min(minY, min(benchmark[:,idx]) )
         maxY = max(minY, max(benchmark[:,idx]) )
-    # annotate tried(accepted) 
+    # annotate tried(accepted)
     for i, txt in enumerate( accepted[:,-1] ):
         T = 100*float(tried[i,-1])/float(tried[1,1])
         A = 100*float(accepted[i,-1])/float(tried[1,1])
-        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #"%i (%i)"%( int(tried[i,-1]),int(txt) ), 
+        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #"%i (%i)"%( int(tried[i,-1]),int(txt) ),
                             xy = (benchmark[i,0],benchmark[i,-1]),
                             rotation=90,
                             horizontalalignment='center',
-                            verticalalignment='bottom')     
+                            verticalalignment='bottom')
     # show plot
     plt.legend(frameon=False, loc='upper left')
     plt.xlabel("Number of atoms per group")
@@ -253,24 +254,24 @@ def load_and_plot_constraints_benchmark():
     plt.savefig("benchmark_constraint.png")
     # plot
     plt.show()
-    
+
 def load_and_plot_steps_benchmark(constraint="all", groupSize=13):
     benchmark = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_time.dat'%(constraint,groupSize) )
     tried     = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_tried.dat'%(constraint,groupSize) )
     accepted  = np.loadtxt(fname='benchmark_%sSteps_%iGroupSize_accepted.dat'%(constraint,groupSize) )
     # plot benchmark
     plt.plot(benchmark[:,0], benchmark[:,1])
-    minY = min(benchmark[:,1]) 
-    maxY = max(benchmark[:,1]) 
-    # annotate tried(accepted) 
+    minY = min(benchmark[:,1])
+    maxY = max(benchmark[:,1])
+    # annotate tried(accepted)
     for i, txt in enumerate( accepted[:,-1] ):
         T = 100*float(tried[i,-1])/float(benchmark[i,0])
         A = 100*float(accepted[i,-1])/float(benchmark[i,0])
-        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #str(int(tried[i,-1]))+" ("+str(int(txt))+")", 
+        plt.gca().annotate( "%.2f%% (%.2f%%)"%(T,A),  #str(int(tried[i,-1]))+" ("+str(int(txt))+")",
                             xy = (benchmark[i,0],benchmark[i,-1]),
                             rotation=90,
                             horizontalalignment='center',
-                            verticalalignment='bottom')     
+                            verticalalignment='bottom')
     # show plot
     plt.legend(frameon=False, loc='upper left')
     plt.xlabel("Number of steps")
@@ -285,29 +286,17 @@ def load_and_plot_steps_benchmark(constraint="all", groupSize=13):
     plt.savefig("benchmark_steps.png")
     # plot
     plt.show()
-    
-    
+
+
 
 ##########################################################################################
-#####################################  RUN BENCHMARKS  ################################### 
+#####################################  RUN BENCHMARKS  ###################################
 benchmark_constraints( range(1,30,1) )
 benchmark_nsteps(constraint = 'all', groupSize=13, stepsList=range(5000,105000,5000))
 # show benchmark plots
 plt.show()
 
 ##########################################################################################
-####################################  PLOT BENCHMARKS  ###################################  
+####################################  PLOT BENCHMARKS  ###################################
 #load_and_plot_steps_benchmark()
 #load_and_plot_constraints_benchmark()
-
-
-
-
-
-
-
-        
-
-
-
-        

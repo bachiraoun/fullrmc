@@ -5,17 +5,19 @@ between atoms.
 .. inheritance-diagram:: fullrmc.Constraints.BondConstraints
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.bonds import full_bonds_coords
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from ..Core.bonds import full_bonds_coords
 
 
 
@@ -39,6 +41,14 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         src="https://www.youtube.com/embed/GxmJae9h78E"
         frameborder="0" allowfullscreen>
         </iframe>
+
+
+    +------------------------------------------------------------------------------+
+    |.. figure:: bond_constraint_plot_method.png                                   |
+    |   :width: 530px                                                              |
+    |   :height: 400px                                                             |
+    |   :align: left                                                               |
+    +------------------------------------------------------------------------------+
 
 
     :Parameters:
@@ -236,12 +246,12 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         assert lower>=0, LOGGER.error("bond third item must be positive")
         assert upper>lower, LOGGER.error("bond third item must be smaller than the fourth item")
         # create bonds
-        if not self.__bonds.has_key(idx1):
+        if not idx1 in self.__bonds:
             bondsIdx1 = {"indexes":[],"map":[]}
         else:
             bondsIdx1 = {"indexes":self.__bonds[idx1]["indexes"],
                          "map"    :self.__bonds[idx1]["map"] }
-        if not self.__bonds.has_key(INT_TYPE(idx2)):
+        if not INT_TYPE(idx2) in self.__bonds:
             bondsIdx2 = {"indexes":[],"map":[]}
         else:
             bondsIdx2 = {"indexes":self.__bonds[idx2]["indexes"],
@@ -314,7 +324,8 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         # check map definition
         existingmoleculesName = sorted(set(MOLECULES_NAME))
         bondsDef = {}
-        for mol, bonds in bondsDefinition.items():
+        for mol in bondsDefinition:
+            bonds = bondsDefinition[mol]
             if mol not in existingmoleculesName:
                 LOGGER.warn("Molecule name '%s' in bondsDefinition is not recognized, bonds definition for this particular molecule is omitted"%str(mol))
                 continue
@@ -347,10 +358,10 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
             molName = MOLECULES_NAME[idx]
-            if not molName in bondsDef.keys():
+            if not molName in bondsDef:
                 continue
             molIdx = MOLECULES_INDEX[idx]
-            if not mols.has_key(molIdx):
+            if not molIdx in mols:
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
@@ -624,7 +635,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         BI = self.__bonds[realIndex]['map']
         # append all mapped bonds to collector's random data
         self._atomsCollector._randomData = self._atomsCollector._randomData.union( set(BI) )
-        #print realIndex, BI, self._atomsCollector._randomData
+        #print(realIndex, BI, self._atomsCollector._randomData)
         # collect atom bondIndexes
         self._atomsCollector.collect(realIndex, dataDict={'map':BI})
 
@@ -685,13 +696,6 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         :Returns:
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
-
-        +------------------------------------------------------------------------------+
-        |.. figure:: bond_constraint_plot_method.png                                   |
-        |   :width: 530px                                                              |
-        |   :height: 400px                                                             |
-        |   :align: left                                                               |
-        +------------------------------------------------------------------------------+
         """
         def _get_bins(dmin, dmax, boundaries, nbins):
             # create bins
@@ -749,7 +753,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
             L  = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # get axes
         if ax is None:
             if subplots and ncategories>1:
@@ -770,7 +774,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2, L,U  = key
                 # get label
                 label = "%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)
@@ -796,7 +800,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                     AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
                 # set axis labels
                 if xlabel:
-                    AXES.set_xlabel("$r(\AA)$", size=xlabelSize)
+                    AXES.set_xlabel("$r(\\AA)$", size=xlabelSize)
                 if ylabel:
                     AXES.set_ylabel("$number$"  , size=ylabelSize)
                 if lineWidth is not None:
@@ -807,7 +811,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2, L,U  = key
                 label = "%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)
                 COL   = COLORS[idx%len(COLORS)]
@@ -835,7 +839,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
                 AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
             # set axis labels
             if xlabel:
-                AXES.set_xlabel("$r(\AA)$", size=xlabelSize)
+                AXES.set_xlabel("$r(\\AA)$", size=xlabelSize)
             if ylabel:
                 AXES.set_ylabel("$number$"  , size=ylabelSize)
             # update limits
@@ -845,7 +849,7 @@ class BondConstraint(RigidConstraint, SingularConstraint):
         if title:
             FIG.canvas.set_window_title('Bond Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:
@@ -909,20 +913,21 @@ class BondConstraint(RigidConstraint, SingularConstraint):
             L  = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # create data
-        for idx, key in enumerate(categories.keys()):
+        for idx, key in enumerate(categories):
             idxs = categories[key]
             data = self.data["bondsLength"][idxs]
             categories[key] = [str(d) for d in data]
         # adjust data size
         maxSize = max( [len(v) for v in categories.values()] )
-        for key, data in categories.items():
-            add =  maxSize-len(data)
+        for key in categories:
+            data = categories[key]
+            add  = maxSize-len(data)
             if add > 0:
                 categories[key] = data + ['']*add
         # start creating header and data
-        sortCa = sorted( categories.keys() )
+        sortCa = sorted( categories )
         header = [("%s%s%s(%.2f,%.2f)"%(a1,'-'*(len(a1)>0),a2,L,U)).replace(" ","_") for a1,a2,L,U in sortCa]
         data   = [categories[key] for key in sortCa]
         # save

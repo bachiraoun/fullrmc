@@ -8,8 +8,8 @@ possible to fully customize how a group of atoms should move.
 .. inheritance-diagram:: fullrmc.Core.MoveGenerator
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 import inspect
 from random import randint, shuffle
 
@@ -17,9 +17,10 @@ from random import randint, shuffle
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import ListenerBase, is_number, is_integer, get_path, generate_random_float
-from fullrmc.Core.Collection import _Container
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import ListenerBase, is_number, is_integer, get_path, generate_random_float
+from ..Core.Collection import _Container
 
 
 #class MoveGenerator(ListenerBase):

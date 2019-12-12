@@ -8,18 +8,19 @@ can be chosen to perform a move upon.
 .. inheritance-diagram:: fullrmc.Core.GroupSelector
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 import inspect
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, LOGGER
-from fullrmc.Core.Collection import ListenerBase, is_integer
-from fullrmc.Core.Group import Group
-from fullrmc.Core.MoveGenerator import PathGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import ListenerBase, is_integer
+from ..Core.Group import Group
+from ..Core.MoveGenerator import PathGenerator
 
 
 class GroupSelector(object):
@@ -39,11 +40,11 @@ class GroupSelector(object):
 
     def __getstate__(self):
         state = {}
-        for k, v in self.__dict__.items():
+        for k in self.__dict__:
             if k == '_GroupSelector__engine':
                 state[k] = None
             else:
-                state[k] = v
+                state[k] = self.__dict__[k]
         return state
 
     def _runtime_initialize(self):

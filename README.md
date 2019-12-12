@@ -9,7 +9,7 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 3. Atoms can be grouped into groups so the system can evolve atomically, clusterly, molecularly or any combination of those.
 4. Every group can be assigned a different move generator (translation, rotation, a combination of moves generators, etc).
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
-6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms. 
+6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms.
 
 Next on the list
 ================
@@ -32,14 +32,14 @@ Installation
 * NumPy (lowest version tested is 1.7.1)
 * cython (lowest version tested is 0.21.1)
 * matplotlib (lowest version tested is 1.4)
-* pdbParser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 - 
+* pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 -
   0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
 * pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
-* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is 
+* pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is
   used starting from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
 
 ##### Installation using pip:
-numpy and cython must be installed and updated manually. 
+numpy and cython must be installed and updated manually.
 
 ```bash
 pip install -U "numpy>=1.7.1"
@@ -48,7 +48,7 @@ pip install fullrmc
 ```
 
 ##### Installation by cloning github repository
-Ensure all fullrmc required packages are installed and up to data by executing the 
+Ensure all fullrmc required packages are installed and up to data by executing the
 following python script:
 ```python
 # check whether all packages are already installed
@@ -79,11 +79,11 @@ Navigate to site_packages folder and clone git repository from command line:
 ```bash
 cd .../site_packages
 git clone https://github.com/bachiraoun/fullrmc.git  
-``` 
+```
 Change directory to .../site_packages/fullrmc/Extensions. Then compile fullrmc extensions from command line as the following:
 ```bash
 cd .../site_packages/fullrmc/Extensions
-python setup.py build_ext --inplace 
+python setup.py build_ext --inplace
 ```
 
 Online documentation
@@ -92,7 +92,7 @@ http://bachiraoun.github.io/fullrmc/
 
 Citing fullrmc
 ==============
-If you use fullrmc in a scientific publication, 
+If you use fullrmc in a scientific publication,
 we would appreciate citations to the following paper:
 
 
@@ -100,7 +100,7 @@ we would appreciate citations to the following paper:
 
 Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304
 
-**Bibtex entry:** 
+**Bibtex entry:**
 ```
 
     @article {JCC:JCC24304,
@@ -118,12 +118,12 @@ Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
     }
 ```
 
-**EndNote entry:** 
+**EndNote entry:**
 ```
-    
+
     Provider: John Wiley & Sons, Ltd
     Content:text/plain; charset="UTF-8"
-    
+
     TY  - JOUR
     AU  - Aoun, Bachir
     TI  - Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence
@@ -142,11 +142,10 @@ Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled 
     KW  - pair distribution function
     KW  - modeling
     PY  - 2016
-    ER  - 
+    ER  -
 ```
 
-    
+
 Authors and developers
 ======================
-* [Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer) 
-
+* [Bachir Aoun](https://www.linkedin.com/in/bachiraoun) (Author, Developer)

@@ -1,17 +1,16 @@
 """
 Collection of methods and classes definition useful for constraints computation
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc library imports
-from fullrmc.Globals import LOGGER, FLOAT_TYPE, PI
-from fullrmc.Core.Collection import is_number
-
-
+from ..Globals import LOGGER, FLOAT_TYPE, PI
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, get_caller_frames
 
 class ShapeFunction(object):
     """
@@ -57,10 +56,19 @@ class ShapeFunction(object):
         assert dq>0, LOGGER.error("dq '%s' must be bigger than 0"%dq)
         # import StructureFactorConstraint
         from fullrmc.Constraints.StructureFactorConstraints import StructureFactorConstraint
+        # overload constraint
+        class _ShapeFunctionStructureFactor(StructureFactorConstraint):
+            """This overloading is needed to avoid the constraint being
+            saved upon setting the different properties"""
+            def _get_repository(self, *args, **kwargs):
+                return None
+            def _dump_to_repository(self, *args, **kwargs):
+                return
         # create StructureFactorConstraint
         Q = np.arange(qmin, qmax, dq)
         D = np.transpose([Q, np.zeros(len(Q))]).astype(FLOAT_TYPE)
-        self._SFC = StructureFactorConstraint(rmin=rmin, rmax=rmax, dr=dr, experimentalData=D, weighting="atomicNumber")
+        #self._SFC = StructureFactorConstraint(rmin=rmin, rmax=rmax, dr=dr, experimentalData=D, weighting="atomicNumber")
+        self._SFC = _ShapeFunctionStructureFactor(rmin=rmin, rmax=rmax, dr=dr, experimentalData=D, weighting="atomicNumber")
         self._SFC._set_engine(engine)
         self._SFC.listen(message="engine set")
         # set parameters
@@ -99,7 +107,7 @@ class ShapeFunction(object):
         # get shape function
         return self.__get_Gr_from_Sq( qValues=self._SFC.experimentalQValues,
                                       rValues=rValues,
-                                      Sq=self._SFC.get_constraint_value()['sf'])
+                                      Sq=self._SFC.get_constraint_value()['total'])
 
     def get_gr_shape_function(self, rValues, compute=True):
         """

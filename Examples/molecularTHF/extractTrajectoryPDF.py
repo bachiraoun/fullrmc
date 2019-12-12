@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import time
 import os
 import itertools
@@ -23,21 +24,21 @@ def plot(output, figName, imgpath, show=True, save=True):
     FIG.patch.set_facecolor('white')
     grid = gridspec.GridSpec(nrows=2, ncols=3, width_ratios=[2, 1, 1])
     grid.update(left=0.0, right=0.95, wspace=0.05)
-    
+
     imagAx  = plt.subplot(grid[:, 0])
     totalAx = plt.subplot(grid[0, 1:])
     lowRAx  = plt.subplot(grid[1, 1])
     highRAx = plt.subplot(grid[1, 2])
-    
+
     # plot image
     image = mpimg.imread(imgpath)
     imagAx.imshow(image)
-    
+
     # set axis ticks
     imagAx.set_axis_off()
     highRAx.get_yaxis().set_ticks([])
     lowRAx.get_yaxis().set_ticks([])
-    
+
     # Create plotting styles
     colors = ["b",'g','r','c','m','y']
     markers = ["",'.','+','^','|']
@@ -49,7 +50,7 @@ def plot(output, figName, imgpath, show=True, save=True):
     # plot
     experimentalPDF = output["observed"]
     experimentalDistances = output["observedR"]
-    shellsCenter = output["computedR"] 
+    shellsCenter = output["computedR"]
 
     totalAx.plot(experimentalDistances, experimentalPDF, 'ro', label="observed", markersize=7.5, markevery=1 )
     lowRAx.plot(experimentalDistances, experimentalPDF, 'ro', label="observed", markersize=7.5, markevery=1 )
@@ -57,10 +58,11 @@ def plot(output, figName, imgpath, show=True, save=True):
     totalAx.plot(shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
     lowRAx.plot(shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
     highRAx.plot(shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-     
+
     intraStyleIndex = 0
     interStyleIndex = 0
-    for key, val in output.items():
+    for key in output:
+        val = output[key]
         if key in ("pdf_total", "pdf"):
             continue
         elif "intra" in key:
@@ -73,35 +75,35 @@ def plot(output, figName, imgpath, show=True, save=True):
             lowRAx.plot(shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key.split("pdf_")[1] )
             highRAx.plot(shellsCenter, val, INTRA_STYLES[intraStyleIndex], markevery=5, label=key.split("pdf_")[1] )
             interStyleIndex+=1
-            
-    # set legend        
+
+    # set legend
     totalAx.legend(ncol=2, frameon=False, fontsize=20)
-    
+
     # set chisquare
     imagAx.text(.5,0.95,"$\chi^2=%.6f$"%output['chiSquare'], fontsize=35,
                 horizontalalignment='center',
                 transform=imagAx.transAxes)
-            
+
     # remove y ticks labels
     lowRAx.set_yticklabels([])
     highRAx.set_yticklabels([])
-    
+
     # set x limits
     lowRAx.relim()
     highRAx.relim()
     lowRAx.set_xlim([0.5,2.6])
     highRAx.set_xlim([3,16])
-    
+
     # set y limits
     lowRAx.set_ylim(top=6.5)
     highRAx.set_ylim(top=1.5)
-    
+
     # show plot
-    if show: plt.show()  
+    if show: plt.show()
     if save: FIG.savefig(figName)
     plt.close(FIG)
-    
-    
+
+
 # set logger file flag
 LOGGER.set_log_to_file_flag(False)
 LOGGER.set_log_to_stdout_flag(False)
@@ -115,7 +117,7 @@ pdbFiles  = [fn for fn in os.listdir("pdbFiles") if ".pdb" in fn]
 generated = [int(fn.split("_")[0]) for fn in pdbFiles]
 pdbFiles = [os.path.join("pdbFiles",pdbFiles[idx]) for idx in  np.argsort(generated)]
 
-if os.path.isfile(pdfDataPath): 
+if os.path.isfile(pdfDataPath):
     data = pickle.load( open( pdfDataPath, "rb" ) )
 else:
     data = {}
@@ -124,9 +126,9 @@ else:
 dataAdded = False
 for idx in range(len(pdbFiles)):
     fname = pdbFiles[idx]
-    if data.has_key(fname): continue
+    if fname in data: continue
     dataAdded = True
-    print "loading frame %i out of %i"%(idx, len(pdbFiles))
+    print("loading frame %i out of %i"%(idx, len(pdbFiles)))
     # create constraints
     PDF = PairDistributionConstraint(engine=None, experimentalData=expDataPath, weighting="atomicNumber")
     # create engine
@@ -139,7 +141,7 @@ for idx in range(len(pdbFiles)):
     output["computedR"] =  PDF.shellsCenter
     output["chiSquare"] =  ENGINE.chiSquare
     data[fname] = output
-    
+
 if dataAdded: pickle.dump( data, open( pdfDataPath, "wb" ) )
 
 

@@ -60,16 +60,17 @@ Translations contains all translation like MoveGenerator classes.
     </iframe>
 
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle, generate_random_float, generate_random_vector
-from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, get_path, get_principal_axis, generate_vectors_in_solid_angle, generate_random_float, generate_random_vector
+from ..Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
 class TranslationGenerator(MoveGenerator):
@@ -904,7 +905,7 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         """
         assert isinstance(center, dict), LOGGER.error("center must be a dictionary")
         assert len(center) == 1, LOGGER.error("center must have a single key")
-        key = center.keys()[0]
+        key = list(center)[0]
         val = center[key]
         assert isinstance(val, (list,set,tuple,np.ndarray)), LOGGER.error("center value must be a list")
         if isinstance(val, np.ndarray):

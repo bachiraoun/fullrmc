@@ -5,17 +5,19 @@ improper angles between bonded atoms.
 .. inheritance-diagram:: fullrmc.Constraints.ImproperAngleConstraints
     :parts: 1
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
-from fullrmc.Core.Constraint import Constraint, SingularConstraint, RigidConstraint
-from fullrmc.Core.dihedral_angles import full_dihedral_angles_coords
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, raise_if_collected, reset_if_collected_out_of_date
+from ..Core.Collection import get_caller_frames
+from ..Core.Constraint import Constraint, SingularConstraint, RigidConstraint
+from ..Core.dihedral_angles import full_dihedral_angles_coords
 
 
 
@@ -26,6 +28,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
     with defined atoms. Dihedral angle constraint can control up to three
     angle shells at the same times.
 
+
     +---------------------------------------------------------------------------+
     |.. figure:: dihedralSketch.png                                             |
     |   :width: 312px                                                           |
@@ -34,6 +37,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
     |                                                                           |
     |   Dihedral angle sketch defined between two planes formed with four atoms.|
     +---------------------------------------------------------------------------+
+
 
      .. raw:: html
 
@@ -351,7 +355,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         #lower3 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         #upper3 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
         # create dihedral angles1
-        if not self.__angles.has_key(idx1):
+        if not idx1 in self.__angles:
             angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
             angles1 = {"idx2"        :self.__angles[idx1]["idx2"],
@@ -360,7 +364,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                        "dihedralMap" :self.__angles[idx1]["dihedralMap"],
                        "otherMap"    :self.__angles[idx1]["otherMap"] }
         # create dihedral angle2
-        if not self.__angles.has_key(idx2):
+        if not idx2 in self.__angles:
             angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
             angles2 = {"idx2"        :self.__angles[idx2]["idx2"],
@@ -369,7 +373,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                        "dihedralMap" :self.__angles[idx2]["dihedralMap"],
                        "otherMap"    :self.__angles[idx2]["otherMap"] }
         # create dihedral angle3
-        if not self.__angles.has_key(idx3):
+        if not idx3 in self.__angles:
             angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
             angles3 = {"idx2"        :self.__angles[idx3]["idx2"],
@@ -378,7 +382,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                        "dihedralMap" :self.__angles[idx3]["dihedralMap"],
                        "otherMap"    :self.__angles[idx3]["otherMap"] }
         # create dihedral angle4
-        if not self.__angles.has_key(idx4):
+        if not idx4 in self.__angles:
             angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
         else:
             angles4 = {"idx2"        :self.__angles[idx4]["idx2"],
@@ -502,7 +506,8 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         MOLECULES_INDEX = self.engine.get_original_data("moleculesIndex")
         existingMoleculesName = sorted(set(MOLECULES_NAME))
         anglesDef = {}
-        for mol, angles in anglesDefinition.items():
+        for mol in anglesDefinition:
+            angles = anglesDefinition[mol]
             if mol not in existingMoleculesName:
                 log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
@@ -530,10 +535,10 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         mols = {}
         for idx in xrange(NUMBER_OF_ATOMS):
             molName = MOLECULES_NAME[idx]
-            if not molName in anglesDef.keys():
+            if not molName in anglesDef:
                 continue
             molIdx = MOLECULES_INDEX[idx]
-            if not mols.has_key(molIdx):
+            if not molIdx in mols:
                 mols[molIdx] = {"name":molName, "indexes":[], "names":[]}
             mols[molIdx]["indexes"].append(idx)
             mols[molIdx]["names"].append(ALL_NAMES[idx])
@@ -963,7 +968,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # import matplotlib
         import matplotlib.pyplot as plt
         # get axes
@@ -986,7 +991,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # start plotting
         COLORS = ["b",'g','r','c','y','m']
         if subplots:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
                 LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
                 LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
@@ -1025,7 +1030,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 AXES.set_xmargin(0.1)
                 AXES.autoscale()
         else:
-            for idx, key in enumerate(categories.keys()):
+            for idx, key in enumerate(categories):
                 a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
                 LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
                 LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
@@ -1066,7 +1071,7 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         if title:
             FIG.canvas.set_window_title('Dihedral Angle Constraint')
             if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\_')
+                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
             else:
                 t = ''
             if titleAtRem:
@@ -1143,20 +1148,21 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             L = categories.get(k, [])
             L.append(idx)
             categories[k] = L
-        ncategories = len(categories.keys())
+        ncategories = len(categories)
         # create data
-        for idx, key in enumerate(categories.keys()):
+        for idx, key in enumerate(categories):
             idxs = categories[key]
             data = self.data["angles"][idxs]
             categories[key] = [str(d) for d in data]
         # adjust data size
         maxSize = max( [len(v) for v in categories.values()] )
-        for key, data in categories.items():
-            add =  maxSize-len(data)
+        for key in categories:
+            data = categories[key]
+            add  = maxSize-len(data)
             if add > 0:
                 categories[key] = data + ['']*add
         # start creating header and data
-        sortCa = sorted( categories.keys() )
+        sortCa = sorted( categories )
         header = []
         for key in sortCa:
             a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key

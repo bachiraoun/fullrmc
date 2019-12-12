@@ -1,4 +1,5 @@
 # standard libraries imports
+from __future__ import print_function
 import os
 import itertools
 
@@ -13,7 +14,7 @@ from fullrmc.Constraints.PairCorrelationConstraints import PairDistributionConst
 ENGINE =  Engine(path=None)
 ENGINE.set_pdb('system.pdb')
 PDF_CONSTRAINT = PairDistributionConstraint(experimentalData="experimental.gr", weighting="atomicNumber")
-ENGINE.add_constraints([PDF_CONSTRAINT]) 
+ENGINE.add_constraints([PDF_CONSTRAINT])
 
 # Create plotting styles
 colors = ["b",'g','r','c','m','y']
@@ -26,9 +27,10 @@ def plot(PDF, figName, imgpath, show=False, save=True):
     output = PDF.get_constraint_value()
     plt.plot(PDF.experimentalDistances,PDF.experimentalPDF, 'ro', label="experimental", markersize=7.5, markevery=1 )
     plt.plot(PDF.shellsCenter, output["pdf"], 'k', linewidth=3.0,  markevery=25, label="total" )
-    
+
     styleIndex = 0
-    for key, val in output.items():
+    for key in output:
+        val = output[key]
         if key in ("pdf_total", "pdf"):
             continue
         elif "inter" in key:
@@ -41,12 +43,12 @@ def plot(PDF, figName, imgpath, show=False, save=True):
     plt.ylabel("$g(r)$", size=20)
     # show plot
     if save: plt.savefig(figName)
-    if show: plt.show()  
+    if show: plt.show()
     plt.close()
-    
-    
+
+
 for num in sorted( [int(item.split('.pdb')[0]) for item in os.listdir("pdbFiles")] ):
-   print str(num)+".pdb"
+   print(str(num)+".pdb")
    pdbPath = os.path.join("pdbFiles", str(num)+".pdb")
    figName = os.path.join("pdfFigures",str(num)+".png")
    imgpath = "pdfFigures"

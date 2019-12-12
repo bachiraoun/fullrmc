@@ -1,7 +1,7 @@
 ##########################################################################################
 ##############################  IMPORTING USEFUL DEFINITIONS  ############################
 # standard libraries imports
-import os
+import os, sys
 
 # external libraries imports
 import numpy as np
@@ -25,7 +25,7 @@ DIR_PATH = os.path.dirname( os.path.realpath(__file__) )
 engineFileName = "engine.rmc"
 grFileName     = "experimental.gr"
 sqFileName     = "experimental.fq"
-pdbFileName    = "system.pdb" 
+pdbFileName    = "system.pdb"
 # engine variables
 grExpPath      = os.path.join(DIR_PATH, grFileName)
 sqExpPath      = os.path.join(DIR_PATH, sqFileName)
@@ -42,18 +42,18 @@ if not ENGINE.is_engine(engineFilePath) or FRESH_START:
     ENGINE.set_pdb(pdbFileName)
     # add G(r) constraint
     PDF_CONSTRAINT = PairDistributionConstraint(experimentalData=grExpPath, weighting="atomicNumber")
-    ENGINE.add_constraints([PDF_CONSTRAINT]) 
+    ENGINE.add_constraints([PDF_CONSTRAINT])
     # Rebin S(Q) experimental data and build constraint
     Sq = np.transpose( rebin(np.loadtxt(sqExpPath) , bin=0.05) ).astype(FLOAT_TYPE)
     RSF_CONSTRAINT = ReducedStructureFactorConstraint(experimentalData=Sq, weighting="atomicNumber")
     ENGINE.add_constraints([RSF_CONSTRAINT])
     # add coordination number constraint and set to un-used
     ACN_CONSTRAINT = AtomicCoordinationNumberConstraint()
-    ENGINE.add_constraints([ACN_CONSTRAINT]) 
-    ACN_CONSTRAINT.set_used(False)
+    ENGINE.add_constraints([ACN_CONSTRAINT])
+    #ACN_CONSTRAINT.set_used(False)
     # add inter-molecular distance constraint
     EMD_CONSTRAINT = InterMolecularDistanceConstraint(defaultDistance=2.2, flexible=True)
-    ENGINE.add_constraints([EMD_CONSTRAINT]) 
+    ENGINE.add_constraints([EMD_CONSTRAINT])
     # save engine
     ENGINE.save()
 else:
@@ -62,16 +62,16 @@ else:
     PDF_CONSTRAINT, RSF_CONSTRAINT, ACN_CONSTRAINT, EMD_CONSTRAINT = ENGINE.constraints
 
 ##########################################################################################
-#####################################  DIFFERENT RUNS  ################################### 
+#####################################  DIFFERENT RUNS  ###################################
 def run_normal(nsteps, saveFrequency, engineFilePath):
     ENGINE.set_groups_as_atoms()
     ENGINE.run(numberOfSteps=nsteps, saveFrequency=saveFrequency)
 
 def run_swap(nsteps, saveFrequency, engineFilePath):
     # activate coordination number. Play with definition and set_used to True
-    ACN_CONSTRAINT.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8), 
+    ACN_CONSTRAINT.set_coordination_number_definition( [ ('ti','ti',2.5, 3.5, 4, 8),
                                                          ('ti','ni',2.2, 3.1, 6, 10),
-                                                         ('ni','ni',2.5, 3.5, 4, 8), 
+                                                         ('ni','ni',2.5, 3.5, 4, 8),
                                                          ('ni','ti',2.2, 3.1, 6, 10) ] )
     ACN_CONSTRAINT.set_used(False)
     # reset groups
@@ -97,29 +97,25 @@ def run_swap(nsteps, saveFrequency, engineFilePath):
 ## run normal 10 times for 10000 step each time
 for _ in range(10):
     run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
-    
-## start fitting scale factors each 10 accepted moves
-PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2)) 
+
+### start fitting scale factors each 10 accepted moves
+PDF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2))
 RSF_CONSTRAINT.set_adjust_scale_factor((10, 0.8, 1.2))
 
-## run normal 100 times for 9000 step each time 
+## run normal 100 times for 9000 step each time
 for _ in range(50):
     run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
-    
+
 ## run swaping 100 times for 1000 step each time
-#ACN_CONSTRAINT.set_used(False)  
+#ACN_CONSTRAINT.set_used(False)
 for _ in range(100):
     run_swap(nsteps=1000, saveFrequency=1000, engineFilePath=engineFilePath)
 
-## run normal 100 times for 9000 step each time 
+## run normal 100 times for 9000 step each time
 for _ in range(10):
     run_normal(nsteps=10000, saveFrequency=10000, engineFilePath=engineFilePath)
 
-    
+
 ##########################################################################################
-##################################  PLOT PDF CONSTRAINT  #################################
-PDF_CONSTRAINT.plot(intra=False,show=False)
-RSF_CONSTRAINT.plot(intra=False,show=False)
-ACN_CONSTRAINT.plot(show=False)
-EMD_CONSTRAINT.plot(show=True)
-    
+###################################### CALL plot.py ######################################
+os.system("%s %s"%(sys.executable, os.path.join(DIR_PATH, 'plot.py')))

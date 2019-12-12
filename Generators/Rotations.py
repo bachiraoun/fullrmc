@@ -41,16 +41,17 @@ Rotations contains all rotation like MoveGenerator classes.
     </iframe>
 
 """
-
 # standard libraries imports
+from __future__ import print_function
 
 # external libraries imports
 import numpy as np
 
 # fullrmc imports
-from fullrmc.Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
-from fullrmc.Core.Collection import is_number, is_integer, get_path, generate_random_float, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle, generate_random_vector
-from fullrmc.Core.MoveGenerator import MoveGenerator, PathGenerator
+from ..Globals import INT_TYPE, FLOAT_TYPE, PI, PRECISION, LOGGER
+from ..Globals import str, long, unicode, bytes, basestring, range, xrange, maxint
+from ..Core.Collection import is_number, is_integer, get_path, generate_random_float, get_principal_axis, get_rotation_matrix, orient, generate_vectors_in_solid_angle, generate_random_vector
+from ..Core.MoveGenerator import MoveGenerator, PathGenerator
 
 
 class RotationGenerator(MoveGenerator):
@@ -636,7 +637,7 @@ class OrientationGenerator(MoveGenerator):
         """
         assert isinstance(groupAxis, dict), LOGGER.error("groupAxis must be a dictionary")
         assert len(groupAxis) == 1, LOGGER.error("groupAxis must have a single key")
-        key = groupAxis.keys()[0]
+        key = groupAxis[0]
         val = groupAxis[key]
         if key == "fixed":
             self.__mustComputeGroupAxis = False
@@ -676,7 +677,7 @@ class OrientationGenerator(MoveGenerator):
         """
         assert isinstance(orientationAxis, dict), LOGGER.error("orientationAxis must be a dictionary")
         assert len(orientationAxis) == 1, LOGGER.error("orientationAxis must have a single key")
-        key = orientationAxis.keys()[0]
+        key = orientationAxis[0]
         val = orientationAxis[key]
         if key == "fixed":
             self.__mustComputeOrientationAxis = False
@@ -692,7 +693,7 @@ class OrientationGenerator(MoveGenerator):
             val /= norm
         elif key == "symmetry":
             self.__mustComputeOrientationAxis = True
-            assert isintance(val, (list, tuple)), LOGGER.error("orientationAxis symmetry value must be a list")
+            assert isinstance(val, (list, tuple)), LOGGER.error("orientationAxis symmetry value must be a list")
             assert len(val) == 2, LOGGER.error("orientationAxis symmetry value must be a list of two items")
             val0 = []
             for v in val[0]:

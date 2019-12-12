@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Relative path &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Relative path &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,10 +22,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-    
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -33,11 +37,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -47,20 +51,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -68,9 +73,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -81,7 +86,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -96,13 +101,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -115,9 +120,9 @@
 <div class="section" id="description">
 <h1>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h1>
 <p>A box of 3375 Nickel atoms and 3375 Titanium which makes a total of 6750 arranged
-in a body centred cubic crystal of length <span class="math">\(3.05 \AA\)</span>. x-rays pair distribution
+in a body centred cubic crystal of length <span class="math notranslate nohighlight">\(3.05 \AA\)</span>. x-rays pair distribution
 function and Atomic Structure Factor are used simultaneously to build and fit a model.
-In this example, it was necessary to use <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> in order to
+In this example, it was necessary to use <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a> in order to
 fit long ranger ordering. This example was used to generate the
 <a class="reference external" href="https://youtu.be/yTnCAw1DK3Q?list=PLdnpUo5ObkNbe4ZPe9ndormg2qUFbOmco">swap video</a>
 as seen in the online documentation.</p>
@@ -130,8 +135,8 @@ as seen in the online documentation.</p>
 <li>experimental.fq: The x-rays experimental reduced structure factor data.</li>
 <li>run.py: The script file used to run the simulation.</li>
 <li>plot.py: The script file to plot the last saved engine state of
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a> and
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></code></a> constraints data.</li>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a> constraints data.</li>
 <li>visualize.py: The script file to visualize the last save configuration
 using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>. if installed.</li>
 </ol>
@@ -143,29 +148,29 @@ using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">
 <p><span class="underline">CREATE ENGINE:</span></p>
 <p>Check if engine already saved on disk. In the affirmative load it to continue
 fitting from last saved configuration. Otherwise, build the engine and the needed
-constraints. In this particular example, &#8216;experimental.fq&#8217; has no regular bins.
-Therefore, rebinning it needs to be rebinned using &#8216;fullrmc.Core.Collection.rebin&#8217;
-function. Even though engine contains <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a>
+constraints. In this particular example, ‘experimental.fq’ has no regular bins.
+Therefore, rebinning it needs to be rebinned using ‘fullrmc.Core.Collection.rebin’
+function. Even though engine contains <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a>
 we decided to discard this constraint upon fitting by using set_used method and
-assigned &#8216;used&#8217; flag to False.</p>
+assigned ‘used’ flag to False.</p>
 <p><span class="underline">DIFFERENT RUNS:</span></p>
 <p>Define functions to run the fitting engine. All of the following functions finish
 running the engine using Engine.run method.</p>
 <ol class="arabic simple">
 <li>run_normal: used set_groups(None) which is equivalent to creating
 a group per atom. Here the engine runs traditional RMC with
-random selection of groups using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">RandomSelector</span></code></a> and random
-atomic translations using <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a> move
+random selection of groups using <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomSelector</span></code></a> and random
+atomic translations using <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationGenerator</span></code></a> move
 generator.</li>
 <li>run_swap: used set_groups(None) which is equivalent to creating
 a group per atom. Create two swapping lists. The first one containing
 only all Nickel atoms indexes and the second only Titanium atoms indexes.
-Create two <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> for swapping Nickel atoms with
-Titanium and the other the opposite. Loop over all engine&#8217;s groups, check
-whether group&#8217;s atom is Nickel or Titanium and assign it respectively
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> to Titanium atoms and another
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal"><span class="pre">SwapPositionsGenerator</span></code></a> to Nickel atoms.
-Advanced users can change <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> used flag
+Create two <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a> for swapping Nickel atoms with
+Titanium and the other the opposite. Loop over all engine’s groups, check
+whether group’s atom is Nickel or Titanium and assign it respectively
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a> to Titanium atoms and another
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a> to Nickel atoms.
+Advanced users can change <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> used flag
 to True and try playing with the given coordination number definition and improve
 the fit quality and the physical meaning of the final structure.</li>
 </ol>
@@ -175,8 +180,8 @@ This sampling is not needed but it was done as such for the purpose of saving
 different pdb file snapshots at different stages of the fitting. At the end
 run_swap is called to fit long range order correlations.</p>
 <p><span class="underline">PLOT PDF CONSTRAINT:</span></p>
-<p>Plotting simultaneously <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal"><span class="pre">PairDistributionConstraint</span></code></a> and
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal"><span class="pre">ReducedStructureFactorConstraint</span></code></a> data after fitting.</p>
+<p>Plotting simultaneously <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a> data after fitting.</p>
 </div>
 
 
@@ -186,7 +191,7 @@ run_swap is called to fit long range order correlations.</p>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Relative path</a></li>
 <li><a class="reference internal" href="#description">Description</a></li>
@@ -196,12 +201,14 @@ run_swap is called to fit long range order correlations.</p>
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -222,7 +229,7 @@ run_swap is called to fit long range order correlations.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

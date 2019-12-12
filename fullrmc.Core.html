@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +22,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
-    
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -35,11 +39,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -49,20 +53,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -70,9 +75,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -83,7 +88,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -110,13 +115,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -128,11 +133,53 @@
 <span id="collection"></span><h2>Collection<a class="headerlink" href="#module-fullrmc.Core.Collection" title="Permalink to this headline">¶</a></h2>
 <p>It contains a collection of methods and classes that are useful for the package.</p>
 <dl class="function">
+<dt id="fullrmc.Core.Collection.get_caller_frames">
+<code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">get_caller_frames</code><span class="sig-paren">(</span><em>engine</em>, <em>frame</em>, <em>subframeToAll</em>, <em>caller</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.get_caller_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of frames for a function caller.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (None, Engine): The stochastic engine in consideration.</li>
+<li>frame (None, string): The frame name. If engine is given as
+None, only None will be accepted as frame value.</li>
+<li>subframeToAll (boolean): If frame is a subframe then all multiframe
+subframes must be considered.</li>
+<li>caller (string): Caller name for logging and debugging purposes.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>usedIncluded (boolean): Whether engine used frame is included in
+the built frames list. If frame is given as None, True will always
+be returned.</li>
+<li>frame (string): The given frame in parameters. If subframe is given
+and subframeToAll is True, then multiframe is returned.</li>
+<li>allFrames (list): List of all frames.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">fullrmc.Core.Collection</span> <span class="kn">import</span> <span class="n">get_caller_frames</span>
+
+<span class="c1"># Assuming self is a constraint and get_caller_frames is called from within a method ...</span>
+<span class="n">usedIncluded</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="n">allFrames</span> <span class="o">=</span> <span class="n">get_caller_frames</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">engine</span><span class="p">,</span>
+                                                   <span class="n">frame</span><span class="o">=</span><span class="s1">&#39;frame_name&#39;</span><span class="p">,</span>
+                                                   <span class="n">subframeToAll</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                   <span class="n">caller</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span><span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">3</span><span class="p">])</span> <span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
 <dt id="fullrmc.Core.Collection.get_real_elements_weight">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">get_real_elements_weight</code><span class="sig-paren">(</span><em>elements</em>, <em>weightsDict</em>, <em>weighting</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.get_real_elements_weight" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get elements weights given a dictionary of weights and a weighting scheme.
 If element weight is not defined in weightsDict then weight is fetched
-from pdbParser elements database using weighting scheme.</p>
+from pdbparser elements database using weighting scheme.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -224,7 +271,7 @@ a precision should be given.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>start (time.time): A time instance.</li>
-<li>format (string): The format string. must contain exactly four &#8216;%d&#8217;.</li>
+<li>format (string): The format string. must contain exactly four ‘%d’.</li>
 </ol>
 </td>
 </tr>
@@ -270,11 +317,11 @@ it can take any of the following:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>cwd:                 current working directory</li>
-<li>script:              the script&#8217;s total path</li>
+<li>script:              the script’s total path</li>
 <li>exe:                 python executable path</li>
 <li>script_name:         the script name</li>
-<li>relative_script_dir: the script&#8217;s relative directory path</li>
-<li>script_dir:          the script&#8217;s absolute directory path</li>
+<li>relative_script_dir: the script’s relative directory path</li>
+<li>script_dir:          the script’s absolute directory path</li>
 <li>fullrmc:             fullrmc package path</li>
 </ol>
 </div></blockquote>
@@ -331,7 +378,7 @@ second column experimental data values.</li>
 <li>data (numpy.ndarray): the 1D numpy data.</li>
 <li>winLen (integer): the smoothing window length.</li>
 <li>window (str): The smoothing window type. Can be anything among
-&#8216;flat&#8217;, &#8216;hanning&#8217;, &#8216;hamming&#8217;, &#8216;bartlett&#8217; and &#8216;blackman&#8217;.</li>
+‘flat’, ‘hanning’, ‘hamming’, ‘bartlett’ and ‘blackman’.</li>
 <li>check (boolean): whether to check arguments before smoothing data.</li>
 </ol>
 </td>
@@ -636,7 +683,7 @@ points z coordinates.</li>
 <dt id="fullrmc.Core.Collection.convert_Gr_to_gr">
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">convert_Gr_to_gr</code><span class="sig-paren">(</span><em>Gr</em>, <em>minIndex</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.convert_Gr_to_gr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts G(r) to g(r) by computing the following
-<span class="math">\(g(r)=1+(\frac{G(r)}{4 \pi \rho_{0} r})\)</span></p>
+<span class="math notranslate nohighlight">\(g(r)=1+(\frac{G(r)}{4 \pi \rho_{0} r})\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -652,7 +699,7 @@ compute the mean slope instead.</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>minimas (numpy.ndarray): The minimas array found using minIndex
-and used to compute the slope and therefore <span class="math">\(\rho_{0}\)</span>.</li>
+and used to compute the slope and therefore <span class="math notranslate nohighlight">\(\rho_{0}\)</span>.</li>
 <li>slope (float): The computed slope from the minimas.</li>
 <li>rho0 (float): The number density of the material.</li>
 <li>g(r) (numpy.ndarray): the computed g(r).</li>
@@ -662,10 +709,10 @@ and used to compute the slope and therefore <span class="math">\(\rho_{0}\)</spa
 </tbody>
 </table>
 <p><strong>To visualize convertion</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># peak indexes can be different, adjust according to your data</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># peak indexes can be different, adjust according to your data</span>
 <span class="n">minPeaksIndex</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
 <span class="n">minimas</span><span class="p">,</span> <span class="n">slope</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">gr</span> <span class="o">=</span>  <span class="n">convert_Gr_to_gr</span><span class="p">(</span><span class="n">Gr</span><span class="p">,</span> <span class="n">minIndex</span><span class="o">=</span><span class="n">minPeaksIndex</span><span class="p">)</span>
-<span class="k">print</span> <span class="s1">&#39;slope: </span><span class="si">%s</span><span class="s1"> --&gt; rho0: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span><span class="n">rho0</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;slope: </span><span class="si">%s</span><span class="s1"> --&gt; rho0: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">slope</span><span class="p">,</span><span class="n">rho0</span><span class="p">))</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="n">line</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="n">Gr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">slope</span><span class="o">*</span><span class="n">Gr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]]]</span> <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">Gr</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span><span class="n">Gr</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;G(r)&#39;</span><span class="p">)</span>
@@ -743,14 +790,14 @@ generated vectors.</li>
 <code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>center=0</em>, <em>FWHM=1</em>, <em>normalize=True</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the normal distribution or gaussian distribution of a given vector.
 The probability density of the gaussian distribution is:
-<span class="math">\(f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}\)</span></p>
+<span class="math notranslate nohighlight">\(f(x,\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}} e^{\frac{-(x-\mu)^{2}}{2\sigma^2}}\)</span></p>
 <p>Where:</p>
 <ul class="simple">
-<li><span class="math">\(\mu\)</span> is the center of the gaussian, it is the mean or
-expectation of the distribution it is called the distribution&#8217;s
+<li><span class="math notranslate nohighlight">\(\mu\)</span> is the center of the gaussian, it is the mean or
+expectation of the distribution it is called the distribution’s
 median or mode.</li>
-<li><span class="math">\(\sigma\)</span> is its standard deviation.</li>
-<li><span class="math">\(FWHM=2\sqrt{2 ln 2} \sigma\)</span> is the Full Width at Half
+<li><span class="math notranslate nohighlight">\(\sigma\)</span> is its standard deviation.</li>
+<li><span class="math notranslate nohighlight">\(FWHM=2\sqrt{2 ln 2} \sigma\)</span> is the Full Width at Half
 Maximum of the gaussian.</li>
 </ul>
 <table class="docutils field-list" frame="void" rules="none">
@@ -762,7 +809,7 @@ Maximum of the gaussian.</li>
 <li>center (number): The center of the gaussian.</li>
 <li>FWHM (number): The Full Width at Half Maximum of the gaussian.</li>
 <li>normalize(boolean): Whether to normalize the generated gaussian
-by <span class="math">\(\frac{1}{\sigma\sqrt{2\pi}}\)</span> so the integral
+by <span class="math notranslate nohighlight">\(\frac{1}{\sigma\sqrt{2\pi}}\)</span> so the integral
 is equal to 1.</li>
 <li>check (boolean): whether to check arguments before generating
 vectors.</li>
@@ -801,7 +848,7 @@ vectors.</li>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.ListenerBase">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">ListenerBase</code><a class="headerlink" href="#fullrmc.Core.Collection.ListenerBase" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>All listeners base class.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Collection.ListenerBase.listenerId">
@@ -818,7 +865,7 @@ vectors.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>message (object): Any python object to send to constraint&#8217;s listen method.</li>
+<li>message (object): Any python object to send to constraint’s listen method.</li>
 <li>arguments (object): Any python object.</li>
 </ol>
 </td>
@@ -832,7 +879,7 @@ vectors.</li>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.Broadcaster">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">Broadcaster</code><a class="headerlink" href="#fullrmc.Core.Collection.Broadcaster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A broadcaster broadcasts a message to all registered listener.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Collection.Broadcaster.listeners">
@@ -899,7 +946,7 @@ listeners.</li>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.RandomFloatGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">RandomFloatGenerator</code><span class="sig-paren">(</span><em>lowerLimit</em>, <em>upperLimit</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Generate random float number between a lower and an upper limit.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -976,7 +1023,7 @@ listeners.</li>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">BiasedRandomFloatGenerator</code><span class="sig-paren">(</span><em>lowerLimit</em>, <em>upperLimit</em>, <em>weights=None</em>, <em>biasRange=None</em>, <em>biasFWHM=None</em>, <em>biasHeight=1</em>, <em>unbiasRange=None</em>, <em>unbiasFWHM=None</em>, <em>unbiasHeight=None</em>, <em>unbiasThreshold=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="fullrmc.Core.Collection.RandomFloatGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.RandomFloatGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomFloatGenerator" title="fullrmc.Core.Collection.RandomFloatGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Collection.RandomFloatGenerator</span></code></a></p>
 <p>Generate biased random float number between a lower and an upper limit.
 To bias the generator at a certain number, a bias gaussian is added to the
 weights scheme at the position of this particular number.</p>
@@ -1124,7 +1171,7 @@ number generation.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights">
 <code class="descname">set_weights</code><span class="sig-paren">(</span><em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set generator&#8217;s weights.</p>
+<dd><p>Set generator’s weights.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1145,7 +1192,7 @@ length 10000 is automatically generated.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_bias">
 <code class="descname">set_bias</code><span class="sig-paren">(</span><em>biasRange</em>, <em>biasFWHM</em>, <em>biasHeight</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_bias" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set generator&#8217;s bias gaussian function</p>
+<dd><p>Set generator’s bias gaussian function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1169,7 +1216,7 @@ If None is given, it will be automatically set to biasRange/10.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_unbias">
 <code class="descname">set_unbias</code><span class="sig-paren">(</span><em>unbiasRange</em>, <em>unbiasFWHM</em>, <em>unbiasHeight</em>, <em>unbiasThreshold</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.set_unbias" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set generator&#8217;s unbias gaussian function</p>
+<dd><p>Set generator’s unbias gaussian function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1197,7 +1244,7 @@ unbiasThreshold. It must be a positive number.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index">
 <code class="descname">bias_scheme_by_index</code><span class="sig-paren">(</span><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian
+<dd><p>Bias the generator’s scheme using the defined bias gaussian
 function at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1219,7 +1266,7 @@ used as defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position">
 <code class="descname">bias_scheme_at_position</code><span class="sig-paren">(</span><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.bias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bias the generator&#8217;s scheme using the defined bias gaussian function
+<dd><p>Bias the generator’s scheme using the defined bias gaussian function
 at the given number.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1241,7 +1288,7 @@ used as defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_by_index">
 <code class="descname">unbias_scheme_by_index</code><span class="sig-paren">(</span><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unbias the generator&#8217;s scheme using the defined bias gaussian
+<dd><p>Unbias the generator’s scheme using the defined bias gaussian
 function at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1263,7 +1310,7 @@ is used as defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_at_position">
 <code class="descname">unbias_scheme_at_position</code><span class="sig-paren">(</span><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomFloatGenerator.unbias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unbias the generator&#8217;s scheme using the defined bias gaussian
+<dd><p>Unbias the generator’s scheme using the defined bias gaussian
 function at the given number.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1294,7 +1341,7 @@ lowerLimit and upperLimit.</p>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.RandomIntegerGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">RandomIntegerGenerator</code><span class="sig-paren">(</span><em>lowerLimit</em>, <em>upperLimit</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.RandomIntegerGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Generate random integer number between a lower and an upper limit.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1371,7 +1418,7 @@ lowerLimit and upperLimit.</p>
 <dl class="class">
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Collection.</code><code class="descname">BiasedRandomIntegerGenerator</code><span class="sig-paren">(</span><em>lowerLimit</em>, <em>upperLimit</em>, <em>weights=None</em>, <em>biasHeight=1</em>, <em>unbiasHeight=None</em>, <em>unbiasThreshold=1</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomIntegerGenerator" title="fullrmc.Core.Collection.RandomIntegerGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.RandomIntegerGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.RandomIntegerGenerator" title="fullrmc.Core.Collection.RandomIntegerGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Collection.RandomIntegerGenerator</span></code></a></p>
 <p>Generate biased random integer number between a lower and an upper limit.
 To bias the generator at a certain number, a bias height is added to the
 weights scheme at the position of this particular number.</p>
@@ -1499,7 +1546,7 @@ It must be a positive number.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator.bias_scheme_by_index">
 <code class="descname">bias_scheme_by_index</code><span class="sig-paren">(</span><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator.bias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bias the generator&#8217;s scheme at the given index.</p>
+<dd><p>Bias the generator’s scheme at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1520,7 +1567,7 @@ defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator.bias_scheme_at_position">
 <code class="descname">bias_scheme_at_position</code><span class="sig-paren">(</span><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator.bias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bias the generator&#8217;s scheme at the given number.</p>
+<dd><p>Bias the generator’s scheme at the given number.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1541,7 +1588,7 @@ defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator.unbias_scheme_by_index">
 <code class="descname">unbias_scheme_by_index</code><span class="sig-paren">(</span><em>index</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator.unbias_scheme_by_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unbias the generator&#8217;s scheme at the given index.</p>
+<dd><p>Unbias the generator’s scheme at the given index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1562,7 +1609,7 @@ unbias gaussian is used as defined.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Collection.BiasedRandomIntegerGenerator.unbias_scheme_at_position">
 <code class="descname">unbias_scheme_at_position</code><span class="sig-paren">(</span><em>position</em>, <em>scaleFactor=None</em>, <em>check=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Collection.BiasedRandomIntegerGenerator.unbias_scheme_at_position" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unbias the generator&#8217;s scheme using the defined bias gaussian
+<dd><p>Unbias the generator’s scheme using the defined bias gaussian
 function at the given number.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1603,31 +1650,41 @@ lowerLimit and upperLimit.</p>
 A Constraint is used to set certain rules for the stochastic engine to
 evolve the atomic system. Therefore it has become possible to fully
 customize and set any possibly imaginable rule.</p>
-<img src="_images/inheritance-7a3eac9386659f16b434f55c4a6545d2fc12a7f3.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-f0de66d49da7d433355f65a0565eebc75c2aa2a7.png" alt="Inheritance diagram of fullrmc.Core.Constraint" usemap="#inheritance1864cca696" class="inheritance graphviz" /></div>
 <map id="inheritance1864cca696" name="inheritance1864cca696">
 <area shape="rect" id="node1" href="#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the atomic" alt="" coords="152,53,235,77"/>
 <area shape="rect" id="node3" href="#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="Experimental constraint is any constraint related to experimental data." alt="" coords="283,5,443,29"/>
-<area shape="rect" id="node5" href="#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total" alt="" coords="306,53,419,77"/>
-<area shape="rect" id="node6" href="#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple" alt="" coords="297,101,428,125"/>
+<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total" alt="" coords="306,53,419,77"/>
+<area shape="rect" id="node5" href="#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple" alt="" coords="297,101,428,125"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.Collection.ListenerBase" target="_top" title="All listeners base class." alt="" coords="5,53,104,77"/>
-<area shape="rect" id="node4" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" target="_top" title="A quasi&#45;rigid constraint is a another rigid constraint but it becomes f" alt="" coords="491,53,638,77"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Core.Constraint.Constraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">Constraint</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.ListenerBase" title="fullrmc.Core.Collection.ListenerBase"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Collection.ListenerBase</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Collection.ListenerBase" title="fullrmc.Core.Collection.ListenerBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Collection.ListenerBase</span></code></a></p>
 <p>A constraint is used to direct the evolution of the atomic
 configuration towards the desired and most meaningful one.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.constraintId">
 <code class="descname">constraintId</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.constraintId" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraints unique id.</p>
+<dd><p>Constraint unique ID create at instanciation time.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.constraintName">
+<code class="descname">constraintName</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.constraintName" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constraints unique name in engine given when added to engine.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.engine">
 <code class="descname">engine</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stochastic fullrmc&#8217;s engine instance.</p>
+<dd><p>Stochastic fullrmc’s engine instance.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.usedFrame">
+<code class="descname">usedFrame</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.usedFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get used frame in engine. If None then engine is not defined yet</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1639,94 +1696,128 @@ configuration towards the desired and most meaningful one.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.state">
 <code class="descname">state</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s state.</p>
+<dd><p>Constraint’s state.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.tried">
 <code class="descname">tried</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.tried" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s number of tried moves.</p>
+<dd><p>Constraint’s number of tried moves.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.accepted">
 <code class="descname">accepted</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s number of accepted moves.</p>
+<dd><p>Constraint’s number of accepted moves.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.used">
 <code class="descname">used</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.used" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s used flag. Defines whether constraint is used
+<dd><p>Constraint’s used flag. Defines whether constraint is used
 in the stochastic engine at runtime or set inactive.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.varianceSquared">
 <code class="descname">varianceSquared</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.varianceSquared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s varianceSquared used in the stochastic engine
-at runtime to calculate the total constraint&#8217;s standard error.</p>
+<dd><p>Constraint’s varianceSquared used in the stochastic engine
+at runtime to calculate the total constraint’s standard error.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.standardError">
 <code class="descname">standardError</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.standardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s standard error value.</p>
+<dd><p>Constraint’s standard error value.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.originalData">
 <code class="descname">originalData</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.originalData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s original data calculated upon initialization.</p>
+<dd><p>Constraint’s original data calculated upon initialization.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.data">
 <code class="descname">data</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated data.</p>
+<dd><p>Constraint’s current calculated data.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.activeAtomsDataBeforeMove">
 <code class="descname">activeAtomsDataBeforeMove</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.activeAtomsDataBeforeMove" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated data before last move.</p>
+<dd><p>Constraint’s current calculated data before last move.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.activeAtomsDataAfterMove">
 <code class="descname">activeAtomsDataAfterMove</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.activeAtomsDataAfterMove" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated data after last move.</p>
+<dd><p>Constraint’s current calculated data after last move.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.afterMoveStandardError">
 <code class="descname">afterMoveStandardError</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.afterMoveStandardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated StandardError after last move.</p>
+<dd><p>Constraint’s current calculated StandardError after last move.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.amputationData">
 <code class="descname">amputationData</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.amputationData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated data after amputation.</p>
+<dd><p>Constraint’s current calculated data after amputation.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.Constraint.amputationStandardError">
 <code class="descname">amputationStandardError</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.amputationStandardError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s current calculated StandardError after amputation.</p>
+<dd><p>Constraint’s current calculated StandardError after amputation.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.Constraint.multiframeWeight">
+<code class="descname">multiframeWeight</code><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.multiframeWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint weight towards total in a multiframe system.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.is_in_engine">
+<code class="descname">is_in_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.is_in_engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get whether constraint is already in defined and added to engine.
+It can be the same exact instance or a repository pulled instance
+of the same constraintId</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (stochastic fullrmc engine): Engine instance.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): Whether constraint exists in engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_variance_squared">
-<code class="descname">set_variance_squared</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance_squared" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s variance squared that is used in the c
-omputation of the total stochastic engine standard error.</p>
+<code class="descname">set_variance_squared</code><span class="sig-paren">(</span><em>value</em>, <em>frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_variance_squared" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set constraint’s variance squared that is used in the computation
+of the total stochastic engine standard error.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>value (number): Any positive non zero number.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used. If multiframe is given, all subframes will be
+targeted. If subframe is given, all other multiframe subframes
+will be targeted.</li>
 </ol>
 </td>
 </tr>
@@ -1736,8 +1827,8 @@ omputation of the total stochastic engine standard error.</p>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_computation_cost">
-<code class="descname">set_computation_cost</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_computation_cost" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s computation cost value. This is used at stochastic
+<code class="descname">set_computation_cost</code><span class="sig-paren">(</span><em>value</em>, <em>frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_computation_cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set constraint’s computation cost value. This is used at stochastic
 engine runtime to minimize computations and enhance performance by
 computing less costly constraints first. At every step, constraints
 will be computed in order starting from the less to the most
@@ -1751,6 +1842,10 @@ ones.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>value (number): computation cost.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used. If multiframe is given, all subframes will be
+targeted. If subframe is given, all other multiframe subframes
+will be targeted.</li>
 </ol>
 </td>
 </tr>
@@ -1769,6 +1864,10 @@ ones.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>value (boolean): True to use this constraint in stochastic
 engine runtime.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used. If multiframe is given, all subframes will be
+targeted. If subframe is given, all other multiframe subframes
+will be targeted.</li>
 </ol>
 </td>
 </tr>
@@ -1779,8 +1878,8 @@ engine runtime.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_state">
 <code class="descname">set_state</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s state. When constraint&#8217;s state and stochastic
-engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calculated.</p>
+<dd><p>Set constraint’s state. When constraint’s state and stochastic
+engine’s state don’t match, constraint’s data must be re-calculated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1797,7 +1896,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_tried">
 <code class="descname">set_tried</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_tried" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s number of tried moves.</p>
+<dd><p>Set constraint’s number of tried moves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1820,13 +1919,13 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_accepted">
 <code class="descname">set_accepted</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s number of accepted moves.</p>
+<dd><p>Set constraint’s number of accepted moves.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (integer): Constraint&#8217;s number of accepted moves.</li>
+<li>value (integer): Constraint’s number of accepted moves.</li>
 </ol>
 </td>
 </tr>
@@ -1837,13 +1936,13 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.increment_accepted">
 <code class="descname">increment_accepted</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.increment_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>Increment constraint&#8217;s number of accepted moves.</p>
+<dd><p>Increment constraint’s number of accepted moves.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_standard_error">
 <code class="descname">set_standard_error</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_standard_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s standardError value.</p>
+<dd><p>Set constraint’s standardError value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1860,13 +1959,13 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_data">
 <code class="descname">set_data</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s data value.</p>
+<dd><p>Set constraint’s data value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>value (number): constraint&#8217;s data.</li>
+<li>value (number): constraint’s data.</li>
 </ol>
 </td>
 </tr>
@@ -1877,7 +1976,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_active_atoms_data_before_move">
 <code class="descname">set_active_atoms_data_before_move</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_active_atoms_data_before_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s before move happens active atoms data value.</p>
+<dd><p>Set constraint’s before move happens active atoms data value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1894,7 +1993,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_active_atoms_data_after_move">
 <code class="descname">set_active_atoms_data_after_move</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_active_atoms_data_after_move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s after move happens active atoms data value.</p>
+<dd><p>Set constraint’s after move happens active atoms data value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1911,7 +2010,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_after_move_standard_error">
 <code class="descname">set_after_move_standard_error</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_after_move_standard_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s standard error value after move happens.</p>
+<dd><p>Set constraint’s standard error value after move happens.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1928,7 +2027,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_amputation_data">
 <code class="descname">set_amputation_data</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_amputation_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s after amputation data.</p>
+<dd><p>Set constraint’s after amputation data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1945,7 +2044,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.set_amputation_standard_error">
 <code class="descname">set_amputation_standard_error</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.set_amputation_standard_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set constraint&#8217;s standardError after amputation.</p>
+<dd><p>Set constraint’s standardError after amputation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1961,7 +2060,7 @@ engine&#8217;s state don&#8217;t match, constraint&#8217;s data must be re-calcu
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.reset_constraint">
-<code class="descname">reset_constraint</code><span class="sig-paren">(</span><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">reset_constraint</code><span class="sig-paren">(</span><em>reinitialize=True</em>, <em>flags=False</em>, <em>data=False</em>, <em>frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.reset_constraint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset constraint.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1974,6 +2073,10 @@ constraint.</li>
 <li>flags (boolean): Reset the state, tried and accepted flags
 of the constraint.</li>
 <li>data (boolean): Reset the constraints computed data.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used. If multiframe is given, all subframes will be
+targeted. If subframe is given, rest of multiframe subframes
+will not be targeted.</li>
 </ol>
 </td>
 </tr>
@@ -1982,10 +2085,10 @@ of the constraint.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error">
-<code class="descname">compute_and_set_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_and_set_standard_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute and set constraint&#8217;s standard error by calling
-compute_standard_error method and passing constraint&#8217;s data.</p>
+<dt id="fullrmc.Core.Constraint.Constraint.update_standard_error">
+<code class="descname">update_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.update_standard_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute and set constraint’s standard error by calling
+compute_standard_error method and passing constraint’s data.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2089,29 +2192,29 @@ compute_standard_error method and passing constraint&#8217;s data.</p>
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">ExperimentalConstraint</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>dataWeights=None</em>, <em>scaleFactor=1.0</em>, <em>adjustScaleFactor=(0</em>, <em>0.8</em>, <em>1.2)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
 <p>Experimental constraint is any constraint related to experimental data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): Constraint&#8217;s stochastic engine.</p>
+<li><p class="first">engine (None, fullrmc.Engine): Constraint’s stochastic engine.</p>
 </li>
 <li><p class="first">experimentalData (numpy.ndarray, string): Experimental data goiven
 as numpy.ndarray or string path to load data using numpy.loadtxt
 method.</p>
 </li>
 <li><p class="first">dataWeights (None, numpy.ndarray): Weights array of the same number
-of points of experimentalData used in the constraint&#8217;s standard
+of points of experimentalData used in the constraint’s standard
 error computation. Therefore particular fitting emphasis can be
 put on different data points that might be considered as more or less
 important in order to get a reasonable and plausible modal.</p>
 <p>If None is given, all data points are considered of the same
-importance in the computation of the constraint&#8217;s standard error.</p>
+importance in the computation of the constraint’s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all
-zeros weighted data points won&#8217;t contribute to the total
-constraint&#8217;s standard error. At least a single weight point is
+zeros weighted data points won’t contribute to the total
+constraint’s standard error. At least a single weight point is
 required to be non-zeros and the weights array will be automatically
 scaled upon setting such as the the sum of all the weights
 is equal to the number of data points.</p>
@@ -2136,7 +2239,7 @@ factor is fixed.</li>
 </tbody>
 </table>
 <p><strong>NB</strong>: If adjustScaleFactor first item (frequency) is 0, the scale factor
-will remain untouched and the limits minimum and maximum won&#8217;t be checked.</p>
+will remain untouched and the limits minimum and maximum won’t be checked.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.experimentalData">
 <code class="descname">experimentalData</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.experimentalData" title="Permalink to this definition">¶</a></dt>
@@ -2150,9 +2253,21 @@ will remain untouched and the limits minimum and maximum won&#8217;t be checked.
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.multiframeWeight">
+<code class="descname">multiframeWeight</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.multiframeWeight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint weight towards total in a multiframe system.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.multiframePrior">
+<code class="descname">multiframePrior</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.multiframePrior" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get constraint multiframe prior array.</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.scaleFactor">
 <code class="descname">scaleFactor</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.scaleFactor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constraint&#8217;s scaleFactor.</p>
+<dd><p>Constraint’s scaleFactor.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2179,10 +2294,29 @@ will remain untouched and the limits minimum and maximum won&#8217;t be checked.
 <dd><p>Scale factor adjustment maximum number allowed.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.limits">
+<code class="descname">limits</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used data X limits.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.limitsIndexStart">
+<code class="descname">limitsIndexStart</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.limitsIndexStart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used data start index as calculated from limits.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.limitsIndexEnd">
+<code class="descname">limitsIndexEnd</code><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.limitsIndexEnd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used data end index as calculated from limits.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_scale_factor">
 <code class="descname">set_scale_factor</code><span class="sig-paren">(</span><em>scaleFactor</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_scale_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the scale factor.</p>
+<dd><p>Set the scale factor. This method doesn’t allow specifying frames. It
+will target used frame only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2200,7 +2334,8 @@ normalize the computed data to the experimental ones.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_adjust_scale_factor">
 <code class="descname">set_adjust_scale_factor</code><span class="sig-paren">(</span><em>adjustScaleFactor</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_adjust_scale_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set adjust scale factor.</p>
+<dd><p>Set adjust scale factor. This method doesn’t allow specifying frames. It
+will target used frame only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2226,7 +2361,8 @@ factor is fixed.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_experimental_data">
 <code class="descname">set_experimental_data</code><span class="sig-paren">(</span><em>experimentalData</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_experimental_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the constraint&#8217;s experimental data.</p>
+<dd><p>Set the constraint’s experimental data. This method will raise an error
+if called after adding constraint to stochastic engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2244,27 +2380,33 @@ method.</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.set_data_weights">
-<code class="descname">set_data_weights</code><span class="sig-paren">(</span><em>dataWeights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_data_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set experimental data points weight.</p>
+<code class="descname">set_data_weights</code><span class="sig-paren">(</span><em>dataWeights</em>, <em>frame=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.set_data_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set experimental data points weight. Data weights will be automatically
+normalized.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
 <li><p class="first">dataWeights (None, numpy.ndarray): Weights array of the same
-number of points of experimentalData used in the constraint&#8217;s
+number of points of experimentalData used in the constraint’s
 standard error computation. Therefore particular fitting
 emphasis can be put on different data points that might be
 considered as more or less important in order to get a
-reasonable and plausible modal.</p>
+reasonable and plausible model.</p>
 <p>If None is given, all data points are considered of the same
-importance in the computation of the constraint&#8217;s standard error.</p>
+importance in the computation of the constraint’s standard error.</p>
 <p>If numpy.ndarray is given, all weights must be positive and all
-zeros weighted data points won&#8217;t contribute to the total
-constraint&#8217;s standard error. At least a single weight point is
+zeros weighted data points won’t contribute to the total
+constraint’s standard error. At least a single weight point is
 required to be non-zeros and the weights array will be
 automatically scaled upon setting such as the the sum of all
 the weights is equal to the number of data points.</p>
+</li>
+<li><p class="first">frame (None, string): Target frame name. If None, engine used
+frame is used. If multiframe is given, all subframes will be
+targeted. If subframe is given, rest of multiframe subframes
+will not be targeted.</p>
 </li>
 </ol>
 </td>
@@ -2276,7 +2418,7 @@ the weights is equal to the number of data points.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data">
 <code class="descname">check_experimental_data</code><span class="sig-paren">(</span><em>experimentalData</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.check_experimental_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the constraint&#8217;s experimental data
+<dd><p>Checks the constraint’s experimental data
 This method must be overloaded in all experimental constraint
 sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2295,16 +2437,18 @@ sub-classes.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.fit_scale_factor">
 <code class="descname">fit_scale_factor</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>modelData</em>, <em>dataWeights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.fit_scale_factor" title="Permalink to this definition">¶</a></dt>
-<dd><p>The best scale factor value is computed by minimizing <span class="math">\(E=sM\)</span>.</p>
+<dd><p>The best scale factor value is computed by minimizing <span class="math notranslate nohighlight">\(E=sM\)</span>.</p>
 <dl class="docutils">
 <dt>Where:</dt>
 <dd><ol class="first last arabic simple">
-<li><span class="math">\(E\)</span> is the experimental data.</li>
-<li><span class="math">\(s\)</span> is the scale factor.</li>
-<li><span class="math">\(M\)</span> is the model constraint data.</li>
+<li><span class="math notranslate nohighlight">\(E\)</span> is the experimental data.</li>
+<li><span class="math notranslate nohighlight">\(s\)</span> is the scale factor.</li>
+<li><span class="math notranslate nohighlight">\(M\)</span> is the model constraint data.</li>
 </ol>
 </dd>
 </dl>
+<p>This method doesn’t allow specifying frames. It will target used frame
+only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2325,18 +2469,18 @@ will be considered as having the same weight.</li>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: This method won&#8217;t update the internal scale factor value
+<p><strong>NB</strong>: This method won’t update the internal scale factor value
 of the constraint. It always computes the best scale factor given
-some experimental and model data.</p>
+experimental and atomic model data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor">
 <code class="descname">get_adjusted_scale_factor</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>modelData</em>, <em>dataWeights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_adjusted_scale_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks if scale factor should be updated according to the given scale
-factor frequency and engine&#8217;s accepted steps. If adjustment is due,
+factor frequency and engine’s accepted steps. If adjustment is due,
 a new scale factor will be computed using fit_scale_factor method,
-otherwise the the constraint&#8217;s scale factor will be returned.</p>
+otherwise the the constraint’s scale factor will be returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2350,7 +2494,7 @@ will be considered as having the same weight.</li>
 </ol>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">#. scaleFactor (number): Constraint&#8217;s scale factor or the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">#. scaleFactor (number): Constraint’s scale factor or the
 new scale factor fit value.</p>
 </td>
 </tr>
@@ -2365,14 +2509,14 @@ value of the constraint.</p>
 <code class="descname">compute_standard_error</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>modelData</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.compute_standard_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the squared deviation between modal computed data
 and the experimental ones.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[SD = \sum \limits_{i}^{N} W_{i}(Y(X_{i})-F(X_{i}))^{2}\]</div>
 <p>Where:</p>
-<p><span class="math">\(N\)</span> is the total number of experimental data points.</p>
-<p><span class="math">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1
+<p><span class="math notranslate nohighlight">\(N\)</span> is the total number of experimental data points.</p>
+<p><span class="math notranslate nohighlight">\(W_{i}\)</span> is the data point weight. It becomes equivalent to 1
 when dataWeights is set to None.</p>
-<p><span class="math">\(Y(X_{i})\)</span> is the experimental data point <span class="math">\(X_{i}\)</span>.</p>
-<p><span class="math">\(F(X_{i})\)</span> is the computed from the model data  <span class="math">\(X_{i}\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(Y(X_{i})\)</span> is the experimental data point <span class="math notranslate nohighlight">\(X_{i}\)</span>.</p>
+<p><span class="math notranslate nohighlight">\(F(X_{i})\)</span> is the computed from the model data  <span class="math notranslate nohighlight">\(X_{i}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2394,20 +2538,215 @@ the constraint.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_constraint_data_dictionary">
+<code class="descname">get_constraint_data_dictionary</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_constraint_data_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dictionary of all constraint meaningful data to plot or export.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): frame to pull and build contraint data. It can
+be a traditional frame, a multiframe or a subframe</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">data (dictionary): Dictionary of all meaningful data including:</p>
+<blockquote>
+<div><ul class="simple">
+<li>output: list of frames dictionary constraint data</li>
+<li>experimental_x: numpy array of experimental x data.</li>
+<li>experimental_y: numpy array of experimental y data.</li>
+<li>model_x: numpy array of model x data.</li>
+<li>frames_weight: list of all frames weight.</li>
+<li>frames_name: list of all frames name.</li>
+<li>number_of_atoms_removed: list of number of removed atoms from
+each frame.</li>
+<li>shape_array: list of system shape function (numpy array) of
+all frames.</li>
+<li>window_function: list of window function (numpy array) of
+all frames.</li>
+<li>scale_factor: list of all frames scale factor.</li>
+<li>standard_error: list of all frames standard error.</li>
+<li>weighted_output: dictionary of all frames weighted constraint
+data using ‘frames_weight’</li>
+<li>weighted_number_of_atoms_removed: All frames averaged number
+of removed atoms using ‘frames_weight’</li>
+<li>weighted_scale_factor: All frames averaged scale factor
+using ‘frames_weight’</li>
+<li>weighted_standard_error: All frames weighted standard error
+using ‘frames_weight’</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>multiplot=False</em>, <em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabelParams=True</em>, <em>ylabelParams=True</em>, <em>legendParams=True</em>, <em>expParams=None</em>, <em>totParams=None</em>, <em>noWParams=None</em>, <em>shaParams=None</em>, <em>parParams=None</em>, <em>titleFormat='&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$'</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot constraint data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (None, string): The frame name to plot. If None, used frame
+will be plotted.</li>
+<li>multiplot (boolean): If multiframe is given, multiplot insures
+plotting all frames differently in a single multiplot figure.
+In this case, given ax is ommitted.</li>
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>intra (boolean): Whether to add intra-molecular pair
+distribution function features to the plot.</li>
+<li>inter (boolean): Whether to add inter-molecular pair
+distribution function features to the plot.</li>
+<li>shapeFunc (boolean): Whether to add shape function to the plot
+only when exists.</li>
+<li>xlabelParams (dict, boolean): matplotlib.axes.Axes.set_xlabel
+parameters. If True, default parameters given by constraint’s
+property _plotDefaultParameters is set. If False x axes label is
+omitted</li>
+<li>ylabelParams (dict, boolean): matplotlib.axes.Axes.set_ylabel
+parameters. If True,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If False y axes label is
+omitted</li>
+<li>legendParams (dict, boolean):matplotlib.axes.Axes.legend
+parameters. If True,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If False is omitted</li>
+<li>titleFormat (string): title format. If empty string is given no
+title will be added to figure axes</li>
+<li>expParams (None, dict): experimental data matplotlib.pyplot.plot
+parameters. If None,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If dict, it will be the
+update dict to _plotDefaultParameters</li>
+<li>totParams (None, dict): total data matplotlib.pyplot.plot
+parameters. If None,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If dict, it will be the
+update dict to _plotDefaultParameters</li>
+<li>noWParams (None, dict): constraint no-window total data matplotlib.pyplot.plot
+parameters. If None,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If dict, it will be the
+update dict to _plotDefaultParameters</li>
+<li>shaParams (None, dict): constraint shape array data matplotlib.pyplot.plot
+parameters. If None,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If dict, it will be the
+update dict to _plotDefaultParameters</li>
+<li>parParams (None, dict): constraint partial data matplotlib.pyplot.plot
+parameters. If None,  default parameters given by constraint’s
+property _plotDefaultParameters is set. If dict, it will be the
+update dict to _plotDefaultParameters</li>
+<li>show (boolean): Whether to render and show figure before
+returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.plot_multiframe_weights">
+<code class="descname">plot_multiframe_weights</code><span class="sig-paren">(</span><em>frame</em>, <em>ax=None</em>, <em>titleFormat='&#64;{frame} [subframes probability distribution]'</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.plot_multiframe_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot multiframe subframes weight distribution histogram</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): multiframe name</li>
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>titleFormat (string): title format. If empty string is given no
+title will be added to figure axes</li>
+<li><dl class="first docutils">
+<dt>show (boolean): Whether to render and show figure before</dt>
+<dd>returning.</dd>
+</dl>
+</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.export">
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>splitFrames=False</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export constraint data to text file or to an archive of files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fileName (path): full file name and path.</li>
+<li>frame (None, string): frame name to export data from. If multiframe
+is given, multiple files will be created with subframe name
+appended to the end.</li>
+<li>splitFrames (boolean): whether to split frames into multiple
+files and create and archive (.zip) of frames data. If given
+frame is a normal frame or a subframe this option is not used.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.SingularConstraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">SingularConstraint</code><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
-<p>A singular constraint is a constraint that doesn&#8217;t allow multiple
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
+<p>A singular constraint is a constraint that doesn’t allow multiple
 instances in the same engine.</p>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.SingularConstraint.is_singular">
 <code class="descname">is_singular</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.SingularConstraint.is_singular" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get whether only one instance of this constraint type is present
 in the stochastic engine. True for only itself found, False for
-other instance of the same __class__.__name__.</p>
+other instance of the same __class__.__name__ or constraintId.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>engine (stochastic fullrmc engine): Engine instance.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>result (boolean): Whether constraint is singular in engine.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2423,18 +2762,17 @@ instances are present.</p>
 <dl class="class">
 <dt id="fullrmc.Core.Constraint.RigidConstraint">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">RigidConstraint</code><span class="sig-paren">(</span><em>rejectProbability</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
-<p>A rigid constraint is a constraint that doesn&#8217;t count into the total
-standard error of the stochastic Engine. But it&#8217;s internal standard error
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Constraint.Constraint</span></code></a></p>
+<p>A rigid constraint is a constraint that doesn’t count into the total
+standard error of the stochastic Engine. But it’s internal standard error
 must monotonously decrease or remain the same from one engine step to
 another. If standard error of an rigid constraint increases the
-step will be rejected even before engine&#8217;s new standardError get computed.</p>
+step will be rejected even before engine’s new standardError get computed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint stochastic engine.</li>
 <li>rejectProbability (Number): Rejecting probability of all steps
 where standard error increases. It must be between 0 and 1 where
 1 means rejecting all steps where standardError increases
@@ -2454,7 +2792,8 @@ increases or not.</li>
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.RigidConstraint.set_reject_probability">
 <code class="descname">set_reject_probability</code><span class="sig-paren">(</span><em>rejectProbability</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.RigidConstraint.set_reject_probability" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the rejection probability.</p>
+<dd><p>Set the rejection probability. This method doesn’t allow specifying
+frames. It will target used frame only.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2520,97 +2859,6 @@ the Constraint standard error</li>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">QuasiRigidConstraint</code><span class="sig-paren">(</span><em>engine</em>, <em>rejectProbability</em>, <em>thresholdRatio</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Constraint.RigidConstraint" title="fullrmc.Core.Constraint.RigidConstraint"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Constraint.RigidConstraint</span></code></a></p>
-<p>A quasi-rigid constraint is a another rigid constraint but it becomes f
-ree above a certain threshold ratio of satisfied data. Every quasi-rigid
-constraint has its own definition of maximum standard error. The ratio is
-computed as between current standard error and maximum standard error.</p>
-<blockquote>
-<div><div class="math">
-\[ratio = 1-\frac{current\ standard\ error}{maximum\ standard\ error}\]</div>
-</div></blockquote>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The constraint stochastic engine.</li>
-<li>rejectProbability (Number): Rejecting probability of all steps
-where standardError increases only before threshold ratio is reached.
-It must be between 0 and 1 where 1 means rejecting all steps where
-standardError increases and 0 means accepting all steps regardless
-whether standardError increases or not.</li>
-<li>thresholdRatio(Number): The threshold of satisfied data, above
-which the constraint become free. It must be between 0 and 1 where
-1 means all data must be satisfied and therefore the constraint
-behave like a RigidConstraint and 0 means none of the data must be
-satisfied and therefore the constraint becomes always free and
-useless.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.thresholdRatio">
-<code class="descname">thresholdRatio</code><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.thresholdRatio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Threshold ratio.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.currentRatio">
-<code class="descname">currentRatio</code><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.currentRatio" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.set_threshold_ratio">
-<code class="descname">set_threshold_ratio</code><span class="sig-paren">(</span><em>thresholdRatio</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.set_threshold_ratio" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the rejection probability function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>thresholdRatio(Number): The threshold of satisfied data, above
-which the constraint become free. It must be between 0 and 1
-where 1 means all data must be satisfied and therefore the
-constraint behave like a RigidConstraint and 0 means none of
-the data must be satisfied and therefore the constraint
-becomes always free and useless.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected">
-<code class="descname">should_step_get_rejected</code><span class="sig-paren">(</span><em>standardError</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.QuasiRigidConstraint.should_step_get_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a standard error, return whether to keep or reject new
-standard error according to the constraint reject probability function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first">#. standardError (number): Standard error to compare with the
-Constraint standard error.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><ol class="first last arabic simple">
-<li>result (boolean): True to reject step, False to accept.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="fullrmc.Core.Constraint.randfloat">
 <code class="descclassname">fullrmc.Core.Constraint.</code><code class="descname">randfloat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.randfloat" title="Permalink to this definition">¶</a></dt>
@@ -2625,15 +2873,14 @@ A Group is a set of atoms indexes used to gather atoms and apply actions
 such as moves upon them. Therefore it has become possible to fully
 customize and separate atoms to groups and perform stochastic actions
 on groups rather than on single atoms.</p>
-<img src="_images/inheritance-a31e4199163bf5f8eb749e1e46241ae10285fb37.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-a31e4199163bf5f8eb749e1e46241ae10285fb37.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance graphviz" /></div>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
 <area shape="rect" id="node1" href="#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly" alt="" coords="125,5,222,29"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container." alt="" coords="5,5,77,29"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Core.Group.Group">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>indexes</em>, <em>moveGenerator=None</em>, <em>refine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.Group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A Group is a set of atoms indexes container.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2649,7 +2896,7 @@ If None is given AtomsRemoveGenerator is considered by default.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
 
@@ -2677,7 +2924,7 @@ If None is given AtomsRemoveGenerator is considered by default.</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.Group.Group.moveGenerator">
 <code class="descname">moveGenerator</code><a class="headerlink" href="#fullrmc.Core.Group.Group.moveGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group&#8217;s move generator instance.</p>
+<dd><p>Group’s move generator instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2744,8 +2991,8 @@ If None is given TranslationGenerator is considered by default.</li>
 <dl class="class">
 <dt id="fullrmc.Core.Group.EmptyGroup">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">EmptyGroup</code><span class="sig-paren">(</span><em>indexes=None</em>, <em>moveGenerator=None</em>, <em>refine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Group.Group" title="fullrmc.Core.Group.Group"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.Group.Group</span></code></a></p>
-<p>Empty group is a special group that takes no atoms indexes. It&#8217;s mainly
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Group.Group" title="fullrmc.Core.Group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Group.Group</span></code></a></p>
+<p>Empty group is a special group that takes no atoms indexes. It’s mainly
 used to remove atoms from system upon fitting.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2762,7 +3009,7 @@ If None is given RemoveGenerator is considered by default.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">EmptyGroup</span>
 
@@ -2783,13 +3030,13 @@ If None is given RemoveGenerator is considered by default.</li>
 <dl class="attribute">
 <dt id="fullrmc.Core.Group.EmptyGroup.moveGenerator">
 <code class="descname">moveGenerator</code><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.moveGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Group&#8217;s move generator instance.</p>
+<dd><p>Group’s move generator instance.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="fullrmc.Core.Group.EmptyGroup.indexes">
 <code class="descname">indexes</code><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup.indexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Atoms index array.</p>
+<dd><p>Always returns None for EmptyGroup</p>
 </dd></dl>
 
 <dl class="method">
@@ -2835,27 +3082,26 @@ disregarded in this particular case.</li>
 <div class="section" id="module-fullrmc.Core.GroupSelector">
 <span id="groupselector"></span><h2>GroupSelector<a class="headerlink" href="#module-fullrmc.Core.GroupSelector" title="Permalink to this headline">¶</a></h2>
 <p>GroupSelector contains parent classes for all group selectors. A GroupSelector
-is used at the stochastic engine&#8217;s runtime to select groups upon which a
+is used at the stochastic engine’s runtime to select groups upon which a
 move will be applied. Therefore it has become possible to fully customize the
 selection of groups of atoms and to choose  when and how frequently a group
 can be chosen to perform a move upon.</p>
-<img src="_images/inheritance-fb0f23fc375ed0433d0be0981664c02233269c2e.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-fb0f23fc375ed0433d0be0981664c02233269c2e.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance graphviz" /></div>
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
 <area shape="rect" id="node1" href="#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" target="_top" title="Recursive selector is the only selector that can use the recursive" alt="" coords="161,5,327,29"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">GroupSelector</code><span class="sig-paren">(</span><em>engine=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Group selector is the parent class that selects groups to perform
-moves at stochastic engine&#8217;s runtime.</p>
+moves at stochastic engine’s runtime.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector&#8217;s stochastic engine instance.</li>
+<li>engine (None, fullrmc.Engine): Selector’s stochastic engine instance.</li>
 </ol>
 </td>
 </tr>
@@ -2864,7 +3110,7 @@ moves at stochastic engine&#8217;s runtime.</p>
 <dl class="attribute">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.engine">
 <code class="descname">engine</code><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stochastic engine&#8217;s instance.</p>
+<dd><p>Stochastic engine’s instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2949,13 +3195,13 @@ RecursiveGroupSelector instances only.</p>
 <dl class="method">
 <dt id="fullrmc.Core.GroupSelector.GroupSelector.set_engine">
 <code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.GroupSelector.GroupSelector.set_engine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set selector&#8217;s stochastic engine instance.</p>
+<dd><p>Set selector’s stochastic engine instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector&#8217;s stochastic engine.</li>
+<li>engine (None, fullrmc.Engine): Selector’s stochastic engine.</li>
 </ol>
 </td>
 </tr>
@@ -3023,7 +3269,7 @@ needed.</p>
 <dl class="class">
 <dt id="fullrmc.Core.GroupSelector.RecursiveGroupSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">RecursiveGroupSelector</code><span class="sig-paren">(</span><em>selector</em>, <em>recur=10</em>, <em>override=True</em>, <em>refine=False</em>, <em>explore=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.GroupSelector.RecursiveGroupSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
 <p>Recursive selector is the only selector that can use the recursive
 property on a selection. It is used as a wrapper around a GroupSelector
 instance.</p>
@@ -3059,7 +3305,7 @@ position is kept.</li>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: refine and explore flags can&#8217;t both be set to True at the same time.
+<p><strong>NB</strong>: refine and explore flags can’t both be set to True at the same time.
 When this happens refine flag gets automatically switched to False.
 The usage of those flags is very important because they allow groups of
 atoms to go out of local minima in the energy surface. The way traditional
@@ -3099,7 +3345,7 @@ moves enhancing the structure are stored.
 <iframe width="560" height="315"
 src="https://www.youtube.com/embed/wafgTfHNpvs?rel=0"
 frameborder="0" allowfullscreen>
-</iframe><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+</iframe><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 
@@ -3283,7 +3529,7 @@ It must be a positive integer.</li>
 selected group move generator is a PathGenerator instance.
 Overridden recur value is temporary and totally selected group
 dependant. If selected group move generator is not a
-PathGenerator instance, recur value will take back selector&#8217;s
+PathGenerator instance, recur value will take back selector’s
 recur value.</li>
 </ol>
 </td>
@@ -3359,11 +3605,11 @@ then the best position is kept.</li>
 <div class="section" id="module-fullrmc.Core.MoveGenerator">
 <span id="movegenerator"></span><h2>MoveGenerator<a class="headerlink" href="#module-fullrmc.Core.MoveGenerator" title="Permalink to this headline">¶</a></h2>
 <p>MoveGenerator contains parent classes for all move generators.
-A MoveGenerator sub-class is used at fullrmc&#8217;s stochastic engine runtime to
+A MoveGenerator sub-class is used at fullrmc’s stochastic engine runtime to
 generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it is
 possible to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-3e4b9a1e4d5961fd8d81eb90a11c42fe0ecd7344.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-3e4b9a1e4d5961fd8d81eb90a11c42fe0ecd7344.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance graphviz" /></div>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
 <area shape="rect" id="node1" href="#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies" alt="" coords="175,5,342,29"/>
@@ -3371,13 +3617,12 @@ possible to fully customize how a group of atoms should move.</p>
 <area shape="rect" id="node4" href="#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="204,101,313,125"/>
 <area shape="rect" id="node5" href="#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on" alt="" coords="193,149,324,173"/>
 <area shape="rect" id="node6" href="#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a" alt="" coords="201,197,316,221"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGenerator</code><span class="sig-paren">(</span><em>group=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>It is the parent class of all moves generators.
-This class can&#8217;t be instantiated but its sub-classes might be.</p>
+This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3415,7 +3660,7 @@ This class can&#8217;t be instantiated but its sub-classes might be.</p>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.
+<dd><p>Check the generator’s group.
 This method must be overloaded in all MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3443,7 +3688,7 @@ This method must be overloaded in all MoveGenerator sub-classes.</p>
 <li>coordinates (np.ndarray): The coordinates on which to apply
 the move.</li>
 <li>argument (object): Any other argument needed to perform the
-move. In General it&#8217;s not needed.</li>
+move. In General it’s not needed.</li>
 </ol>
 </td>
 </tr>
@@ -3487,7 +3732,7 @@ the transformation.</li>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.RemoveGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">RemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>allowFittingScaleFactor=False</em>, <em>atomsList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>This is a very particular move generator that will not generate moves on
 atoms but removes them from the atomic configuration using a general
 collector mechanism. Remove generators must be used to create defects in
@@ -3495,7 +3740,7 @@ the simulated system. When the standard error is high, removing atoms
 might reduce the total fit standard error but this can be illusional and
 very limiting because artificial non physical voids can get created in
 the system which will lead to an impossibility to finding a solution at
-the end. It&#8217;s strongly recommended to exhaust all ideas and possibilities
+the end. It’s strongly recommended to exhaust all ideas and possibilities
 in finding a good solution prior to start removing atoms unless structural
 defects is the goal of the simulation.</p>
 <p>All removed or amputated atoms are collected by the engine and will
@@ -3504,12 +3749,12 @@ mind, it might be physically easy to remove and atom but an impossibility
 to add it back especially if the created voids are smeared out.</p>
 <p>Removers are called generators but they behave like selectors. Instead
 of applying a certain move on a group of atoms, they normally pick atoms
-from defined atoms list and apply no moves on those. &#8216;move&#8217; and
-&#8216;transform_coordinates&#8217; methods are not implemented in this class of
-generators and a usage error will be raised if called. &#8216;pick_from_list&#8217;
+from defined atoms list and apply no moves on those. ‘move’ and
+‘transform_coordinates’ methods are not implemented in this class of
+generators and a usage error will be raised if called. ‘pick_from_list’
 method is used instead and must be overloaded by all RemoveGenerator
 subclasses.</p>
-<p><strong>N.B. This class can&#8217;t be instantiated but its sub-classes might be.</strong></p>
+<p><strong>N.B. This class can’t be instantiated but its sub-classes might be.</strong></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3520,20 +3765,20 @@ fullrmc EmptyGroup.</li>
 <li>maximumCollected (None, Integer): The maximum number allowed of
 atoms to be removed and collected from atomic configuration by the
 stochastic engine. This property is general to the system and
-checks engine&#8217;s collected atoms not the number of removed atoms
+checks engine’s collected atoms not the number of removed atoms
 via this generator. If None is given, the remover will not
 check for the number of already removed atoms before attempting
 a remove.</li>
 <li>allowFittingScaleFactor (bool): Constraints and especially
 experimental ones have a scale factor constant that can be fit.
-Fitting a scale factor happens at stochastic engine&#8217;s runtime
+Fitting a scale factor happens at stochastic engine’s runtime
 at a certain fitting frequency. If this flag set to True,
 then fitting the scale factor will be allowed upon removing atoms.
 When set to False, fitting the constraint scale factor will be
 forbidden upon removing atoms. By default, allowFittingScaleFactor
-is set to False because it&#8217;s more logical to allow removing only
+is set to False because it’s more logical to allow removing only
 atoms that enhances the total standard error without rescaling
-the model&#8217;s data.</li>
+the model’s data.</li>
 <li>atomsList (None,list,set,tuple,np.ndarray): The list of atomss
 index to chose and remove from.</li>
 </ol>
@@ -3563,7 +3808,7 @@ removing atoms.</p>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.RemoveGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.RemoveGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3589,7 +3834,7 @@ removing atoms.</p>
 <li>maximumCollected (None, Integer): The maximum number allowed of
 atoms to be removed and collected from atomic configuration by
 the stochastic engine. This property is general to the system and
-checks engine&#8217;s collected atoms not the number of removed atoms
+checks engine’s collected atoms not the number of removed atoms
 via this generator. If None is given, the remover will not
 check for the number of already removed atoms before attempting
 a remove.</li>
@@ -3611,14 +3856,14 @@ a remove.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>allowFittingScaleFactor (bool): Constraints and especially
 experimental ones have a scale factor constant that can be fit.
-Fitting a scale factor happens at stochastic engine&#8217;s runtime
+Fitting a scale factor happens at stochastic engine’s runtime
 at a certain fitting frequency. If this flag set to True,
 then fitting the scale factor will be allowed upon removing
 atoms. When set to False, fitting the constraint scale factor
 will be forbidden upon removing atoms. By default,
-allowFittingScaleFactor is set to False because it&#8217;s more
+allowFittingScaleFactor is set to False because it’s more
 logical to allow removing only atoms that enhances the total
-standard error without rescaling the model&#8217;s data.</li>
+standard error without rescaling the model’s data.</li>
 </ol>
 </td>
 </tr>
@@ -3705,7 +3950,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.SwapGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">SwapGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>swapLength=1</em>, <em>swapList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.SwapGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>It is a particular move generator that instead of generating a
 move upon a group of atoms, it will exchange the group atom positions
 with other atoms from a defined swapList.
@@ -3715,7 +3960,7 @@ having the same length.</p>
 <p>During stochastic engine runtime, whenever a swap generator is encountered,
 all sophisticated selection recurrence modes such as (refining, exploring)
 will be reduced to simple recurrence.</p>
-<p>This class can&#8217;t be instantiated but its sub-classes might be.</p>
+<p>This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3867,10 +4112,10 @@ including the given groupAtomsIndexes.</li>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">PathGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>path=None</em>, <em>randomize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>PathGenerator is a MoveGenerator sub-class where moves definitions
 are pre-stored in a path and get pulled out at every move step.</p>
-<p>This class can&#8217;t be instantiated but its sub-classes might be.</p>
+<p>This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3906,7 +4151,7 @@ pull moves in order at every step.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.PathGenerator.check_path">
 <code class="descname">check_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.PathGenerator.check_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s path.</p>
+<dd><p>Check the generator’s path.</p>
 <p>This method must be overloaded in all PathGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4009,7 +4254,7 @@ the transformation.</li>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGeneratorCombinator</code><span class="sig-paren">(</span><em>group=None</em>, <em>combination=None</em>, <em>shuffle=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>MoveGeneratorCombinator combines all moves of a list of MoveGenerators
 and applies it at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -4026,7 +4271,7 @@ every move or to combine moves in the list order.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCombinator</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
@@ -4074,7 +4319,7 @@ every move or to combine moves in the list order.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the generator&#8217;s group.
+<dd><p>Checks the generator’s group.
 This methods always returns True because normally all combination
 MoveGenerator instances groups are checked.</p>
 <p>This method must NOT be overloaded unless needed.</p>
@@ -4172,7 +4417,7 @@ the transformation.</li>
 <dl class="class">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector">
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGeneratorCollector</code><span class="sig-paren">(</span><em>group=None</em>, <em>collection=None</em>, <em>randomize=True</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>MoveGeneratorCollector collects MoveGenerators instances and applies
 the move of one instance at every step.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -4194,7 +4439,7 @@ selection from collection.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCollector</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
@@ -4269,7 +4514,7 @@ selection from collection.</li>
 <dl class="method">
 <dt id="fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.MoveGenerator.MoveGeneratorCollector.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group. This methods always returns True
+<dd><p>Check the generator’s group. This methods always returns True
 because normally all collection MoveGenerator instances groups
 are checked.</p>
 <p>This method must NOT be overloaded unless needed.</p>
@@ -4544,7 +4789,7 @@ real to reciprocal space and vice versa.</p>
 <dd><p>Compute point to point vector difference between two atomic coordinates arrays taking 
 into account periodic or infinite boundary conditions. Difference is calculated as 
 the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[differences[i,:] = boundaryConditions( pointsTo[i,:] - pointsFrom[i,:] )\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4576,7 +4821,7 @@ the same shape as pointsFrom.</li>
 <dd><p>Compute differences between one atomic coordinates arrays to a point coordinates  
 taking into account periodic or infinite boundary conditions. Difference is 
 calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[differences[i,:] = boundaryConditions( point[0,:] - coords[i,:] )\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4606,7 +4851,7 @@ calculated as the following:</p>
 <dd><p>Compute differences between one atomic coordinates arrays to a point coordinates   
 given its index in the coordinates array and taking into account periodic or 
 infinite boundary conditions. Difference is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[differences[i,:] = boundaryConditions( coords[atomIndex,:] - coords[i,:] )\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4636,7 +4881,7 @@ infinite boundary conditions. Difference is calculated as the following:</p>
 <dd><p>Compute differences between one atomic coordinates arrays to a multiple points   
 coordinates taking into account periodic or infinite boundary conditions. 
 Difference is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[differences[i,:,k] = boundaryConditions( points[k,:] - coords[i,:] )\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4666,7 +4911,7 @@ Difference is calculated as the following:</p>
 <dd><p>Compute differences between one atomic coordinates arrays to a points coordinates   
 given their indexes in the coordinates array and taking into account periodic or 
 infinite boundary conditions. Difference is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[differences[i,:,k] = boundaryConditions( coords[indexes[k],:] - coords[i,:] )\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4696,7 +4941,7 @@ infinite boundary conditions. Difference is calculated as the following:</p>
 <dd><p>Compute distances between one atomic coordinates arrays to a point coordinates  
 taking into account periodic or infinite boundary conditions. Distances is 
 calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[distances[i] = \sqrt{ \sum_{d}^{3}{ boundaryConditions( point[0,d] - coords[i,d] )^{2}} }\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4726,7 +4971,7 @@ calculated as the following:</p>
 <dd><p>Compute distances between one atomic coordinates arrays to a points coordinates   
 given their indexes in the coordinates array and taking into account periodic or 
 infinite boundary conditions. Distances is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[distances[i] = \sqrt{ \sum_{d}^{3}{ boundaryConditions( coords[atomIndex[i],d] - coords[i,d] )^{2}} }\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4756,7 +5001,7 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <dd><p>Compute distances between one atomic coordinates arrays to a multiple points   
 coordinates taking into account periodic or infinite boundary conditions. 
 Distances is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[distances[i,k] = \sqrt{ \sum_{d}^{3}{ boundaryConditions( points[k,d] - coords[i,d] )^{2}} }\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4786,7 +5031,7 @@ Distances is calculated as the following:</p>
 <dd><p>Compute distances between one atomic coordinates arrays to a points coordinates   
 given their indexes in the coordinates array and taking into account periodic or 
 infinite boundary conditions. Distances is calculated as the following:</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[distances[i,k] = \sqrt{ \sum_{d}^{3}{ boundaryConditions( coords[indexes[k],:]  - coords[i,d] )^{2}} }\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -4884,8 +5129,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>atomIndex (int32): The index of the atom.</li>
 <li>distances (float32 array): The distances array of the atom with the rest of atoms.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>dintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular counted distances.</li>
 <li>dinter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular counted distances.</li>
 <li>nintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular counted elements.</li>
@@ -4928,8 +5173,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <li>boxCoords (float32 array): The whole system box coordinates.</li>
 <li>basis (float32 array): The box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
 <li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
@@ -4967,8 +5212,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>indexes (int32 array): The atoms indexes array.</li>
 <li>distances (float32 array): The distances array of the atoms with the rest of atoms.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
 <li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
@@ -5007,8 +5252,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <li>boxCoords (float32 array): The whole system box coordinates.</li>
 <li>basis (float32 array): The box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
 <li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
@@ -5044,8 +5289,8 @@ infinite boundary conditions. Distances is calculated as the following:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>distances (float32 array): The distances array of the atoms with the rest of atoms.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>lowerLimit (float32 array): The (numberOfElements,numberOfElements,1) array of lower distance limits.</li>
 <li>upperLimit (float32 array): The (numberOfElements,numberOfElements,1) array of upper distance limits.</li>
@@ -5243,8 +5488,8 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>atomIndex (int32): The index of the atom.</li>
 <li>distances (float32 array): The distances array.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>hintra (float32 array): The (numberOfElements,numberOfElements,1) array for intra-molecular distances histograms.</li>
 <li>hinter (float32 array): The (numberOfElements,numberOfElements,1) array for inter-molecular distances histograms.</li>
 <li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
@@ -5278,8 +5523,8 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <li>coords (float32 (n,3) numpy.ndarray): The atomic coordinates array.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
@@ -5311,8 +5556,8 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>indexes (int32 (k,3) numpy.ndarray): The atomic coordinates indexes array.</li>
 <li>distances (float32 array): The distances array.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
@@ -5345,8 +5590,8 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <li>boxCoords (float32 (n,3) numpy.ndarray): The atomic coordinates array.</li>
 <li>basis (float32 (3,3) numpy.ndarray): The (3x3) boundary conditions box vectors.</li>
 <li>isPBC (bool): Whether it is a periodic boundary conditions or infinite.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
@@ -5376,8 +5621,8 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><ol class="first arabic simple">
 <li>distances (float32 array): The distances array.</li>
-<li>moleculeIndex (int32 array): The molecule&#8217;s index array, assigning a molecule index for every atom.</li>
-<li>elementIndex (int32 array): The element&#8217;s index array, assigning an element index for every atom.</li>
+<li>moleculeIndex (int32 array): The molecule’s index array, assigning a molecule index for every atom.</li>
+<li>elementIndex (int32 array): The element’s index array, assigning an element index for every atom.</li>
 <li>numberOfElements (int32): The number of elements in the system.</li>
 <li>minDistance (float32): The minimum distance to be counted in the histogram.</li>
 <li>maxDistance (float32): The maximum distance to be counted in the histogram.</li>
@@ -5407,7 +5652,7 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc.Core package</a><ul>
 <li><a class="reference internal" href="#module-fullrmc.Core.Collection">Collection</a></li>
@@ -5437,12 +5682,14 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
                         title="next chapter">fullrmc.Selectors package</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -5475,7 +5722,7 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Best practices &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Best practices &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,10 +22,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-    
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -33,11 +37,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -47,20 +51,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -68,9 +73,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -81,7 +86,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -96,13 +101,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -110,7 +115,7 @@
         
   <div class="section" id="best-practices">
 <h1>Best practices<a class="headerlink" href="#best-practices" title="Permalink to this headline">¶</a></h1>
-<p>fullrmc&#8217;s learning curve is very steep if one understands basic python
+<p>fullrmc’s learning curve is very steep if one understands basic python
 and some golden rules to setting and running the stochastic engine. The
 best way to creating and running a fullrmc fit is to create a run python
 script and launch it from the terminal.</p>
@@ -120,7 +125,7 @@ pdb file containing all necessary atomic system information.
 One must not underestimate the importance of preparing a pdb file with all
 atomic and molecular information.
 There is always a programatic way in fullrmc to fix the structure,
-but it would make one&#8217;s life easier if the pdb file contains all the
+but it would make one’s life easier if the pdb file contains all the
 needed information. One should make sure to provide correct and coherent
 residue name, sequence number and segment identifier all of which
 will be used by fullrmc to parse and separate between molecules.
@@ -130,24 +135,24 @@ must be correctly set. for more information about pdb files please click
 <p><strong>The second</strong> thing to take care of is the boundary conditions definition.
 Boundary conditions define the box size and therefore the density of the
 modeled system. Box size can be set as a REMARK in the pdb file or set using
-fullrmc&#8217;s stochastic engine set_boundary_conditions method. Two general types
+fullrmc’s stochastic engine set_boundary_conditions method. Two general types
 of boundary conditions exist. Periodic boundary conditions with a defined
 system box size and shape. Infinite boundary conditions with a non-defined
 box emulating an isolated atomic system.</p>
 <p><strong>The third</strong> thing one might need to fix is the density of the system but
-only when working with infinite boundary conditions. In this case, fullrmc&#8217;s
+only when working with infinite boundary conditions. In this case, fullrmc’s
 stochastic engine set_number_density method should be used to set
-system&#8217;s density.</p>
+system’s density.</p>
 <p><span class="underline">Adding constraints</span></p>
 <p><strong>The fourth</strong> thing to do is to define and set stochastic engine constraints.
-Constraints are the engine&#8217;s rules to fitting the atomic system. Constraints
+Constraints are the engine’s rules to fitting the atomic system. Constraints
 can be defined at any time and added to the engine. At any time a constraint
 can be removed from the engine or set as used or unused using constraint
-set_used method. Available constraints in the fullrmc&#8217;s standard distribution
+set_used method. Available constraints in the fullrmc’s standard distribution
 can be found <a class="reference external" href="fullrmc.Constraints.html">here</a>.</p>
-<p>A constraint must be initialized, added to the engine so it&#8217;s aware of the
+<p>A constraint must be initialized, added to the engine so it’s aware of the
 atomic system and then configured like the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import needed constraints definition from fullrmc.Constraints package</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import needed constraints definition from fullrmc.Constraints package</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.PairDistributionConstraints</span> <span class="kn">import</span> <span class="n">PairDistributionConstraint</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Constraints.BondConstraints</span> <span class="kn">import</span> <span class="n">BondConstraint</span>
 
@@ -169,7 +174,7 @@ atomic system and then configured like the following:</p>
                                                            <span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;H2&#39;</span> <span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.10</span><span class="p">)]</span> <span class="p">})</span>
 </pre></div>
 </div>
-<p>In the above example, two molecules &#8216;MOL1&#8217; and &#8216;MOL2&#8217; atomic bonds are
+<p>In the above example, two molecules ‘MOL1’ and ‘MOL2’ atomic bonds are
 defined. This is possible only because the atomic system pdb file is complete
 and therefore fullrmc is able to parse molecules and identify atoms name.</p>
 <p><span class="underline">Defining groups</span></p>
@@ -177,12 +182,12 @@ and therefore fullrmc is able to parse molecules and identify atoms name.</p>
 are set like one group per atom where each group contains a single atom index.
 One should not be afraid to alternate, remove and add new groups to the
 stochastic engine. Because atomic system pdb file is well configured,
-fullrmc&#8217;s stochastic methods such as set_groups_as_molecules can be used to
+fullrmc’s stochastic methods such as set_groups_as_molecules can be used to
 automatically remove all defined groups and add molecular groups where each
 group contains all atoms of a single molecule. On the other hand, to customize
 more complex groups, one can do that by writing some python code as the
 following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import Group definition from fullrmc</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import Group definition from fullrmc</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
 
 <span class="c1"># Create a group of atoms with random indexes for the sake of the example</span>
@@ -200,7 +205,7 @@ set_groups_as_molecules, etc. also exist to be used as needed.</p>
 <p><strong>The sixth</strong> step is to define groups way of moving. Random translation
 move generator is set my default to every new group instance. To customize
 a group move generator one should do the following.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">Group</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
 
@@ -214,9 +219,9 @@ a group move generator one should do the following.</p>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">add_group</span><span class="p">(</span> <span class="n">G</span> <span class="p">)</span>
 </pre></div>
 </div>
-<p>fullrmc&#8217;s stochastic engine groups can be accessed using engine&#8217;s groups
+<p>fullrmc’s stochastic engine groups can be accessed using engine’s groups
 attribute and all Group method can be applied.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import definitions</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
 
 <span class="c1"># loop over groups and set move generator</span>
@@ -225,8 +230,8 @@ attribute and all Group method can be applied.</p>
 </pre></div>
 </div>
 <p><span class="underline">Running stochastic engine</span></p>
-<p><strong>The seventh</strong> and last step is running fullrmc&#8217;s stochastic engine. This
-can be as simple as calling engine&#8217;s run method. run method takes several
+<p><strong>The seventh</strong> and last step is running fullrmc’s stochastic engine. This
+can be as simple as calling engine’s run method. run method takes several
 arguments to allow customization.</p>
 <p><span class="underline">Creating running script</span></p>
 <p>fullrmc is designed to model complex atomic and molecular system. We believe
@@ -234,7 +239,7 @@ that one should be able to interact with the atomic system and torture out
 useful insights when doing the stochastic modeling. For this particular reason
 creating a run, plot and visualize scripts is very useful to do so.n</p>
 <p>run.py script example for Nickel-Titanium alloy.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import operating system package</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import operating system package</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Import fullrmc&#39;s stochastic engine</span>
@@ -348,7 +353,7 @@ creating a run, plot and visualize scripts is very useful to do so.n</p>
 studied. At any point in time, one should stop the run script execution and
 create new run functions or alternate between them, tweak constraints,
 change groups, and move generators. The reason why we like to adopt this
-way of setting a stochastic fit is because once it&#8217;s set it becomes very
+way of setting a stochastic fit is because once it’s set it becomes very
 easy to run the stochastic engine by simply calling a run function rather
 than writing and deleting code.
 We highly recommend copying this exact script every time a new system needs
@@ -362,7 +367,7 @@ at any time even when the stochastic engine is running. This way one can
 follow the fitting process and decide whether to proceed, or stop the engine
 and tweak the fitting parameters, modes, groups or generators.</p>
 <blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Import stochastic engine</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import stochastic engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">Engine</span>
 
 <span class="c1"># Set engine path</span>
@@ -386,7 +391,7 @@ and tweak the fitting parameters, modes, groups or generators.</p>
     <span class="n">IMD</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="c1"># if engine not found, print message</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">print</span> <span class="n">mes</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">mes</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -394,7 +399,7 @@ and tweak the fitting parameters, modes, groups or generators.</p>
 launched at any time even when the stochastic engine is running. This way one
 can visualize the atomic configuration system using
 <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># standard libraries imports</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># standard libraries imports</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="c1"># Import stochastic engine</span>
@@ -415,7 +420,7 @@ can visualize the atomic configuration system using
     <span class="n">ENGINE</span><span class="o">.</span><span class="n">visualize</span><span class="p">(</span><span class="n">foldIntoBox</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">representationParams</span><span class="o">=</span><span class="s1">&#39;VDW 0.1 20&#39;</span><span class="p">)</span>
 <span class="c1"># if engine not found, print message</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">print</span> <span class="n">mes</span>
+    <span class="k">print</span><span class="p">(</span> <span class="n">mes</span> <span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -429,12 +434,14 @@ can visualize the atomic configuration system using
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -455,7 +462,7 @@ can visualize the atomic configuration system using
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

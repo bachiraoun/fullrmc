@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Selectors package &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Selectors package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +22,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
             <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" />
-    
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -35,11 +39,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -49,20 +53,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -70,9 +75,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -83,7 +88,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -110,40 +115,39 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
         <div class="body">
         
   <p>GroupSelector contains parent classes for all group selectors. A GroupSelector
-is used at the stochastic engine&#8217;s runtime to select groups upon which a
+is used at the stochastic engine’s runtime to select groups upon which a
 move will be applied. Therefore it has become possible to fully customize the
 selection of groups of atoms and to choose  when and how frequently a group
 can be chosen to perform a move upon.</p>
-<img src="_images/inheritance-caace5b68edd6ff0a0d4dceaa7f1371b7991b248.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-caace5b68edd6ff0a0d4dceaa7f1371b7991b248.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance graphviz" /></div>
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" target="_top" title="Recursive selector is the only selector that can use the recursive" alt="" coords="161,5,327,29"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">GroupSelector</code><span class="sig-paren">(</span><em>engine=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Group selector is the parent class that selects groups to perform
-moves at stochastic engine&#8217;s runtime.</p>
+moves at stochastic engine’s runtime.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector&#8217;s stochastic engine instance.</li>
+<li>engine (None, fullrmc.Engine): Selector’s stochastic engine instance.</li>
 </ol>
 </td>
 </tr>
@@ -152,7 +156,7 @@ moves at stochastic engine&#8217;s runtime.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">engine</code></dt>
-<dd><p>Stochastic engine&#8217;s instance.</p>
+<dd><p>Stochastic engine’s instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -237,13 +241,13 @@ RecursiveGroupSelector instances only.</p>
 <dl class="method">
 <dt>
 <code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
-<dd><p>Set selector&#8217;s stochastic engine instance.</p>
+<dd><p>Set selector’s stochastic engine instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector&#8217;s stochastic engine.</li>
+<li>engine (None, fullrmc.Engine): Selector’s stochastic engine.</li>
 </ol>
 </td>
 </tr>
@@ -311,7 +315,7 @@ needed.</p>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">RecursiveGroupSelector</code><span class="sig-paren">(</span><em>selector</em>, <em>recur=10</em>, <em>override=True</em>, <em>refine=False</em>, <em>explore=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
 <p>Recursive selector is the only selector that can use the recursive
 property on a selection. It is used as a wrapper around a GroupSelector
 instance.</p>
@@ -347,7 +351,7 @@ position is kept.</li>
 </tr>
 </tbody>
 </table>
-<p><strong>NB</strong>: refine and explore flags can&#8217;t both be set to True at the same time.
+<p><strong>NB</strong>: refine and explore flags can’t both be set to True at the same time.
 When this happens refine flag gets automatically switched to False.
 The usage of those flags is very important because they allow groups of
 atoms to go out of local minima in the energy surface. The way traditional
@@ -387,7 +391,7 @@ moves enhancing the structure are stored.
 <iframe width="560" height="315"
 src="https://www.youtube.com/embed/wafgTfHNpvs?rel=0"
 frameborder="0" allowfullscreen>
-</iframe><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+</iframe><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 
@@ -571,7 +575,7 @@ It must be a positive integer.</li>
 selected group move generator is a PathGenerator instance.
 Overridden recur value is temporary and totally selected group
 dependant. If selected group move generator is not a
-PathGenerator instance, recur value will take back selector&#8217;s
+PathGenerator instance, recur value will take back selector’s
 recur value.</li>
 </ol>
 </td>
@@ -648,16 +652,15 @@ then the best position is kept.</li>
 <div class="section" id="module-fullrmc.Selectors.OrderedSelectors">
 <span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Permalink to this headline">¶</a></h2>
 <p>OrderedSelectors contains GroupSelector classes of defined order of selection.</p>
-<img src="_images/inheritance-34040951b4225347ae7b9c4736aca8deeb421cd6.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-34040951b4225347ae7b9c4736aca8deeb421cd6.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance graphviz" /></div>
 <map id="inheritancec550f91c65" name="inheritancec550f91c65">
 <area shape="rect" id="node1" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="161,5,311,29"/>
 <area shape="rect" id="node3" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="359,5,526,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Selectors.OrderedSelectors.</code><code class="descname">DefinedOrderSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>order=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
 <p>DefinedOrderSelector is a group selector with a defined order of selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -672,7 +675,7 @@ If None, order is set automatically to all groups indexes list.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import external libraries</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import external libraries</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
 <span class="c1"># import fullrmc modules</span>
@@ -750,8 +753,8 @@ If None, order is set automatically to all groups indexes list.</li>
 
 <dl class="class">
 <dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.OrderedSelectors.</code><code class="descname">DirectionalOrderSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'TG': {'angle': 90</em>, <em>'damping': 0.1</em>, <em>'amplitude': 0.1}</em>, <em>'RG': {'amplitude': 10}}</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></code></a></p>
+<em class="property">class </em><code class="descclassname">fullrmc.Selectors.OrderedSelectors.</code><code class="descname">DirectionalOrderSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'RG': {'amplitude': 10}</em>, <em>'TG': {'amplitude': 0.1</em>, <em>'angle': 90</em>, <em>'damping': 0.1}}</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></code></a></p>
 <p>DirectionalOrderSelector is a group selector with a defined order of selection.
 The order of selection is computed automatically at engine runtime by computing
 Groups distance to center, and setting the order from the further to the closest
@@ -777,20 +780,20 @@ set this flag to True in order to take advantage of an automatic and intelligent
 </li>
 <li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
 If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
-&#8216;TG&#8217; key is for TranslationTowardsCenterGenerator parameters and &#8216;RG&#8217; key is
+‘TG’ key is for TranslationTowardsCenterGenerator parameters and ‘RG’ key is
 for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
 is not the same for all groups but intelligently allowing certain groups to move more than
 others according to damping parameter.</p>
 <p><strong>Parameters are the following:</strong></p>
 <ul class="simple">
-<li>TG_amp = generatorsParams[&#8216;TG&#8217;][&#8216;amplitude&#8217;]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>TG_ang = generatorsParams[&#8216;TG&#8217;][&#8216;angle&#8217;]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
-<li>TG_dam = generatorsParams[&#8216;TG&#8217;][&#8216;damping&#8217;]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>RG_ang = generatorsParams[&#8216;RG&#8217;][&#8216;amplitude&#8217;]: Used as RotationGenerator angle parameters.</li>
+<li>TG_amp = generatorsParams[‘TG’][‘amplitude’]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>TG_ang = generatorsParams[‘TG’][‘angle’]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
+<li>TG_dam = generatorsParams[‘TG’][‘damping’]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>RG_ang = generatorsParams[‘RG’][‘amplitude’]: Used as RotationGenerator angle parameters.</li>
 </ul>
 <p><strong>Parameters are used as the following:</strong></p>
 <ul>
-<li><p class="first">TG = TranslationTowardsCenterGenerator(center={&#8220;fixed&#8221;:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<li><p class="first">TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
 <p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
 </li>
 <li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
@@ -808,7 +811,7 @@ others according to damping parameter.</p>
 <iframe width="560" height="315"
 src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0"
 frameborder="0" allowfullscreen>
-</iframe><div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+</iframe><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
 
@@ -860,20 +863,20 @@ frameborder="0" allowfullscreen>
 <ol class="arabic">
 <li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
 If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
-&#8216;TG&#8217; key is for TranslationTowardsCenterGenerator parameters and &#8216;RG&#8217; key is
+‘TG’ key is for TranslationTowardsCenterGenerator parameters and ‘RG’ key is
 for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
 is not the same for all groups but intelligently allowing certain groups to move more than
 others according to damping parameter.</p>
 <p><strong>Parameters are the following:</strong></p>
 <ul class="simple">
-<li>TG_amp = generatorsParams[&#8216;TG&#8217;][&#8216;amplitude&#8217;]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>TG_ang = generatorsParams[&#8216;TG&#8217;][&#8216;angle&#8217;]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
-<li>TG_dam = generatorsParams[&#8216;TG&#8217;][&#8216;damping&#8217;]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>RG_ang = generatorsParams[&#8216;RG&#8217;][&#8216;amplitude&#8217;]: Used as RotationGenerator angle parameters.</li>
+<li>TG_amp = generatorsParams[‘TG’][‘amplitude’]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>TG_ang = generatorsParams[‘TG’][‘angle’]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
+<li>TG_dam = generatorsParams[‘TG’][‘damping’]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
+<li>RG_ang = generatorsParams[‘RG’][‘amplitude’]: Used as RotationGenerator angle parameters.</li>
 </ul>
 <p><strong>Parameters are used as the following:</strong></p>
 <ul>
-<li><p class="first">TG = TranslationTowardsCenterGenerator(center={&#8220;fixed&#8221;:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<li><p class="first">TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
 <p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
 </li>
 <li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
@@ -949,14 +952,13 @@ set this flag to True in order to take advantage of an automatic and intelligent
 <div class="section" id="module-fullrmc.Selectors.RandomSelectors">
 <span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Permalink to this headline">¶</a></h2>
 <p>RandomSelectors contains GroupSelector classes of random order of selections.</p>
-<img src="_images/inheritance-fd8d2faa51a59934ed621e6a58cdfdc0c13e2a32.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-fd8d2faa51a59934ed621e6a58cdfdc0c13e2a32.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance graphviz" /></div>
 <map id="inheritance35cb12d385" name="inheritance35cb12d385">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
 <area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="161,5,281,29"/>
 <area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="329,5,506,29"/>
 <area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="554,5,710,29"/>
-</map>
-<table border="1" class="docutils">
+</map><table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -964,7 +966,7 @@ set this flag to True in order to take advantage of an automatic and intelligent
 <tbody valign="top">
 <tr class="row-odd"><td colspan="2">Machine learning on group selection is shown herein. Groups are set to single atom where only random
 translation moves generators with different amplitudes are used allowing moves to be accepted in different
-ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal"><span class="pre">SmartRandomSelector</span></code></a> allowing machine learning upon group
+ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmartRandomSelector</span></code></a> allowing machine learning upon group
 selection. No experimental constraints are used but only inter-molecular distances, intra-molecular bonds,
 angles and improper angles constraints are used to keep the integrity of the system and molecules.
 As one can see, group selection machine learning is very effective allowing consequent improvement on the
@@ -993,7 +995,7 @@ amplitudes is set to 0.25A.</span></p>
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">RandomSelector</code><span class="sig-paren">(</span><em>engine=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
 <p>RandomSelector generates indexes randomly for engine group selection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1006,25 +1008,25 @@ amplitudes is set to 0.25A.</span></p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span> <span class="c1"># import external libraries</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># import external libraries</span>
  <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
- 
+
  <span class="c1"># import fullrmc modules</span>
  <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
  <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">RandomSelector</span>
- 
-<span class="c1"># create engine </span>
+
+<span class="c1"># create engine</span>
  <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
- 
+
  <span class="c1"># set pdb file</span>
  <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
- 
+
  <span class="c1"># Add constraints ...</span>
  <span class="c1"># Re-define groups if needed ...</span>
  <span class="c1"># Re-define groups generators as needed ...</span>
- 
+
  <span class="c1"># set group selector as random selection from all defined groups.</span>
- <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+ <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="method">
@@ -1049,7 +1051,7 @@ amplitudes is set to 0.25A.</span></p>
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">WeightedRandomSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.RandomSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.RandomSelectors.RandomSelector</span></code></a></p>
 <p>WeightedRandomSelector generates indexes randomly following groups weighting scheme.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1063,11 +1065,11 @@ amplitudes is set to 0.25A.</span></p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">WeightedRandomSelector</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
@@ -1080,8 +1082,8 @@ amplitudes is set to 0.25A.</span></p>
 <span class="c1"># set group selector as random selection but with double likelihood to</span>
 <span class="c1"># selecting the first and the last group.</span>
 <span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
-<span class="n">WEIGHTS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span> 
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">)</span> <span class="p">)</span>  
+<span class="n">WEIGHTS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -1158,9 +1160,9 @@ amplitudes is set to 0.25A.</span></p>
 <dl class="class">
 <dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector">
 <em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">SmartRandomSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>weights=None</em>, <em>biasFactor=1</em>, <em>unbiasFactor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></code></a></p>
 <p>SmartRandomSelector is a random group selector fed with machine learning algorithm.
-The indexes generation is biased and it evolves throughout the simulation towards 
+The indexes generation is biased and it evolves throughout the simulation towards
 selecting groups with more successful moves history.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1168,11 +1170,11 @@ selecting groups with more successful moves history.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
-<li>weights (None, list): Weights list fed as initial biasing scheme. 
+<li>weights (None, list): Weights list fed as initial biasing scheme.
 It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 <li>biasFactor (Number): The biasing factor of every group when a step get accepted.
 Must be a positive number.</li>
-<li>unbiasFactor(None, Number): Whether to un-bias a group&#8217;s weight when a move is rejected.
+<li>unbiasFactor(None, Number): Whether to un-bias a group’s weight when a move is rejected.
 If None, un-biasing is turned off.
 Un-biasing will be performed only if group weight remains positive.</li>
 </ol>
@@ -1180,11 +1182,11 @@ Un-biasing will be performed only if group weight remains positive.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">SmartRandomSelector</span>
 
-<span class="c1"># create engine </span>
+<span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
@@ -1195,8 +1197,8 @@ Un-biasing will be performed only if group weight remains positive.</li>
 <span class="c1"># Re-define groups generators as needed ...</span>
 
 <span class="c1"># set group selector as random smart selection that will adjust its</span>
-<span class="c1"># weighting scheme to improve the chances of moves getting accepted.        </span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>  
+<span class="c1"># weighting scheme to improve the chances of moves getting accepted.</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -1238,7 +1240,7 @@ Must be a positive number.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>unbiasFactor(None, Number): Whether to unbias a group&#8217;s weight when a move is rejected.
+<li>unbiasFactor(None, Number): Whether to unbias a group’s weight when a move is rejected.
 If None, unbiasing is turned off.
 Unbiasing will be performed only if group weight remains positive.</li>
 </ol>
@@ -1319,7 +1321,7 @@ This method is empty must be overloaded when needed.</p>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc.Selectors package</a><ul>
 <li><a class="reference internal" href="#module-fullrmc.Selectors.OrderedSelectors">OrderedSelectors</a></li>
@@ -1336,12 +1338,14 @@ This method is empty must be overloaded when needed.</p>
                         title="next chapter">fullrmc.Generators package</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1374,7 +1378,7 @@ This method is empty must be overloaded when needed.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

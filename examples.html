@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Available examples &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Available examples &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,10 +22,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-    
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -33,11 +37,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -47,20 +51,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -68,9 +73,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -81,7 +86,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -96,13 +101,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -128,7 +133,7 @@
 <dl class="function">
 <dt id="fullrmc.Examples.find_example">
 <code class="descclassname">fullrmc.Examples.</code><code class="descname">find_example</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Examples.find_example" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return example&#8217;s path given its name.</p>
+<dd><p>Return example’s path given its name.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -139,7 +144,7 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>path (None, string): The path of the example if found. 
+<li>path (None, string): The path of the example if found.
 None if example is not found.</li>
 </ol>
 </td>
@@ -173,26 +178,26 @@ None if example is not found.</li>
 
 <div class="section" id="available-examples">
 <h1>Available examples<a class="headerlink" href="#available-examples" title="Permalink to this headline">¶</a></h1>
-<p><strong>It is not allowed to use any of the examples materials&#8217; outside of
+<p><strong>It is not allowed to use any of the examples materials’ outside of
 the scope of this tutorial. Experimental data and models distributed
 in the examples are even wrong or tricked to serve the purpose of
 learning fullrmc.</strong></p>
 <p>Herein is a list of all available examples in the standard distribution.
 A short description of each example is shown in the list below. It is
 recommended not to run any example from within fullrmc. But copy the
-example folder to any safe place such as one&#8217;s home directory and run it
+example folder to any safe place such as one’s home directory and run it
 from there. To locate an example and copy it, one can do the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import find_example</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import find_example</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Examples</span> <span class="kn">import</span> <span class="n">find_example</span>
 <span class="c1"># search for an examples. e.g. atomicNiTi</span>
-<span class="k">print</span> <span class="n">find_example</span><span class="p">(</span><span class="s1">&#39;atomicNiTi&#39;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">find_example</span><span class="p">(</span><span class="s1">&#39;atomicNiTi&#39;</span><span class="p">))</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;../site-packages/fullrmc/Examples/atomicNiTi&#39;</span>
 </pre></div>
 </div>
 <p>In all examples, run.py is the name of the file that must be
 executed from the command line as the following:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>python run.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python run.py
 </pre></div>
 </div>
 <p>Examples folder name is used as the click-able items in the following list.</p>
@@ -270,12 +275,14 @@ contained in the same engine.</li>
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -296,7 +303,7 @@ contained in the same engine.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

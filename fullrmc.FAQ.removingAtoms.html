@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Dynamically removing atoms &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Dynamically removing atoms &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,10 +22,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-    
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -33,11 +37,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -47,20 +51,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -68,9 +73,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -81,7 +86,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -96,13 +101,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -113,22 +118,22 @@
 <p>Starting from version 3.0.0 dynamically removing atoms from system in fullrmc is enabled.
 This is another feature that makes fullrmc unique in its approach to reverse modelling
 atomic/molecular systems. Removing atoms in fullrmc is straightforward thanks to a very
-elegant implementation of a new type of move generators called <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a>.
+elegant implementation of a new type of move generators called <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoveGenerator</span></code></a>.
 Remove generators are like any other move generators with the following few exceptions
 and rules:</p>
 <ul class="simple">
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a> test removing atoms from the system instead of testing
+<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoveGenerator</span></code></a> test removing atoms from the system instead of testing
 a geometrical move or energy minimization move upon an atom.</li>
-<li>Removing multiple atoms at a time is not allowed. Even though it&#8217;s not complicated to
+<li>Removing multiple atoms at a time is not allowed. Even though it’s not complicated to
 implement multiple atoms removal but removing atoms is very invasive to the structure
 and to the chemical stability of the system. therefore it must be done very delicately
 because unwanted voids can be created in the system leading to wrong fits and
 conclusions.</li>
-<li>Like any move generator, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">RemoveGenerator</span></code></a> must be set to a group. But in this
-particular case only <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> accept this type of generators.</li>
-<li>An <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal"><span class="pre">EmptyGroup</span></code></a> is a group that takes no atoms. But instead, atoms are picked
+<li>Like any move generator, <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoveGenerator</span></code></a> must be set to a group. But in this
+particular case only <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyGroup</span></code></a> accept this type of generators.</li>
+<li>An <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyGroup</span></code></a> is a group that takes no atoms. But instead, atoms are picked
 dynamically upon engine runtime. This way, remove generator such as
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">AtomsRemoveGenerator</span></code></a> randomly picks an atom from its assigned atoms list
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsRemoveGenerator</span></code></a> randomly picks an atom from its assigned atoms list
 and tests whether removing this particular atom improves the global standard error
 of the system.</li>
 </ul>
@@ -140,21 +145,21 @@ of the system.</li>
 system was complete. In more details, Bonds, angles, interatomic distance, etc definitions
 are set when the system was not missing atoms. This is extremely important to know and
 to remember. Removing atoms is done via a collector that will collect all removed atoms
-from the system and propagates the removal to all engine&#8217;s entities. As an example, let&#8217;s
+from the system and propagates the removal to all engine’s entities. As an example, let’s
 assume a system with 10 atoms. Than atom indexes are a series of integers ranging from
-0 to 9. Let&#8217;s also assume removing atom index 3 from the system. The final system at this
+0 to 9. Let’s also assume removing atom index 3 from the system. The final system at this
 point contains the remaining 9 atoms. But system atom indexes will remain as before the
 series of integers ranging from 0 to 9 with index 3 missing. In practice when atom index
-3 is present in a group, fullrmc&#8217;s engine is smart enough to know that this atom is
+3 is present in a group, fullrmc’s engine is smart enough to know that this atom is
 removed and therefore this will be handled properly. <strong>Very important to know</strong>,
 properties and definitions must always be set as no atoms were removed. For this
-particular reason engine <code class="xref py py-func docutils literal"><span class="pre">Engine.get_original_data()</span></code> method is introduced to
+particular reason engine <code class="xref py py-func docutils literal notranslate"><span class="pre">Engine.get_original_data()</span></code> method is introduced to
 allow users retrieving original system properties and data with no additional efforts
 just like in the example below.</p>
 </div>
 <div class="section" id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">EmptyGroup</span>
 
@@ -196,7 +201,7 @@ just like in the example below.</p>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Dynamically removing atoms</a></li>
 <li><a class="reference internal" href="#how-it-works">How it works</a></li>
@@ -205,12 +210,14 @@ just like in the example below.</p>
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -231,7 +238,7 @@ just like in the example below.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

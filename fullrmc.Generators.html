@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Generators package &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Generators package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,12 +22,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Constraints package" href="fullrmc.Constraints.html" />
             <link rel="prev" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
-    
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -35,11 +39,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -49,20 +53,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -70,9 +75,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -83,7 +88,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -110,24 +115,24 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
         <div class="body">
         
   <p>MoveGenerator contains parent classes for all move generators.
-A MoveGenerator sub-class is used at fullrmc&#8217;s stochastic engine runtime to
+A MoveGenerator sub-class is used at fullrmc’s stochastic engine runtime to
 generate moves upon selected groups.
 Every group has its own MoveGenerator class and definitions, therefore it is
 possible to fully customize how a group of atoms should move.</p>
-<img src="_images/inheritance-633a5c39c02bfb33fbdb8c2efcebdd79b3766ec2.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-633a5c39c02bfb33fbdb8c2efcebdd79b3766ec2.png" alt="Inheritance diagram of fullrmc.Core.MoveGenerator" usemap="#inheritance84bba9a8f9" class="inheritance graphviz" /></div>
 <map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,101,119,125"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies" alt="" coords="175,5,342,29"/>
@@ -135,13 +140,12 @@ possible to fully customize how a group of atoms should move.</p>
 <area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="204,101,313,125"/>
 <area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on" alt="" coords="193,149,324,173"/>
 <area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a" alt="" coords="201,197,316,221"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGenerator</code><span class="sig-paren">(</span><em>group=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>It is the parent class of all moves generators.
-This class can&#8217;t be instantiated but its sub-classes might be.</p>
+This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -179,7 +183,7 @@ This class can&#8217;t be instantiated but its sub-classes might be.</p>
 <dl class="method">
 <dt>
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span></dt>
-<dd><p>Check the generator&#8217;s group.
+<dd><p>Check the generator’s group.
 This method must be overloaded in all MoveGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -207,7 +211,7 @@ This method must be overloaded in all MoveGenerator sub-classes.</p>
 <li>coordinates (np.ndarray): The coordinates on which to apply
 the move.</li>
 <li>argument (object): Any other argument needed to perform the
-move. In General it&#8217;s not needed.</li>
+move. In General it’s not needed.</li>
 </ol>
 </td>
 </tr>
@@ -251,7 +255,7 @@ the transformation.</li>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">RemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>allowFittingScaleFactor=False</em>, <em>atomsList=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>This is a very particular move generator that will not generate moves on
 atoms but removes them from the atomic configuration using a general
 collector mechanism. Remove generators must be used to create defects in
@@ -259,7 +263,7 @@ the simulated system. When the standard error is high, removing atoms
 might reduce the total fit standard error but this can be illusional and
 very limiting because artificial non physical voids can get created in
 the system which will lead to an impossibility to finding a solution at
-the end. It&#8217;s strongly recommended to exhaust all ideas and possibilities
+the end. It’s strongly recommended to exhaust all ideas and possibilities
 in finding a good solution prior to start removing atoms unless structural
 defects is the goal of the simulation.</p>
 <p>All removed or amputated atoms are collected by the engine and will
@@ -268,12 +272,12 @@ mind, it might be physically easy to remove and atom but an impossibility
 to add it back especially if the created voids are smeared out.</p>
 <p>Removers are called generators but they behave like selectors. Instead
 of applying a certain move on a group of atoms, they normally pick atoms
-from defined atoms list and apply no moves on those. &#8216;move&#8217; and
-&#8216;transform_coordinates&#8217; methods are not implemented in this class of
-generators and a usage error will be raised if called. &#8216;pick_from_list&#8217;
+from defined atoms list and apply no moves on those. ‘move’ and
+‘transform_coordinates’ methods are not implemented in this class of
+generators and a usage error will be raised if called. ‘pick_from_list’
 method is used instead and must be overloaded by all RemoveGenerator
 subclasses.</p>
-<p><strong>N.B. This class can&#8217;t be instantiated but its sub-classes might be.</strong></p>
+<p><strong>N.B. This class can’t be instantiated but its sub-classes might be.</strong></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -284,20 +288,20 @@ fullrmc EmptyGroup.</li>
 <li>maximumCollected (None, Integer): The maximum number allowed of
 atoms to be removed and collected from atomic configuration by the
 stochastic engine. This property is general to the system and
-checks engine&#8217;s collected atoms not the number of removed atoms
+checks engine’s collected atoms not the number of removed atoms
 via this generator. If None is given, the remover will not
 check for the number of already removed atoms before attempting
 a remove.</li>
 <li>allowFittingScaleFactor (bool): Constraints and especially
 experimental ones have a scale factor constant that can be fit.
-Fitting a scale factor happens at stochastic engine&#8217;s runtime
+Fitting a scale factor happens at stochastic engine’s runtime
 at a certain fitting frequency. If this flag set to True,
 then fitting the scale factor will be allowed upon removing atoms.
 When set to False, fitting the constraint scale factor will be
 forbidden upon removing atoms. By default, allowFittingScaleFactor
-is set to False because it&#8217;s more logical to allow removing only
+is set to False because it’s more logical to allow removing only
 atoms that enhances the total standard error without rescaling
-the model&#8217;s data.</li>
+the model’s data.</li>
 <li>atomsList (None,list,set,tuple,np.ndarray): The list of atomss
 index to chose and remove from.</li>
 </ol>
@@ -327,7 +331,7 @@ removing atoms.</p>
 <dl class="method">
 <dt>
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -353,7 +357,7 @@ removing atoms.</p>
 <li>maximumCollected (None, Integer): The maximum number allowed of
 atoms to be removed and collected from atomic configuration by
 the stochastic engine. This property is general to the system and
-checks engine&#8217;s collected atoms not the number of removed atoms
+checks engine’s collected atoms not the number of removed atoms
 via this generator. If None is given, the remover will not
 check for the number of already removed atoms before attempting
 a remove.</li>
@@ -375,14 +379,14 @@ a remove.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>allowFittingScaleFactor (bool): Constraints and especially
 experimental ones have a scale factor constant that can be fit.
-Fitting a scale factor happens at stochastic engine&#8217;s runtime
+Fitting a scale factor happens at stochastic engine’s runtime
 at a certain fitting frequency. If this flag set to True,
 then fitting the scale factor will be allowed upon removing
 atoms. When set to False, fitting the constraint scale factor
 will be forbidden upon removing atoms. By default,
-allowFittingScaleFactor is set to False because it&#8217;s more
+allowFittingScaleFactor is set to False because it’s more
 logical to allow removing only atoms that enhances the total
-standard error without rescaling the model&#8217;s data.</li>
+standard error without rescaling the model’s data.</li>
 </ol>
 </td>
 </tr>
@@ -469,7 +473,7 @@ the translation.</li>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">SwapGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>swapLength=1</em>, <em>swapList=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>It is a particular move generator that instead of generating a
 move upon a group of atoms, it will exchange the group atom positions
 with other atoms from a defined swapList.
@@ -479,7 +483,7 @@ having the same length.</p>
 <p>During stochastic engine runtime, whenever a swap generator is encountered,
 all sophisticated selection recurrence modes such as (refining, exploring)
 will be reduced to simple recurrence.</p>
-<p>This class can&#8217;t be instantiated but its sub-classes might be.</p>
+<p>This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -631,10 +635,10 @@ including the given groupAtomsIndexes.</li>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">PathGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>path=None</em>, <em>randomize=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>PathGenerator is a MoveGenerator sub-class where moves definitions
 are pre-stored in a path and get pulled out at every move step.</p>
-<p>This class can&#8217;t be instantiated but its sub-classes might be.</p>
+<p>This class can’t be instantiated but its sub-classes might be.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -670,7 +674,7 @@ pull moves in order at every step.</li>
 <dl class="method">
 <dt>
 <code class="descname">check_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
-<dd><p>Check the generator&#8217;s path.</p>
+<dd><p>Check the generator’s path.</p>
 <p>This method must be overloaded in all PathGenerator sub-classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -773,7 +777,7 @@ the transformation.</li>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGeneratorCombinator</code><span class="sig-paren">(</span><em>group=None</em>, <em>combination=None</em>, <em>shuffle=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>MoveGeneratorCombinator combines all moves of a list of MoveGenerators
 and applies it at once.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -790,7 +794,7 @@ every move or to combine moves in the list order.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCombinator</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
@@ -838,7 +842,7 @@ every move or to combine moves in the list order.</li>
 <dl class="method">
 <dt>
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span></dt>
-<dd><p>Checks the generator&#8217;s group.
+<dd><p>Checks the generator’s group.
 This methods always returns True because normally all combination
 MoveGenerator instances groups are checked.</p>
 <p>This method must NOT be overloaded unless needed.</p>
@@ -936,7 +940,7 @@ the transformation.</li>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Core.MoveGenerator.</code><code class="descname">MoveGeneratorCollector</code><span class="sig-paren">(</span><em>group=None</em>, <em>collection=None</em>, <em>randomize=True</em>, <em>weights=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>MoveGeneratorCollector collects MoveGenerators instances and applies
 the move of one instance at every step.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -958,7 +962,7 @@ selection from collection.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.MoveGenerator</span> <span class="kn">import</span> <span class="n">MoveGeneratorCollector</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
@@ -1033,7 +1037,7 @@ selection from collection.</li>
 <dl class="method">
 <dt>
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span></dt>
-<dd><p>Check the generator&#8217;s group. This methods always returns True
+<dd><p>Check the generator’s group. This methods always returns True
 because normally all collection MoveGenerator instances groups
 are checked.</p>
 <p>This method must NOT be overloaded unless needed.</p>
@@ -1150,7 +1154,7 @@ the transformation.</li>
 <div class="section" id="module-fullrmc.Generators.Rotations">
 <span id="rotations"></span><h2>Rotations<a class="headerlink" href="#module-fullrmc.Generators.Rotations" title="Permalink to this headline">¶</a></h2>
 <p>Rotations contains all rotation like MoveGenerator classes.</p>
-<img src="_images/inheritance-7ed79ad20cd4eada735e98f4e29e1d8ec049313e.png" alt="Inheritance diagram of fullrmc.Generators.Rotations" usemap="#inheritance0bc6f727b9" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-7ed79ad20cd4eada735e98f4e29e1d8ec049313e.png" alt="Inheritance diagram of fullrmc.Generators.Rotations" usemap="#inheritance0bc6f727b9" class="inheritance graphviz" /></div>
 <map id="inheritance0bc6f727b9" name="inheritance0bc6f727b9">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,53,119,77"/>
 <area shape="rect" id="node2" href="#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generate rotational moves upon groups of atoms to align and orient" alt="" coords="167,5,314,29"/>
@@ -1159,8 +1163,7 @@ the transformation.</li>
 <area shape="rect" id="node7" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" target="_top" title="Generate rotational moves upon groups of atoms about one of their" alt="" coords="378,53,597,77"/>
 <area shape="rect" id="node4" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a" alt="" coords="392,101,583,125"/>
 <area shape="rect" id="node6" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about one of" alt="" coords="362,149,613,173"/>
-</map>
-<table border="1" class="docutils">
+</map><table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -1172,7 +1175,7 @@ the transformation.</li>
 applied on a Tetrahydrofuran molecule. Solid
 colours are of the origin molecule position while
 fading ones are of the rotated molecule.
-(<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal"><span class="pre">RotationGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotationGenerator</span></code></a>)</span></p>
 </div>
 </td>
 <td><div class="first last figure align-left" id="id2">
@@ -1182,8 +1185,8 @@ or one of the symmetry axes of the Tetrahydrofuran
 molecule. Solid colours are of the origin molecule
 position while fading ones are of the rotated
 molecule.
-(<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">RotationAboutAxisGenerator</span></code></a>
-<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">RotationAboutSymmetryAxisGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotationAboutAxisGenerator</span></code></a>
+<a class="reference internal" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotationAboutSymmetryAxisGenerator</span></code></a>)</span></p>
 </div>
 </td>
 </tr>
@@ -1194,10 +1197,10 @@ axis with maximumOffsetAngle of 10 degrees is
 generated. First principal axis of hexane molecule
 is considered as groupAxis. Solid colors are of
 original molecule while fading ones are of the
-oriented one. (<a class="reference internal" href="#fullrmc.Generators.Rotations.OrientationGenerator" title="fullrmc.Generators.Rotations.OrientationGenerator"><code class="xref py py-class docutils literal"><span class="pre">OrientationGenerator</span></code></a>)</span></p>
+oriented one. (<a class="reference internal" href="#fullrmc.Generators.Rotations.OrientationGenerator" title="fullrmc.Generators.Rotations.OrientationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrientationGenerator</span></code></a>)</span></p>
 </div>
 </td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
@@ -1207,7 +1210,7 @@ frameborder="0" allowfullscreen>
 </iframe><dl class="class">
 <dt id="fullrmc.Generators.Rotations.RotationGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Rotations.</code><code class="descname">RotationGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=2</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>Generate random rotational moves upon groups of atoms.
 Only groups of more than one atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1223,7 +1226,7 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationGenerator</span>
 
@@ -1272,7 +1275,7 @@ than 360.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.RotationGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1317,7 +1320,7 @@ the rotation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Rotations.</code><code class="descname">RotationAboutAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></code></a></p>
 <p>Generates random rotational moves upon groups of atoms about a
 pre-defined axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1334,7 +1337,7 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutAxisGenerator</span>
 
@@ -1364,7 +1367,7 @@ It must be strictly bigger than 0 and strictly smaller than 360.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.RotationAboutAxisGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1425,7 +1428,7 @@ applying the rotation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Rotations.</code><code class="descname">RotationAboutSymmetryAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=2</em>, <em>axis=0</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Rotations.RotationGenerator" title="fullrmc.Generators.Rotations.RotationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Rotations.RotationGenerator</span></code></a></p>
 <p>Generates random rotational moves upon groups of atoms about one of
 their symmetry axis. Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1443,7 +1446,7 @@ secondary or tertiary symmetry axis</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutSymmetryAxisGenerator</span>
 
@@ -1518,7 +1521,7 @@ applying the rotation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Rotations.</code><code class="descname">RotationAboutSymmetryAxisPath</code><span class="sig-paren">(</span><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></code></a></p>
 <p>Generate rotational moves upon groups of atoms about one of their
 symmetry axis. Only groups of more than one atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1537,7 +1540,7 @@ pull moves in order at every step.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">RotationAboutSymmetryAxisPath</span>
 
@@ -1585,7 +1588,7 @@ secondary or tertiary symmetry axis</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_path">
 <code class="descname">check_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s path.</p>
+<dd><p>Check the generator’s path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1624,7 +1627,7 @@ secondary or tertiary symmetry axis</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1668,7 +1671,7 @@ the rotation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Rotations.OrientationGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Rotations.</code><code class="descname">OrientationGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumOffsetAngle=10</em>, <em>groupAxis={'symmetry': 0}</em>, <em>orientationAxis={'fixed': (1</em>, <em>0</em>, <em>0)}</em>, <em>flip=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.OrientationGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>Generate rotational moves upon groups of atoms to align and orient
 along an axis. Orientation rotations are computed randomly allowing
 offset angle between grouAxis and orientationAxis Only groups of more
@@ -1682,14 +1685,14 @@ than 1 atom are accepted.</p>
 <li>maximumOffsetAngle (number): The maximum offset angle in degrees
 between groupAxis and orientationAxis.</li>
 <li>groupAxis (dict): The group axis. Only one key is allowed.
-If key is &#8216;fixed&#8217;, value must be a list, tuple or a numpy.array of
-a vector such as [X,Y,Z]. If key is &#8216;symmetry&#8217;, in this case the
+If key is ‘fixed’, value must be a list, tuple or a numpy.array of
+a vector such as [X,Y,Z]. If key is ‘symmetry’, in this case the
 group axis is computed as one of the three symmetry axis of the
 group atoms. the value must be even 0, 1 or 2 for respectively
 the first, second and tertiary symmetry axis.</li>
 <li>orientationAxis (dict): The axis to align the group with.
-If key is &#8216;fixed&#8217;, value must be a list, tuple or a numpy.array
-of a vector such as [X,Y,Z]. If Key is &#8216;symmetry&#8217;, in this case
+If key is ‘fixed’, value must be a list, tuple or a numpy.array
+of a vector such as [X,Y,Z]. If Key is ‘symmetry’, in this case
 the value must be a list of two items, the first one is a list
 of atoms indexes to compute symmetry axis and the second item
 must be even 0, 1 or 2 for respectively the first, second and
@@ -1705,7 +1708,7 @@ during run time execution.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Rotations</span> <span class="kn">import</span> <span class="n">OrientationGenerator</span>
 
@@ -1774,7 +1777,7 @@ degrees between groupAxis and orientationAxis.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Rotations.OrientationGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Rotations.OrientationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1892,19 +1895,18 @@ the rotation.</li>
 <div class="section" id="module-fullrmc.Generators.Translations">
 <span id="translations"></span><h2>Translations<a class="headerlink" href="#module-fullrmc.Generators.Translations" title="Permalink to this headline">¶</a></h2>
 <p>Translations contains all translation like MoveGenerator classes.</p>
-<img src="_images/inheritance-38cd6055c78962575f586c095472ad21386794f9.png" alt="Inheritance diagram of fullrmc.Generators.Translations" usemap="#inheritance32367ebff3" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-38cd6055c78962575f586c095472ad21386794f9.png" alt="Inheritance diagram of fullrmc.Generators.Translations" usemap="#inheritance32367ebff3" class="inheritance graphviz" /></div>
 <map id="inheritance32367ebff3" name="inheritance32367ebff3">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,53,119,77"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="186,17,295,41"/>
-<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationGenerator" target="_top" title="Generates random translations moves upon groups of atoms." alt="" coords="167,89,314,113"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Translations.TranslationGenerator" target="_top" title="Generates random translations moves upon groups of atoms." alt="" coords="167,77,314,101"/>
 <area shape="rect" id="node6" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" target="_top" title="Generates translation moves upon groups of atoms along one of their" alt="" coords="378,5,612,29"/>
 <area shape="rect" id="node3" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms along a" alt="" coords="392,53,598,77"/>
 <area shape="rect" id="node7" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards a" alt="" coords="706,53,928,77"/>
 <area shape="rect" id="node5" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" target="_top" title="Generate random translation moves upon groups of atoms along one of" alt="" coords="362,101,628,125"/>
 <area shape="rect" id="node8" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" target="_top" title="Generates random translation moves of every atom of the group along" alt="" coords="377,149,613,173"/>
 <area shape="rect" id="node9" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards one of" alt="" coords="676,101,958,125"/>
-</map>
-<table border="1" class="docutils">
+</map><table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -1913,14 +1915,14 @@ the rotation.</li>
 <tr class="row-odd"><td><div class="first last figure align-left" id="id4">
 <a class="reference internal image-reference" href="_images/500randomTranslations.png"><img alt="_images/500randomTranslations.png" src="_images/500randomTranslations.png" style="width: 375px; height: 300px;" /></a>
 <p class="caption"><span class="caption-text">Random translation vectors generated from
-atom at origin. (<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationGenerator</span></code></a>)</span></p>
+atom at origin. (<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationGenerator</span></code></a>)</span></p>
 </div>
 </td>
 <td><div class="first last figure align-left" id="id5">
 <a class="reference internal image-reference" href="_images/10TranslationsAlongAxis.png"><img alt="_images/10TranslationsAlongAxis.png" src="_images/10TranslationsAlongAxis.png" style="width: 375px; height: 300px;" /></a>
 <p class="caption"><span class="caption-text">Random translation vectors generated from
 atom at origin along a pre-defined axis.
-(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationAlongAxisGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationAlongAxisGenerator</span></code></a>)</span></p>
 </div>
 </td>
 </tr>
@@ -1928,10 +1930,10 @@ atom at origin along a pre-defined axis.
 <a class="reference internal image-reference" href="_images/translationAlongSymmetryAxis.png"><img alt="_images/translationAlongSymmetryAxis.png" src="_images/translationAlongSymmetryAxis.png" style="width: 375px; height: 300px;" /></a>
 <p class="caption"><span class="caption-text">Random translation vector generated along a
 predefined axis or one of the symmetry axes of the
-hexane molecule and applied on all the molecule&#8217;s
+hexane molecule and applied on all the molecule’s
 atoms at the same time.
-(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationAlongAxisGenerator</span></code></a>
-<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationAlongSymmetryAxisGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationAlongAxisGenerator</span></code></a>
+<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationAlongSymmetryAxisGenerator</span></code></a>)</span></p>
 </div>
 </td>
 <td><div class="first last figure align-left" id="id7">
@@ -1939,8 +1941,8 @@ atoms at the same time.
 <p class="caption"><span class="caption-text">Random translation vectors generated towards an
 axis within some maximum angle.
 Legend is formatted as axis (angle) (direction)
-(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationTowardsAxisGenerator</span></code></a>
-<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationTowardsSymmetryAxisGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationTowardsAxisGenerator</span></code></a>
+<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationTowardsSymmetryAxisGenerator</span></code></a>)</span></p>
 </div>
 </td>
 </tr>
@@ -1950,10 +1952,10 @@ Legend is formatted as axis (angle) (direction)
 pre-defined center or towards the geometric center
 of a group of atoms. Here 20 vectors are generated
 within a maximum separation angle of 30 deg.
-(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator"><code class="xref py py-class docutils literal"><span class="pre">TranslationTowardsCenterGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationTowardsCenterGenerator</span></code></a>)</span></p>
 </div>
 </td>
-<td>&nbsp;</td>
+<td>&#160;</td>
 </tr>
 </tbody>
 </table>
@@ -1970,7 +1972,7 @@ frameborder="0" allowfullscreen>
 </iframe><dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>Generates random translations moves upon groups of atoms.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1988,7 +1990,7 @@ If tuple is given, it is the limits of translation boundaries as
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationGenerator</span>
 
@@ -2039,7 +2041,7 @@ as [min,max] where min&gt;=0 and max&gt;min.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2084,7 +2086,7 @@ generator.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationAlongAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em>, <em>direction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
 <p>Generates random translation moves upon groups of atoms along a
 pre-defined axis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2113,7 +2115,7 @@ direction of axis.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongAxisGenerator</span>
 
@@ -2214,7 +2216,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationTowardsAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=(1</em>, <em>0</em>, <em>0)</em>, <em>angle=30</em>, <em>direction=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationAlongAxisGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Translations.TranslationAlongAxisGenerator</span></code></a></p>
 <p>Generates random translation moves upon groups of atoms towards a
 pre-defined axis within a tolerance angle between translation vectors
 and the pre-defined axis.</p>
@@ -2244,7 +2246,7 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsAxisGenerator</span>
 
@@ -2318,7 +2320,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationAlongSymmetryAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em>, <em>direction=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
 <p>Generate random translation moves upon groups of atoms along one of
 their symmetry axis. Only groups containing more than 1 atoms allow
 computing symmetry axis.</p>
@@ -2345,7 +2347,7 @@ If False all generated vectors are in the opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongSymmetryAxisGenerator</span>
 
@@ -2381,7 +2383,7 @@ If False all generated vectors are in the opposite direction of axis.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2465,7 +2467,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationTowardsSymmetryAxisGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em>, <em>axis=0</em>, <em>angle=30</em>, <em>direction=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator</span></code></a></p>
 <p>Generates random translation moves upon groups of atoms towards one of
 its symmetry axis within a tolerance angle between translation vectors
 and the axis. Only groups of more than 1 atom are accepted.</p>
@@ -2495,7 +2497,7 @@ opposite direction of axis.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsSymmetryAxisGenerator</span>
 
@@ -2570,7 +2572,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationAlongSymmetryAxisPath</code><span class="sig-paren">(</span><em>group=None</em>, <em>axis=0</em>, <em>path=None</em>, <em>randomize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" title="fullrmc.Core.MoveGenerator.PathGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.PathGenerator</span></code></a></p>
 <p>Generates translation moves upon groups of atoms along one of their
 symmetry axis. Only groups of more than 1 atom are accepted.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2589,7 +2591,7 @@ or pull moves in order at every step.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationAlongSymmetryAxisPath</span>
 
@@ -2619,7 +2621,7 @@ or pull moves in order at every step.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2654,7 +2656,7 @@ secondary or tertiary symmetry axis</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_path">
 <code class="descname">check_path</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisPath.check_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s path.</p>
+<dd><p>Check the generator’s path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2720,7 +2722,7 @@ the translation.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Translations.TranslationTowardsCenterGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Translations.</code><code class="descname">TranslationTowardsCenterGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>center={'fixed': (0</em>, <em>0</em>, <em>0)}</em>, <em>amplitude=0.1</em>, <em>angle=30</em>, <em>direction=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Generators.Translations.TranslationGenerator</span></code></a></p>
 <p>Generates random translation moves of every atom of the group along
 its direction vector to the geometric center of the group.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2730,7 +2732,7 @@ its direction vector to the geometric center of the group.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>group (None, Group): The group instance.</li>
 <li>center (dict): The center value dictionary. Must have a single
-key and this can only be &#8216;fixed&#8217; or &#8216;indexes&#8217;.
+key and this can only be ‘fixed’ or ‘indexes’.
 If key is fixed, value must be a list or a numpy.array of a point
 coordinates such as [X,Y,Z].
 If key is indexes, value must be a list or a numpy array of indexes.</li>
@@ -2753,7 +2755,7 @@ If False is given, all generated vectors point away from the center.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Translations</span> <span class="kn">import</span> <span class="n">TranslationTowardsCenterGenerator</span>
 
@@ -2843,7 +2845,7 @@ will be along the direction to center.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>center (dict): The center value dictionary. Must have a single
-key and this can only be &#8216;fixed&#8217; or &#8216;indexes&#8217;. If key is fixed,
+key and this can only be ‘fixed’ or ‘indexes’. If key is fixed,
 value must be a list or a numpy.array of a point coordinates
 such as [X,Y,Z]. If key is indexes, value must be a list or a
 numpy array of indexes.</li>
@@ -2892,13 +2894,12 @@ the translation.</li>
 <span id="agitations"></span><h2>Agitations<a class="headerlink" href="#module-fullrmc.Generators.Agitations" title="Permalink to this headline">¶</a></h2>
 <p>Agitations contains all MoveGenerator classes that agitate and shake
 structures such as distances, angles, etc.</p>
-<img src="_images/inheritance-d26d0b7e126f7efe191143913459b7db8075fb86.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-d26d0b7e126f7efe191143913459b7db8075fb86.png" alt="Inheritance diagram of fullrmc.Generators.Agitations" usemap="#inheritancecf4ebe4bfc" class="inheritance graphviz" /></div>
 <map id="inheritancecf4ebe4bfc" name="inheritancecf4ebe4bfc">
 <area shape="rect" id="node1" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" target="_top" title="Generate random agitation moves upon an angle defined between two vectors" alt="" coords="176,5,344,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,29,119,53"/>
 <area shape="rect" id="node3" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" target="_top" title="Generates random agitation moves upon a distance separating two atoms" alt="" coords="167,53,352,77"/>
-</map>
-<table border="1" class="docutils">
+</map><table border="1" class="docutils">
 <colgroup>
 <col width="50%" />
 <col width="50%" />
@@ -2913,7 +2914,7 @@ Angstroms. Red hydrogen atoms represent the shrank
 H-H bond length molecule while blue hydrogen atoms
 represent the expanded H-H bond length molecules.</span></p>
 <div class="legend">
-(<a class="reference internal" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><code class="xref py py-class docutils literal"><span class="pre">DistanceAgitationGenerator</span></code></a>)</div>
+(<a class="reference internal" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceAgitationGenerator</span></code></a>)</div>
 </div>
 </td>
 <td><div class="first last figure align-left" id="id10">
@@ -2925,7 +2926,7 @@ consecutively the Oxygen atom and the two hydrogen
 atoms is about 105 deg. Shrank H-O-H angles are
 represented by the red hydrogen while expanded
 angles are represented in blue.
-(<a class="reference internal" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal"><span class="pre">AngleAgitationGenerator</span></code></a>)</span></p>
+(<a class="reference internal" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngleAgitationGenerator</span></code></a>)</span></p>
 </div>
 </td>
 </tr>
@@ -2937,7 +2938,7 @@ frameborder="0" allowfullscreen>
 </iframe><dl class="class">
 <dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Agitations.</code><code class="descname">DistanceAgitationGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=0.2</em>, <em>symmetric=True</em>, <em>shrink=None</em>, <em>agitate=(True</em>, <em>True)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>Generates random agitation moves upon a distance separating two atoms
 by translating both atoms away from each other or closer to each other
 along the direction line between them. This is mainly used to shake two
@@ -2960,7 +2961,7 @@ If True, moves will always bring atoms closer to each other.
 If False, moves will always bring atoms away from each other.
 If None, no orientation is forced, therefore atoms can randomly get
 closer to each other or away from each other.</li>
-<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least one
+<li>agitate (tuple): It’s a tuple of two boolean values, at least one
 of them must be True.
 Whether to agitate the first atom, the second or both. This is
 useful to set an atom fixed while only
@@ -2973,7 +2974,7 @@ along the bond direction.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Agitations</span> <span class="kn">import</span> <span class="n">DistanceAgitationGenerator</span>
 
@@ -3021,7 +3022,7 @@ along the bond direction.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Agitations.DistanceAgitationGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Agitations.DistanceAgitationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3102,7 +3103,7 @@ increase or decrease randomly at every step.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least
+<li>agitate (tuple): It’s a tuple of two boolean values, at least
 one of them must be True. Whether to agitate the first atom,
 the second or both. This is useful to set an atom fixed while
 only the other succumb the agitation to adjust the distance.
@@ -3147,7 +3148,7 @@ generator.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Agitations.</code><code class="descname">AngleAgitationGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>amplitude=2</em>, <em>symmetric=True</em>, <em>shrink=None</em>, <em>agitate=(True</em>, <em>True)</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" title="fullrmc.Core.MoveGenerator.MoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.MoveGenerator</span></code></a></p>
 <p>Generate random agitation moves upon an angle defined between two vectors
 left-central and right-central where (central, left, right) are three
 atoms. Move will be performed on left and/or right atom while central
@@ -3172,7 +3173,7 @@ If True, moves will always reduce angle.
 If False, moves will always increase angle.
 If None, no orientation is forced, therefore angle can randomly
 get wider or tighter.</li>
-<li>agitate (tuple): It&#8217;s a tuple of two boolean values for
+<li>agitate (tuple): It’s a tuple of two boolean values for
 respectively (left, right) atoms,
 at least one of them must be True. Whether to agitate the left
 atom, the right or both. This is useful to set an atom fixed while
@@ -3182,7 +3183,7 @@ only the other succumb the agitation to adjust the angle.</li>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Agitations</span> <span class="kn">import</span> <span class="n">AngleAgitationGenerator</span>
 
@@ -3230,7 +3231,7 @@ only the other succumb the agitation to adjust the angle.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Agitations.AngleAgitationGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Agitations.AngleAgitationGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3312,7 +3313,7 @@ increase or decrease randomly at every step.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>agitate (tuple): It&#8217;s a tuple of two boolean values, at least
+<li>agitate (tuple): It’s a tuple of two boolean values, at least
 one of them must be True. Whether to agitate the first atom,
 the second or both. This is useful to set an atom fixed while
 only the other succumb the agitation to adjust the distance.
@@ -3363,17 +3364,16 @@ the translation.</li>
 <div class="section" id="module-fullrmc.Generators.Swaps">
 <span id="swap"></span><h2>Swap<a class="headerlink" href="#module-fullrmc.Generators.Swaps" title="Permalink to this headline">¶</a></h2>
 <p>Swaps contains all swap or atoms position exchange MoveGenerator classes.</p>
-<img src="_images/inheritance-a6509e134ea195d8be43962fbb34a9b6e4f8b175.png" alt="Inheritance diagram of fullrmc.Generators.Swaps" usemap="#inheritancef8ecb731d1" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-a6509e134ea195d8be43962fbb34a9b6e4f8b175.png" alt="Inheritance diagram of fullrmc.Generators.Swaps" usemap="#inheritancef8ecb731d1" class="inheritance graphviz" /></div>
 <map id="inheritancef8ecb731d1" name="inheritancef8ecb731d1">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,29,119,53"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a" alt="" coords="167,29,282,53"/>
 <area shape="rect" id="node2" href="#fullrmc.Generators.Swaps.SwapCentersGenerator" target="_top" title="Computes geometric center of the selected group, and swaps its atoms" alt="" coords="334,5,495,29"/>
 <area shape="rect" id="node4" href="#fullrmc.Generators.Swaps.SwapPositionsGenerator" target="_top" title="Generates positional swapping between atoms of the selected group and" alt="" coords="330,53,499,77"/>
-</map>
-<dl class="class">
+</map><dl class="class">
 <dt id="fullrmc.Generators.Swaps.SwapPositionsGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Swaps.</code><code class="descname">SwapPositionsGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>swapLength=1</em>, <em>swapList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.SwapGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.SwapGenerator</span></code></a></p>
 <p>Generates positional swapping between atoms of the selected group and
 other atoms randomly selected from swapList.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -3396,7 +3396,7 @@ sub-list must have the same number of atoms as the group.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Swaps</span> <span class="kn">import</span> <span class="n">SwapPositionsGenerator</span>
 
@@ -3439,7 +3439,7 @@ sub-list must have the same number of atoms as the group.</p>
 <dl class="method">
 <dt id="fullrmc.Generators.Swaps.SwapPositionsGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapPositionsGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3484,7 +3484,7 @@ swapList.</li>
 <li>coordinates (np.ndarray): The coordinates on which to apply
 the swapping.</li>
 <li>argument (object): Any other argument needed to perform
-the move. In General it&#8217;s not needed.</li>
+the move. In General it’s not needed.</li>
 </ol>
 </td>
 </tr>
@@ -3503,7 +3503,7 @@ the move.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Swaps.SwapCentersGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Swaps.</code><code class="descname">SwapCentersGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>swapList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.SwapGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.SwapGenerator</span></code></a></p>
 <p>Computes geometric center of the selected group, and swaps its atoms
 by translation to the atoms geometric center of the other atoms which
 are randomly selected from swapList and vice-versa.</p>
@@ -3523,7 +3523,7 @@ are randomly selected from swapList and vice-versa.</p>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Generators.Swaps</span> <span class="kn">import</span> <span class="n">SwapCentersGenerator</span>
 
@@ -3595,7 +3595,7 @@ does not require a fixed length.</p>
 <dl class="method">
 <dt id="fullrmc.Generators.Swaps.SwapCentersGenerator.check_group">
 <code class="descname">check_group</code><span class="sig-paren">(</span><em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Swaps.SwapCentersGenerator.check_group" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check the generator&#8217;s group.</p>
+<dd><p>Check the generator’s group.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -3621,7 +3621,7 @@ does not require a fixed length.</p>
 <li>coordinates (np.ndarray): The coordinates on which to apply
 the swapping.</li>
 <li>argument (object): Any other argument needed to perform the
-move. In General it&#8217;s not needed.</li>
+move. In General it’s not needed.</li>
 </ol>
 </td>
 </tr>
@@ -3643,7 +3643,7 @@ applying the move.</li>
 <dl class="class">
 <dt id="fullrmc.Generators.Removes.AtomsRemoveGenerator">
 <em class="property">class </em><code class="descclassname">fullrmc.Generators.Removes.</code><code class="descname">AtomsRemoveGenerator</code><span class="sig-paren">(</span><em>group=None</em>, <em>maximumCollected=None</em>, <em>atomsList=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal"><span class="pre">fullrmc.Core.MoveGenerator.RemoveGenerator</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.MoveGenerator.RemoveGenerator</span></code></a></p>
 <p>This generator allows removing single atoms at a time from the system.
 Atoms are randomly picked from atomsList and returned upon calling
 pick_from_list method.</p>
@@ -3656,7 +3656,7 @@ pick_from_list method.</p>
 fullrmc EmptyGroup.</li>
 <li>maximumCollected (None, Integer): The maximum number allowed of
 atoms to be removed and collected from the engine. This property
-is general to the system and checks engine&#8217;s collected atoms not
+is general to the system and checks engine’s collected atoms not
 the number of removed atoms via this generator. If None is given,
 the remover will not check for the number of already removed atoms
 before attempting a remove.</li>
@@ -3671,7 +3671,7 @@ in system will be used.</li>
 <dl class="method">
 <dt id="fullrmc.Generators.Removes.AtomsRemoveGenerator.pick_from_list">
 <code class="descname">pick_from_list</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Generators.Removes.AtomsRemoveGenerator.pick_from_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Randomly picks an atom&#8217;s index from atomsList. This method checks
+<dd><p>Randomly picks an atom’s index from atomsList. This method checks
 and verifies maximumCollected prior to picking and index.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -3704,7 +3704,7 @@ If None is returned than picking is not allowed.</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc.Generators package</a><ul>
 <li><a class="reference internal" href="#module-fullrmc.Generators.Rotations">Rotations</a></li>
@@ -3724,12 +3724,14 @@ If None is returned than picking is not allowed.</li>
                         title="next chapter">fullrmc.Constraints package</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -3762,7 +3764,7 @@ If None is returned than picking is not allowed.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

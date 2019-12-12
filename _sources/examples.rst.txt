@@ -2,78 +2,78 @@
 
 .. role:: underline
    :class: underline
-   
-.. automodule:: fullrmc.Examples 
+
+.. automodule:: fullrmc.Examples
 
 Available examples
 ==================
-**It is not allowed to use any of the examples materials' outside of 
+**It is not allowed to use any of the examples materials' outside of
 the scope of this tutorial. Experimental data and models distributed
-in the examples are even wrong or tricked to serve the purpose of 
+in the examples are even wrong or tricked to serve the purpose of
 learning fullrmc.**
 
 Herein is a list of all available examples in the standard distribution.
-A short description of each example is shown in the list below. It is 
+A short description of each example is shown in the list below. It is
 recommended not to run any example from within fullrmc. But copy the
-example folder to any safe place such as one's home directory and run it  
+example folder to any safe place such as one's home directory and run it
 from there. To locate an example and copy it, one can do the following:
 
-.. code-block:: python  
-       
+.. code-block:: python
+
          # import find_example
          from fullrmc.Examples import find_example
          # search for an examples. e.g. atomicNiTi
-         print find_example('atomicNiTi')
-         
+         print(find_example('atomicNiTi'))
+
          >>> '../site-packages/fullrmc/Examples/atomicNiTi'
 
-         
-In all examples, run.py is the name of the file that must be  
+
+In all examples, run.py is the name of the file that must be
 executed from the command line as the following:
 
-.. code-block:: bash  
-       
+.. code-block:: bash
+
           python run.py
 
-          
+
 Examples folder name is used as the click-able items in the following list.
 
 
 :underline:`Constraints:`
 
-*  `coordNumConstraint <fullrmc.Examples.coordinationNumberConstraint.html>`__: 
+*  `coordNumConstraint <fullrmc.Examples.coordinationNumberConstraint.html>`__:
    Used to show how to coordination number constraint works.
-*  `bondsConstraint <fullrmc.Examples.bondsConstraint.html>`__: Used to show 
+*  `bondsConstraint <fullrmc.Examples.bondsConstraint.html>`__: Used to show
    how bonds constraint works.
-*  `anglesConstraint <fullrmc.Examples.anglesConstraint.html>`__: Used to show 
+*  `anglesConstraint <fullrmc.Examples.anglesConstraint.html>`__: Used to show
    how angles constraint works.
-*  `improperConstraint <fullrmc.Examples.improperConstraint.html>`__: Used to show 
+*  `improperConstraint <fullrmc.Examples.improperConstraint.html>`__: Used to show
    how improper angles constraint works.
-*  `dihedralConstraint <fullrmc.Examples.dihedralConstraint.html>`__: Used to show 
+*  `dihedralConstraint <fullrmc.Examples.dihedralConstraint.html>`__: Used to show
    how dyhedral angles constraint works.
 
 :underline:`Generators:`
 
-*  `translations <fullrmc.Examples.translations.html>`__: Used show how to 
+*  `translations <fullrmc.Examples.translations.html>`__: Used show how to
    use translation generators.
-*  `rotations <fullrmc.Examples.rotations.html>`__: To show how to use 
+*  `rotations <fullrmc.Examples.rotations.html>`__: To show how to use
    rotation generators.
-*  `agitations <fullrmc.Examples.agitations.html>`__: To show how to 
+*  `agitations <fullrmc.Examples.agitations.html>`__: To show how to
    use agitation generators.
 
-   
+
 :underline:`Fitting modes:`
 
-*  `docking <fullrmc.Examples.docking.html>`__: To show how to move 
+*  `docking <fullrmc.Examples.docking.html>`__: To show how to move
    one group of atoms towards another.
 *  `explore <fullrmc.Examples.explore.html>`__: This is a simulation of a molecule
-   exploring a cavity. 
+   exploring a cavity.
 *  `refine <fullrmc.Examples.refine.html>`__: This is a simulation of a molecule
    refining its position in a cavity.
 *  `ExploreCO2 <fullrmc.Examples.exploreCO2.html>`__: This is a fit of CO2 gas
-   in critical condition.  
+   in critical condition.
 
-   
+
 :underline:`Selectors:`
 
 *  `MLSelection <fullrmc.Examples.MLSelection.html>`__: In this example we show
@@ -82,32 +82,27 @@ Examples folder name is used as the click-able items in the following list.
 
 :underline:`Benchmarks:`
 
-*  `benchmark <fullrmc.Examples.benchmark.html>`__: This example can be used to 
+*  `benchmark <fullrmc.Examples.benchmark.html>`__: This example can be used to
    benchmark fullrmc.
 *  `multicoreBenchmark <fullrmc.Examples.multicoreBenchmark.html>`__: This is used to
-   benchmark multicore computation. 
+   benchmark multicore computation.
 
 
 :underline:`Real systems:`
 
-*  `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__: Fitting a Ni-Ti memory   
+*  `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__: Fitting a Ni-Ti memory
    shape binary compound.
-*  `molecularTHF <fullrmc.Examples.molecularTHF.html>`__: This is a tetrahydrofuran 
+*  `molecularTHF <fullrmc.Examples.molecularTHF.html>`__: This is a tetrahydrofuran
    electrolyte system fitting.
-*  `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon 
-   oxide nanosphere fitting. 
+*  `SiOxNanosphere <fullrmc.Examples.SiOxNanosphere.html>`__: This is an isolated silicon
+   oxide nanosphere fitting.
 *  `NiMnCoLiO <fullrmc.Examples.removes.html>`__: This is a fake Nickel Manganese Cobalt
    Lithium oxide composite used to demonstrate how to remove atoms from system.
 
-   
-:underline:`Frames:`   
 
-*  `frames <fullrmc.Examples.frames.html>`__: Fitting the same Ni-Ti memory shape binary  
-   compound as in example `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__. But in 
+:underline:`Frames:`
+
+*  `frames <fullrmc.Examples.frames.html>`__: Fitting the same Ni-Ti memory shape binary
+   compound as in example `atomicNiTi <fullrmc.Examples.atomicNiTi.html>`__. But in
    this example we define different frames and build different fitting processes all
    contained in the same engine.
-   
-   
-   
-   
-   

@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>History &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>History &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,10 +22,13 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="#" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
-    
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -33,11 +37,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -47,20 +51,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -68,9 +73,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -81,7 +86,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -96,13 +101,13 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -112,12 +117,12 @@
 <h1>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
 <p>FUndamental Library Language for Reverse Monte Carlo or fullrmc
 project has started in 2015 as a consequence of the incapability
-of modelling complex atomic systems&#8217; structure. fullrmc is not a
-standard RMC software but it&#8217;s rather a molecular/atomic stochastic
+of modelling complex atomic systems’ structure. fullrmc is not a
+standard RMC software but it’s rather a molecular/atomic stochastic
 fitting platform to reverse modeling experimental data. fullrmc
 implementation exceeds in its capabilities and functionalities
 traditional RMC and Metropolis–Hastings algorithm. Therefore RMC
-appellation in fullrmc is not accurate but it&#8217;s retained to
+appellation in fullrmc is not accurate but it’s retained to
 respecting the community terminology.
 Since fullrmc was published a first official release 0.2.0 was made.
 Later, successive releases were made as needed.</p>
@@ -137,7 +142,7 @@ we would appreciate citations to the following paper:</p>
 with Machine Learning and Artificial Intelligence;
 <em>J. Comput. Chem.</em> 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304</p>
 <p><span class="underline">Bibtex entry:</span></p>
-<div class="highlight-latex"><div class="highlight"><pre><span></span>@article <span class="nb">{</span>JCC:JCC24304,
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>@article <span class="nb">{</span>JCC:JCC24304,
 author = <span class="nb">{</span>Aoun, Bachir<span class="nb">}</span>,
 title = <span class="nb">{</span>Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence<span class="nb">}</span>,
 journal = <span class="nb">{</span>Journal of Computational Chemistry<span class="nb">}</span>,
@@ -153,7 +158,7 @@ year = <span class="nb">{</span>2016<span class="nb">}</span>,
 </pre></div>
 </div>
 <p><span class="underline">EndNote entry:</span></p>
-<div class="highlight-latex"><div class="highlight"><pre><span></span>Provider: John Wiley <span class="nb">&amp;</span> Sons, Ltd
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>Provider: John Wiley <span class="nb">&amp;</span> Sons, Ltd
 Content:text/plain; charset=&quot;UTF-8&quot;
 
 TY  - JOUR
@@ -192,7 +197,7 @@ frameborder="0" allowfullscreen>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">History</a></li>
 <li><a class="reference internal" href="#authors-and-developers">Authors and developers</a></li>
@@ -202,12 +207,14 @@ frameborder="0" allowfullscreen>
 
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -228,7 +235,7 @@ frameborder="0" allowfullscreen>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

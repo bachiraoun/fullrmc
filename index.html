@@ -4,15 +4,16 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '3.3.0',
+        VERSION:     '4.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -21,11 +22,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
             <link rel="author" title="About these documents" href="about.html" />
-            <link rel="top" title="fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package" href="#" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="#" />
             <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" />
-    
+
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
     <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
@@ -34,11 +38,11 @@
         </script>
     
     </head>
-  
+
     <body>
         <!-- ------------------------------------- -->
         <!-- ----- CREATE A STATIC MENU BAR ------ -->
-        <div class="menu"> 
+        <div class="menu">
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="versions.html">Versions</a></li>
@@ -48,20 +52,21 @@
                 <li><a href="fullrmc.Constraints.html">Constraints</a></li>
                 <li><a href="examples.html">Examples</a></li>
                 <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
                 <!-- pypi and github forkme link images table -->
-                <li> 
+                <li>
                     <table style="position: absolute; right:0; top:0;">
                         <!-- pypi image -->
                         <td><a href="https://pypi.python.org/pypi/fullrmc">
                             <img height="40";
                                  src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>   
-                        </a></td> 
+                                 alt="Download me on PyPI"/>
+                        </a></td>
                         <!-- github image -->
                         <td><a href="https://github.com/bachiraoun/fullrmc.git">
                             <img height="40";
                                  src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />   
+                                 alt="Fork me on GitHub" />
                         </a></td>
                     </table>
                 </li>
@@ -69,9 +74,9 @@
             </ul>
             <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->    
+        <!----------  STATIC MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;  
+        .menu { height: 42px; background-color:black; margin:0px;
                 z-index: 9999; position:Fixed;
                 left: 0; top: 0; width: 100%; }
             .menu ul { list-style: none; }
@@ -82,7 +87,7 @@
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>  
+        <div style="margin-top:40px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -103,13 +108,13 @@
              |
         
         </li>
-        <li><a href="#">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
-         
-         
         
         
+        
+
         <div class="document">
         <div class="documentwrapper">
             <div class="bodywrapper">
@@ -117,16 +122,12 @@
         
   <div class="section" id="module-fullrmc">
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
-<img src="_images/inheritance-b863adad8779201361adc8070e55f047802800d9.png" alt="Inheritance diagram of fullrmc.Engine" usemap="#inheritancef3da48e58f" class="inheritance"/>
-<map id="inheritancef3da48e58f" name="inheritancef3da48e58f">
-<area shape="rect" id="node1" title="fulrmc&#39;s engine, is used to launch a stochastic modelling which is" alt="" coords="5,5,77,29"/>
-</map>
-<img src="_images/inheritance-0f1e3055c365ab33b34c6fc47f9704638f216759.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance"/>
+<div class="graphviz"><img src="_images/inheritance-b863adad8779201361adc8070e55f047802800d9.png" alt="Inheritance diagram of fullrmc.Engine" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-0f1e3055c365ab33b34c6fc47f9704638f216759.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance graphviz" /></div>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly" alt="" coords="125,5,222,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container." alt="" coords="5,5,77,29"/>
-</map>
-<img src="_images/inheritance-c2decd8e4e072a9abb93a9e82d3e81d5526afa14.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors" usemap="#inheritance41b11bc119" class="inheritance"/>
+</map><div class="graphviz"><img src="_images/inheritance-c2decd8e4e072a9abb93a9e82d3e81d5526afa14.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors, fullrmc.Selectors.OrderedSelectors" usemap="#inheritance41b11bc119" class="inheritance graphviz" /></div>
 <map id="inheritance41b11bc119" name="inheritance41b11bc119">
 <area shape="rect" id="node1" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="161,5,311,29"/>
 <area shape="rect" id="node3" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="364,5,531,29"/>
@@ -134,8 +135,7 @@
 <area shape="rect" id="node4" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="175,53,296,77"/>
 <area shape="rect" id="node6" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="359,53,536,77"/>
 <area shape="rect" id="node5" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="584,53,740,77"/>
-</map>
-<img src="_images/inheritance-699c476a93c9bfa34c0eb302bf0a79d454a3818d.png" alt="Inheritance diagram of fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Generators.Removes" usemap="#inheritance88be5fd1ce" class="inheritance"/>
+</map><div class="graphviz"><img src="_images/inheritance-699c476a93c9bfa34c0eb302bf0a79d454a3818d.png" alt="Inheritance diagram of fullrmc.Generators.Translations, fullrmc.Generators.Rotations, fullrmc.Generators.Swaps, fullrmc.Generators.Agitations, fullrmc.Generators.Removes" usemap="#inheritance88be5fd1ce" class="inheritance graphviz" /></div>
 <map id="inheritance88be5fd1ce" name="inheritance88be5fd1ce">
 <area shape="rect" id="node1" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" target="_top" title="Generate random agitation moves upon an angle defined between two vectors" alt="" coords="176,5,344,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,173,119,197"/>
@@ -158,8 +158,7 @@
 <area shape="rect" id="node17" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" target="_top" title="Generate random translation moves upon groups of atoms along one of" alt="" coords="400,461,667,485"/>
 <area shape="rect" id="node20" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsCenterGenerator" target="_top" title="Generates random translation moves of every atom of the group along" alt="" coords="415,509,652,533"/>
 <area shape="rect" id="node21" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationTowardsSymmetryAxisGenerator" target="_top" title="Generates random translation moves upon groups of atoms towards one of" alt="" coords="715,461,996,485"/>
-</map>
-<img src="_images/inheritance-82f19cd93771dc0dd1eb3353d83c394fb757c7c2.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints, fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint, fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.DihedralAngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints, fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritance3d6e2e9ef5" class="inheritance"/>
+</map><div class="graphviz"><img src="_images/inheritance-82f19cd93771dc0dd1eb3353d83c394fb757c7c2.png" alt="Inheritance diagram of fullrmc.Constraints.AtomicCoordinationConstraints, fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint, fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint, fullrmc.Constraints.BondConstraints, fullrmc.Constraints.AngleConstraints, fullrmc.Constraints.DihedralAngleConstraints, fullrmc.Constraints.ImproperAngleConstraints, fullrmc.Constraints.PairDistributionConstraints, fullrmc.Constraints.PairCorrelationConstraints, fullrmc.Constraints.StructureFactorConstraints" usemap="#inheritance3d6e2e9ef5" class="inheritance graphviz" /></div>
 <map id="inheritance3d6e2e9ef5" name="inheritance3d6e2e9ef5">
 <area shape="rect" id="node1" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" target="_top" title="It&#39;s a rigid constraint that controls the coordination number of atoms." alt="" coords="491,5,736,29"/>
 <area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Constraint.RigidConstraint" target="_top" title="A rigid constraint is a constraint that doesn&#39;t count into the total" alt="" coords="306,149,419,173"/>
@@ -167,7 +166,6 @@
 <area shape="rect" id="node5" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" target="_top" title="Controls angle defined between 3 defined atoms, a first atom called central" alt="" coords="536,101,690,125"/>
 <area shape="rect" id="node8" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" target="_top" title="Dihedral angle is defined between two intersecting planes formed" alt="" coords="531,149,696,173"/>
 <area shape="rect" id="node10" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" target="_top" title="Controls the improper angle formed with 4 defined atoms. It&#39;s mainly used" alt="" coords="529,197,698,221"/>
-<area shape="rect" id="node18" title="This is the design class for all distance related constraints." alt="" coords="543,245,684,269"/>
 <area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Constraint.SingularConstraint" target="_top" title="A singular constraint is a constraint that doesn&#39;t allow multiple" alt="" coords="297,101,428,125"/>
 <area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" target="_top" title="A constraint is used to direct the evolution of the atomic" alt="" coords="152,149,235,173"/>
 <area shape="rect" id="node9" href="fullrmc.Core.html#fullrmc.Core.Constraint.ExperimentalConstraint" target="_top" title="Experimental constraint is any constraint related to experimental data." alt="" coords="283,293,443,317"/>
@@ -175,12 +173,10 @@
 <area shape="rect" id="node15" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" target="_top" title="Controls the total reduced pair distribution function (pdf) of atomic" alt="" coords="527,293,700,317"/>
 <area shape="rect" id="node17" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" target="_top" title="Controls the Structure Factor noted as S(Q) and also called" alt="" coords="526,341,700,365"/>
 <area shape="rect" id="node11" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" target="_top" title="Its controls the inter&#45;molecular distances between atoms." alt="" coords="1060,221,1278,245"/>
-<area shape="rect" id="node12" title="This is the design class for all molecular distance related constraints." alt="" coords="798,245,998,269"/>
 <area shape="rect" id="node13" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" target="_top" title=".. py:class::IntraMolecularDistanceConstraint" alt="" coords="1060,269,1278,293"/>
 <area shape="rect" id="node14" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" target="_top" title="Controls the total pair correlation function (pcf) of the system noted" alt="" coords="813,293,984,317"/>
 <area shape="rect" id="node16" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" target="_top" title="The Reduced Structure Factor that we will also note S(Q)" alt="" coords="784,341,1012,365"/>
-</map>
-<div class="section" id="welcoming-videos">
+</map><div class="section" id="welcoming-videos">
 <h2>Welcoming videos<a class="headerlink" href="#welcoming-videos" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
@@ -215,7 +211,7 @@ low correlation barriers.</p>
 <tr class="row-even"><td><div class="first"><iframe width="580" height="315"
 src="https://www.youtube.com/embed/24Rd2EZ2vVo?rel=0"
 frameborder="0" allowfullscreen>
-</iframe></div><p class="last">Reverse Monte Carlo traditional fitting mode compared with fullrmc&#8217;s recursive
+</iframe></div><p class="last">Reverse Monte Carlo traditional fitting mode compared with fullrmc’s recursive
 selection with exploring. This video shows how from a potential point of view
 exploring allow to cross forbidden unlikely barriers and going out of local
 minimas.</p>
@@ -233,40 +229,40 @@ traditional RMC but a stochastic modelling method to solve an inverse problem
 whereby an atomic/molecular model is  adjusted until its atoms position have
 the greatest consistency with a set of experimental data.</p>
 <p>fullrmc is a python package with its core and calculation modules optimized
-and compiled in Cython. fullrmc is not a standard RMC package but it&#8217;s rather
+and compiled in Cython. fullrmc is not a standard RMC package but it’s rather
 unique in its approach to stochastically solving an atomic or molecular
-structure. fullrmc&#8217;s Engine sub-module is the main module that contains the
-definition of &#8216;Engine&#8217; which is the main and only class used to launch a
+structure. fullrmc’s Engine sub-module is the main module that contains the
+definition of ‘Engine’ which is the main and only class used to launch a
 stochastic fitting calculation. Engine reads only Protein Data Bank formatted
-atomic configuration <a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a>
+atomic configuration <a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">‘.pdb’</a>
 files and handles other definitions and attributes such as:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><strong>Group</strong>: Engine doesn&#8217;t understand atoms or molecules but group of
+<li><strong>Group</strong>: Engine doesn’t understand atoms or molecules but group of
 atom indexes instead. A group is a set of atom indexes, allowing
 indexes redundancy within the same group definition. A Group instance
 can contain any list of indexes and as many atoms index as needed.
 Grouping atoms is essential to make clusters of atoms (residues,
 molecules, etc) evolve and move together. A group of a single atom index
 can be used to make a single atom move separately from the others.
-Engine&#8217;s &#8216;groups&#8217; attribute is a simple list of group instances
+Engine’s ‘groups’ attribute is a simple list of group instances
 containing all the desired and defined groups that one wants to move.</li>
 <li><strong>Group selector</strong>: Engine requires a GroupSelector instance which is
-the artist that selects a group from the engine&#8217;s groups list at every
+the artist that selects a group from the engine’s groups list at every
 engine runtime step. Among other properties, depending on which group
 selector is used by the engine, a GroupSelector can allow weighting
 which means selecting groups more or less frequently than the others,
 it can also allow selection recurrence and refinement of a single group,
 ordered and random selection is also possible.</li>
 <li><strong>Move generator</strong>: Every group instance has its own MoveGenerator.
-Therefore every group of atoms when selected by the engine&#8217;s group
-selector at the engine&#8217;s runtime can perform a customizable and
+Therefore every group of atoms when selected by the engine’s group
+selector at the engine’s runtime can perform a customizable and
 different kind of moves.</li>
 <li><strong>Constraint</strong>: A constraint is a rule that controls certain aspect
-of the configuration upon moving groups. Engine&#8217;s &#8216;constraints&#8217;
+of the configuration upon moving groups. Engine’s ‘constraints’
 attribute is a list of all defined and used constraint instances, it
 is the judge that controls the evolution of the system by accepting or
-rejecting the move of a group. If engine&#8217;s constraints list is empty and
+rejecting the move of a group. If engine’s constraints list is empty and
 contains no constraint definition, this will result in accepting all the
 generated moves.</li>
 </ol>
@@ -274,7 +270,7 @@ generated moves.</li>
 </div>
 <div class="section" id="tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point">
 <h2>Tetrahydrofuran simple example yet complete and straight to the point<a class="headerlink" href="#tetrahydrofuran-simple-example-yet-complete-and-straight-to-the-point" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">## Tetrahydrofuran (THF) molecule sketch</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1">## Tetrahydrofuran (THF) molecule sketch</span>
 <span class="c1">##</span>
 <span class="c1">##              O</span>
 <span class="c1">##   H41      /   \      H11</span>
@@ -522,23 +518,23 @@ Engine runtime.</span></p>
 </div>
 <div class="section" id="sub-modules">
 <h2>Sub-modules<a class="headerlink" href="#sub-modules" title="Permalink to this headline">¶</a></h2>
-<p>Engine is fullrmc&#8217;s main module. It contains &#8216;Engine&#8217; the main class
+<p>Engine is fullrmc’s main module. It contains ‘Engine’ the main class
 of fullrmc which is the stochastic artist. The engine class
 takes only Protein Data Bank formatted files
-<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">&#8216;.pdb&#8217;</a> as
+<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">‘.pdb’</a> as
 atomic/molecular input structure. It handles and fits simultaneously many
 experimental data while controlling the evolution of the system using
 user-defined molecular and atomistic constraints such as bond-length,
 bond-angles, dihedral angles, inter-molecular-distances, etc.</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">Engine</code><span class="sig-paren">(</span><em>path=None</em>, <em>frames=None</em>, <em>logFile=None</em>, <em>freshStart=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>fulrmc&#8217;s engine, is used to launch a stochastic modelling which is
+<em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">Engine</code><span class="sig-paren">(</span><em>path=None</em>, <em>logFile=None</em>, <em>freshStart=False</em>, <em>timeout=10</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>fulrmc’s engine, is used to launch a stochastic modelling which is
 different than traditional Reverse Monte Carlo (RMC).
-It has the capability to use and fit simultaneously
-multiple sets of experimental data. One can also define constraints such
-as distances, bonds length, angles and many others.</p>
+It has the capability to use and fit simultaneously multiple sets of
+experimental data. One can also define constraints such as distances,
+bonds length, angles and many others.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -549,25 +545,21 @@ engine. If None is given path will be set when saving the engine
 using Engine.save method. If a non-empty directory is found at the
 given path an error will be raised unless freshStart flag attribute
 is set to True.</li>
-<li>frames (None, list): List of frames name. Frames are used to store
-fitting data. Multiple frames can be used to create a fitting story
-or to fit multiple structures simultaneously. Also multiple frames
-can be used to launch multiple simulations at the same time and
-merge structures at some predefined merging frequency.
-If None is given, a single frame &#8216;0&#8217; is initialized automatically.</li>
 <li>logFile (None, string): Logging file basename. A logging file full
-name will be the given logFile appended &#8216;.log&#8217; extension
+name will be the given logFile appended ‘.log’ extension
 automatically. If None is given, logFile is left unchanged.</li>
 <li>freshStart (boolean): Whether to remove any existing fullrmc engine
 at the given path if found. If set to False, an error will be raise
 if a fullrmc engine or a non-empty directory is found at the given
 path.</li>
+<li>timeout (number): The maximum delay or time allowed to successfully
+set the lock upon reading or writing the engine repository</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 
 <span class="c1"># create engine</span>
@@ -585,25 +577,31 @@ path.</li>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
 
 <span class="c1"># run engine for 10000 steps and save only at the end</span>
-<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">savePath</span><span class="o">=</span><span class="s2">&quot;system.rmc&quot;</span><span class="p">)</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
 <dt>
+<code class="descname">path</code></dt>
+<dd><p>Engine’s repository path if set or save.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="descname">info</code></dt>
-<dd><p>Engine&#8217;s information (version, id) tuple.</p>
+<dd><p>Engine’s information (version, id) tuple.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">frames</code></dt>
-<dd><p>Engine&#8217;s frames list copy.</p>
+<dd><p>Engine’s frames list copy.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">usedFrame</code></dt>
-<dd><p>Engine&#8217;s frame in use.</p>
+<dd><p>Engine’s frame in use.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -627,7 +625,7 @@ path.</li>
 <dl class="attribute">
 <dt>
 <code class="descname">state</code></dt>
-<dd><p>Engine&#8217;s state.</p>
+<dd><p>Engine’s state.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -670,19 +668,19 @@ totalStandardError</p>
 <dl class="attribute">
 <dt>
 <code class="descname">groups</code></dt>
-<dd><p>Engine&#8217;s defined groups list.</p>
+<dd><p>Engine’s defined groups list.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">pdb</code></dt>
-<dd><p>Engine&#8217;s pdbParser instance.</p>
+<dd><p>Engine’s pdbparser instance.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">boundaryConditions</code></dt>
-<dd><p>Engine&#8217;s boundaryConditions instance.</p>
+<dd><p>Engine’s boundaryConditions instance.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -819,7 +817,7 @@ InfiniteBoundaries.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">numberDensity</code></dt>
-<dd><p>System&#8217;s number density computed as <span class="math">\(\rho_{0}=\frac{N}{V}\)</span>
+<dd><p>System’s number density computed as <span class="math notranslate nohighlight">\(\rho_{0}=\frac{N}{V}\)</span>
 where N is the total number of atoms and V the volume of the system.</p>
 </dd></dl>
 
@@ -832,14 +830,39 @@ where N is the total number of atoms and V the volume of the system.</p>
 <dl class="attribute">
 <dt>
 <code class="descname">groupSelector</code></dt>
-<dd><p>Engine&#8217;s group selector instance.</p>
+<dd><p>Engine’s group selector instance.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">totalStandardError</code></dt>
-<dd><p>Engine&#8217;s last recorded totalStandardError of the current
+<dd><p>Engine’s last recorded totalStandardError of the current
 configuration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Timeout to successfully acquire the lock upon reading or writing to
+the repository</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_timeout</code><span class="sig-paren">(</span><em>timeout</em><span class="sig-paren">)</span></dt>
+<dd><p>Set repository access timeout</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>timeout (number): The maximum delay or time allowed to successfully
+set the lock upon reading or writing the engine repository</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -866,7 +889,7 @@ configuration.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">is_engine</code><span class="sig-paren">(</span><em>path</em>, <em>repo=False</em>, <em>mes=False</em><span class="sig-paren">)</span></dt>
+<code class="descname">is_engine</code><span class="sig-paren">(</span><em>path</em>, <em>repo=False</em>, <em>mes=False</em>, <em>safeMode=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Get whether a fullrmc engine is stored in the given path.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -884,9 +907,12 @@ found. Otherwise None is returned.</li>
 <li>result (boolean): The fetch result, True if engine is found
 False otherwise.</li>
 <li>repo (pyrep.Repository): The repository instance.
-This is returned only if &#8216;repo&#8217; argument is set to True.</li>
+This is returned only if ‘repo’ argument is set to True.</li>
 <li>message (string): The explanatory message.
-This is returned only if &#8216;mes&#8217; argument is set to True.</li>
+This is returned only if ‘mes’ argument is set to True.</li>
+<li>safeMode (boolean): whether to acquire the lock upon loading.
+this is not necessary unless another process is writing the
+to the repository at the same time</li>
 </ol>
 </td>
 </tr>
@@ -904,8 +930,8 @@ This is returned only if &#8216;mes&#8217; argument is set to True.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>path (None, string): Repository path to save the engine.
-If path is None, engine&#8217;s path will be used.
-If path and engine&#8217;s path are both None, and error will
+If path is None, engine’s path will be used.
+If path and engine’s path are both None, and error will
 be raised.</li>
 <li>copyFrames (boolean): If path is None, this argument is
 discarded. This argument sets whether to copy all frames data
@@ -917,16 +943,16 @@ frames will be discarded in new engine.</li>
 </tr>
 </tbody>
 </table>
-<p>N.B. If path is given, it will automatically update engine&#8217;s path to
+<p>N.B. If path is given, it will automatically update engine’s path to
 point towards given path.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">load</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
+<code class="descname">load</code><span class="sig-paren">(</span><em>path</em>, <em>safeMode=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Load and return engine instance. None of the current engine attribute
 will be updated. must be used as the following:</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 
 <span class="c1"># create engine</span>
@@ -939,6 +965,9 @@ will be updated. must be used as the following:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>path (string): Directory path to save the engine.</li>
+<li>safeMode (boolean): whether to acquire the lock upon loading.
+this is not necessary unless another process is writing the
+to the repository at the same time</li>
 </ol>
 </td>
 </tr>
@@ -961,7 +990,7 @@ will be updated. must be used as the following:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>logFile (None, string): Logging file basename. A logging file
-full name will be the given logFile appended &#8216;.log&#8217;
+full name will be the given logFile appended ‘.log’
 extension automatically.</li>
 </ol>
 </td>
@@ -995,14 +1024,15 @@ extension automatically.</li>
 <dl class="method">
 <dt>
 <code class="descname">add_frames</code><span class="sig-paren">(</span><em>frames</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a single or multiple frames to engine.</p>
+<dd><p>Add a one or many (multi)frame to engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frames (string, list): Frames name. It can be a string to
-add a single frame or a list of strings to add multiple frames.</li>
+<li>frames (string, dict, list): It can be a string to add a single
+frame, a dictionary to add a single multiframe or a list of
+strings and/or dictionaries to add multiple (multi)frames.</li>
 </ol>
 </td>
 </tr>
@@ -1013,7 +1043,7 @@ add a single frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">add_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a single frame to engine.</p>
+<dd><p>Add a single (multi)frame to engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1046,7 +1076,32 @@ add a single frame or a list of strings to add multiple frames.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_used_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<code class="descname">get_frame_category</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<dd><p>Get whether a given frame name is a normal frame or a multiframe or
+a multiframe subframe. If frame does not exist an error will be raised.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): Frame name or repository relative path</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>isNormalFrame (boolean): Whether it’s a normal single frame</li>
+<li>isMultiframe (boolean): Whether it’s a multiframe</li>
+<li>isSubframe (boolean): Whether it’s a multiframe subframe path</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_used_frame</code><span class="sig-paren">(</span><em>frame</em>, <em>updateRepo=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Switch engine frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1054,11 +1109,19 @@ add a single frame or a list of strings to add multiple frames.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>frame (string): The frame to switch to and use from now on.</li>
+<li>updateRepo (boolean): whether to update repository usedFrame
+value</li>
 </ol>
 </td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">use_frame</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>alias to set_used_frame.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1081,7 +1144,7 @@ add a single frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">rename_frame</code><span class="sig-paren">(</span><em>frame</em>, <em>newName</em><span class="sig-paren">)</span></dt>
-<dd><p>Rename frame.</p>
+<dd><p>Rename (multi)frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1098,7 +1161,7 @@ add a single frame or a list of strings to add multiple frames.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">export_pdb</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span></dt>
+<code class="descname">export_pdb</code><span class="sig-paren">(</span><em>path</em>, <em>frame=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Export a pdb file of the last refined and saved configuration state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1106,6 +1169,8 @@ add a single frame or a list of strings to add multiple frames.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>path (string): the pdb file path.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used.</li>
 </ol>
 </td>
 </tr>
@@ -1115,14 +1180,20 @@ add a single frame or a list of strings to add multiple frames.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">get_pdb</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<code class="descname">get_pdb</code><span class="sig-paren">(</span><em>frame=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Get a pdb instance of the last refined and save configuration state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>pdb (pdbParser): The pdb instance.</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>pdb (pdbparser): The pdb instance.</li>
 </ol>
 </td>
 </tr>
@@ -1133,14 +1204,15 @@ add a single frame or a list of strings to add multiple frames.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_tolerance</code><span class="sig-paren">(</span><em>tolerance</em><span class="sig-paren">)</span></dt>
-<dd><p>Set engine&#8217;s runtime tolerance value.</p>
+<dd><p>Set engine’s runtime tolerance value.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>tolerance (number): The runtime tolerance parameters.
-It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</li>
+It’s the percentage [0,100] of allowed unsatisfactory ‘tried’
+moves.</li>
 </ol>
 </td>
 </tr>
@@ -1150,8 +1222,8 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 
 <dl class="method">
 <dt>
-<code class="descname">set_group_selector</code><span class="sig-paren">(</span><em>selector</em><span class="sig-paren">)</span></dt>
-<dd><p>Set engine&#8217;s group selector instance.</p>
+<code class="descname">set_group_selector</code><span class="sig-paren">(</span><em>selector</em>, <em>frame=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Set engine’s group selector instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1159,6 +1231,8 @@ It&#8217;s the percentage of allowed unsatisfactory &#8216;tried&#8217; moves.</
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>selector (None, GroupSelector): The GroupSelector instance.
 If None is given, RandomSelector is set automatically.</li>
+<li>frame (None, string): Target frame name. If None, engine used
+frame is used.</li>
 </ol>
 </td>
 </tr>
@@ -1169,13 +1243,13 @@ If None is given, RandomSelector is set automatically.</li>
 <dl class="method">
 <dt>
 <code class="descname">clear_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Clear all engine&#8217;s defined groups.</p>
+<dd><p>Clear all engine’s defined groups.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">add_group</code><span class="sig-paren">(</span><em>g</em>, <em>broadcast=True</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a group to engine&#8217;s groups list.</p>
+<dd><p>Add a group to engine’s groups list.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1184,7 +1258,7 @@ If None is given, RandomSelector is set automatically.</li>
 <li>g (Group, integer, list, set, tuple numpy.ndarray): Group
 instance, integer, list, tuple, set or numpy.ndarray of atoms
 index.</li>
-<li>broadcast (boolean): Whether to broadcast &#8220;update groups&#8221;.
+<li>broadcast (boolean): Whether to broadcast “update groups”.
 This is to be used interally only. Keep default value unless
 you know what you are doing.</li>
 </ol>
@@ -1197,7 +1271,7 @@ you know what you are doing.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_groups</code><span class="sig-paren">(</span><em>groups</em><span class="sig-paren">)</span></dt>
-<dd><p>Set engine&#8217;s groups.</p>
+<dd><p>Set engine’s groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1238,14 +1312,14 @@ numpy.ndarray of atoms index of type numpy.int32.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_groups_as_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine&#8217;s groups as single atom group for
+<dd><p>Automatically set engine’s groups as single atom group for
 all atoms.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">set_groups_as_molecules</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine&#8217;s groups indexes according to
+<dd><p>Automatically set engine’s groups indexes according to
 molecules indexes.</p>
 </dd></dl>
 
@@ -1254,7 +1328,7 @@ molecules indexes.</p>
 <code class="descname">set_pdb</code><span class="sig-paren">(</span><em>pdb</em>, <em>boundaryConditions=None</em>, <em>names=None</em>, <em>elements=None</em>, <em>moleculesIndex=None</em>, <em>moleculesName=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Set used frame pdb configuration. Engine and constraints data will be
 automatically reset but not constraints definitions. If pdb was already
-set and this is a resetting of a different atomic configuration, with
+set and this is a resetting to a different atomic configuration, with
 different elements or atomic order, or different size and number of
 atoms, constraints definitions must be reset manually. In general,
 their is no point in changing the atomic configuration of a completely
@@ -1265,16 +1339,16 @@ scratch or redefining all constraints definitions.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>pdb (pdbParser, string): the configuration pdb as a pdbParser
+<li>pdb (pdbparser, string): the configuration pdb as a pdbparser
 instance or a path string to a pdb file.</li>
 <li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
-numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+numpy.ndarray, number): The configuration’s boundary conditions.
 If None, boundaryConditions will be parsed from pdb if existing
 otherwise, InfiniteBoundaries with no periodic boundaries will
 be set. If numpy.ndarray is given, it must be pass-able
 to a PeriodicBoundaries instance. Normally any real
 numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
-If number is given, it&#8217;s like a numpy.ndarray of shape (1,),
+If number is given, it’s like a numpy.ndarray of shape (1,),
 it is assumed as a cubic box of box length equal to number.</li>
 <li>names (None, list): Atoms names list. If None is given, names
 will be calculated automatically by parsing pdb instance.</li>
@@ -1298,21 +1372,32 @@ automatically generated as the pdb residues name.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_boundary_conditions</code><span class="sig-paren">(</span><em>boundaryConditions</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets the configuration&#8217;s boundary conditions. Any type of periodic
-boundary conditions is allowed and not restricted to cubic. Engine
-and constraints data will be automatically reset.</p>
+<dd><p>Sets the configuration’s boundary conditions. Any type of periodic or
+infinite boundary conditions is allowed and not restricted to cubic.
+Engine and constraints data will be automatically reset. Number density
+will be automatically calculated upon setting boundary conditions. In
+the case where inifinite boundaries are set, which is needed to
+simulate isolated atomic systems such as nano-particles, the volume
+is theoretically infinite and therefore number density must be 0.
+But experimentally the measured samples are diluted in solvants and the
+actual number density must be the experimental one. To avoid numerical
+instabilities, number density will be automatically set to water’s one
+equal to 0.0333679 and volume will be adjusted to the ratio of number
+of atoms devided to the given water number density. If this number is
+not accurate, user can always set the appropriate number density using
+the stochastic engine ‘set_number_density’ method</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
-numpy.ndarray, number): The configuration&#8217;s boundary conditions.
+numpy.ndarray, number): The configuration’s boundary conditions.
 If None, InfiniteBoundaries with no periodic boundaries will
 be set. If numpy.ndarray is given, it must be pass-able
 to a PeriodicBoundaries instance. Normally any real
 numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
-If number is given, it&#8217;s like a numpy.ndarray of shape (1,),
+If number is given, it’s like a numpy.ndarray of shape (1,),
 it is assumed as a cubic box of box length equal to number.</li>
 </ol>
 </td>
@@ -1324,7 +1409,7 @@ it is assumed as a cubic box of box length equal to number.</li>
 <dl class="method">
 <dt>
 <code class="descname">set_number_density</code><span class="sig-paren">(</span><em>numberDensity</em><span class="sig-paren">)</span></dt>
-<dd><p>Sets system&#8217;s number density. This is used to correct system&#8217;s
+<dd><p>Sets system’s number density. This is used to correct system’s
 volume. It can only be used with InfiniteBoundaries.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1393,7 +1478,7 @@ instance.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body">#. names (None, list): The names list. If None is given, names
-will be generated automatically by parsing pdbParser instance.</td>
+will be generated automatically by parsing pdbparser instance.</td>
 </tr>
 </tbody>
 </table>
@@ -1401,13 +1486,16 @@ will be generated automatically by parsing pdbParser instance.</td>
 
 <dl class="method">
 <dt>
-<code class="descname">visualize</code><span class="sig-paren">(</span><em>commands=None</em>, <em>foldIntoBox=False</em>, <em>boxToCenter=False</em>, <em>boxWidth=2</em>, <em>boxStyle='solid'</em>, <em>boxColor='yellow'</em>, <em>bgColor='black'</em>, <em>displayParams=None</em>, <em>representationParams='Lines'</em>, <em>otherParams=None</em><span class="sig-paren">)</span></dt>
-<dd><p>Visualize the last configuration using pdbParser visualize_vmd method.</p>
+<code class="descname">visualize</code><span class="sig-paren">(</span><em>frame=None</em>, <em>commands=None</em>, <em>foldIntoBox=False</em>, <em>boxToCenter=False</em>, <em>boxWidth=2</em>, <em>boxStyle='solid'</em>, <em>boxColor='yellow'</em>, <em>bgColor='black'</em>, <em>displayParams=None</em>, <em>representationParams='Lines'</em>, <em>otherParams=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Visualize the last configuration using pdbparser visualize_vmd method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">frame (None, string): The frame to visualize. If None, used frame
+will be visualized. If given, frame must be created in repostory.</p>
+</li>
 <li><p class="first">commands (None, list, tuple): List of commands to pass
 upon calling vmd.</p>
 </li>
@@ -1441,10 +1529,10 @@ orange2, orange3.</p>
 If None is given, default parameters will be applied.
 If dictionary is given, the following keys can be used.</p>
 <ul class="simple">
-<li>&#8216;depth cueing&#8217; (default True): Set the depth cueing flag.</li>
-<li>&#8216;cue density&#8217; (default 0.1): Set the depth density.</li>
-<li>&#8216;cue mode&#8217; (default &#8216;Exp&#8217;): Set the depth mode among &#8216;linear&#8217;,
-&#8216;Exp&#8217; and &#8216;Exp2&#8217;.</li>
+<li>‘depth cueing’ (default True): Set the depth cueing flag.</li>
+<li>‘cue density’ (default 0.1): Set the depth density.</li>
+<li>‘cue mode’ (default ‘Exp’): Set the depth mode among ‘linear’,
+‘Exp’ and ‘Exp2’.</li>
 </ul>
 </li>
 <li><p class="first">representationParams(str): Set representation method among
@@ -1454,19 +1542,19 @@ Beads, Dotted, Solvent.</p>
 <p>Add parameters accordingly if needed like the following.</p>
 <ul class="simple">
 <li>Points representation accept only size parameter
-e.g. &#8216;Points 5&#8217;</li>
+e.g. ‘Points 5’</li>
 <li>CPK representation can accept respectively 4 parameters as the
-following &#8216;Sphere Scale&#8217;, &#8216;Bond Radius&#8217;, &#8216;Sphere Resolution&#8217;,
-&#8216;Bond Resolution&#8217; e.g. &#8216;CPK 1.0 0.2 50 50&#8217;</li>
+following ‘Sphere Scale’, ‘Bond Radius’, ‘Sphere Resolution’,
+‘Bond Resolution’ e.g. ‘CPK 1.0 0.2 50 50’</li>
 <li>VDW representation can accept respectively 2 parameters as
-the following &#8216;Sphere Scale&#8217;, &#8216;Sphere Resolution&#8217;
-e.g. &#8216;VDW 0.7 100&#8217;</li>
+the following ‘Sphere Scale’, ‘Sphere Resolution’
+e.g. ‘VDW 0.7 100’</li>
 </ul>
 </li>
 <li><p class="first">otherParams(None, list, set, tuple): Any other parameters
 in a form of a list of strings.</p>
-<p>e.g. [&#8216;display resize 700 700&#8217;, &#8216;rotate x to 45&#8217;,
-&#8216;scale to 0.02&#8217;, &#8216;axes location off&#8217;]</p>
+<p>e.g. [‘display resize 700 700’, ‘rotate x to 45’,
+‘scale to 0.02’, ‘axes location off’]</p>
 </li>
 </ol>
 </td>
@@ -1477,8 +1565,12 @@ in a form of a list of strings.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">add_constraints</code><span class="sig-paren">(</span><em>constraints</em><span class="sig-paren">)</span></dt>
-<dd><p>Add constraints to the engine.</p>
+<code class="descname">add_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>toAllSubframes=False</em><span class="sig-paren">)</span></dt>
+<dd><p>Add constraints to the engine. If used frame is a normal frame, all
+other normal frames will have the constraints added. If used frame
+is a subframe, all other subframes of the same multiframe will have
+the experimental constraints added to. But given non-experimental
+constraints will be only added to the used frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1486,6 +1578,9 @@ in a form of a list of strings.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>constraints (Constraint, list, set, tuple): A constraint instance or
 list of constraints instances</li>
+<li>toAllSubframes (boolean): Whether to also add non-experimental
+constraints to all other multiframe subframes in case engine
+used frame is a multiframe subframe.</li>
 </ol>
 </td>
 </tr>
@@ -1495,7 +1590,7 @@ list of constraints instances</li>
 
 <dl class="method">
 <dt>
-<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>constraints</em><span class="sig-paren">)</span></dt>
+<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>toAllSubframes=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Remove constraints from engine list of constraints.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1503,7 +1598,10 @@ list of constraints instances</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>constraints (Constraint, list, set, tuple): A constraint
-instance or list of constraints instances</li>
+instance or list of constraints instances.</li>
+<li>toAllSubframes (boolean): Whether to also remove non-experimental
+constraints from all other multiframe subframes in case engine
+used frame is a multiframe subframe.</li>
 </ol>
 </td>
 </tr>
@@ -1526,14 +1624,14 @@ instance or list of constraints instances</li>
 <dl class="method">
 <dt>
 <code class="descname">compute_total_standard_error</code><span class="sig-paren">(</span><em>constraints</em>, <em>current='standardError'</em><span class="sig-paren">)</span></dt>
-<dd><p>Compute the total standard error as the sum of all constraints&#8217;
+<dd><p>Compute the total standard error as the sum of all constraints’
 standard error.</p>
-<div class="math">
+<div class="math notranslate nohighlight">
 \[\chi^{2} = \sum \limits_{i}^{N} (\frac{stdErr_{i}}{variance_{i}})^{2}\]</div>
 <p>Where:</p>
-<p><span class="math">\(variance_{i}\)</span> is the variance value of the constraint i.</p>
-<p><span class="math">\(stdErr_{i}\)</span> the standard error of the constraint i defined
-as <span class="math">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
+<p><span class="math notranslate nohighlight">\(variance_{i}\)</span> is the variance value of the constraint i.</p>
+<p><span class="math notranslate nohighlight">\(stdErr_{i}\)</span> the standard error of the constraint i defined
+as <span class="math notranslate nohighlight">\(\sum \limits_{j}^{points} (target_{i,j}-computed_{i,j})^{2} = (Y_{i,j}-F(X_{i,j}))^{2}\)</span></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1559,14 +1657,14 @@ error.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_total_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Compute and set engine&#8217;s total totalStandardError of active constraints.</p>
+<code class="descname">update_total_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Compute and set engine’s total totalStandardError of used constraints.</p>
 </dd></dl>
 
 <dl class="method">
 <dt>
 <code class="descname">get_used_constraints</code><span class="sig-paren">(</span><em>sortConstraints=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Parses all engine&#8217;s constraints and returns different lists of
+<dd><p>Parses all engine’s constraints and returns different lists of
 the active (used) ones.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1582,13 +1680,13 @@ less costly constraints first.</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>usedConstraints (list): All types of active constraints
-instances that are used at engine&#8217;s runtime.</li>
+instances that are used at engine’s runtime.</li>
 <li>constraints (list): All active constraints instance among
-usedConstraints list that will contribute to engine&#8217;s
+usedConstraints list that will contribute to engine’s
 totalStandardError.</li>
 <li>RigidConstraint (list): All active RigidConstraint constraints
-instance among usedConstraints list that won&#8217;t contribute
-engine&#8217;s totalStandardError.</li>
+instance among usedConstraints list that won’t contribute
+engine’s totalStandardError.</li>
 </ol>
 </td>
 </tr>
@@ -1617,13 +1715,13 @@ costly constraints first.</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
 <li>usedConstraints (list): All types of active constraints
-instances that are used at engine&#8217;s runtime.</li>
+instances that are used at engine’s runtime.</li>
 <li>constraints (list): All active constraints instance among
-usedConstraints list that will contribute to engine&#8217;s
+usedConstraints list that will contribute to engine’s
 totalStandardError.</li>
 <li>RigidConstraint (list): All active RigidConstraint constraints
-instance among usedConstraints list that won&#8217;t contribute
-engine&#8217;s totalStandardError.</li>
+instance among usedConstraints list that won’t contribute
+engine’s totalStandardError.</li>
 </ol>
 </td>
 </tr>
@@ -1667,6 +1765,12 @@ openmp.</li>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt>
+<code class="descname">plot_constraints</code><span class="sig-paren">(</span><em>frame=None</em>, <em>constraintsID=None</em>, <em>plotKwargs=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Plot constraints</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -1691,16 +1795,38 @@ openmp.</li>
 <li>FLOAT_MINUS_INFINITY: The floating data type minimum possible number.</li>
 <li>INT_PLUS_INFINITY: The integer data type maximum possible number.</li>
 <li>INT_MINUS_INFINITY: The integer data type minimum possible number.</li>
-<li>PI: pi the ratio of a circle&#8217;s circumference to its diameter.</li>
+<li>PI: pi the ratio of a circle’s circumference to its diameter.</li>
 </ol>
+<dl class="function">
+<dt>
+<code class="descclassname">fullrmc.Globals.</code><code class="descname">range</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">fullrmc.Globals.</code><code class="descname">Logger</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">pysimplelog.SimpleLog.SingleLogger</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pysimplelog.SimpleLog.SingleLogger</span></code></p>
 <dl class="method">
 <dt>
 <code class="descname">custom_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
+<dd><p>Custom initialize abstract method. This method will be called  at the end of
+initialzation. This method needs to be overloaded to custom initialize
+Logger instances.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>*args (): This is used to send non-keyworded variable length argument
+list to custom initialize.</li>
+<li>**kwargs (): This is keyworded variable length of arguments.
+kwargs can be anything other than __init__ arguments.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt>
@@ -1750,6 +1876,18 @@ openmp.</li>
 <dd><p>alias to message at usage engine level</p>
 </dd></dl>
 
+<dl class="method">
+<dt>
+<code class="descname">frame</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span></dt>
+<dd><p>alias to message at setting engine level</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">report</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span></dt>
+<dd><p>alias to message at report engine level</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1763,7 +1901,7 @@ openmp.</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">fullrmc package</a><ul>
 <li><a class="reference internal" href="#welcoming-videos">Welcoming videos</a></li>
@@ -1784,12 +1922,14 @@ openmp.</li>
                         title="next chapter">fullrmc.Core package</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1816,7 +1956,7 @@ openmp.</li>
              |
         
         </li>
-        <li><a href="#">fullrmc 3.3.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

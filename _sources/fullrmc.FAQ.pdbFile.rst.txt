@@ -27,7 +27,7 @@ in information. The most important inputs are highlighted below.
     0        1         2         3         4         5         6         7         8              
     12345678901234567890123456789012345678901234567890123456789012345678901234567890
     </hy>                                                                                   
-    REMARK    this file is generated using 'pdbParser' package                       
+    REMARK    this file is generated using 'pdbparser' package                       
     <hb>REMARK    Boundary Conditions: 54.0  0.0  0.0  0.0  54.0  0.0  0.0  0.0  54.0 </hb> 
     ATOM      1 <ho>C   </ho> <hp>CO2</hp>  <hc>   1</hc>     -19.317   2.636  -9.568  1.00  0.00      <hg>   1</hg><hm>C </hm> 
     ATOM      2 <ho>O1  </ho> <hp>CO2</hp>  <hc>   1</hc>     -20.330   3.198  -9.506  1.00  0.00      <hg>   1</hg><hm>O </hm> 

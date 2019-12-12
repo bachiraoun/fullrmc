@@ -319,7 +319,7 @@ and tweak the fitting parameters, modes, groups or generators.
             IMD.plot(show=True)
         # if engine not found, print message
         else:
-            print mes
+            print(mes)
 
 
 visualize.py script example for Nickel-Titanium alloy. This script can be
@@ -350,4 +350,4 @@ can visualize the atomic configuration system using
         ENGINE.visualize(foldIntoBox=True, representationParams='VDW 0.1 20')
     # if engine not found, print message
     else:
-        print mes
+        print( mes )

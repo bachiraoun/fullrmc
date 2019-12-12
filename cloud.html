@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Use the cloud (Will be available soon) &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <div class="menu">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="versions.html">Versions</a></li>
+                <li><a href="QAForum.html">Q&A Forum</a></li>
+                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
+                <li><a href="fullrmc.Generators.html">Generators</a></li>
+                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
+                <li><a href="examples.html">Examples</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="cloud.html">Cloud Services</a></li>
+                <!-- pypi and github forkme link images table -->
+                <li>
+                    <table style="position: absolute; right:0; top:0;">
+                        <!-- pypi image -->
+                        <td><a href="https://pypi.python.org/pypi/fullrmc">
+                            <img height="40";
+                                 src="_static/pypi.png"
+                                 alt="Download me on PyPI"/>
+                        </a></td>
+                        <!-- github image -->
+                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
+                            <img height="40";
+                                 src="_static/forkme.png"
+                                 alt="Fork me on GitHub" />
+                        </a></td>
+                    </table>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+            <div class="clear"></div>
+        </div>
+        <!----------  STATIC MENU BAR STYLE --------->
+        <style>
+        .menu { height: 42px; background-color:black; margin:0px;
+                z-index: 9999; position:Fixed;
+                left: 0; top: 0; width: 100%; }
+            .menu ul { list-style: none; }
+            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
+            .menu ul li a { font-size:16px; color:white;}
+            .menu ul li a:hover{ text-decoration: underline;}
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+        
+        <div style="margin-top:40px"> </div>
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+        
+        
+        
+
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <div class="section" id="use-the-cloud-will-be-available-soon">
+<h1>Use the cloud (Will be available soon)<a class="headerlink" href="#use-the-cloud-will-be-available-soon" title="Permalink to this headline">¶</a></h1>
+<p>fullrmc runs a stochastic engine that runs as a sequential process. To speed
+up the calculation for big systems, pthreads are used to parallelize certain
+parts of the computation blocks. This turns out to be beneficial when the
+number of atoms in the system is big enough to compensate for the overhead
+of launching the parallel processing on every and each step.</p>
+<p>On the other hand when the studied atomic system is constituted of a mixture
+of different structures (distribution of nanoparticles size, local structures
+and nano-grains, distribution of structure faults, interface structures, etc.)
+and systems then a single atomic system simulation will never be enough to get
+an accurate solution. For that particular reason in fullrmc we introduce the
+concept of ‘multiframe’ and we use <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> to enable running fullrmc’s
+multiframe on any set of connected commodity hardware to perform synchronous
+and asynchronous multiframe computation.</p>
+<p><a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> is not open sourced and it can’t be distributed along with fullrmc.
+Therefore fullrmc <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> enabled will be available as software as as
+solution on cloud infrastructures such as Microsoft AZURE.</p>
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">fullrmc.MultiframeUtils.</code><code class="descname">WorkersManagement</code><span class="sig-paren">(</span><em>repoTimeout=10</em>, <em>requestTimeout=60</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Used by remote <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> worker
+to run fullrmc stochastic engine</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">MultiframeUtils</span>
+
+<span class="c1"># create engine</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="c1"># run on grid</span>
+<span class="n">WM</span> <span class="o">=</span> <span class="n">MultiframeUtils</span><span class="o">.</span><span class="n">WorkersManagement</span><span class="p">()</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="s1">&#39;size_distribution&#39;</span><span class="p">,</span> <span class="n">orchestrator</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+<span class="c1"># run independant.</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">run_independant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nCycle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># run dependant</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">run_dependant</span><span class="p">(</span><span class="n">nCycle</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">firstNAccepted</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subframesWeight</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt>
+<code class="descname">start</code><span class="sig-paren">(</span><em>engine</em>, <em>multiframe</em>, <em>orchestrator=None</em>, <em>workerRequestLoopTimeout=3600</em><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Stop WorkersManagement by disconnecting softgrid computation</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">run_dependant</code><span class="sig-paren">(</span><em>nCycle=100</em>, <em>firstNAccepted=1</em>, <em>numberOfSteps=100</em>, <em>subframesWeight=10</em>, <em>normalize=1</em>, <em>driftTolerance=1</em>, <em>saveFrequency=10</em>, <em>cycleTimeout=900</em><span class="sig-paren">)</span></dt>
+<dd><p>Run all remote subframes as whole dependant structure. Subframes
+weighted (subframesWeight) atomic configuration will be used to compute
+stochastic engine’s total standard error. Subframes constraints will
+also be using subframesWeight and prior to compute constraints
+standard error.
+This computation is valid under the assumption that all subframes
+might exist in the measured and modeled atomic system but they are
+far enough from each other to neglect any cross structural interactions
+and correlation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>nCycle (int): number of stochastic engine cycles</li>
+<li>firstNAccepted (int): number of accepted moves on subframes
+before returning result</li>
+<li>numberOfSteps (int): maximum number of steps per cycle</li>
+<li>subframesWeight (None, boolean, integer, list): Weights of
+subframes constributing to experimental constraints. If None,
+subframes weight will be fixed to normalize/numberOfSubframes if
+normalize is not None or 1./numberOfSubframes.
+If False, weights will be used as is. If True, weights will be
+updated after each cycle using non negative least square with the
+added condition of all weights must sum to 1. If integer, it’s
+the frequency of updating the weights in number of cycles. If
+list, it’s the fixed user defined weights to every and each
+subframe, Subframes prior are always computed after every and
+each cycle. In updated weights happen to be all 0 or only
+one subframe weight is not 0, weights will be automatically
+rescaled to  normalize/numberOfSubframes or 1./numberOfSubframes.</li>
+<li>normalize (None, number): used to normalize subframesWeight
+whether those are given or computed. Normalization will linearly
+adjust subframesWeight to ensure sum(subframesWeight) = normalize
+If None, no normalization will be done. If number it must be a
+positive non zero number. A logical value to normalize is 1 which
+minimizes the interaction between constraints scaleFactor and
+subframesWeight value</li>
+<li>driftTolerance (integer): To avoid updated subframesWeight
+drift and divergence. weights are checked for any sudden jump
+jump (increase) or drop (decrease) that doubles or split by half
+previous cycle frame weight. In case drift occurs, previous cycle
+subframesWeight are used. Tolerance defines the number of
+successive cycles weight drifts before stopping the execution.</li>
+<li>saveFrequency (int): frequency of saving all frames in between
+cycles</li>
+<li>cycleTimeout (None, integer): Estimated time for stochastic
+engine to perform 1 cycle for all frames on remote workers.
+Timeout error will be raise if cycleTimeout is exhausted before
+all workers finish the cycle work.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">run_independant</code><span class="sig-paren">(</span><em>nCycle=10</em>, <em>numberOfSteps=1000</em>, <em>saveFrequency=1</em>, <em>cycleTimeout=3600</em><span class="sig-paren">)</span></dt>
+<dd><p>run all remote subframes as totally independant structures</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>nCycle (int): number of total independant cycles</li>
+<li>numberOfSteps (int): number of steps per cycle</li>
+<li>saveFrequency (int): frequency of saving all frames in between
+cycles</li>
+<li>cycleTimeout (None, integer): Estimated time for stochastic
+engine to perform 1 cycle for all frames on remote workers.
+Timeout error will be raise if cycleTimeout is exhausted before
+all workers finish the cycle work.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Call all remote subFrames to save.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+    </body>
+</html>

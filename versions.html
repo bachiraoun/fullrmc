@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Versions Information &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>Versions Information &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.0.0',
+        VERSION:     '4.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
 
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -101,7 +101,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -158,17 +158,18 @@ and then compiling the extension files in place.</p>
 </dd>
 <dt>For your general understanding, fullrmc requires the following:</dt>
 <dd><ol class="first last arabic simple">
-<li>Python (&gt;= 2.7 and 3),</li>
+<li>Python (&gt;= 2.7 and &lt; 3) Starting from fullrmc 4.x.y python 3 is supported</li>
 <li>NumPy (lowest version tested is 1.7.1)</li>
 <li>cython (lowest version tested is 0.21.1)</li>
 <li>matplotlib (lowest version tested is 1.4)</li>
-<li>pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting
-from fullrmc 3.0.0 - 1.0.4 is used starting from fullrmc 3.1.0
-- 3.0.3 is used starting from fullrmc 3.1.0)</li>
-<li>pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting
-from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
-- 0.1.5 is used starting from fullrmc 1.0.1)</li>
-<li>pysimplelog (lowest version tested is 0.2.1)</li>
+<li>pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from
+fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used
+starting from fullrmc 1.0.1 - 0.1.7 is used starting from fullrmc 4.0.0)</li>
+<li>pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting
+from fullrmc 1.2.0 - 0.2.0 is used starting from fullrmc 4.0.0)</li>
+<li>pyrep (lowest version tested is 1.0.2 is used starting from fullrmc
+2.0.0 - 1.0.3 is used starting from fullrmc 3.0.0 - 1.0.4 is used
+starting rom fullrmc 3.1.0 - 3.1.0 is used starting from fullrmc 4.0.0)</li>
 </ol>
 </dd>
 </dl>
@@ -177,8 +178,8 @@ from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
 Firstly install numpy and cython manually and ensure that
 they meet with fullrmc’s version requirement.</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U <span class="s2">&quot;numpy&gt;=1.7.1&quot;</span>
-pip install -U <span class="s2">&quot;cython&gt;=0.21.1&quot;</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U <span class="s2">&quot;numpy&gt;=1.17.4&quot;</span>
+pip install -U <span class="s2">&quot;cython&gt;=0.29.14&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -198,28 +199,30 @@ following python script:</li>
 </ul>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># check whether all packages are already installed</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
-<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.7.1&#39;</span><span class="p">)</span> <span class="p">,</span>
-                  <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.21.1&#39;</span><span class="p">),</span>
-                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;3.0.0&#39;</span><span class="p">)</span> <span class="p">,</span>
-                  <span class="p">(</span><span class="s1">&#39;pdbparser&#39;</span>  <span class="p">,</span><span class="s1">&#39;0.1.5&#39;</span><span class="p">)</span> <span class="p">,</span>
-                  <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;0.3.0&#39;</span><span class="p">)</span> <span class="p">,</span>
-                  <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s1">&#39;1.4&#39;</span>  <span class="p">)]:</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.17.4&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.29.14&#39;</span><span class="p">),</span>
+                  <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;3.1.0&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;pdbparser&#39;</span>  <span class="p">,</span><span class="s1">&#39;0.1.7&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;pysimplelog&#39;</span><span class="p">,</span><span class="s1">&#39;2.0.0&#39;</span><span class="p">)</span> <span class="p">,</span>
+                  <span class="p">(</span><span class="s1">&#39;matplotlib&#39;</span> <span class="p">,</span><span class="s1">&#39;2.2.3&#39;</span>  <span class="p">)]:</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must be installed for fullrmc to run properly&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must be installed for fullrmc to run properly.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">PV</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">PV</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> installed version </span><span class="si">%s</span><span class="s1"> is below minimum suggested version </span><span class="si">%s</span><span class="s1">. Updating </span><span class="si">%s</span><span class="s1"> is highly recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> installed version </span><span class="si">%s</span><span class="s1"> is below minimum suggested version </span><span class="si">%s</span><span class="s1">. Updating </span><span class="si">%s</span><span class="s1"> is highly) recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is properly installed and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ul>
 <li><p class="first">Locate python’s site-packages by executing the following python script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;site_packages&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -707,25 +710,33 @@ recognized.</li>
 bug fixed</p>
 </div>
 <div class="section" id="id40">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.2.0">Version 3.2.0</a>:<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.3">Version 3.1.3</a>:<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+<p>Some bugs are fixed and documentation is revisited.</p>
+</div>
+<div class="section" id="id41">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.2.0">Version 3.2.0</a>:<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2F4L1SCEbcAi0%2FsOqvPhiSAgAJ">issue</a>
 bug fixed</p>
 </div>
-<div class="section" id="id42">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.3.0">Version 3.3.0</a>:<a class="headerlink" href="#id42" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id43">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.3.0">Version 3.3.0</a>:<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FC0Vmt4Qs4bI%2FIu1guEXMAwAJ">issue</a>
 bug fixed</p>
 </div>
-<div class="section" id="id44">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.0.0">Version 4.0.0</a>:<a class="headerlink" href="#id44" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="version-4-0-0">
+<h3>Version 4.0.0:<a class="headerlink" href="#version-4-0-0" title="Permalink to this headline">¶</a></h3>
+<p>This version is not published.</p>
+</div>
+<div class="section" id="id45">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.0.1">Version 4.0.1</a>:<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
 <p>Starting from this version, fullrmc has become grid computing capable.
 multiframe is implemented to generate a statistical solution of multiple
 frames instead of a single frame solution. Along with this version,
 an instance of fullrmc will be available on a cloud service that can be
 used to launch fullrmc and perform multiframe computations. We will update
 all user in the Q&amp;A group when and where this service will be available</p>
-<div class="section" id="id45">
-<h4>New Modules and definitions:<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id46">
+<h4>New Modules and definitions:<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li>MultiframeUtils module added which will be used to launch fullrmc
@@ -734,14 +745,55 @@ on computation grids</li>
 </ol>
 </div></blockquote>
 </div>
-<div class="section" id="id46">
-<h4>Fixes and improvements:<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id47">
+<h4>Fixes and improvements:<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> scale factor bug fixed</li>
 <li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a> scale factor bug fixed</li>
 <li>Engine run method explore bug fixed</li>
 <li>Amputation number density bug fixed for InfiniteBoundaryConditions</li>
+</ol>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="id48">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.1.0">Version 4.1.0</a>:<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
+<p>Starting from this version, fullrmc stochastic Engine is codify-able. This
+is a new capability that allows exporting the engine across all systems and
+operating system without worrying about serialization compatibility.
+Also, starting from this version, fullrmc requires pylocker to be installed.</p>
+<div class="section" id="id49">
+<h4>New Modules and definitions:<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Group ‘name’ property added</li>
+<li>Engine ‘codify’ method added</li>
+<li>constraints number of tried and accepted moves are tracked now</li>
+<li>constraints advanced plotting and export helper method</li>
+</ol>
+</div></blockquote>
+</div>
+<div class="section" id="id50">
+<h4>Fixes and improvements:<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li>Engine remove constraint bug fixed</li>
+<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" title="fullrmc.Generators.Rotations.OrientationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrientationGenerator</span></code></a> bugs fixed</li>
+<li><a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalOrderSelector</span></code></a> bug fixed</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a> add_bond method deprecated. set_bonds method
+modified for performance reasons. bondsDefinition property added.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+method modified for performance reasons. anglesDefinition property
+added.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+method modified for performance reasons. anglesDefinition property
+added.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+method modified for performance reasons. anglesDefinition property
+added.</li>
+<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> set_atoms_weight dump to
+repository bug fixed</li>
 </ol>
 </div></blockquote>
 </div>
@@ -838,11 +890,18 @@ on computation grids</li>
 </ul>
 </li>
 <li><a class="reference internal" href="#id39">Version 3.1.2:</a></li>
-<li><a class="reference internal" href="#id40">Version 3.2.0:</a></li>
-<li><a class="reference internal" href="#id42">Version 3.3.0:</a></li>
-<li><a class="reference internal" href="#id44">Version 4.0.0:</a><ul>
-<li><a class="reference internal" href="#id45">New Modules and definitions:</a></li>
-<li><a class="reference internal" href="#id46">Fixes and improvements:</a></li>
+<li><a class="reference internal" href="#id40">Version 3.1.3:</a></li>
+<li><a class="reference internal" href="#id41">Version 3.2.0:</a></li>
+<li><a class="reference internal" href="#id43">Version 3.3.0:</a></li>
+<li><a class="reference internal" href="#version-4-0-0">Version 4.0.0:</a></li>
+<li><a class="reference internal" href="#id45">Version 4.0.1:</a><ul>
+<li><a class="reference internal" href="#id46">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id47">Fixes and improvements:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id48">Version 4.1.0:</a><ul>
+<li><a class="reference internal" href="#id49">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id50">Fixes and improvements:</a></li>
 </ul>
 </li>
 </ul>
@@ -881,7 +940,7 @@ on computation grids</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

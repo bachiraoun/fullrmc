@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Constraints package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Constraints package &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.0.0',
+        VERSION:     '4.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="prev" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
 
     <!-- -------------------------------------------------------------------------- -->
@@ -108,7 +108,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -567,6 +567,42 @@ compute_standard_error method and passing constraint’s data.</p>
 
 <dl class="method">
 <dt>
+<code class="descname">get_constraints_properties</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<dd><p>Get a dictionary look up table of constraint’s properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): frame to pull and build contraint data. It can
+be a traditional frame, a multiframe or a subframe</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">propertiesLUT (dictionary): properties value look up table. Keys
+are described herein. All keys start with ‘frames-‘ and values
+are list of properties for every and each frame.</p>
+<blockquote>
+<div><ul class="simple">
+<li>frames-name: list of all frames name</li>
+<li>frames-weight: list of all frames weight</li>
+<li>frames-number_of_removed_atoms: list of number of removed atoms from each frame</li>
+<li>frames-constraint: list of constraint copy</li>
+<li>frames-data: list of constraint data</li>
+<li>frames-standard_error: list of all frames standard error</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
 <code class="descname">get_constraint_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Method must be overloaded in children classes.</p>
 </dd></dl>
@@ -585,7 +621,7 @@ compute_standard_error method and passing constraint’s data.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>update=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Method must be overloaded in children classes.</p>
 </dd></dl>
 
@@ -651,14 +687,69 @@ compute_standard_error method and passing constraint’s data.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">export</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
-<dd><p>Method must be overloaded in children classes.</p>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%s'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span></dt>
+<dd><p>Export constraint data to text file or to an archive of files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fileName (path): full file name and path.</li>
+<li>frame (None, string): frame name to export data from. If multiframe
+is given, multiple files will be created with subframe name
+appended to the end.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt>
-<code class="descname">plot</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
-<dd><p>Method must be overloaded in children classes.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>axes=None</em>, <em>subAdParams={'bottom': None</em>, <em>'hspace': 0.4</em>, <em>'left': None</em>, <em>'right': None</em>, <em>'top': None</em>, <em>'wspace': None}</em>, <em>dataParams={'label': 'Y'</em>, <em>'linewidth': 2}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'Core-Shell atoms'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Coordination number'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 90}</em>, <em>yticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>legendParams={'fontsize': 8</em>, <em>'frameon': False</em>, <em>'loc': 'upper right'</em>, <em>'ncol': 1}</em>, <em>titleParams={'fontsize': 10</em>, <em>'label': '&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$ - $used$ $({used})$'}</em>, <em>gridParams=None</em>, <em>show=True</em>, <em>**paramsKwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Plot constraint data. This can be overloaded in children classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (None, string): The frame name to plot. If None, used frame
+will be plotted.</li>
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+parameters subplots adjust parameters.</li>
+<li>dataParams (None, dict): constraint data plotting parameters</li>
+<li>xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>legendParams (None, dict):matplotlib.axes.Axes.legend
+parameters.</li>
+<li>xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+parameters.</li>
+<li>titleParams (None, dict): matplotlib.axes.Axes.set_title parameters</li>
+<li>gridParams (None, dict): matplotlib.axes.Axes.grid parameters</li>
+<li>show (boolean): Whether to render and show figure before
+returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -842,9 +933,12 @@ if called after adding constraint to stochastic engine.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>experimentalData (numpy.ndarray, string): Experimental data as
-numpy.ndarray or string path to load data using numpy.loadtxt
-method.</li>
+<li>experimentalData (numpy.ndarray, string, list, tuple):
+Experimental data as numpy.ndarray or string path to load data
+using numpy.loadtxt method. If list or tuple are given, they
+will be automatically converted to a numpy array by calling
+numpy.array(experimentalData). Finally experimental data type
+will be converted to fullrmc.Globals.FLOAT_TYPE</li>
 </ol>
 </td>
 </tr>
@@ -1014,8 +1108,9 @@ the constraint.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">get_constraint_data_dictionary</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
-<dd><p>Get a dictionary of all constraint meaningful data to plot or export.</p>
+<code class="descname">get_constraints_properties</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
+<dd><p>Get a dictionary look up table of constraint’s properties that
+are needed to plot or export</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1027,31 +1122,34 @@ be a traditional frame, a multiframe or a subframe</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">data (dictionary): Dictionary of all meaningful data including:</p>
+<li><p class="first">propertiesLUT (dictionary): properties value look up table. Keys
+are described herein. Values of keys that start with ‘frames-‘
+are a list for all frames. Values of keys that start with
+‘weighted-‘ are weighted values for all frames</p>
 <blockquote>
 <div><ul class="simple">
-<li>output: list of frames dictionary constraint data</li>
-<li>experimental_x: numpy array of experimental x data.</li>
-<li>experimental_y: numpy array of experimental y data.</li>
-<li>model_x: numpy array of model x data.</li>
-<li>frames_weight: list of all frames weight.</li>
-<li>frames_name: list of all frames name.</li>
-<li>number_of_atoms_removed: list of number of removed atoms from
+<li>frames-name: list of all frames name.</li>
+<li>frames-weight: list of all frames weight.</li>
+<li>frames-number_of_removed_atoms: list of number of removed atoms from
 each frame.</li>
-<li>shape_array: list of system shape function (numpy array) of
+<li>frames-experimental_x: list of numpy array of experimental x data.</li>
+<li>frames-experimental_y: list of numpy array of experimental y data.</li>
+<li>frames-output: list of frames dictionary constraint output data</li>
+<li>frames-model_x: list of numpy array of model x data.</li>
+<li>frames-shape_array: list of system shape function (numpy array) of
 all frames.</li>
-<li>window_function: list of window function (numpy array) of
+<li>frames-window_function: list of window function (numpy array) of
 all frames.</li>
-<li>scale_factor: list of all frames scale factor.</li>
-<li>standard_error: list of all frames standard error.</li>
-<li>weighted_output: dictionary of all frames weighted constraint
-data using ‘frames_weight’</li>
-<li>weighted_number_of_atoms_removed: All frames averaged number
-of removed atoms using ‘frames_weight’</li>
-<li>weighted_scale_factor: All frames averaged scale factor
-using ‘frames_weight’</li>
-<li>weighted_standard_error: All frames weighted standard error
-using ‘frames_weight’</li>
+<li>frames-scale_factor: list of all frames scale factor.</li>
+<li>frames-standard_error: list of all frames standard error.</li>
+<li>weighted-output: dictionary of all frames weighted constraint
+data using ‘frames-weight’</li>
+<li>weighted-number_of_removed_atoms: All frames averaged number
+of removed atoms using ‘frames-weight’</li>
+<li>weighted-scale_factor: All frames averaged scale factor
+using ‘frames-weight’</li>
+<li>weighted-standard_error: All frames weighted standard error
+using ‘frames-weight’</li>
 </ul>
 </div></blockquote>
 </li>
@@ -1064,8 +1162,8 @@ using ‘frames_weight’</li>
 
 <dl class="method">
 <dt>
-<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>multiplot=False</em>, <em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabelParams=True</em>, <em>ylabelParams=True</em>, <em>legendParams=True</em>, <em>expParams=None</em>, <em>totParams=None</em>, <em>noWParams=None</em>, <em>shaParams=None</em>, <em>parParams=None</em>, <em>titleFormat='&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$'</em>, <em>show=True</em><span class="sig-paren">)</span></dt>
-<dd><p>Plot constraint data</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>axes=None</em>, <em>asMesoscopic=False</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>subAdParams={'bottom': None</em>, <em>'hspace': 0.4</em>, <em>'left': None</em>, <em>'right': None</em>, <em>'top': None</em>, <em>'wspace': None}</em>, <em>totParams={'color': 'black'</em>, <em>'label': 'total'</em>, <em>'linewidth': 3.0</em>, <em>'zorder': 1}</em>, <em>expParams={'color': 'red'</em>, <em>'label': 'experimental'</em>, <em>'marker': 'o'</em>, <em>'markersize': 7.5</em>, <em>'markevery': 1</em>, <em>'zorder': 0}</em>, <em>noWParams={'color': 'black'</em>, <em>'label': 'total - no window'</em>, <em>'linewidth': 1.0</em>, <em>'zorder': 1}</em>, <em>shaParams={'color': 'black'</em>, <em>'label': 'shape function'</em>, <em>'linestyle': 'dashed'</em>, <em>'linewidth': 1.0</em>, <em>'zorder': 2}</em>, <em>parParams={'linewidth': 1.0</em>, <em>'markersize': 5</em>, <em>'markevery': 5</em>, <em>'zorder': 3}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'X'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Y'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>yticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>legendParams={'fontsize': 8</em>, <em>'frameon': False</em>, <em>'loc': 'upper right'</em>, <em>'ncol': 2}</em>, <em>titleParams={'fontsize': 10</em>, <em>'label': '&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$ - $used$ $({used})$'}</em>, <em>gridParams=None</em>, <em>show=True</em>, <em>**paramsKwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>Plot constraint data. This can be overloaded in children classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1073,50 +1171,39 @@ using ‘frames_weight’</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>frame (None, string): The frame name to plot. If None, used frame
 will be plotted.</li>
-<li>multiplot (boolean): If multiframe is given, multiplot insures
-plotting all frames differently in a single multiplot figure.
-In this case, given ax is ommitted.</li>
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<li>axes (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If None is given a new plot figure will be created.</li>
+<li>asMesoscopic (boolean): If given frame is a multiframe is,
+when true, asMesoscopic considers all frames as a statistical
+average of all frames in a mesoscopic system. All subframes
+will be then plotted as a single weighted mesoscopic structure.
+If asMesocopic is False and given frame is a multiframe
+given ax will be disregarded</li>
 <li>intra (boolean): Whether to add intra-molecular pair
 distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair
 distribution function features to the plot.</li>
 <li>shapeFunc (boolean): Whether to add shape function to the plot
 only when exists.</li>
-<li>xlabelParams (dict, boolean): matplotlib.axes.Axes.set_xlabel
-parameters. If True, default parameters given by constraint’s
-property _plotDefaultParameters is set. If False x axes label is
-omitted</li>
-<li>ylabelParams (dict, boolean): matplotlib.axes.Axes.set_ylabel
-parameters. If True,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If False y axes label is
-omitted</li>
-<li>legendParams (dict, boolean):matplotlib.axes.Axes.legend
-parameters. If True,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If False is omitted</li>
-<li>titleFormat (string): title format. If empty string is given no
-title will be added to figure axes</li>
-<li>expParams (None, dict): experimental data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>totParams (None, dict): total data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>noWParams (None, dict): constraint no-window total data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>shaParams (None, dict): constraint shape array data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>parParams (None, dict): constraint partial data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
+<li>subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+parameters subplots adjust parameters.</li>
+<li>totParams (None, dict): constraint total plotting parameters</li>
+<li>expParams (None, dict): constraint experimental data parameters</li>
+<li>noWParams (None, dict): constraint total without window parameters</li>
+<li>shaParams (None, dict): constraint shape function parameters</li>
+<li>parParams (None, dict): constraint partials parameters</li>
+<li>xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>legendParams (None, dict):matplotlib.axes.Axes.legend
+parameters.</li>
+<li>xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+parameters.</li>
+<li>titleParams (None, dict): matplotlib.axes.Axes.set_title parameters</li>
+<li>gridParams (None, dict): matplotlib.axes.Axes.grid parameters</li>
 <li>show (boolean): Whether to render and show figure before
 returning.</li>
 </ol>
@@ -1166,7 +1253,7 @@ title will be added to figure axes</li>
 
 <dl class="method">
 <dt>
-<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>splitFrames=False</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span></dt>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%12.5f'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span></dt>
 <dd><p>Export constraint data to text file or to an archive of files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1177,9 +1264,6 @@ title will be added to figure axes</li>
 <li>frame (None, string): frame name to export data from. If multiframe
 is given, multiple files will be created with subframe name
 appended to the end.</li>
-<li>splitFrames (boolean): whether to split frames into multiple
-files and create and archive (.zip) of frames data. If given
-frame is a normal frame or a subframe this option is not used.</li>
 <li>format (string): string format to export the data.
 format is as follows (%[flag]width[.precision]specifier)</li>
 <li>delimiter (string): String or character separating columns.</li>
@@ -1788,6 +1872,28 @@ type pairs and values constraint data.</li>
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1924,46 +2030,26 @@ numpy array of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>correctColor='#0066ff'</em>, <em>erroneousColor='#d62728'</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>legendText=('correct'</em>, <em>'erroneous')</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot distance constraint’s data.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>inBarParams={'color': '#0066ff'</em>, <em>'label': 'inbound'</em>, <em>'width': 0.6}</em>, <em>outBarParams={'color': '#d62728'</em>, <em>'label': 'outbound'</em>, <em>'width': 0.6}</em>, <em>txtParams={'color': 'black'</em>, <em>'fontsize': 8</em>, <em>'horizontalalignment': 'center'</em>, <em>'rotation': 90</em>, <em>'verticalalignment': 'center'}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'Type pairs'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Number of pairs'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 45}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If None is given a new plot figure will be created.</li>
-<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
-<li>correctColor (color): correct data bars color.</li>
-<li>erroneousColor (color): erroneous data bars color.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>legendText (list): The legend of number of correct pairs
-satisfying constraint and number of erroneous pairs unsatisfying
-constraint condition.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>titleStdErr (boolean): Whether to show constraint standard error
-value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of removed
-atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>dataParams (None, dict): modified constraint data plotting parameters</li>
+<li>barParams (None, dict): matplotlib.axes.Axes.bar parameters</li>
+<li>txtParams (None, dict): matplotlib.axes.Axes.text parameters</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>xticksParams (None, dict): modified matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>titleParams (None, dict): title format.</li>
 <li>show (boolean): Whether to render and show figure before
 returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes): matplotlib used axes.</li>
 </ol>
 </td>
 </tr>
@@ -1973,14 +2059,19 @@ returning.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export distance constraint’s data.</p>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%s'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export constraint data to text file or to an archive of files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
+<li>fileName (path): full file name and path.</li>
+<li>frame (None, string): frame name to export data from. If multiframe
+is given, multiple files will be created with subframe name
+appended to the end.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
 <li>delimiter (string): String or character separating columns.</li>
 <li>comments (string): String that will be prepended to the header.</li>
 </ol>
@@ -2342,6 +2433,28 @@ type pairs and values constraint data.</li>
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2478,46 +2591,26 @@ numpy array of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>correctColor='#0066ff'</em>, <em>erroneousColor='#d62728'</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>legendText=('correct'</em>, <em>'erroneous')</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot distance constraint’s data.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>inBarParams={'color': '#0066ff'</em>, <em>'label': 'inbound'</em>, <em>'width': 0.6}</em>, <em>outBarParams={'color': '#d62728'</em>, <em>'label': 'outbound'</em>, <em>'width': 0.6}</em>, <em>txtParams={'color': 'black'</em>, <em>'fontsize': 8</em>, <em>'horizontalalignment': 'center'</em>, <em>'rotation': 90</em>, <em>'verticalalignment': 'center'}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'Type pairs'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Number of pairs'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 45}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If None is given a new plot figure will be created.</li>
-<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
-<li>correctColor (color): correct data bars color.</li>
-<li>erroneousColor (color): erroneous data bars color.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>legendText (list): The legend of number of correct pairs
-satisfying constraint and number of erroneous pairs unsatisfying
-constraint condition.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>titleStdErr (boolean): Whether to show constraint standard error
-value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of removed
-atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>dataParams (None, dict): modified constraint data plotting parameters</li>
+<li>barParams (None, dict): matplotlib.axes.Axes.bar parameters</li>
+<li>txtParams (None, dict): matplotlib.axes.Axes.text parameters</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>xticksParams (None, dict): modified matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>titleParams (None, dict): title format.</li>
 <li>show (boolean): Whether to render and show figure before
 returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes): matplotlib used axes.</li>
 </ol>
 </td>
 </tr>
@@ -2527,14 +2620,19 @@ returning.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export distance constraint’s data.</p>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%s'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export constraint data to text file or to an archive of files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
+<li>fileName (path): full file name and path.</li>
+<li>frame (None, string): frame name to export data from. If multiframe
+is given, multiple files will be created with subframe name
+appended to the end.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
 <li>delimiter (string): String or character separating columns.</li>
 <li>comments (string): String that will be prepended to the header.</li>
 </ol>
@@ -2619,6 +2717,12 @@ not.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coordinationNumberDefinition">
+<code class="descname">coordinationNumberDefinition</code><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coordinationNumberDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias to coordinationNumberDefinition</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coresIndexes">
 <code class="descname">coresIndexes</code><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.coresIndexes" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of coordination number core atoms index array.</p>
@@ -2628,6 +2732,12 @@ not.</li>
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.shellsIndexes">
 <code class="descname">shellsIndexes</code><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.shellsIndexes" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of coordination number shell atoms index array.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.numberOfCores">
+<code class="descname">numberOfCores</code><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.numberOfCores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Array of number of core atoms</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -2812,6 +2922,28 @@ constraint.</li>
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2948,66 +3080,26 @@ array of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>width=0.6</em>, <em>barColor='#99ccff'</em>, <em>cnColor='#ffcc00'</em>, <em>cnPtSize=20</em>, <em>stdErrors=True</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot atomic coordination number constraint.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>dataParams={'color': '#ffcc00'</em>, <em>'label': 'mean coord num'</em>, <em>'linewidth': 0</em>, <em>'marker': 'o'</em>, <em>'markersize': 20</em>, <em>'markevery': 1}</em>, <em>barParams={'color': '#99ccff'</em>, <em>'label': 'boundaries'</em>, <em>'width': 0.6}</em>, <em>txtParams={'color': 'black'</em>, <em>'fontsize': 8</em>, <em>'horizontalalignment': 'center'</em>, <em>'rotation': 90</em>, <em>'verticalalignment': 'center'}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'Core-Shell atoms'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Coordination number'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 45}</em>, <em>titleParams={'fontsize': 8</em>, <em>'label': '&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$'}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, the figure won’t be rendered and drawn.
-If None is given a new plot figure will be created and the figue
-will be rendered and drawn.</li>
-<li>width (number): Bars width, must be &gt;0 and &lt;=1</li>
-<li>barColor (color): boundaries bar color.</li>
-<li>cnColor (color): coordination number data points color.</li>
-<li>cnPtSize (number): coordination number data points size.</li>
-<li>stdErrors (boolean): Whether to show bars standard error.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>title (boolean): Whether to create the title or not</li>
-<li>titleStdErr (boolean): Whether to show constraint standard error
-value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of removed
-atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>dataParams (None, dict): modified constraint data plotting parameters</li>
+<li>barParams (None, dict): matplotlib.axes.Axes.bar parameters</li>
+<li>txtParams (None, dict): matplotlib.axes.Axes.text parameters</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>xticksParams (None, dict): modified matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>titleParams (None, dict): title format.</li>
 <li>show (boolean): Whether to render and show figure before
 returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes): matplotlib used axes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export atomic coordination number constraint data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
-<li>delimiter (string): String or character separating columns.</li>
-<li>comments (string): String that will be prepended to the header.</li>
 </ol>
 </td>
 </tr>
@@ -3109,6 +3201,12 @@ accepting all steps regardless whether standardError increases or not.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bondsDefinition">
+<code class="descname">bondsDefinition</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bondsDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>bonds definition copy if bonds are defined as such</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.bonds">
 <code class="descname">bonds</code><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.bonds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bonds dictionary map of every and each atom</p>
@@ -3172,29 +3270,6 @@ the maximum bond length allowed.</li>
 </li>
 <li><p class="first">tform (boolean): set whether given bondsList follows tuples
 format, If not then it must follow the four vectors one.</p>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.add_bond">
-<code class="descname">add_bond</code><span class="sig-paren">(</span><em>bond</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.add_bond" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a single bond to constraint’s list of bonds.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>bond (list): The bond list of four items.<ol class="arabic">
-<li>First atom index forming the bond.</li>
-<li>Second atom index forming the bond.</li>
-<li>Lower limit or the minimum bond length allowed.</li>
-<li>Upper limit or the maximum bond length allowed.</li>
-</ol>
 </li>
 </ol>
 </td>
@@ -3298,6 +3373,28 @@ given.</p>
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3434,83 +3531,29 @@ of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.BondConstraints.BondConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=25</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histTtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot bonds constraint’s distribution histogram.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>spacing=0.1</em>, <em>numberOfTicks=3</em>, <em>nbins=20</em>, <em>barsRelativeWidth=0.95</em>, <em>splitBy=None</em>, <em>stackHorizontal=True</em>, <em>colorCodeXticksLabels=True</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': '$r(\\AA)$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'number'}</em>, <em>limitsParams={'color': None</em>, <em>'linestyle': '--'</em>, <em>'linewidth': 1.0}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given,  subplots parameters will be omitted.
-If None is given a new plot figure will be created.</li>
-<li>nbins (int): number of bins in histogram.</li>
-<li>subplots (boolean): Whether to add plot constraint on multiple
-axes.</li>
-<li>split (None, ‘name’, ‘element’): To split plots into histogram
-per atom names, elements in addition to lower and upper bounds.
-If None is given, histograms will be built from lower and upper
-bounds only.</li>
-<li>wspace (float): The amount of width reserved for blank space
-between subplots, expressed as a fraction of the average axis
-width.</li>
-<li>hspace (float): The amount of height reserved for white space
-between subplots, expressed as a fraction of the average axis
-height.</li>
-<li>histTtype (string): the histogram type. optional among
-[‘bar’, ‘barstacked’, ‘step’, ‘stepfilled’]</li>
-<li>lineWidth (None, integer): bars contour line width. If None is
-given then default value will be given.</li>
-<li>lineColor (None, integer): bars contour line color. If None is
-given then default value will be given.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>title (boolean): Whether to create the title or not.</li>
-<li>titleStdErr (boolean): Whether to show constraint standard error
-value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of removed
-atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
-<li>show (boolean): Whether to render and show figure before
-returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.BondConstraints.BondConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.BondConstraints.BondConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export bonds constraint’s distribution histogram.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
-<li>delimiter (string): String or character separating columns.</li>
-<li>comments (string): String that will be prepended to the header.</li>
-<li>split (None, ‘name’, ‘element’): To split output into per atom
-names, elements in addition to lower and upper bounds.
-If None is given, output will be built from lower and upper
-bounds only.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>spacing (float): spacing between definitions histgrams</li>
+<li>numberOfTicks (integer): number of ticks per definition histogram</li>
+<li>nbins (integer): number of bins per definition histogram</li>
+<li>barsRelativeWidth (float): histogram bar relative width &gt;0 and &lt;1</li>
+<li>splitBy (None, string): Split definition histograms by atom
+element, name or merely distance. accepts None, ‘element’, ‘name’</li>
+<li>stackHorizontal (boolean): whether to stack definition plots
+horizontally or veritcally</li>
+<li>colorCodeXticksLabels (boolean): whether to color code x ticks
+per definition color</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>titleParams (None, dict): axes title parameters</li>
 </ol>
 </td>
 </tr>
@@ -3619,6 +3662,12 @@ not.</li>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesDefinition">
+<code class="descname">anglesDefinition</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.anglesDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>angles definition copy if angles are defined as such</p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles">
 <code class="descname">angles</code><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Angles dictionary of every and each atom.</p>
@@ -3689,35 +3738,6 @@ converted to rad.</li>
 <ol class="last arabic simple">
 <li>tform (boolean): set whether given anglesList follows tuples
 format, If False, then it must follow the five vectors one.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle">
-<code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a single angle to the list of constraint angles.
-All angles are in degrees.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>angle (list): The angle list of five items.<ol class="arabic">
-<li>Central atom index.</li>
-<li>Index of the left atom forming the angle
-(interchangeable with the right atom).</li>
-<li>Index of the right atom forming the angle
-(interchangeable with the left atom).</li>
-<li>Minimum lower limit or the minimum angle
-allowed in degrees which later will be converted to rad.</li>
-<li>Maximum upper limit or the maximum angle
-allowed in degrees which later will be converted to rad.</li>
-</ol>
-</li>
 </ol>
 </td>
 </tr>
@@ -3828,6 +3848,28 @@ the computed MPDs.</li>
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3945,82 +3987,29 @@ of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=25</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histType='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot angles constraint distribution histogram.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>spacing=2</em>, <em>numberOfTicks=2</em>, <em>nbins=20</em>, <em>barsRelativeWidth=0.95</em>, <em>splitBy=None</em>, <em>stackHorizontal=True</em>, <em>colorCodeXticksLabels=True</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': '$deg.$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'number'}</em>, <em>limitsParams={'color': None</em>, <em>'linestyle': '--'</em>, <em>'linewidth': 1.0}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given, subplots parameters will be omitted.
-If None is given, a new plot figure will be created.</li>
-<li>nbins (int): number of bins in histogram.</li>
-<li>subplots (boolean): Whether to add plot constraint on multiple
-axes.</li>
-<li>split (None, ‘name’, ‘element’): To split plots into histogram
-per atom names, elements in addition to lower and upper bounds.
-If None is given, histograms will be built from lower and upper
-bounds only.</li>
-<li>wspace (float): The amount of width reserved for blank space
-between subplots, expressed as a fraction of the average axis
-width.</li>
-<li>hspace (float): The amount of height reserved for white space
-between subplots, expressed as a fraction of the average axis
-height.</li>
-<li>histType (string): the histogram type. optional among
-[‘bar’, ‘barstacked’, ‘step’, ‘stepfilled’]</li>
-<li>lineWidth (None, integer): Bars contour line width.
-If None is given, then default value will be automatically set.</li>
-<li>lineColor (None, integer): Bars contour line color.
-If None is given, then default value will be automatically set.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): Legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’, ‘center’,
-‘lower left’, ‘center right’, ‘upper left’, ‘upper center’, ‘lower center’
-is accepted.</li>
-<li>title (boolean): Whether to create the title or not.</li>
-<li>titleStdErr (boolean): Whether to show constraint standard
-error value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of
-removed atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
-<li>show (boolean): Whether to render and show figure before
-returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export angle constraint’s data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
-<li>delimiter (string): String or character separating columns.</li>
-<li>comments (string): String that will be prepended to the header.</li>
-<li>split (None, ‘name’, ‘element’): To split output per atoms name,
-or element in addition to lower and upper bounds. If None is
-given output will be built from lower and upper bounds only.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>spacing (float): spacing between definitions histgrams</li>
+<li>numberOfTicks (integer): number of ticks per definition histogram</li>
+<li>nbins (integer): number of bins per definition histogram</li>
+<li>barsRelativeWidth (float): histogram bar relative width &gt;0 and &lt;1</li>
+<li>splitBy (None, string): Split definition histograms by atom
+element, name or merely distance. accepts None, ‘element’, ‘name’</li>
+<li>stackHorizontal (boolean): whether to stack definition plots
+horizontally or veritcally</li>
+<li>colorCodeXticksLabels (boolean): whether to color code x ticks
+per definition color</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>titleParams (None, dict): axes title parameters</li>
 </ol>
 </td>
 </tr>
@@ -4112,6 +4101,12 @@ means accepting all steps regardless whether standardError increases or not.</li
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesList">
 <code class="descname">anglesList</code><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Improper angles list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesDefinition">
+<code class="descname">anglesDefinition</code><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.anglesDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>angles definition copy if dihedral angles are defined as such</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -4233,49 +4228,6 @@ last shell is a repetition of the first which means only two shells are defined.
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.add_angle">
-<code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a single angle to the list of constraint angles. All angles are in degrees.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>angle (list): The angle list of ten items.<ol class="arabic">
-<li>First atom index of the first plane.</li>
-<li>Second atom index of the first plane and first
-atom index of the second plane.</li>
-<li>Third atom index of the first plane and second
-atom index of the second plane.</li>
-<li>Fourth atom index of the second plane.</li>
-<li>Minimum lower limit of the first shell or minimum
-angle allowed in degrees which later will be
-converted to rad.</li>
-<li>Maximum upper limit of the first shell or maximum
-angle allowed in degrees which later will be
-converted to rad.</li>
-<li>Minimum lower limit of the second shell or minimum
-angle allowed in degrees which later will be
-converted to rad.</li>
-<li>Maximum upper limit of the second shell or maximum
-angle allowed in degrees which later will be
-converted to rad.</li>
-<li>Minimum lower limit of the third shell or minimum
-angle allowed in degrees which later will be
-converted to rad.</li>
-<li>Maximum upper limit of the third shell or maximum
-angle allowed in degrees which later will be
-converted to rad.</li>
-</ol>
-</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.create_angles_by_definition">
 <code class="descname">create_angles_by_definition</code><span class="sig-paren">(</span><em>anglesDefinition</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.create_angles_by_definition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates anglesList using angles definition.
@@ -4385,6 +4337,28 @@ is equal to 1 if <span class="math notranslate nohighlight">\(\theta_{i}^{max} \
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -4495,83 +4469,29 @@ of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=20</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histTtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot dihedral angles constraint’s distribution histogram.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>spacing=2</em>, <em>numberOfTicks=3</em>, <em>nbins=20</em>, <em>barsRelativeWidth=0.95</em>, <em>splitBy=None</em>, <em>stackHorizontal=False</em>, <em>colorCodeXticksLabels=True</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': '$deg.$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'number'}</em>, <em>limitsParams={'color': None</em>, <em>'linestyle': None</em>, <em>'linewidth': 1.0}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given,  subplots parameters will be omitted.
-If None is given a new plot figure will be created.</li>
-<li>nbins (int): number of bins in histogram.</li>
-<li>subplots (boolean): Whether to add plot constraint on multiple
-axes.</li>
-<li>split (None, ‘name’, ‘element’): To split plots into histogram
-per atom names, elements in addition to lower and upper bounds.
-If None is given, histograms will be built from lower and upper
-bounds only.</li>
-<li>wspace (float): The amount of width reserved for blank space
-between subplots, expressed as a fraction of the average axis
-width.</li>
-<li>hspace (float): The amount of height reserved for white space
-between subplots, expressed as a fraction of the average axis
-height.</li>
-<li>histTtype (string): the histogram type. optional among
-[‘bar’, ‘barstacked’, ‘step’, ‘stepfilled’]</li>
-<li>lineWidth (None, integer): bars contour line width.
-If None is given, then default value set automatically.</li>
-<li>lineColor (None, integer): bars contour line color.
-If None is given, then default value set automatically.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>title (boolean): Whether to create the title or not.</li>
-<li>titleStdErr (boolean): Whether to show constraint standard
-error value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of
-removed atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
-<li>show (boolean): Whether to render and show figure before
-returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export dihedral angles constraint’s distribution histogram.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
-<li>delimiter (string): String or character separating columns.</li>
-<li>comments (string): String that will be prepended to the header.</li>
-<li>split (None, ‘name’, ‘element’): To split output into per atom
-names, elements in addition to lower and upper bounds.
-If None is given, output will be built from lower and upper
-bounds only.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>spacing (float): spacing between definitions histgrams</li>
+<li>numberOfTicks (integer): number of ticks per definition histogram</li>
+<li>nbins (integer): number of bins per definition histogram</li>
+<li>barsRelativeWidth (float): histogram bar relative width &gt;0 and &lt;1</li>
+<li>splitBy (None, string): Split definition histograms by atom
+element, name or merely distance. accepts None, ‘element’, ‘name’</li>
+<li>stackHorizontal (boolean): whether to stack definition plots
+horizontally or veritcally</li>
+<li>colorCodeXticksLabels (boolean): whether to color code x ticks
+per definition color</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>titleParams (None, dict): axes title parameters</li>
 </ol>
 </td>
 </tr>
@@ -4640,11 +4560,11 @@ not.</li>
 <span class="c1">##              O</span>
 <span class="c1">##   H41      /   \      H11</span>
 <span class="c1">##      \  /         \  /</span>
-<span class="c1">## H42-- C4    THF    C1 --H12</span>
-<span class="c1">##        \  MOLECULE /</span>
+<span class="c1">## H42-- C4    THF     C1 --H12</span>
+<span class="c1">##        \ MOLECULE  /</span>
 <span class="c1">##         \         /</span>
 <span class="c1">##   H31-- C3-------C2 --H21</span>
-<span class="c1">##        /         \</span>
+<span class="c1">##        /          \</span>
 <span class="c1">##     H32            H22</span>
 <span class="c1">##</span>
 
@@ -4671,6 +4591,12 @@ not.</li>
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesList">
 <code class="descname">anglesList</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get improper angles list.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesDefinition">
+<code class="descname">anglesDefinition</code><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.anglesDefinition" title="Permalink to this definition">¶</a></dt>
+<dd><p>angles definition copy if improper angles are defined as such</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -4742,33 +4668,6 @@ in degrees which later will be converted to rad.</li>
 <ol class="last arabic simple">
 <li>tform (boolean): Whether given anglesList follows tuples format,
 If not then it must follow the six vectors one.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.add_angle">
-<code class="descname">add_angle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.add_angle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a single angle to the list of constraint angles. All angles are in degrees.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>angle (list): The angle list of five items.<ol class="arabic">
-<li>Improper atom index that must be in the plane.</li>
-<li>Index of atom ‘O’ considered the origin of the plane.</li>
-<li>Index of atom ‘x’ used to calculated ‘Ox’ vector.</li>
-<li>Index of atom ‘y’ used to calculated ‘Oy’ vector.</li>
-<li>Minimum lower limit or minimum angle allowed
-in degrees which later will be converted to rad.</li>
-<li>Maximum upper limit or maximum angle allowed
-in degrees which later will be converted to rad.</li>
-</ol>
-</li>
 </ol>
 </td>
 </tr>
@@ -4873,6 +4772,28 @@ is equal to 1 if <span class="math notranslate nohighlight">\(\theta_{i}^{max} \
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -4991,94 +4912,29 @@ of a single element.</li>
 
 <dl class="method">
 <dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>ax=None</em>, <em>nbins=50</em>, <em>subplots=True</em>, <em>split=None</em>, <em>wspace=0.3</em>, <em>hspace=0.3</em>, <em>histTtype='bar'</em>, <em>lineWidth=None</em>, <em>lineColor=None</em>, <em>xlabel=True</em>, <em>xlabelSize=16</em>, <em>ylabel=True</em>, <em>ylabelSize=16</em>, <em>legend=True</em>, <em>legendCols=1</em>, <em>legendLoc='best'</em>, <em>title=True</em>, <em>titleStdErr=True</em>, <em>titleAtRem=True</em>, <em>titleUsedFrame=True</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot improper angles constraint distribution histogram.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>spacing=2</em>, <em>numberOfTicks=2</em>, <em>nbins=20</em>, <em>barsRelativeWidth=0.95</em>, <em>splitBy=None</em>, <em>stackHorizontal=True</em>, <em>colorCodeXticksLabels=True</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': '$deg.$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'number'}</em>, <em>limitsParams={'color': None</em>, <em>'linestyle': '--'</em>, <em>'linewidth': 1.0}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to Constraint.plot with additional parameters</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-If ax is given,  subplots parameters will be omitted.
-If None is given a new plot figure will be created.</li>
-<li>nbins (int): number of bins in histogram.</li>
-<li>subplots (boolean): Whether to add plot constraint on multiple
-axes.</li>
-<li>split (None, ‘name’, ‘element’): To split plots into histogram
-per atom names, elements in addition to lower and upper bounds.
-If None is given, histograms will be built from lower and upper
-bounds only.</li>
-<li>wspace (float): The amount of width reserved for blank space
-between subplots, expressed as a fraction of the average axis
-width.</li>
-<li>hspace (float): The amount of height reserved for white space
-between subplots, expressed as a fraction of the average axis
-height.</li>
-<li>histTtype (string): the histogram type. optional among
-[‘bar’, ‘barstacked’, ‘step’, ‘stepfilled’]</li>
-<li>lineWidth (None, integer): bars contour line width.
-If None is given, then default value will be set automatically.</li>
-<li>lineColor (None, integer): bars contour line color.
-If None is given, then default value will be set automatically.</li>
-<li>xlabel (boolean): Whether to create x label.</li>
-<li>xlabelSize (number): The x label font size.</li>
-<li>ylabel (boolean): Whether to create y label.</li>
-<li>ylabelSize (number): The y label font size.</li>
-<li>legend (boolean): Whether to create the legend or not</li>
-<li>legendCols (integer): Legend number of columns.</li>
-<li>legendLoc (string): The legend location. Anything among
-‘right’, ‘center left’, ‘upper right’, ‘lower right’, ‘best’,
-‘center’, ‘lower left’, ‘center right’, ‘upper left’,
-‘upper center’, ‘lower center’ is accepted.</li>
-<li>title (boolean): Whether to create the title or not.</li>
-<li>titleStdErr (boolean): Whether to show constraint standard
-error value in title.</li>
-<li>titleAtRem (boolean): Whether to show engine’s number of
-removed atoms.</li>
-<li>titleUsedFrame(boolean): Whether to show used frame name in
-title.</li>
-<li>show (boolean): Whether to render and show figure before
-returning.</li>
-</ol>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>figure (matplotlib Figure): matplotlib used figure.</li>
-<li>axes (matplotlib Axes, List): matplotlib axes or a list of axes.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<table border="1" class="docutils">
-<colgroup>
-<col width="100%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><div class="first last figure align-left">
-<a class="reference internal image-reference" href="_images/improper_angle_constraint_plot_method.png"><img alt="_images/improper_angle_constraint_plot_method.png" src="_images/improper_angle_constraint_plot_method.png" style="width: 530px; height: 400px;" /></a>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fname</em>, <em>delimiter='     '</em>, <em>comments='# '</em>, <em>split=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export improper angles constraint distribution histogram.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>fname (path): full file name and path.</li>
-<li>delimiter (string): String or character separating columns.</li>
-<li>comments (string): String that will be prepended to the header.</li>
-<li>split (None, ‘name’, ‘element’): To split output into per atom names,
-elements in addition to lower and upper bounds. If None output
-will be built from lower and upper bounds only.</li>
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>spacing (float): spacing between definitions histgrams</li>
+<li>numberOfTicks (integer): number of ticks per definition histogram</li>
+<li>nbins (integer): number of bins per definition histogram</li>
+<li>barsRelativeWidth (float): histogram bar relative width &gt;0 and &lt;1</li>
+<li>splitBy (None, string): Split definition histograms by atom
+element, name or merely distance. accepts None, ‘element’, ‘name’</li>
+<li>stackHorizontal (boolean): whether to stack definition plots
+horizontally or veritcally</li>
+<li>colorCodeXticksLabels (boolean): whether to color code x ticks
+per definition color</li>
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>titleParams (None, dict): axes title parameters</li>
 </ol>
 </td>
 </tr>
@@ -5487,8 +5343,8 @@ must be given in atomsWeight dictionary argument.</li>
 <dl class="method">
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_atoms_weight">
 <code class="descname">set_atoms_weight</code><span class="sig-paren">(</span><em>atomsWeight</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.set_atoms_weight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Custom set atoms weight. This is the way to setting a atoms weights
-different than the given weighting scheme.</p>
+<dd><p>Custom set atoms weight. This is the way to customize setting atoms
+weights different than the given weighting scheme.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -5688,6 +5544,28 @@ the computed PDFs.</li>
 <dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -5828,6 +5706,27 @@ error accordingly.</p>
 <code class="descname">get_multiframe_weights</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.get_multiframe_weights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>xlabelParams={'size': 10</em>, <em>'xlabel': '$r(\\AA)$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': '$G(r)(\\AA^{-2})$'}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to ExperimentalConstraint.plot with additional parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -5951,6 +5850,28 @@ computed PDFs.</li>
 <dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -6007,6 +5928,27 @@ given atom is amputated.</p>
 of a single element.</li>
 <li>relativeIndex (numpy.ndarray): Atom’s relative index as a
 numpy array of a single element.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>xlabelParams={'size': 10</em>, <em>'xlabel': '$r(\\AA)$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': '$g(r)(\\AA^{-2})$'}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to ExperimentalConstraint.plot with additional parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
 </ol>
 </td>
 </tr>
@@ -6610,6 +6552,28 @@ computed PDFs.</li>
 <dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data">
 <code class="descname">compute_data</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute constraint’s data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>update (boolean): whether to update constraint data and
+standard error with new computation. If data is computed and
+updated by another thread or process while the stochastic
+engine is running, this might lead to a state alteration of
+the constraint which will lead to a no additional accepted
+moves in the run</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>data (dict): constraint data dictionary</li>
+<li>standardError (float): constraint standard error</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -6745,6 +6709,27 @@ error accordingly.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>xlabelParams={'size': 10</em>, <em>'xlabel': '$Q(\\AA^{-1})$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': '$S(Q)$'}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to ExperimentalConstraint.plot with additional parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -6766,6 +6751,27 @@ not to manipulate the experimental data every time.</p>
 <dt id="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint.get_adjusted_scale_factor">
 <code class="descname">get_adjusted_scale_factor</code><span class="sig-paren">(</span><em>experimentalData</em>, <em>modelData</em>, <em>dataWeights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint.get_adjusted_scale_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>dummy overload that does exactly the same thing</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><em>xlabelParams={'size': 10</em>, <em>'xlabel': '$Q(\\AA^{-1})$'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': '$S(Q)-1$'}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias to ExperimentalConstraint.plot with additional parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">Additional/Adjusted Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ol class="first last arabic simple">
+<li>xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -6836,7 +6842,7 @@ not to manipulate the experimental data every time.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

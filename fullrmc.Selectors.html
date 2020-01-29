@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Selectors package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Selectors package &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.0.0',
+        VERSION:     '4.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
             <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" />
 
@@ -115,7 +115,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -667,7 +667,7 @@ then the best position is kept.</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (None, fullrmc.Engine): The selector stochastic engine.</li>
 <li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
 If None, order is set automatically to all groups indexes list.</li>
 </ol>
@@ -764,7 +764,7 @@ if expand argument is True or from the closest to the further if expand is False
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The selector RMC engine.</p>
+<li><p class="first">engine (None, fullrmc.Engine): The selector stochastic engine.</p>
 </li>
 <li><p class="first">center (None, list, set, tuple, numpy.ndarray): The center of expansion.
 If None, the center is automatically set to the origin (0,0,0).</p>
@@ -898,7 +898,7 @@ others according to damping parameter.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>center (None, list, set, tuple, numpy.ndarray): The center of expansion.
+<li>center (None, list, tuple, numpy.ndarray): The center of expansion.
 If None, the center is automatically set to the origin (0,0,0).</li>
 </ol>
 </td>
@@ -1058,7 +1058,7 @@ amplitudes is set to 0.25A.</span></p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (fullrmc.Engine): The selector stochastic engine.</li>
 <li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 </ol>
 </td>
@@ -1081,8 +1081,8 @@ amplitudes is set to 0.25A.</span></p>
 
 <span class="c1"># set group selector as random selection but with double likelihood to</span>
 <span class="c1"># selecting the first and the last group.</span>
-<span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">ENGINE</span><span class="o">.</span><span class="n">pdb</span><span class="o">.</span><span class="n">indexes</span><span class="p">]</span>
-<span class="n">WEIGHTS</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">WEIGHTS</span> <span class="o">=</span> <span class="p">[[</span><span class="n">idx</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">groups</span><span class="p">))]</span>
+<span class="n">WEIGHTS</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">WEIGHTS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
@@ -1169,7 +1169,7 @@ selecting groups with more successful moves history.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector RMC engine.</li>
+<li>engine (fullrmc.Engine): The selector stochastic engine.</li>
 <li>weights (None, list): Weights list fed as initial biasing scheme.
 It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
 <li>biasFactor (Number): The biasing factor of every group when a step get accepted.
@@ -1378,7 +1378,7 @@ This method is empty must be overloaded when needed.</p>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

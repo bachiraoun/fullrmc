@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc package &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.0.0',
+        VERSION:     '4.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="#" />
+            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="#" />
             <link rel="next" title="fullrmc.Core package" href="fullrmc.Core.html" />
 
     <!-- -------------------------------------------------------------------------- -->
@@ -108,7 +108,7 @@
              |
         
         </li>
-        <li><a href="#">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -122,7 +122,7 @@
         
   <div class="section" id="module-fullrmc">
 <span id="fullrmc-package"></span><h1>fullrmc package<a class="headerlink" href="#module-fullrmc" title="Permalink to this headline">¶</a></h1>
-<div class="graphviz"><img src="_images/inheritance-b863adad8779201361adc8070e55f047802800d9.png" alt="Inheritance diagram of fullrmc.Engine" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-b633160fc8a9585f2dd8e76fb9cda6154d6cdf81.png" alt="Inheritance diagram of fullrmc.Engine" class="inheritance graphviz" /></div>
 <div class="graphviz"><img src="_images/inheritance-0f1e3055c365ab33b34c6fc47f9704638f216759.png" alt="Inheritance diagram of fullrmc.Core.Group" usemap="#inheritancefd4366267b" class="inheritance graphviz" /></div>
 <map id="inheritancefd4366267b" name="inheritancefd4366267b">
 <area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly" alt="" coords="125,5,222,29"/>
@@ -275,13 +275,14 @@ generated moves.</li>
 <span class="c1">##              O</span>
 <span class="c1">##   H41      /   \      H11</span>
 <span class="c1">##      \  /         \  /</span>
-<span class="c1">## H42-- C4    THF    C1 --H12</span>
-<span class="c1">##        \  MOLECULE /</span>
+<span class="c1">## H42-- C4    THF     C1 --H12</span>
+<span class="c1">##        \ MOLECULE  /</span>
 <span class="c1">##         \         /</span>
 <span class="c1">##   H31-- C3-------C2 --H21</span>
-<span class="c1">##        /         \</span>
+<span class="c1">##        /          \</span>
 <span class="c1">##     H32            H22</span>
 <span class="c1">##</span>
+
 
 <span class="c1">#   #####################################################################################   #</span>
 <span class="c1">#   ############################### IMPORT WHAT IS NEEDED ###############################   #</span>
@@ -528,7 +529,89 @@ user-defined molecular and atomistic constraints such as bond-length,
 bond-angles, dihedral angles, inter-molecular-distances, etc.</p>
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">Engine</code><span class="sig-paren">(</span><em>path=None</em>, <em>logFile=None</em>, <em>freshStart=False</em>, <em>timeout=10</em><span class="sig-paren">)</span></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">InterceptHook</code><span class="sig-paren">(</span><em>path</em>, <em>password=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Engine runtime intercept hook. This can be used by a thread or another
+process to intercept a running stochastic engine to do different actions
+such as stop, save, export a pdb file or reset the standard error.</p>
+<p>Calling InterceptHook methods on a non-running engine won’t do any action.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>path (string): Engine repository path</li>
+<li>password (string): Engine repository password. If None,
+default value will be given hoping that the running engine
+repository password is also the default one. Otherwise the hook
+connection will fail.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p>From a different python process, run the following code to handle a hook
+of a running engine.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc&#39;s InterceptHook</span>
+<span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">InterceptHook</span>
+
+<span class="c1"># create hook</span>
+<span class="n">hook</span> <span class="o">=</span> <span class="n">InterceptHook</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+
+<span class="c1"># safely force stopping running engine</span>
+<span class="n">hook</span><span class="o">.</span><span class="n">stop_engine</span><span class="p">()</span>
+
+<span class="c1"># safely force saving running engine</span>
+<span class="n">hook</span><span class="o">.</span><span class="n">save_engine</span><span class="p">()</span>
+
+<span class="c1"># safely export a pdb file of the current engine structure status</span>
+<span class="n">hook</span><span class="o">.</span><span class="n">export_pdb</span><span class="p">()</span>
+
+<span class="c1"># safely reset standard error during engine runtime</span>
+<span class="n">hook</span><span class="o">.</span><span class="n">reset_standard_error</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt>
+<code class="descname">stop_engine</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>stop a running engine</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">save_engine</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>force saving a running engine</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">export_pdb</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>export a pdb of the current state of a running engine</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">reset_standard_error</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>reset a running engine total standard error</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><code class="descname">get_engine_hook</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<dd><p>Get engine instance intercept hook</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt>
+<em class="property">classmethod </em><code class="descname">clear</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<dd><p>release all unexecuted hooks from engine</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Engine.</code><code class="descname">Engine</code><span class="sig-paren">(</span><em>path=None</em>, <em>logFile=None</em>, <em>freshStart=False</em>, <em>timeout=10</em>, <em>password=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>fulrmc’s engine, is used to launch a stochastic modelling which is
 different than traditional Reverse Monte Carlo (RMC).
@@ -554,6 +637,8 @@ if a fullrmc engine or a non-empty directory is found at the given
 path.</li>
 <li>timeout (number): The maximum delay or time allowed to successfully
 set the lock upon reading or writing the engine repository</li>
+<li>password (None, string): Engine repository password. If None,
+default value will be given.</li>
 </ol>
 </td>
 </tr>
@@ -580,6 +665,43 @@ set the lock upon reading or writing the engine repository</li>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
 </pre></div>
 </div>
+<dl class="method">
+<dt>
+<code class="descname">codify</code><span class="sig-paren">(</span><em>export='codified_engine.py'</em>, <em>name='ENGINE'</em>, <em>engineSaveName='engine.rmc'</em>, <em>frames=None</em>, <em>addDependencies=True</em><span class="sig-paren">)</span></dt>
+<dd><p>Codify engine full state to a code that once executed it will
+regenerate and and save the engine on disk. This is a better alternative
+to transfering engine from one system to another. The generated code
+is python 2 and 3 compatible and operating system safe allowing
+to get an executable code to regenerate the engine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>export (None, str): file to write generated codified engine
+code. If string is given, it’s the file path</li>
+<li>name (str): engine variable name in the generate code</li>
+<li>engineSaveName (None,str): directory path to save engine upon
+executing the codified engine code</li>
+<li>frames (None, str, list): the list of frames to codify. At least
+one traditional frame must be given. If None, all frames will
+be codified.</li>
+<li>addDependencies (bool): whether to add imports dependencies
+to the generated code header. Dependencies will always be
+added to the code header in the exported file.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>dependencies (list): list of dependencies import strings</li>
+<li>code (str): the codified engine code</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt>
 <code class="descname">path</code></dt>
@@ -588,20 +710,32 @@ set the lock upon reading or writing the engine repository</li>
 
 <dl class="attribute">
 <dt>
+<code class="descname">version</code></dt>
+<dd><p>Stochastic engine version.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
 <code class="descname">info</code></dt>
-<dd><p>Engine’s information (version, id) tuple.</p>
+<dd><p>Stochastic engine information (version, id) tuple.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">frames</code></dt>
-<dd><p>Engine’s frames list copy.</p>
+<dd><p>Stochastic engine frames list copy.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">framesPath</code></dt>
+<dd><p>List of engine traditional frames name and multiframes path.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt>
 <code class="descname">usedFrame</code></dt>
-<dd><p>Engine’s frame in use.</p>
+<dd><p>Stochatic engine frame in use.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -867,7 +1001,7 @@ set the lock upon reading or writing the engine repository</li>
 
 <dl class="method">
 <dt>
-<code class="descname">get_original_data</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span></dt>
+<code class="descname">get_original_data</code><span class="sig-paren">(</span><em>name</em>, <em>frame=None</em><span class="sig-paren">)</span></dt>
 <dd><p>Get original data as initialized and parsed from pdb.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -875,6 +1009,8 @@ set the lock upon reading or writing the engine repository</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>name (string): Data name.</li>
+<li>frame (None, string): get original data of a particular frame.
+If None, engine used frame will be used</li>
 </ol>
 </td>
 </tr>
@@ -1023,7 +1159,7 @@ extension automatically.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">add_frames</code><span class="sig-paren">(</span><em>frames</em><span class="sig-paren">)</span></dt>
+<code class="descname">add_frames</code><span class="sig-paren">(</span><em>frames</em>, <em>create=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Add a one or many (multi)frame to engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1033,6 +1169,12 @@ extension automatically.</li>
 <li>frames (string, dict, list): It can be a string to add a single
 frame, a dictionary to add a single multiframe or a list of
 strings and/or dictionaries to add multiple (multi)frames.</li>
+<li>create (boolean): adding a frame to engine doesn’t create the
+frame data in the stochatic engine repository. Frames data
+are created once frame is used. Setting create to True, forces
+creating the repository data by copying used frame ones. If used
+frame is not a traditional frame, create will get automatically
+reset to False</li>
 </ol>
 </td>
 </tr>
@@ -1042,19 +1184,8 @@ strings and/or dictionaries to add multiple (multi)frames.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">add_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a single (multi)frame to engine.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>frame (string): Frame name.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="descname">add_frame</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span></dt>
+<dd><p>alias to add_frames</p>
 </dd></dl>
 
 <dl class="method">
@@ -1101,7 +1232,7 @@ a multiframe subframe. If frame does not exist an error will be raised.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">set_used_frame</code><span class="sig-paren">(</span><em>frame</em>, <em>updateRepo=True</em><span class="sig-paren">)</span></dt>
+<code class="descname">set_used_frame</code><span class="sig-paren">(</span><em>frame</em>, <em>_updateRepo=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Switch engine frame.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1109,8 +1240,8 @@ a multiframe subframe. If frame does not exist an error will be raised.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>frame (string): The frame to switch to and use from now on.</li>
-<li>updateRepo (boolean): whether to update repository usedFrame
-value</li>
+<li>_updateRepo (boolean): whether to update repository usedFrame
+value. Meant to be used internally.</li>
 </ol>
 </td>
 </tr>
@@ -1127,7 +1258,7 @@ value</li>
 <dl class="method">
 <dt>
 <code class="descname">delete_frame</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span></dt>
-<dd><p>Delete frame data from Engine as well as from system.</p>
+<dd><p>Delete frame data from Engine as well as from repository .</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1248,19 +1379,16 @@ frame is used.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">add_group</code><span class="sig-paren">(</span><em>g</em>, <em>broadcast=True</em><span class="sig-paren">)</span></dt>
-<dd><p>Add a group to engine’s groups list.</p>
+<code class="descname">remove_groups</code><span class="sig-paren">(</span><em>groups</em><span class="sig-paren">)</span></dt>
+<dd><p>Remove groups by instance, name or index</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>g (Group, integer, list, set, tuple numpy.ndarray): Group
-instance, integer, list, tuple, set or numpy.ndarray of atoms
-index.</li>
-<li>broadcast (boolean): Whether to broadcast “update groups”.
-This is to be used interally only. Keep default value unless
-you know what you are doing.</li>
+<li>groups (integer, string, Group, list): groups to remove,
+this can be a specific group index, or a group name or a group
+instance or a list of all of those</li>
 </ol>
 </td>
 </tr>
@@ -1270,7 +1398,31 @@ you know what you are doing.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_groups</code><span class="sig-paren">(</span><em>groups</em><span class="sig-paren">)</span></dt>
+<code class="descname">add_group</code><span class="sig-paren">(</span><em>g</em>, <em>name=None</em>, <em>_check=True</em><span class="sig-paren">)</span></dt>
+<dd><p>Add a group to engine’s groups list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>g (Group, integer, list, set, tuple numpy.ndarray): Group
+instance, integer, list, tuple, set or numpy.ndarray of atoms
+index.</li>
+<li>name (None, string): group name. If g is a Group instance,
+Group.set_name will be called if given name is not None. If
+g is not a Group instance and name is None it will automatically
+changed to ‘group’.</li>
+<li>_check (boolean): meant to be used internally</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_groups</code><span class="sig-paren">(</span><em>groups</em>, <em>name='group'</em>, <em>add=False</em>, <em>_check=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Set engine’s groups.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1283,6 +1435,11 @@ or numpy.ndarray of atoms index that will be set one by one
 by set_group method. If None is given, single atom groups of
 all atoms will be all automatically created which is the same
 as using set_groups_as_atoms method.</li>
+<li>name (None, string, list): groups name. If string is given, the same
+name will be given to all groups. If list is given, it must have
+the same length as the number of given groups</li>
+<li>add (boolean): whether to newly generated groups to old ones</li>
+<li>_check (boolean): meant to be used internally</li>
 </ol>
 </td>
 </tr>
@@ -1292,7 +1449,7 @@ as using set_groups_as_atoms method.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">add_groups</code><span class="sig-paren">(</span><em>groups</em><span class="sig-paren">)</span></dt>
+<code class="descname">add_groups</code><span class="sig-paren">(</span><em>groups</em>, <em>name=None</em>, <em>_check=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Add groups to engine.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1302,6 +1459,33 @@ as using set_groups_as_atoms method.</li>
 <li>groups (Group, list): Group instance or list of groups,
 where every group must be a Group instance or a
 numpy.ndarray of atoms index of type numpy.int32.</li>
+<li>name (None, string, list): groups name. If string is given, the same
+name will be given to all groups. If list is given, it must have
+the same length as the number of given groups</li>
+<li>_check (boolean): meant to be used internally</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<p>THIS METHOD WILL BE DEPRECATED. Must use ‘set_groups’ instead with ‘add’ flag set to True</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">set_groups_as_atoms</code><span class="sig-paren">(</span><em>name='atom'</em>, <em>add=False</em><span class="sig-paren">)</span></dt>
+<dd><p>Automatically creates groups as single atom group for
+all atoms. If add is True, created groups will be added to engine
+existing ones otherwise old groups will be removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>name (string, list): groups name. If string is given, the same
+name will be given to all groups. If list is given, it must have
+the same length as the number of molecules in the system</li>
+<li>add (boolean): whether to newly generated groups to old ones</li>
 </ol>
 </td>
 </tr>
@@ -1311,16 +1495,24 @@ numpy.ndarray of atoms index of type numpy.int32.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_groups_as_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine’s groups as single atom group for
-all atoms.</p>
-</dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">set_groups_as_molecules</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Automatically set engine’s groups indexes according to
-molecules indexes.</p>
+<code class="descname">set_groups_as_molecules</code><span class="sig-paren">(</span><em>name='molecule'</em>, <em>add=False</em><span class="sig-paren">)</span></dt>
+<dd><p>Automatically create molecular groups of atom indexes according to
+molecules indexes. If add is True, created groups will be added to engine
+existing ones otherwise old groups will be removed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>name (string, list): groups name. If string is given, the same
+name will be given to all groups. If list is given, it must have
+the same length as the number of molecules in the system</li>
+<li>add (boolean): whether to newly generated groups to old ones</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1339,8 +1531,8 @@ scratch or redefining all constraints definitions.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>pdb (pdbparser, string): the configuration pdb as a pdbparser
-instance or a path string to a pdb file.</li>
+<li>pdb (pdbparser, string, list): the configuration pdb as a pdbparser
+instance or a path string to a pdb file or a list of pdb lines.</li>
 <li>boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
 numpy.ndarray, number): The configuration’s boundary conditions.
 If None, boundaryConditions will be parsed from pdb if existing
@@ -1371,7 +1563,7 @@ automatically generated as the pdb residues name.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_boundary_conditions</code><span class="sig-paren">(</span><em>boundaryConditions</em><span class="sig-paren">)</span></dt>
+<code class="descname">set_boundary_conditions</code><span class="sig-paren">(</span><em>boundaryConditions</em>, <em>_broadcast=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Sets the configuration’s boundary conditions. Any type of periodic or
 infinite boundary conditions is allowed and not restricted to cubic.
 Engine and constraints data will be automatically reset. Number density
@@ -1399,6 +1591,7 @@ to a PeriodicBoundaries instance. Normally any real
 numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
 If number is given, it’s like a numpy.ndarray of shape (1,),
 it is assumed as a cubic box of box length equal to number.</li>
+<li>_broadcast (boolean): for internal use only</li>
 </ol>
 </td>
 </tr>
@@ -1427,7 +1620,7 @@ bigger than zero.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_molecules_index</code><span class="sig-paren">(</span><em>moleculesIndex=None</em>, <em>moleculesName=None</em><span class="sig-paren">)</span></dt>
+<code class="descname">set_molecules_index</code><span class="sig-paren">(</span><em>moleculesIndex=None</em>, <em>moleculesName=None</em>, <em>_broadcast=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Set moleculesIndex list, assigning each atom to a molecule.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1441,6 +1634,7 @@ parsing pdb instance.</li>
 <li>moleculesName (None, list): Molecules name list. Must have the
 length of the number of atoms. If None is given, it will be
 automatically generated as the pdb residues name.</li>
+<li>_broadcast (boolean): for internal use only</li>
 </ol>
 </td>
 </tr>
@@ -1450,7 +1644,7 @@ automatically generated as the pdb residues name.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_elements_index</code><span class="sig-paren">(</span><em>elements=None</em><span class="sig-paren">)</span></dt>
+<code class="descname">set_elements_index</code><span class="sig-paren">(</span><em>elements=None</em>, <em>_broadcast=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Set elements and elementsIndex lists, assigning a type element
 to each atom.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1462,6 +1656,7 @@ to each atom.</p>
 length of the number of atoms. If None is given,
 elements will be calculated automatically  by parsing pdb
 instance.</li>
+<li>_broadcast (boolean): for internal use only</li>
 </ol>
 </td>
 </tr>
@@ -1471,14 +1666,18 @@ instance.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">set_names_index</code><span class="sig-paren">(</span><em>names=None</em><span class="sig-paren">)</span></dt>
+<code class="descname">set_names_index</code><span class="sig-paren">(</span><em>names=None</em>, <em>_broadcast=True</em><span class="sig-paren">)</span></dt>
 <dd><p>Set names and namesIndex list, assigning a name to each atom.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body">#. names (None, list): The names list. If None is given, names
-will be generated automatically by parsing pdbparser instance.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>names (None, list): The names list. If None is given, names
+will be generated automatically by parsing pdbparser instance.</li>
+<li>_broadcast (boolean): for internal use only</li>
+</ol>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1565,7 +1764,7 @@ in a form of a list of strings.</p>
 
 <dl class="method">
 <dt>
-<code class="descname">add_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>toAllSubframes=False</em><span class="sig-paren">)</span></dt>
+<code class="descname">add_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>allSubframes=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Add constraints to the engine. If used frame is a normal frame, all
 other normal frames will have the constraints added. If used frame
 is a subframe, all other subframes of the same multiframe will have
@@ -1578,7 +1777,7 @@ constraints will be only added to the used frame.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>constraints (Constraint, list, set, tuple): A constraint instance or
 list of constraints instances</li>
-<li>toAllSubframes (boolean): Whether to also add non-experimental
+<li>allSubframes (boolean): Whether to also add non-experimental
 constraints to all other multiframe subframes in case engine
 used frame is a multiframe subframe.</li>
 </ol>
@@ -1590,7 +1789,7 @@ used frame is a multiframe subframe.</li>
 
 <dl class="method">
 <dt>
-<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>toAllSubframes=False</em><span class="sig-paren">)</span></dt>
+<code class="descname">remove_constraints</code><span class="sig-paren">(</span><em>constraints</em>, <em>allSubframes=False</em><span class="sig-paren">)</span></dt>
 <dd><p>Remove constraints from engine list of constraints.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1599,7 +1798,7 @@ used frame is a multiframe subframe.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>constraints (Constraint, list, set, tuple): A constraint
 instance or list of constraints instances.</li>
-<li>toAllSubframes (boolean): Whether to also remove non-experimental
+<li>allSubframes (boolean): Whether to also remove non-experimental
 constraints from all other multiframe subframes in case engine
 used frame is a multiframe subframe.</li>
 </ol>
@@ -1612,7 +1811,7 @@ used frame is a multiframe subframe.</li>
 <dl class="method">
 <dt>
 <code class="descname">reset_constraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Reset constraints flags.</p>
+<dd><p>Reset used normal frame constraints flags.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1956,7 +2155,7 @@ kwargs can be anything other than __init__ arguments.</li>
              |
         
         </li>
-        <li><a href="#">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="#">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

@@ -4,7 +4,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>fullrmc.Core package &mdash; fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</title>
+    <title>fullrmc.Core package &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
     
     <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -13,7 +13,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.0.0',
+        VERSION:     '4.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,7 +27,7 @@
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
             <link rel="prev" title="fullrmc package" href="index.html" />
 
@@ -115,7 +115,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -2092,6 +2092,42 @@ compute_standard_error method and passing constraint’s data.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="fullrmc.Core.Constraint.Constraint.get_constraints_properties">
+<code class="descname">get_constraints_properties</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.get_constraints_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dictionary look up table of constraint’s properties</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (string): frame to pull and build contraint data. It can
+be a traditional frame, a multiframe or a subframe</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic">
+<li><p class="first">propertiesLUT (dictionary): properties value look up table. Keys
+are described herein. All keys start with ‘frames-‘ and values
+are list of properties for every and each frame.</p>
+<blockquote>
+<div><ul class="simple">
+<li>frames-name: list of all frames name</li>
+<li>frames-weight: list of all frames weight</li>
+<li>frames-number_of_removed_atoms: list of number of removed atoms from each frame</li>
+<li>frames-constraint: list of constraint copy</li>
+<li>frames-data: list of constraint data</li>
+<li>frames-standard_error: list of all frames standard error</li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.get_constraint_value">
 <code class="descname">get_constraint_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.get_constraint_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method must be overloaded in children classes.</p>
@@ -2111,7 +2147,7 @@ compute_standard_error method and passing constraint’s data.</p>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.compute_data">
-<code class="descname">compute_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_data" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_data</code><span class="sig-paren">(</span><em>update=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.compute_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method must be overloaded in children classes.</p>
 </dd></dl>
 
@@ -2177,14 +2213,69 @@ compute_standard_error method and passing constraint’s data.</p>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.export" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method must be overloaded in children classes.</p>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%s'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.export" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export constraint data to text file or to an archive of files.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>fileName (path): full file name and path.</li>
+<li>frame (None, string): frame name to export data from. If multiframe
+is given, multiple files will be created with subframe name
+appended to the end.</li>
+<li>format (string): string format to export the data.
+format is as follows (%[flag]width[.precision]specifier)</li>
+<li>delimiter (string): String or character separating columns.</li>
+<li>comments (string): String that will be prepended to the header.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.Constraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method must be overloaded in children classes.</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>axes=None</em>, <em>subAdParams={'bottom': None</em>, <em>'hspace': 0.4</em>, <em>'left': None</em>, <em>'right': None</em>, <em>'top': None</em>, <em>'wspace': None}</em>, <em>dataParams={'label': 'Y'</em>, <em>'linewidth': 2}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'Core-Shell atoms'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Coordination number'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 90}</em>, <em>yticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>legendParams={'fontsize': 8</em>, <em>'frameon': False</em>, <em>'loc': 'upper right'</em>, <em>'ncol': 1}</em>, <em>titleParams={'fontsize': 10</em>, <em>'label': '&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$ - $used$ $({used})$'}</em>, <em>gridParams=None</em>, <em>show=True</em>, <em>**paramsKwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.Constraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot constraint data. This can be overloaded in children classes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
+<li>frame (None, string): The frame name to plot. If None, used frame
+will be plotted.</li>
+<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+If None is given a new plot figure will be created.</li>
+<li>subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+parameters subplots adjust parameters.</li>
+<li>dataParams (None, dict): constraint data plotting parameters</li>
+<li>xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>legendParams (None, dict):matplotlib.axes.Axes.legend
+parameters.</li>
+<li>xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+parameters.</li>
+<li>titleParams (None, dict): matplotlib.axes.Axes.set_title parameters</li>
+<li>gridParams (None, dict): matplotlib.axes.Axes.grid parameters</li>
+<li>show (boolean): Whether to render and show figure before
+returning.</li>
+</ol>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
+<li>figure (matplotlib Figure): matplotlib used figure.</li>
+<li>axes (matplotlib Axes): matplotlib used axes.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -2368,9 +2459,12 @@ if called after adding constraint to stochastic engine.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>experimentalData (numpy.ndarray, string): Experimental data as
-numpy.ndarray or string path to load data using numpy.loadtxt
-method.</li>
+<li>experimentalData (numpy.ndarray, string, list, tuple):
+Experimental data as numpy.ndarray or string path to load data
+using numpy.loadtxt method. If list or tuple are given, they
+will be automatically converted to a numpy array by calling
+numpy.array(experimentalData). Finally experimental data type
+will be converted to fullrmc.Globals.FLOAT_TYPE</li>
 </ol>
 </td>
 </tr>
@@ -2539,9 +2633,10 @@ the constraint.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_constraint_data_dictionary">
-<code class="descname">get_constraint_data_dictionary</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_constraint_data_dictionary" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a dictionary of all constraint meaningful data to plot or export.</p>
+<dt id="fullrmc.Core.Constraint.ExperimentalConstraint.get_constraints_properties">
+<code class="descname">get_constraints_properties</code><span class="sig-paren">(</span><em>frame</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.get_constraints_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a dictionary look up table of constraint’s properties that
+are needed to plot or export</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2553,31 +2648,34 @@ be a traditional frame, a multiframe or a subframe</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">data (dictionary): Dictionary of all meaningful data including:</p>
+<li><p class="first">propertiesLUT (dictionary): properties value look up table. Keys
+are described herein. Values of keys that start with ‘frames-‘
+are a list for all frames. Values of keys that start with
+‘weighted-‘ are weighted values for all frames</p>
 <blockquote>
 <div><ul class="simple">
-<li>output: list of frames dictionary constraint data</li>
-<li>experimental_x: numpy array of experimental x data.</li>
-<li>experimental_y: numpy array of experimental y data.</li>
-<li>model_x: numpy array of model x data.</li>
-<li>frames_weight: list of all frames weight.</li>
-<li>frames_name: list of all frames name.</li>
-<li>number_of_atoms_removed: list of number of removed atoms from
+<li>frames-name: list of all frames name.</li>
+<li>frames-weight: list of all frames weight.</li>
+<li>frames-number_of_removed_atoms: list of number of removed atoms from
 each frame.</li>
-<li>shape_array: list of system shape function (numpy array) of
+<li>frames-experimental_x: list of numpy array of experimental x data.</li>
+<li>frames-experimental_y: list of numpy array of experimental y data.</li>
+<li>frames-output: list of frames dictionary constraint output data</li>
+<li>frames-model_x: list of numpy array of model x data.</li>
+<li>frames-shape_array: list of system shape function (numpy array) of
 all frames.</li>
-<li>window_function: list of window function (numpy array) of
+<li>frames-window_function: list of window function (numpy array) of
 all frames.</li>
-<li>scale_factor: list of all frames scale factor.</li>
-<li>standard_error: list of all frames standard error.</li>
-<li>weighted_output: dictionary of all frames weighted constraint
-data using ‘frames_weight’</li>
-<li>weighted_number_of_atoms_removed: All frames averaged number
-of removed atoms using ‘frames_weight’</li>
-<li>weighted_scale_factor: All frames averaged scale factor
-using ‘frames_weight’</li>
-<li>weighted_standard_error: All frames weighted standard error
-using ‘frames_weight’</li>
+<li>frames-scale_factor: list of all frames scale factor.</li>
+<li>frames-standard_error: list of all frames standard error.</li>
+<li>weighted-output: dictionary of all frames weighted constraint
+data using ‘frames-weight’</li>
+<li>weighted-number_of_removed_atoms: All frames averaged number
+of removed atoms using ‘frames-weight’</li>
+<li>weighted-scale_factor: All frames averaged scale factor
+using ‘frames-weight’</li>
+<li>weighted-standard_error: All frames weighted standard error
+using ‘frames-weight’</li>
 </ul>
 </div></blockquote>
 </li>
@@ -2590,8 +2688,8 @@ using ‘frames_weight’</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>multiplot=False</em>, <em>ax=None</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>xlabelParams=True</em>, <em>ylabelParams=True</em>, <em>legendParams=True</em>, <em>expParams=None</em>, <em>totParams=None</em>, <em>noWParams=None</em>, <em>shaParams=None</em>, <em>parParams=None</em>, <em>titleFormat='&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$'</em>, <em>show=True</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot constraint data</p>
+<code class="descname">plot</code><span class="sig-paren">(</span><em>frame=None</em>, <em>axes=None</em>, <em>asMesoscopic=False</em>, <em>intra=True</em>, <em>inter=True</em>, <em>shapeFunc=True</em>, <em>subAdParams={'bottom': None</em>, <em>'hspace': 0.4</em>, <em>'left': None</em>, <em>'right': None</em>, <em>'top': None</em>, <em>'wspace': None}</em>, <em>totParams={'color': 'black'</em>, <em>'label': 'total'</em>, <em>'linewidth': 3.0</em>, <em>'zorder': 1}</em>, <em>expParams={'color': 'red'</em>, <em>'label': 'experimental'</em>, <em>'marker': 'o'</em>, <em>'markersize': 7.5</em>, <em>'markevery': 1</em>, <em>'zorder': 0}</em>, <em>noWParams={'color': 'black'</em>, <em>'label': 'total - no window'</em>, <em>'linewidth': 1.0</em>, <em>'zorder': 1}</em>, <em>shaParams={'color': 'black'</em>, <em>'label': 'shape function'</em>, <em>'linestyle': 'dashed'</em>, <em>'linewidth': 1.0</em>, <em>'zorder': 2}</em>, <em>parParams={'linewidth': 1.0</em>, <em>'markersize': 5</em>, <em>'markevery': 5</em>, <em>'zorder': 3}</em>, <em>xlabelParams={'size': 10</em>, <em>'xlabel': 'X'}</em>, <em>ylabelParams={'size': 10</em>, <em>'ylabel': 'Y'}</em>, <em>xticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>yticksParams={'fontsize': 8</em>, <em>'rotation': 0}</em>, <em>legendParams={'fontsize': 8</em>, <em>'frameon': False</em>, <em>'loc': 'upper right'</em>, <em>'ncol': 2}</em>, <em>titleParams={'fontsize': 10</em>, <em>'label': '&#64;{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$ - $used$ $({used})$'}</em>, <em>gridParams=None</em>, <em>show=True</em>, <em>**paramsKwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot constraint data. This can be overloaded in children classes.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2599,50 +2697,39 @@ using ‘frames_weight’</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first arabic simple">
 <li>frame (None, string): The frame name to plot. If None, used frame
 will be plotted.</li>
-<li>multiplot (boolean): If multiframe is given, multiplot insures
-plotting all frames differently in a single multiplot figure.
-In this case, given ax is ommitted.</li>
-<li>ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+<li>axes (None, matplotlib Axes): matplotlib Axes instance to plot in.
 If None is given a new plot figure will be created.</li>
+<li>asMesoscopic (boolean): If given frame is a multiframe is,
+when true, asMesoscopic considers all frames as a statistical
+average of all frames in a mesoscopic system. All subframes
+will be then plotted as a single weighted mesoscopic structure.
+If asMesocopic is False and given frame is a multiframe
+given ax will be disregarded</li>
 <li>intra (boolean): Whether to add intra-molecular pair
 distribution function features to the plot.</li>
 <li>inter (boolean): Whether to add inter-molecular pair
 distribution function features to the plot.</li>
 <li>shapeFunc (boolean): Whether to add shape function to the plot
 only when exists.</li>
-<li>xlabelParams (dict, boolean): matplotlib.axes.Axes.set_xlabel
-parameters. If True, default parameters given by constraint’s
-property _plotDefaultParameters is set. If False x axes label is
-omitted</li>
-<li>ylabelParams (dict, boolean): matplotlib.axes.Axes.set_ylabel
-parameters. If True,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If False y axes label is
-omitted</li>
-<li>legendParams (dict, boolean):matplotlib.axes.Axes.legend
-parameters. If True,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If False is omitted</li>
-<li>titleFormat (string): title format. If empty string is given no
-title will be added to figure axes</li>
-<li>expParams (None, dict): experimental data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>totParams (None, dict): total data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>noWParams (None, dict): constraint no-window total data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>shaParams (None, dict): constraint shape array data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
-<li>parParams (None, dict): constraint partial data matplotlib.pyplot.plot
-parameters. If None,  default parameters given by constraint’s
-property _plotDefaultParameters is set. If dict, it will be the
-update dict to _plotDefaultParameters</li>
+<li>subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+parameters subplots adjust parameters.</li>
+<li>totParams (None, dict): constraint total plotting parameters</li>
+<li>expParams (None, dict): constraint experimental data parameters</li>
+<li>noWParams (None, dict): constraint total without window parameters</li>
+<li>shaParams (None, dict): constraint shape function parameters</li>
+<li>parParams (None, dict): constraint partials parameters</li>
+<li>xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+parameters.</li>
+<li>ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+parameters.</li>
+<li>legendParams (None, dict):matplotlib.axes.Axes.legend
+parameters.</li>
+<li>xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+parameters.</li>
+<li>yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+parameters.</li>
+<li>titleParams (None, dict): matplotlib.axes.Axes.set_title parameters</li>
+<li>gridParams (None, dict): matplotlib.axes.Axes.grid parameters</li>
 <li>show (boolean): Whether to render and show figure before
 returning.</li>
 </ol>
@@ -2692,7 +2779,7 @@ title will be added to figure axes</li>
 
 <dl class="method">
 <dt id="fullrmc.Core.Constraint.ExperimentalConstraint.export">
-<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>splitFrames=False</em>, <em>format='%12.5f'</em>, <em>delimiter=' '</em>, <em>comments='# '</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.export" title="Permalink to this definition">¶</a></dt>
+<code class="descname">export</code><span class="sig-paren">(</span><em>fileName</em>, <em>frame=None</em>, <em>format='%12.5f'</em>, <em>delimiter='\t'</em>, <em>comments='#'</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Constraint.ExperimentalConstraint.export" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export constraint data to text file or to an archive of files.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2703,9 +2790,6 @@ title will be added to figure axes</li>
 <li>frame (None, string): frame name to export data from. If multiframe
 is given, multiple files will be created with subframe name
 appended to the end.</li>
-<li>splitFrames (boolean): whether to split frames into multiple
-files and create and archive (.zip) of frames data. If given
-frame is a normal frame or a subframe this option is not used.</li>
 <li>format (string): string format to export the data.
 format is as follows (%[flag]width[.precision]specifier)</li>
 <li>delimiter (string): String or character separating columns.</li>
@@ -2879,7 +2963,7 @@ on groups rather than on single atoms.</p>
 <area shape="rect" id="node2" href="#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container." alt="" coords="5,5,77,29"/>
 </map><dl class="class">
 <dt id="fullrmc.Core.Group.Group">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>indexes</em>, <em>moveGenerator=None</em>, <em>refine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.Group" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">Group</code><span class="sig-paren">(</span><em>indexes</em>, <em>moveGenerator=None</em>, <em>refine=False</em>, <em>name=''</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.Group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A Group is a set of atoms indexes container.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -2891,6 +2975,7 @@ on groups rather than on single atoms.</p>
 <li>moveGenerator (None, MoveGenerator): Move generator instance.
 If None is given AtomsRemoveGenerator is considered by default.</li>
 <li>refine (bool): The refinement flag used by the Engine.</li>
+<li>name (str): The group user defined name.</li>
 </ol>
 </td>
 </tr>
@@ -2933,6 +3018,12 @@ If None is given AtomsRemoveGenerator is considered by default.</li>
 <dd><p>Refine flag.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="fullrmc.Core.Group.Group.name">
+<code class="descname">name</code><a class="headerlink" href="#fullrmc.Core.Group.Group.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>groud user defined name.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="fullrmc.Core.Group.Group.set_refine">
 <code class="descname">set_refine</code><span class="sig-paren">(</span><em>refine</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.Group.set_refine" title="Permalink to this definition">¶</a></dt>
@@ -2943,6 +3034,23 @@ If None is given AtomsRemoveGenerator is considered by default.</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
 <li>refine (bool): The selector refinement flag.</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="fullrmc.Core.Group.Group.set_name">
+<code class="descname">set_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.Group.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the group’s name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
+<li>name (str): The group user defined name.</li>
 </ol>
 </td>
 </tr>
@@ -2990,25 +3098,10 @@ If None is given TranslationGenerator is considered by default.</li>
 
 <dl class="class">
 <dt id="fullrmc.Core.Group.EmptyGroup">
-<em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">EmptyGroup</code><span class="sig-paren">(</span><em>indexes=None</em>, <em>moveGenerator=None</em>, <em>refine=False</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">fullrmc.Core.Group.</code><code class="descname">EmptyGroup</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Core.Group.EmptyGroup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fullrmc.Core.Group.Group" title="fullrmc.Core.Group.Group"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.Group.Group</span></code></a></p>
 <p>Empty group is a special group that takes no atoms indexes. It’s mainly
 used to remove atoms from system upon fitting.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>indexes (object): list of atoms indexes. This argument will always
-be disregarded in this particular case.</li>
-<li>moveGenerator (None, MoveGenerator): Move generator instance.
-If None is given RemoveGenerator is considered by default.</li>
-<li>refine (bool): The refinement flag used by the Engine.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
 <span class="kn">from</span> <span class="nn">fullrmc.Core.Group</span> <span class="kn">import</span> <span class="n">EmptyGroup</span>
@@ -5722,7 +5815,7 @@ The plane normal vector is calculated using the right-hand rule where (thumb=ox 
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">

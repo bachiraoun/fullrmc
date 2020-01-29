@@ -260,8 +260,21 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         return self._get_constraint_value(self.data, applyMultiframePrior=applyMultiframePrior)
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data."""
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
                                                     isPBC            = self.engine.isPBC,
@@ -273,16 +286,21 @@ class PairCorrelationConstraint(PairDistributionConstraint):
                                                     histSize         = self.histogramSize,
                                                     bin              = self.bin,
                                                     ncores           = self.engine._runtime_ncores)
-        # update data
-        self.set_data({"intra":intra, "inter":inter})
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        totalPCF = self.__get_total_gr(self.data, rho0=self.engine.numberDensity)
-        self.set_standard_error(self.compute_standard_error(modelData = totalPCF))
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        data     = {"intra":intra, "inter":inter}
+        totalPCF = self.__get_total_gr(data, rho0=self.engine.numberDensity)
+        stdError = self.compute_standard_error(modelData = totalPCF)
+        # update
+        if update:
+            self.set_data(data)
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            self.set_standard_error(stdError)
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return data, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -370,6 +388,8 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         totalPCF = self.__get_total_gr({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         # set after move standard error
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPCF) )
+        # increment tried
+        self.increment_tried()
 
     def compute_as_if_amputated(self, realIndex, relativeIndex):
         """
@@ -389,7 +409,7 @@ class PairCorrelationConstraint(PairDistributionConstraint):
         data      = {"intra":dataIntra, "inter":dataInter}
         # temporarily adjust self.__weightingScheme
         weightingScheme = self.weightingScheme
-        relativeIndex = relativeIndex[0]
+        relativeIndex   = relativeIndex[0]
         selectedElement = self.engine.allElements[relativeIndex]
         self.engine.numberOfAtomsPerElement[selectedElement] -= 1
         WS = get_normalized_weighting(numbers=self.engine.numberOfAtomsPerElement, weights=self._elementsWeight )
@@ -420,6 +440,22 @@ class PairCorrelationConstraint(PairDistributionConstraint):
 
     def _on_collector_release_atom(self, realIndex):
         pass
+
+    def plot(self, xlabelParams={'xlabel':'$r(\\AA)$', 'size':10},
+                   ylabelParams={'ylabel':'$g(r)(\\AA^{-2})$', 'size':10},
+                   **kwargs):
+        """
+        Alias to ExperimentalConstraint.plot with additional parameters
+
+        :Additional/Adjusted Parameters:
+            #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+               parameters.
+        """
+        return super(PairCorrelationConstraint, self).plot(xlabelParams= xlabelParams,
+                                                           ylabelParams= ylabelParams,
+                                                           **kwargs)
 
 
 

@@ -198,14 +198,6 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_rmax(rmax)
         self.set_dr(dr)
 
-        # update plot default parameters
-        self._plotDefaultParameters['xlabelParams'] = {'xlabel':"$Q(\\AA^{-1})$", 'size':16}
-        if self.__class__.__name__ == 'ReducedStructureFactorConstraint':
-            self._plotDefaultParameters['ylabelParams'] = {'ylabel':"$S(Q)-1$", 'size':16}
-        else:
-            self._plotDefaultParameters['ylabelParams'] = {'ylabel':"$S(Q)$", 'size':16}
-
-
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
         FRAME_DATA.extend(['_StructureFactorConstraint__experimentalQValues',
@@ -231,6 +223,69 @@ class StructureFactorConstraint(ExperimentalConstraint):
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
+
+    def _codify_update__(self, name='constraint', addDependencies=True):
+        dependencies = []
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        dw = self.dataWeights
+        if dw is not None:
+            dw = list(dw)
+        code.append("dw = {dw}".format(dw=dw))
+        wf = self.windowFunction
+        if isinstance(wf, np.ndarray):
+            code.append("wf = np.array({wf})".format(wf=list(wf)))
+        else:
+            code.append("wf = {wf}".format(wf=wf))
+
+        code.append("{name}.set_used({val})".format(name=name, val=self.used))
+        code.append("{name}.set_scale_factor({val})".format(name=name, val=self.scaleFactor))
+        code.append("{name}.set_adjust_scale_factor({val})".format(name=name, val=self.adjustScaleFactor))
+        code.append("{name}.set_data_weights(dw)".format(name=name))
+        code.append("{name}.set_atoms_weight({val})".format(name=name, val=self.atomsWeight))
+        code.append("{name}.set_window_function(wf)".format(name=name))
+        code.append("{name}.set_rmin({val})".format(name=name, val=self.rmin))
+        code.append("{name}.set_rmax({val})".format(name=name, val=self.rmax))
+        code.append("{name}.set_dr({val})".format(name=name, val=self.dr))
+        code.append("{name}.set_limits({val})".format(name=name, val=self.limits))
+        # return
+        return dependencies, '\n'.join(code)
+
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        klass        = self.__class__.__name__
+        dependencies = ['import numpy as np','from fullrmc.Constraints import StructureFactorConstraints']
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        x = list(self.experimentalData[:,0])
+        y = list(self.experimentalData[:,1])
+        code.append("x = {x}".format(x=x))
+        code.append("y = {y}".format(y=y))
+        code.append("d = np.transpose([x,y]).astype(np.float32)")
+        dw = self.dataWeights
+        if dw is not None:
+            dw = list(dw)
+        code.append("dw = {dw}".format(dw=dw))
+        wf = self.windowFunction
+        if isinstance(wf, np.ndarray):
+            code.append("wf = np.array({wf})".format(wf=list(wf)))
+        else:
+            code.append("wf = {wf}".format(wf=wf))
+        code.append("{name} = {klass}s.{klass}\
+(experimentalData=d, dataWeights=dw, weighting='{weighting}', atomsWeight={atomsWeight}, \
+rmin={rmin}, rmax={rmax}, dr={dr}, scaleFactor={scaleFactor}, adjustScaleFactor={adjustScaleFactor}, \
+shapeFuncParams=sfp, windowFunction=wf, limits={limits})".format(name=name, klass=klass,
+                weighting=self.weighting, atomsWeight=self.atomsWeight, rmin=self.rmin,
+                rmax=self.rmax, dr=self.dr, scaleFactor=self.scaleFactor,
+                adjustScaleFactor=self.adjustScaleFactor, limits=self.limits))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        # return
+        return dependencies, '\n'.join(code)
+
 
     #def __getstate__(self):
     #    # make sure that __Gr2SqMatrix is not pickled but saved to the disk as None
@@ -410,19 +465,19 @@ class StructureFactorConstraint(ExperimentalConstraint):
     @property
     def _experimentalX(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__experimentalQValues
 
     @property
     def _experimentalY(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__experimentalSF
 
     @property
     def _modelX(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__experimentalQValues
 
     def listen(self, message, argument=None):
@@ -435,7 +490,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
             #. argument (object): Any type of argument to pass to the
                listeners.
         """
-        if message in("engine set", "update molecules indexes"):
+        if message in ("engine set","update pdb","update molecules indexes","update elements indexes","update names indexes"):
             self.__set_weighting_scheme()
             # reset histogram
             if self.engine is not None:
@@ -875,8 +930,21 @@ class StructureFactorConstraint(ExperimentalConstraint):
         return self._get_constraint_value(self.originalData)
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data."""
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
                                                     isPBC            = self.engine.isPBC,
@@ -888,16 +956,21 @@ class StructureFactorConstraint(ExperimentalConstraint):
                                                     histSize         = self.__histogramSize,
                                                     bin              = self.__bin,
                                                     ncores           = self.engine._runtime_ncores  )
-        # update data
-        self.set_data({"intra":intra, "inter":inter})
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        totalSQ = self.__get_total_Sq(self.data, rho0=self.engine.numberDensity)
-        self.set_standard_error(self.compute_standard_error(modelData = totalSQ))
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        data     = {"intra":intra, "inter":inter}
+        totalSQ  = self.__get_total_Sq(data, rho0=self.engine.numberDensity)
+        stdError = self.compute_standard_error(modelData = totalSQ)
+        # update
+        if update:
+            self.set_data(data)
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            self.set_standard_error(stdError)
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return data, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -982,6 +1055,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalSQ   = self.__get_total_Sq({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalSQ) )
+        # increment tried
+        self.increment_tried()
 
     def accept_move(self, realIndexes, relativeIndexes):
         """
@@ -1003,6 +1078,8 @@ class StructureFactorConstraint(ExperimentalConstraint):
         self.set_after_move_standard_error( None )
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
+        # increment accepted
+        self.increment_accepted()
 
     def reject_move(self, realIndexes, relativeIndexes):
         """
@@ -1097,7 +1174,7 @@ class StructureFactorConstraint(ExperimentalConstraint):
     def _on_collector_release_atom(self, realIndex):
         pass
 
-    def _get_needed_data_for_constraint_data_dictionary(self):
+    def _constraint_copy_needs_lut(self):
         return {'_StructureFactorConstraint__elementsPairs'       :'_StructureFactorConstraint__elementsPairs',
                 '_StructureFactorConstraint__histogramSize'       :'_StructureFactorConstraint__histogramSize',
                 '_StructureFactorConstraint__weightingScheme'     :'_StructureFactorConstraint__weightingScheme',
@@ -1107,21 +1184,52 @@ class StructureFactorConstraint(ExperimentalConstraint):
                 '_StructureFactorConstraint__experimentalQValues' :'_StructureFactorConstraint__experimentalQValues',
                 '_StructureFactorConstraint__experimentalSF'      :'_StructureFactorConstraint__experimentalSF',
                 '_StructureFactorConstraint__Gr2SqMatrix'         :'_StructureFactorConstraint__Gr2SqMatrix',
+                '_StructureFactorConstraint__minimumDistance'     :'_StructureFactorConstraint__minimumDistance',
+                '_StructureFactorConstraint__maximumDistance'     :'_StructureFactorConstraint__maximumDistance',
+                '_StructureFactorConstraint__bin'                 :'_StructureFactorConstraint__bin',
                 '_ExperimentalConstraint__scaleFactor'            :'_ExperimentalConstraint__scaleFactor',
                 '_ExperimentalConstraint__dataWeights'            :'_ExperimentalConstraint__dataWeights',
                 '_ExperimentalConstraint__multiframePrior'        :'_ExperimentalConstraint__multiframePrior',
                 '_ExperimentalConstraint__multiframeWeight'       :'_ExperimentalConstraint__multiframeWeight',
+                '_ExperimentalConstraint__limits'                 :'_ExperimentalConstraint__limits',
+                '_ExperimentalConstraint__limitsIndexStart'       :'_ExperimentalConstraint__limitsIndexStart',
+                '_ExperimentalConstraint__limitsIndexEnd'         :'_ExperimentalConstraint__limitsIndexEnd',
+                '_Constraint__used'                               :'_Constraint__used',
                 '_Constraint__data'                               :'_Constraint__data',
+                '_Constraint__state'                              :'_Constraint__state',
                 '_Constraint__standardError'                      :'_Constraint__standardError',
                 '_fittedScaleFactor'                              :'_fittedScaleFactor',
                 '_usedDataWeights'                                :'_usedDataWeights',
+                '_Engine__state'                                  :'_Engine__state',
+                '_Engine__boxCoordinates'                         :'_Engine__boxCoordinates',
+                '_Engine__basisVectors'                           :'_Engine__basisVectors',
+                '_Engine__isPBC'                                  :'_Engine__isPBC',
+                '_Engine__moleculesIndex'                         :'_Engine__moleculesIndex',
+                '_Engine__elementsIndex'                          :'_Engine__elementsIndex',
                 '_Engine__numberOfAtomsPerElement'                :'_Engine__numberOfAtomsPerElement',
                 '_Engine__elements'                               :'_Engine__elements',
                 '_Engine__numberDensity'                          :'_Engine__numberDensity',
                 '_Engine__volume'                                 :'_Engine__volume',
                 '_Engine__realCoordinates'                        :'_Engine__realCoordinates',
+                '_atomsCollector'                                 :'_atomsCollector',
                 ('engine','_atomsCollector')                      :'_atomsCollector',
                }
+
+    def plot(self, xlabelParams={'xlabel':'$Q(\\AA^{-1})$', 'size':10},
+                   ylabelParams={'ylabel':'$S(Q)$', 'size':10},
+                   **kwargs):
+        """
+        Alias to ExperimentalConstraint.plot with additional parameters
+
+        :Additional/Adjusted Parameters:
+            #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+               parameters.
+        """
+        return super(StructureFactorConstraint, self).plot(xlabelParams= xlabelParams,
+                                                           ylabelParams= ylabelParams,
+                                                           **kwargs)
 
 
 
@@ -1160,3 +1268,19 @@ class ReducedStructureFactorConstraint(StructureFactorConstraint):
             if not self.engine.accepted%self.adjustScaleFactorFrequency:
                 SF = self.fit_scale_factor(experimentalData, modelData, dataWeights)
         return SF
+
+    def plot(self, xlabelParams={'xlabel':'$Q(\\AA^{-1})$', 'size':10},
+                   ylabelParams={'ylabel':'$S(Q)-1$', 'size':10},
+                   **kwargs):
+        """
+        Alias to ExperimentalConstraint.plot with additional parameters
+
+        :Additional/Adjusted Parameters:
+            #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+               parameters.
+        """
+        return super(StructureFactorConstraint, self).plot(xlabelParams= xlabelParams,
+                                                           ylabelParams= ylabelParams,
+                                                           **kwargs)

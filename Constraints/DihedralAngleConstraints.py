@@ -7,6 +7,7 @@ improper angles between bonded atoms.
 """
 # standard libraries imports
 from __future__ import print_function
+import copy, re
 
 # external libraries imports
 import numpy as np
@@ -90,25 +91,68 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # set atomsCollector data keys
         self._atomsCollector.set_data_keys( ['dihedralMap','otherMap'] )
         # init angles data
-        self.__anglesList = [[],[],[],[],[],[],[],[],[],[]]
-        self.__angles     = {}
+        self.__anglesDefinition = None
+        self.__anglesList       = [[],[],[],[],[],[],[],[],[],[]]
+        self.__angles           = {}
         # set computation cost
         self.set_computation_cost(3.0)
         # create dump flag
         self.__dumpAngles = True
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
-        FRAME_DATA.extend(['_DihedralAngleConstraint__anglesList',
+        FRAME_DATA.extend(['_DihedralAngleConstraint__anglesDefinition',
+                           '_DihedralAngleConstraint__anglesList',
                            '_DihedralAngleConstraint__angles',] )
         RUNTIME_DATA = [d for d in self.RUNTIME_DATA]
         RUNTIME_DATA.extend( [] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA) )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
 
+    def _codify_update__(self, name='constraint', addDependencies=True):
+        dependencies = []
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        code.append("{name}.set_used({val})".format(name=name, val=self.used))
+        code.append("{name}.set_reject_probability({val})".format(name=name, val=self.rejectProbability))
+        if self.anglesDefinition is not None:
+            code.append("{name}.create_angles_by_definition({val})".format(name=name, val=self.anglesDefinition))
+        else:
+            angles = self.anglesList
+            code.append("angles = {val}".format(val=angles))
+            code.append("{name}.set_angles(angles)".format(name=name, val=angles))
+        # return
+        return dependencies, '\n'.join(code)
+
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Constraints import DihedralAngleConstraints'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = DihedralAngleConstraints.DihedralAngleConstraint\
+(rejectProbability={rejectProbability})".format(name=name, rejectProbability=self.rejectProbability))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        if self.__anglesDefinition is not None:
+            code.append("{name}.create_angles_by_definition({angles})".
+            format(name=name, angles=self.__anglesDefinition))
+        elif len(self.__anglesList[0]):
+            code.append("{name}.set_angles({angles})".
+            format(name=name, angles=self.__anglesList))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def anglesList(self):
         """ Improper angles list."""
         return self.__anglesList
+
+    @property
+    def anglesDefinition(self):
+        """angles definition copy if dihedral angles are defined as such"""
+        return copy.deepcopy(self.__anglesDefinition)
 
     @property
     def angles(self):
@@ -127,11 +171,16 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine set","update boundary conditions",):
-            self.set_angles(anglesList=self.__anglesList, tform=False)
-            # reset constraint is called in set_angles
+        if message in ("engine set","update pdb","update molecules indexes","update elements indexes","update names indexes"):
+            if self.__anglesDefinition is not None:
+                self.create_angles_by_definition(self.__anglesDefinition)
+            else:
+                self.set_angles(anglesList=self.__anglesList, tform=False)
+        elif message in ("update boundary conditions",):
+            # reset constraint
+            self.reset_constraint()
 
-    #@raise_if_collected
+
     def set_angles(self, anglesList, tform=True):
         """
         Sets the angles dictionary by parsing the anglesList list.
@@ -210,248 +259,161 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         e.g. ('C1','C2','C3','C4', 40,80, 100,140, 40,80), in the herein definition the
         last shell is a repetition of the first which means only two shells are defined.
         """
-        # check if bondsList is given
-        if anglesList is None:
-            anglesList = [[],[],[],[],[],[],[],[],[],[]]
-            tform      = False
-        elif len(anglesList) == 10 and len(anglesList[0]) == 0:
-            tform     = False
-        if self.engine is None:
-            self.__anglesList = anglesList
-            self.__angles     = {}
-        else:
-            NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-            oldAnglesList = self.__anglesList
-            oldAngles     = self.__angles
-            self.__anglesList = [np.array([], dtype=INT_TYPE),
-                                 np.array([], dtype=INT_TYPE),
-                                 np.array([], dtype=INT_TYPE),
-                                 np.array([], dtype=INT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE),
-                                 np.array([], dtype=FLOAT_TYPE)]
-            self.__angles     = {}
-            self.__dumpAngles = False
-            # build angles
-            try:
-                if tform:
-                    for angle in anglesList:
-                        self.add_angle(angle)
-                else:
-                    for idx in xrange(len(anglesList[0])):
-                        angle = [anglesList[0][idx], anglesList[1][idx],
-                                 anglesList[2][idx], anglesList[3][idx],
-                                 anglesList[4][idx], anglesList[5][idx],
-                                 anglesList[6][idx], anglesList[7][idx],
-                                 anglesList[8][idx], anglesList[9][idx]]
-                        self.add_angle(angle)
-            except Exception as e:
-                self.__dumpAngles = True
-                self.__anglesList = oldAnglesList
-                self.__angles     = oldAngles
-                LOGGER.error(e)
-                import traceback
-                raise Exception(traceback.format_exc())
-            self.__dumpAngles = True
-            # finalize angles
-            for idx in xrange(NUMBER_OF_ATOMS):
-                self.__angles[INT_TYPE(idx)] = self.__angles.get(INT_TYPE(idx), {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}  )
-        # dump to repository
-        self._dump_to_repository({'_DihedralAngleConstraint__anglesList' :self.__anglesList,
-                                  '_DihedralAngleConstraint__angles'     :self.__angles})
-        # reset constraint
-        self.reset_constraint()
-
-    #@raise_if_collected
-    def add_angle(self, angle):
-        """
-        Add a single angle to the list of constraint angles. All angles are in degrees.
-
-        :Parameters:
-            #. angle (list): The angle list of ten items.\n
-               #. First atom index of the first plane.
-               #. Second atom index of the first plane and first
-                  atom index of the second plane.
-               #. Third atom index of the first plane and second
-                  atom index of the second plane.
-               #. Fourth atom index of the second plane.
-               #. Minimum lower limit of the first shell or minimum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-               #. Maximum upper limit of the first shell or maximum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-               #. Minimum lower limit of the second shell or minimum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-               #. Maximum upper limit of the second shell or maximum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-               #. Minimum lower limit of the third shell or minimum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-               #. Maximum upper limit of the third shell or maximum
-                  angle allowed in degrees which later will be
-                  converted to rad.
-        """
-        assert self.engine is not None, LOGGER.error("setting an angle is not allowed unless engine is defined.")
-        NUMBER_OF_ATOMS   = self.engine.get_original_data("numberOfAtoms")
-        assert isinstance(angle, (list, set, tuple)), LOGGER.error("anglesList items must be lists")
-        assert len(angle)==10, LOGGER.error("anglesList items must be lists of 10 items each")
-        idx1, idx2, idx3, idx4, lower1, upper1, lower2, upper2, lower3, upper3 = angle
-        assert is_integer(idx1), LOGGER.error("angle first item must be an integer")
-        idx1 = INT_TYPE(idx1)
-        assert is_integer(idx2), LOGGER.error("angle second item must be an integer")
-        idx2 = INT_TYPE(idx2)
-        assert is_integer(idx3), LOGGER.error("angle third item must be an integer")
-        idx3 = INT_TYPE(idx3)
-        assert is_integer(idx4), LOGGER.error("angle fourth item must be an integer")
-        idx4 = INT_TYPE(idx4)
-        assert idx1>=0, LOGGER.error("angle first item must be positive")
-        assert idx1<NUMBER_OF_ATOMS, LOGGER.error("angle first item atom index must be smaller than maximum number of atoms")
-        assert idx2>=0, LOGGER.error("angle second item must be positive")
-        assert idx2<NUMBER_OF_ATOMS, LOGGER.error("angle second item atom index must be smaller than maximum number of atoms")
-        assert idx3>=0, LOGGER.error("angle third item must be positive")
-        assert idx3<NUMBER_OF_ATOMS, LOGGER.error("angle third item atom index must be smaller than maximum number of atoms")
-        assert idx4>=0, LOGGER.error("angle fourth item must be positive")
-        assert idx4<NUMBER_OF_ATOMS, LOGGER.error("angle atom index must be smaller than maximum number of atoms")
-        assert idx1!=idx2, LOGGER.error("angle second items can't be the same")
-        assert idx1!=idx3, LOGGER.error("angle third items can't be the same")
-        assert idx1!=idx4, LOGGER.error("angle fourth items can't be the same")
-        assert idx2!=idx3, LOGGER.error("angle second and third items can't be the same")
-        assert idx2!=idx4, LOGGER.error("angle second and fourth items can't be the same")
-        assert idx3!=idx4, LOGGER.error("angle third and fourth items can't be the same")
-        assert is_number(lower1), LOGGER.error("angle fifth item must be a number")
-        lower1 = FLOAT_TYPE(lower1)
-        assert is_number(upper1), LOGGER.error("angle sixth item must be a number")
-        upper1 = FLOAT_TYPE(upper1)
-        assert lower1>=0, LOGGER.error("angle fifth item must be bigger or equal to 0 deg.")
-        assert lower1<=360, LOGGER.error("angle fifth item must be smaller or equal to 360 deg.")
-        assert upper1>=0, LOGGER.error("angle sixth item must be bigger or equal to 0 deg.")
-        assert upper1<=360, LOGGER.error("angle sixth item must be smaller or equal to 360 deg.")
-        #lower1 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        #upper1 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        assert is_number(lower2), LOGGER.error("angle seventh item must be a number")
-        lower2 = FLOAT_TYPE(lower2)
-        assert is_number(upper2), LOGGER.error("angle eights item must be a number")
-        upper2 = FLOAT_TYPE(upper2)
-        assert lower2>=0, LOGGER.error("angle seventh item must be bigger or equal to 0 deg.")
-        assert lower2<=360, LOGGER.error("angle seventh item must be smaller or equal to 360 deg.")
-        assert upper2>=0, LOGGER.error("angle eightth item must be bigger or equal to 0 deg.")
-        assert upper2<=360, LOGGER.error("angle eightth item must be smaller or equal to 360 deg.")
-        #lower2 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        #upper2 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        assert is_number(lower3), LOGGER.error("angle nineth item must be a number")
-        lower3 = FLOAT_TYPE(lower3)
-        assert is_number(upper3), LOGGER.error("angle tenth item must be a number")
-        upper3 = FLOAT_TYPE(upper3)
-        assert lower3>=0, LOGGER.error("angle nineth item must be bigger or equal to 0 deg.")
-        assert lower3<=360, LOGGER.error("angle nineth item must be smaller or equal to 360 deg.")
-        assert upper3>=0, LOGGER.error("angle tenth item must be bigger or equal to 0 deg.")
-        assert upper3<=360, LOGGER.error("angle tenth item must be smaller or equal to 360 deg.")
-        #lower3 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        #upper3 *= FLOAT_TYPE( PI/FLOAT_TYPE(180.) )
-        # create dihedral angles1
-        if not idx1 in self.__angles:
-            angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
-        else:
-            angles1 = {"idx2"        :self.__angles[idx1]["idx2"],
-                       "idx3"        :self.__angles[idx1]["idx3"],
-                       "idx4"        :self.__angles[idx1]["idx4"],
-                       "dihedralMap" :self.__angles[idx1]["dihedralMap"],
-                       "otherMap"    :self.__angles[idx1]["otherMap"] }
-        # create dihedral angle2
-        if not idx2 in self.__angles:
-            angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
-        else:
-            angles2 = {"idx2"        :self.__angles[idx2]["idx2"],
-                       "idx3"        :self.__angles[idx2]["idx3"],
-                       "idx4"        :self.__angles[idx2]["idx4"],
-                       "dihedralMap" :self.__angles[idx2]["dihedralMap"],
-                       "otherMap"    :self.__angles[idx2]["otherMap"] }
-        # create dihedral angle3
-        if not idx3 in self.__angles:
-            angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
-        else:
-            angles3 = {"idx2"        :self.__angles[idx3]["idx2"],
-                       "idx3"        :self.__angles[idx3]["idx3"],
-                       "idx4"        :self.__angles[idx3]["idx4"],
-                       "dihedralMap" :self.__angles[idx3]["dihedralMap"],
-                       "otherMap"    :self.__angles[idx3]["otherMap"] }
-        # create dihedral angle4
-        if not idx4 in self.__angles:
-            angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
-        else:
-            angles4 = {"idx2"        :self.__angles[idx4]["idx2"],
-                       "idx3"        :self.__angles[idx4]["idx3"],
-                       "idx4"        :self.__angles[idx4]["idx4"],
-                       "dihedralMap" :self.__angles[idx4]["dihedralMap"],
-                       "otherMap"    :self.__angles[idx4]["otherMap"] }
-        # check for re-defining
-        setPos = idx2Pos = idx3Pos = idx4Pos = None
-        if idx2 in angles1["idx2"] and idx3 in angles1["idx3"] and idx4 in angles1["idx4"]:
-            idx2Pos = angles1["idx2"].index(idx2)
-            idx3Pos = angles1["idx3"].index(idx3)
-            idx4Pos = angles1["idx4"].index(idx4)
-        elif idx2 in angles1["idx2"] and idx4 in angles1["idx3"] and idx3 in angles1["idx4"]:
-            idx2Pos = angles1["idx2"].index(idx2)
-            idx3Pos = angles1["idx4"].index(idx3)
-            idx4Pos = angles1["idx3"].index(idx4)
-        elif idx3 in angles1["idx2"] and idx2 in angles1["idx3"] and idx4 in angles1["idx4"]:
-            idx2Pos = angles1["idx3"].index(idx2)
-            idx3Pos = angles1["idx2"].index(idx3)
-            idx4Pos = angles1["idx4"].index(idx4)
-        elif idx4 in angles1["idx2"] and idx3 in angles1["idx3"] and idx2 in angles1["idx4"]:
-            idx2Pos = angles1["idx4"].index(idx2)
-            idx3Pos = angles1["idx3"].index(idx3)
-            idx4Pos = angles1["idx2"].index(idx4)
-        if idx2Pos is not None and (idx2Pos==idx3Pos) and (idx2Pos==idx4Pos):
-            LOGGER.warn("Dihedral angle definition for atom1 index '%i' and atom2 '%i' and atom3 '%i' and atom4 '%i' is  already defined. New shells' limits [(%.3f,%.3f),(%.3f,%.3f),(%.3f,%.3f)] are set."%(idx1, idx2, idx3, idx4, lower1, upper1, lower2, upper2, lower3, upper3))
-            setPos = angles1["dihedralMap"][idx2Pos]
-        # set angle
-        if setPos is None:
+        assert self.engine is not None, LOGGER.error("setting angles is not allowed unless engine is defined.")
+        assert isinstance(anglesList, (list,set,tuple)), "anglesList must be a list"
+        # convert to list of tuples
+        if not tform:
+            assert len(anglesList) == 10, LOGGER.error("non tuple form anglesList must be a list of 10 items")
+            assert all([isinstance(i, (list,tuple,np.ndarray)) for i in anglesList]), LOGGER.error("non tuple form anglesList must be a list of list or tuple or numpy.ndarray")
+            assert all([len(i)==len(anglesList[0]) for i in anglesList]), LOGGER.error("anglesList items list length mismatch")
+            anglesList = zip(*anglesList)
+        # get number of atoms
+        NUMBER_OF_ATOMS = self.engine.get_original_data("numberOfAtoms")
+        # loop angles
+        anglesL = [[],[],[],[],[],[],[],[],[],[]]
+        angles  = {}
+        tempA   = {}
+        for a in anglesList:
+            assert isinstance(a, (list, set, tuple)), LOGGER.error("anglesList items must be lists")
+            assert len(a)==10, LOGGER.error("anglesList items must be lists of 10 items each")
+            idx1, idx2, idx3, idx4, lower1, upper1, lower2, upper2, lower3, upper3 = a
+            assert is_integer(idx1), LOGGER.error("angle first item must be an integer")
+            idx1 = INT_TYPE(idx1)
+            assert is_integer(idx2), LOGGER.error("angle second item must be an integer")
+            idx2 = INT_TYPE(idx2)
+            assert is_integer(idx3), LOGGER.error("angle third item must be an integer")
+            idx3 = INT_TYPE(idx3)
+            assert is_integer(idx4), LOGGER.error("angle fourth item must be an integer")
+            idx4 = INT_TYPE(idx4)
+            assert idx1>=0, LOGGER.error("angle first item must be positive")
+            assert idx1<NUMBER_OF_ATOMS, LOGGER.error("angle first item atom index must be smaller than maximum number of atoms")
+            assert idx2>=0, LOGGER.error("angle second item must be positive")
+            assert idx2<NUMBER_OF_ATOMS, LOGGER.error("angle second item atom index must be smaller than maximum number of atoms")
+            assert idx3>=0, LOGGER.error("angle third item must be positive")
+            assert idx3<NUMBER_OF_ATOMS, LOGGER.error("angle third item atom index must be smaller than maximum number of atoms")
+            assert idx4>=0, LOGGER.error("angle fourth item must be positive")
+            assert idx4<NUMBER_OF_ATOMS, LOGGER.error("angle atom index must be smaller than maximum number of atoms")
+            assert idx1!=idx2, LOGGER.error("angle second items can't be the same")
+            assert idx1!=idx3, LOGGER.error("angle third items can't be the same")
+            assert idx1!=idx4, LOGGER.error("angle fourth items can't be the same")
+            assert idx2!=idx3, LOGGER.error("angle second and third items can't be the same")
+            assert idx2!=idx4, LOGGER.error("angle second and fourth items can't be the same")
+            assert idx3!=idx4, LOGGER.error("angle third and fourth items can't be the same")
+            assert is_number(lower1), LOGGER.error("angle fifth item must be a number")
+            lower1 = FLOAT_TYPE(lower1)
+            assert is_number(upper1), LOGGER.error("angle sixth item must be a number")
+            upper1 = FLOAT_TYPE(upper1)
+            assert lower1>=0, LOGGER.error("angle fifth item must be bigger or equal to 0 deg.")
+            assert lower1<=360, LOGGER.error("angle fifth item must be smaller or equal to 360 deg.")
+            assert upper1>=0, LOGGER.error("angle sixth item must be bigger or equal to 0 deg.")
+            assert upper1<=360, LOGGER.error("angle sixth item must be smaller or equal to 360 deg.")
+            assert is_number(lower2), LOGGER.error("angle seventh item must be a number")
+            lower2 = FLOAT_TYPE(lower2)
+            assert is_number(upper2), LOGGER.error("angle eights item must be a number")
+            upper2 = FLOAT_TYPE(upper2)
+            assert lower2>=0, LOGGER.error("angle seventh item must be bigger or equal to 0 deg.")
+            assert lower2<=360, LOGGER.error("angle seventh item must be smaller or equal to 360 deg.")
+            assert upper2>=0, LOGGER.error("angle eightth item must be bigger or equal to 0 deg.")
+            assert upper2<=360, LOGGER.error("angle eightth item must be smaller or equal to 360 deg.")
+            assert is_number(lower3), LOGGER.error("angle nineth item must be a number")
+            lower3 = FLOAT_TYPE(lower3)
+            assert is_number(upper3), LOGGER.error("angle tenth item must be a number")
+            upper3 = FLOAT_TYPE(upper3)
+            assert lower3>=0, LOGGER.error("angle nineth item must be bigger or equal to 0 deg.")
+            assert lower3<=360, LOGGER.error("angle nineth item must be smaller or equal to 360 deg.")
+            assert upper3>=0, LOGGER.error("angle tenth item must be bigger or equal to 0 deg.")
+            assert upper3<=360, LOGGER.error("angle tenth item must be smaller or equal to 360 deg.")
+            # check for redundancy
+            plane0  = [idx1, idx2, idx3]
+            plane1  = [idx2, idx3, idx4]
+            splane0 = tuple(sorted(plane0))
+            splane1 = tuple(sorted(plane1))
+            assert (splane0,splane1) not in tempA, LOGGER.error("Redundant definition for dihedral angle definition between planes %s and %s"%(plane0,plane1))
+            assert (splane1,splane0) not in tempA, LOGGER.error("Redundant definition for dihedral angle definition between planes %s and %s"%(plane0,plane1))
+            tempA[(splane0,splane1)] = True
+            tempA[(splane1,splane0)] = True
+            # create dihedral angles1
+            if not idx1 in self.__angles:
+                angles1 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
+            else:
+                angles1 = {"idx2"        :self.__angles[idx1]["idx2"],
+                           "idx3"        :self.__angles[idx1]["idx3"],
+                           "idx4"        :self.__angles[idx1]["idx4"],
+                           "dihedralMap" :self.__angles[idx1]["dihedralMap"],
+                           "otherMap"    :self.__angles[idx1]["otherMap"] }
+            # create dihedral angle2
+            if not idx2 in self.__angles:
+                angles2 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
+            else:
+                angles2 = {"idx2"        :self.__angles[idx2]["idx2"],
+                           "idx3"        :self.__angles[idx2]["idx3"],
+                           "idx4"        :self.__angles[idx2]["idx4"],
+                           "dihedralMap" :self.__angles[idx2]["dihedralMap"],
+                           "otherMap"    :self.__angles[idx2]["otherMap"] }
+            # create dihedral angle3
+            if not idx3 in self.__angles:
+                angles3 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
+            else:
+                angles3 = {"idx2"        :self.__angles[idx3]["idx2"],
+                           "idx3"        :self.__angles[idx3]["idx3"],
+                           "idx4"        :self.__angles[idx3]["idx4"],
+                           "dihedralMap" :self.__angles[idx3]["dihedralMap"],
+                           "otherMap"    :self.__angles[idx3]["otherMap"] }
+            # create dihedral angle4
+            if not idx4 in self.__angles:
+                angles4 = {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}
+            else:
+                angles4 = {"idx2"        :self.__angles[idx4]["idx2"],
+                           "idx3"        :self.__angles[idx4]["idx3"],
+                           "idx4"        :self.__angles[idx4]["idx4"],
+                           "dihedralMap" :self.__angles[idx4]["dihedralMap"],
+                           "otherMap"    :self.__angles[idx4]["otherMap"] }
+            # set dihedral angle
             angles1["idx2"].append(idx2)
             angles1["idx3"].append(idx3)
             angles1["idx4"].append(idx4)
-            angles1["dihedralMap"].append( len(self.__anglesList[0]) )
-            angles2["otherMap"].append( len(self.__anglesList[0]) )
-            angles3["otherMap"].append( len(self.__anglesList[0]) )
-            angles4["otherMap"].append( len(self.__anglesList[0]) )
-            self.__anglesList[0] = np.append(self.__anglesList[0],idx1)
-            self.__anglesList[1] = np.append(self.__anglesList[1],idx2)
-            self.__anglesList[2] = np.append(self.__anglesList[2],idx3)
-            self.__anglesList[3] = np.append(self.__anglesList[3],idx4)
-            self.__anglesList[4] = np.append(self.__anglesList[4],lower1)
-            self.__anglesList[5] = np.append(self.__anglesList[5],upper1)
-            self.__anglesList[6] = np.append(self.__anglesList[6],lower2)
-            self.__anglesList[7] = np.append(self.__anglesList[7],upper2)
-            self.__anglesList[8] = np.append(self.__anglesList[8],lower3)
-            self.__anglesList[9] = np.append(self.__anglesList[9],upper3)
-        else:
-            assert self.__anglesList[0][setPos] == idx1, LOGGER.error("mismatched dihedral angle atom '%s' and '%s'"%(self.__anglesList[0][setPos],idx1))
-            assert sorted([idx2, idx3, idx4]) == sorted([self.__anglesList[1][idx2],self.__anglesList[2][idx3],self.__anglesList[3][idx4]]), LOGGER.error("mismatched dihedral angle atom2, atom3, atom4 at atom1 '%s'"%(idx1))
-            self.__anglesList[1][setPos] = idx2
-            self.__anglesList[2][setPos] = idx3
-            self.__anglesList[3][setPos] = idx4
-            self.__anglesList[4][setPos] = lower1
-            self.__anglesList[5][setPos] = upper1
-            self.__anglesList[6][setPos] = lower2
-            self.__anglesList[7][setPos] = upper2
-            self.__anglesList[8][setPos] = lower3
-            self.__anglesList[9][setPos] = upper3
-        self.__angles[idx1] = angles1
-        self.__angles[idx2] = angles2
-        self.__angles[idx3] = angles3
-        self.__angles[idx4] = angles4
+            angles1["dihedralMap"].append( len(anglesL[0]) )
+            angles2["otherMap"].append( len(anglesL[0]) )
+            angles3["otherMap"].append( len(anglesL[0]) )
+            angles4["otherMap"].append( len(anglesL[0]) )
+            anglesL[0].append(idx1)
+            anglesL[1].append(idx2)
+            anglesL[2].append(idx3)
+            anglesL[3].append(idx4)
+            anglesL[4].append(lower1)
+            anglesL[5].append(upper1)
+            anglesL[6].append(lower2)
+            anglesL[7].append(upper2)
+            anglesL[8].append(lower3)
+            anglesL[9].append(upper3)
+            angles[idx1] = angles1
+            angles[idx2] = angles2
+            angles[idx3] = angles3
+            angles[idx4] = angles4
+        # finalize angles
+        for idx in xrange(NUMBER_OF_ATOMS):
+            angles[INT_TYPE(idx)] = angles.get(INT_TYPE(idx), {"idx2":[],"idx3":[],"idx4":[],"dihedralMap":[],"otherMap":[]}  )
+        # set angles
+        self.__angles           = angles
+        self.__anglesList       = [np.array(anglesL[0], dtype=INT_TYPE),
+                                   np.array(anglesL[1], dtype=INT_TYPE),
+                                   np.array(anglesL[2], dtype=INT_TYPE),
+                                   np.array(anglesL[3], dtype=INT_TYPE),
+                                   np.array(anglesL[4], dtype=FLOAT_TYPE),
+                                   np.array(anglesL[5], dtype=FLOAT_TYPE),
+                                   np.array(anglesL[6], dtype=FLOAT_TYPE),
+                                   np.array(anglesL[7], dtype=FLOAT_TYPE),
+                                   np.array(anglesL[8], dtype=FLOAT_TYPE),
+                                   np.array(anglesL[9], dtype=FLOAT_TYPE),]
+        self.__anglesDefinition = None
         # dump to repository
         if self.__dumpAngles:
-            self._dump_to_repository({'_DihedralAngleConstraint__anglesList' :self.__anglesList,
-                                      '_DihedralAngleConstraint__angles'     :self.__angles})
+            self._dump_to_repository({'_DihedralAngleConstraint__anglesDefinition':self.__anglesDefinition,
+                                      '_DihedralAngleConstraint__anglesList'      :self.__anglesList,
+                                      '_DihedralAngleConstraint__angles'          :self.__angles})
             # reset constraint
             self.reset_constraint()
+
 
     #@raise_if_collected
     def create_angles_by_definition(self, anglesDefinition):
@@ -509,26 +471,39 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         for mol in anglesDefinition:
             angles = anglesDefinition[mol]
             if mol not in existingMoleculesName:
-                log.LocalLogger("fullrmc").logger.warn("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
+                LOGGER.usage("Molecule name '%s' in anglesDefinition is not recognized, angles definition for this particular molecule is omitted"%str(mol))
                 continue
             assert isinstance(angles, (list, set, tuple)), LOGGER.error("mapDefinition molecule angles must be a list")
             angles = list(angles)
             molAnglesList = []
+            tempA         = {}
             for angle in angles:
                 assert isinstance(angle, (list, set, tuple)), LOGGER.error("mapDefinition angles must be a list")
                 angle = list(angle)
-                assert len(angle)==10
+                assert len(angle)==10, LOGGER.error("angles definition must be of length 10")
                 at1, at2, at3, at4, lower1, upper1, lower2, upper2, lower3, upper3 = angle
                 # check for redundancy
-                append = True
-                for b in molAnglesList:
-                    if (b[0]==at1):
-                        if sorted([at2,at3,at4]) == sorted([b[1],b[2],b[3]]):
-                            LOGGER.warn("Redundant definition for anglesDefinition found. The later '%s' is ignored"%str(b))
-                            append = False
-                            break
-                if append:
-                    molAnglesList.append((at1, at2, at3, at4, lower1, upper1, lower2, upper2, lower3, upper3))
+                plane0  = [at1, at2, at3]
+                plane1  = [at2, at3, at4]
+                splane0 = tuple(sorted(plane0))
+                splane1 = tuple(sorted(plane1))
+                assert (splane0,splane1) not in tempA, LOGGER.error("Redundant definition for dihedral angle definition between planes %s and %s"%(plane0,plane1))
+                assert (splane1,splane0) not in tempA, LOGGER.error("Redundant definition for dihedral angle definition between planes %s and %s"%(plane0,plane1))
+                tempA[(splane0,splane1)] = True
+                tempA[(splane1,splane0)] = True
+                molAnglesList.append((at1, at2, at3, at4, lower1, upper1, lower2, upper2, lower3, upper3))
+                #for b in molAnglesList:
+                #    if sa == sorted([b[0],b[1],b[2],b[3]]):
+                #        LOGGER.warn("Redundant definition for anglesDefinition found. The later '%s' is ignored"%str(angle))
+                #        append = False
+                #        break
+                #    if (b[0]==at1): 2019-12-20
+                #        if sorted([at2,at3,at4]) == sorted([b[1],b[2],b[3]]):
+                #            LOGGER.warn("Redundant definition for anglesDefinition found. The later '%s' is ignored"%str(b))
+                #            append = False
+                #            break
+                #if append:
+                #    molAnglesList.append((at1, at2, at3, at4, lower1, upper1, lower2, upper2, lower3, upper3))
             # create bondDef for molecule mol
             anglesDef[mol] = molAnglesList
         # create mols dictionary
@@ -562,7 +537,20 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                 upper3 = angle[9]
                 anglesList.append( (idx1, idx2, idx3, idx4, lower1, upper1, lower2, upper2, lower3, upper3) )
         # create angles
-        self.set_angles(anglesList=anglesList)
+        self.__dumpAngles = False
+        try:
+            self.set_angles(anglesList=anglesList)
+        except Exception as err:
+            self.__dumpAngles = True
+            raise Exception(err)
+        else:
+            self.__dumpAngles = True
+            self.__anglesDefinition = anglesDefinition
+            self._dump_to_repository({'_DihedralAngleConstraint__anglesDefinition':self.__anglesDefinition,
+                                      '_DihedralAngleConstraint__anglesList'      :self.__anglesList,
+                                      '_DihedralAngleConstraint__angles'          :self.__angles})
+            # reset constraint
+            self.reset_constraint()
 
     def compute_standard_error(self, data):
         """
@@ -605,13 +593,27 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         return self.data
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data."""
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
         if len(self._atomsCollector):
             anglesData    = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
             reducedData   = np.zeros(self.__anglesList[0].shape[0], dtype=FLOAT_TYPE)
-            anglesIndexes = set(set(range(self.__anglesList[0].shape[0])))
-            anglesIndexes  = list( anglesIndexes-self._atomsCollector._randomData )
+            #anglesIndexes = set(set(range(self.__anglesList[0].shape[0])))
+            anglesIndexes = set(range(self.__anglesList[0].shape[0]))
+            anglesIndexes = list( anglesIndexes-self._atomsCollector._randomData )
 
             indexes1 = self._atomsCollector.get_relative_indexes(self.__anglesList[0][anglesIndexes])
             indexes2 = self._atomsCollector.get_relative_indexes(self.__anglesList[1][anglesIndexes])
@@ -657,15 +659,21 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             reducedData[anglesIndexes] = reduced
             angles  = anglesData
             reduced = reducedData
-        # set data.
-        self.set_data( {"angles":angles, "reducedAngles":reduced} )
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        self.set_standard_error( self.compute_standard_error(data = self.data) )
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        data     = {"angles":angles, "reducedAngles":reduced}
+        stdError = self.compute_standard_error(data = data)
+        # update
+        if update:
+            self.set_data( data )
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            # set standardError
+            self.set_standard_error( stdError )
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return data, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -759,6 +767,8 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             self.data["reducedAngles"][anglesIndexes] += reduced-self.activeAtomsDataBeforeMove["reducedAngles"]
             self.set_after_move_standard_error( self.compute_standard_error(data = self.data) )
             self.data["reducedAngles"][anglesIndexes] = RL
+        # increment tried
+        self.increment_tried()
 
     def accept_move(self, realIndexes, relativeIndexes):
         """
@@ -780,6 +790,8 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         # reset activeAtoms data
         self.set_active_atoms_data_before_move(None)
         self.set_active_atoms_data_after_move(None)
+        # increment accepted
+        self.increment_accepted()
 
     def reject_move(self, realIndexes, relativeIndexes):
         """
@@ -844,279 +856,33 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
                                                           'otherMap'   :self.__angles[realIndex]['otherMap']})
 
 
-    def plot(self, ax=None, nbins=20, subplots=True, split=None,
-                   wspace=0.3, hspace=0.3,
-                   histTtype='bar', lineWidth=None, lineColor=None,
-                   xlabel=True, xlabelSize=16,
-                   ylabel=True, ylabelSize=16,
-                   legend=True, legendCols=1, legendLoc='best',
-                   title=True, titleStdErr=True, titleAtRem=True,
-                   titleUsedFrame=True, show=True):
-        """
-        Plot dihedral angles constraint's distribution histogram.
-
-        :Parameters:
-            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given,  subplots parameters will be omitted.
-               If None is given a new plot figure will be created.
-            #. nbins (int): number of bins in histogram.
-            #. subplots (boolean): Whether to add plot constraint on multiple
-               axes.
-            #. split (None, 'name', 'element'): To split plots into histogram
-               per atom names, elements in addition to lower and upper bounds.
-               If None is given, histograms will be built from lower and upper
-               bounds only.
-            #. wspace (float): The amount of width reserved for blank space
-               between subplots, expressed as a fraction of the average axis
-               width.
-            #. hspace (float): The amount of height reserved for white space
-               between subplots, expressed as a fraction of the average axis
-               height.
-            #. histTtype (string): the histogram type. optional among
-               ['bar', 'barstacked', 'step', 'stepfilled']
-            #. lineWidth (None, integer): bars contour line width.
-               If None is given, then default value set automatically.
-            #. lineColor (None, integer): bars contour line color.
-               If None is given, then default value set automatically.
-            #. xlabel (boolean): Whether to create x label.
-            #. xlabelSize (number): The x label font size.
-            #. ylabel (boolean): Whether to create y label.
-            #. ylabelSize (number): The y label font size.
-            #. legend (boolean): Whether to create the legend or not
-            #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best',
-               'center', 'lower left', 'center right', 'upper left',
-               'upper center', 'lower center' is accepted.
-            #. title (boolean): Whether to create the title or not.
-            #. titleStdErr (boolean): Whether to show constraint standard
-               error value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of
-               removed atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in
-               title.
-            #. show (boolean): Whether to render and show figure before
-               returning.
-
-        :Returns:
-            #. figure (matplotlib Figure): matplotlib used figure.
-            #. axes (matplotlib Axes, List): matplotlib axes or a list of axes.
-        """
-        def _get_bins(dmin, dmax, boundaries, nbins):
-            # create bins
-            delta = float(dmax-dmin)/float(nbins-1)
-            bins  = range(nbins)
-            bins  = [b*delta for b in bins]
-            bins  = [b+dmin for b in bins]
-            # check boundaries
-            bidx = 0
-            for b in sorted(boundaries):
-                for i in range(bidx, len(bins)-1):
-                    bidx = i
-                    # exact match with boundary
-                    if b==bins[bidx]:
-                        break
-                    # boundary between two bins, move closest bin to boundary
-                    if bins[bidx] < b < bins[bidx+1]:
-                        if b-bins[bidx] > bins[bidx+1]-b:
-                            bins[bidx+1] = b
-                        else:
-                            bins[bidx]   = b
-                        break
-            # return bins
-            return bins
-        # get constraint value
-        output = self.get_constraint_value()
-        if output is None:
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-       # compute categories
-        if split == 'name':
-            splitV = self.engine.get_original_data("allNames")
-        elif split == 'element':
-            splitV = self.engine.get_original_data("allElements")
-        else:
-            splitV = None
-        categories = {}
-        atom2  = self.__anglesList[0]
-        atom1  = self.__anglesList[1]
-        atom3  = self.__anglesList[2]
-        atom4  = self.__anglesList[3]
-        lower1 = self.__anglesList[4]
-        upper1 = self.__anglesList[5]
-        lower2 = self.__anglesList[6]
-        upper2 = self.__anglesList[7]
-        lower3 = self.__anglesList[8]
-        upper3 = self.__anglesList[9]
-        for idx in xrange(self.__anglesList[0].shape[0]):
-            if self._atomsCollector.is_collected(idx):
-                continue
-            if splitV is not None:
-                a1 = splitV[ atom1[idx] ]
-                a2 = splitV[ atom2[idx] ]
-                a3 = splitV[ atom3[idx] ]
-                a4 = splitV[ atom4[idx] ]
-            else:
-                a1 = a2 = a3 = a4 = ''
-            l1 = lower1[idx]
-            u1 = upper1[idx]
-            l2 = lower2[idx]
-            u2 = upper2[idx]
-            l3 = lower3[idx]
-            u3 = upper3[idx]
-            k = (a1,a2,a3,a4,l1,u1,l2,u2,l3,u3)
-            L = categories.get(k, [])
-            L.append(idx)
-            categories[k] = L
-        ncategories = len(categories)
+    def _plot(self,frameIndex, propertiesLUT,
+                   spacing,numberOfTicks,nbins,splitBy,
+                   ax, barsRelativeWidth,limitsParams,
+                   legendParams,titleParams,
+                   xticksParams, yticksParams,
+                   xlabelParams, ylabelParams,
+                   gridParams,stackHorizontal,
+                   colorCodeXticksLabels,*args, **kwargs):
+        # get needed data
+        frame                = propertiesLUT['frames-name'][frameIndex]
+        data                 = propertiesLUT['frames-data'][frameIndex]
+        standardError        = propertiesLUT['frames-standard_error'][frameIndex]
+        numberOfRemovedAtoms = propertiesLUT['frames-number_of_removed_atoms'][frameIndex]
         # import matplotlib
         import matplotlib.pyplot as plt
-        # get axes
-        if ax is None:
-            if subplots and ncategories>1:
-                x = np.ceil(np.sqrt(ncategories))
-                y = np.ceil(ncategories/x)
-                FIG, N_AXES = plt.subplots(int(x), int(y) )
-                N_AXES = FIG.flatten()
-                FIG.subplots_adjust(wspace=wspace, hspace=hspace)
-                [N_AXES[i].axis('off') for i in range(ncategories,len(N_AXES))]
-            else:
-                FIG  = plt.figure()
-                AXES = FIG.gca()
-                subplots = False
-        else:
-            AXES = ax
-            FIG = AXES.get_figure()
-            subplots = False
-        # start plotting
-        COLORS = ["b",'g','r','c','y','m']
-        if subplots:
-            for idx, key in enumerate(categories):
-                a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
-                LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
-                LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
-                label = "%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)
-                COL  = COLORS[idx%len(COLORS)]
-                AXES = N_AXES[idx]
-                idxs = categories[key]
-                data = self.data["angles"][idxs]
-                # get data limits
-                mn = np.min(data)
-                mx = np.max(data)
-                # get bins
-                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
-                # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS,
-                                    color=COL, label=label,
-                                    histtype=histTtype)
-                # vertical lines
-                Y = max(D)
-                for idx, (l,u) in enumerate(LU):
-                    AXES.plot([l,l],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                    AXES.plot([u,u],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                # legend
-                if legend:
-                    AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
-                # set axis labels
-                if xlabel:
-                    AXES.set_xlabel("$deg.$", size=xlabelSize)
-                if ylabel:
-                    AXES.set_ylabel("$number$"  , size=ylabelSize)
-                if lineWidth is not None:
-                    [p.set_linewidth(lineWidth) for p in P]
-                if lineColor is not None:
-                    [p.set_edgecolor(lineColor) for p in P]
-                # update limits
-                AXES.set_xmargin(0.1)
-                AXES.autoscale()
-        else:
-            for idx, key in enumerate(categories):
-                a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
-                LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
-                LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
-                label = "%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)
-                COL  = COLORS[idx%len(COLORS)]
-                idxs = categories[key]
-                data = self.data["angles"][idxs]
-                # get data limits
-                mn = np.min(data)
-                mx = np.max(data)
-                # get bins
-                BINS = _get_bins(dmin=mn, dmax=mx, boundaries=[L1,U1,L2,U2,L3,U3], nbins=nbins)
-                # plot histogram
-                D, _, P = AXES.hist(x=data, bins=BINS,
-                                    color=COL, label=label,
-                                    histtype=histTtype)
-                # vertical lines
-                Y = max(D)
-                for idx, (l,u) in enumerate(LU):
-                    AXES.plot([l,l],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                    AXES.plot([u,u],[0,Y+0.1*Y], linewidth=1.0, color='k', linestyle=['--','-.',':'][idx])
-                if lineWidth is not None:
-                    [p.set_linewidth(lineWidth) for p in P]
-                if lineColor is not None:
-                    [p.set_edgecolor(lineColor) for p in P]
-            # update limits
-            AXES.set_xmargin(0.1)
-            AXES.autoscale()
-            # legend
-            if legend:
-                AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
-            # set axis labels
-            if xlabel:
-                AXES.set_xlabel("$deg.$", size=xlabelSize)
-            if ylabel:
-                AXES.set_ylabel("$number$"  , size=ylabelSize)
-        # set title
-        if title:
-            FIG.canvas.set_window_title('Dihedral Angle Constraint')
-            if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
-            else:
-                t = ''
-            if titleAtRem:
-                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
-            if titleStdErr and self.standardError is not None:
-                t += "$std$ $error=%.6f$ "%(self.standardError)
-            if len(t):
-                FIG.suptitle(t, fontsize=14)
-
-        # set background color
-        FIG.patch.set_facecolor('white')
-        #show
-        if show:
-            plt.show()
-        # return axes
-        if subplots:
-            return FIG, N_AXES
-        else:
-            return FIG, AXES
-
-    def export(self, fname, delimiter='     ', comments='# ', split=None):
-        """
-        Export dihedral angles constraint's distribution histogram.
-
-        :Parameters:
-            #. fname (path): full file name and path.
-            #. delimiter (string): String or character separating columns.
-            #. comments (string): String that will be prepended to the header.
-            #. split (None, 'name', 'element'): To split output into per atom
-               names, elements in addition to lower and upper bounds.
-               If None is given, output will be built from lower and upper
-               bounds only.
-        """
-        # get constraint value
-        output = self.get_constraint_value()
-        if output is None:
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
         # compute categories
-        if split == 'name':
-            splitV = self.engine.get_original_data("allNames")
-        elif split == 'element':
-            splitV = self.engine.get_original_data("allElements")
+        if splitBy == 'name':
+            splitBy = self.engine.get_original_data("allNames", frame=frame)
+        elif splitBy == 'element':
+            splitBy = self.engine.get_original_data("allElements", frame=frame)
         else:
-            splitV = None
+            splitBy = None
+        # check for angles
+        if not len(self.__anglesList[0]):
+            LOGGER.warn("@{frm} no angles found. It's even not defined or no atoms where found in definition.".format(frm=frame))
+            return
+        # build categories
         categories = {}
         atom2  = self.__anglesList[0]
         atom1  = self.__anglesList[1]
@@ -1129,13 +895,21 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
         lower3 = self.__anglesList[8]
         upper3 = self.__anglesList[9]
         for idx in xrange(self.__anglesList[0].shape[0]):
-            if self._atomsCollector.is_collected(idx):
+            #if self._atomsCollector.is_collected(idx):
+            #    continue
+            if self._atomsCollector.is_collected(atom1[idx]):
                 continue
-            if splitV is not None:
-                a1 = splitV[ atom1[idx] ]
-                a2 = splitV[ atom2[idx] ]
-                a3 = splitV[ atom3[idx] ]
-                a4 = splitV[ atom4[idx] ]
+            if self._atomsCollector.is_collected(atom2[idx]):
+                continue
+            if self._atomsCollector.is_collected(atom3[idx]):
+                continue
+            if self._atomsCollector.is_collected(atom4[idx]):
+                continue
+            if splitBy is not None:
+                a1 = splitBy[ atom1[idx] ]
+                a2 = splitBy[ atom2[idx] ]
+                a3 = splitBy[ atom3[idx] ]
+                a4 = splitBy[ atom4[idx] ]
             else:
                 a1 = a2 = a3 = a4 = ''
             l1 = lower1[idx]
@@ -1149,32 +923,247 @@ class DihedralAngleConstraint(RigidConstraint, SingularConstraint):
             L.append(idx)
             categories[k] = L
         ncategories = len(categories)
-        # create data
-        for idx, key in enumerate(categories):
-            idxs = categories[key]
-            data = self.data["angles"][idxs]
-            categories[key] = [str(d) for d in data]
-        # adjust data size
-        maxSize = max( [len(v) for v in categories.values()] )
-        for key in categories:
-            data = categories[key]
-            add  = maxSize-len(data)
-            if add > 0:
-                categories[key] = data + ['']*add
-        # start creating header and data
-        sortCa = sorted( categories )
-        header = []
-        for key in sortCa:
+        # start plotting
+        COLORS  = ["b",'g','r','c','y','m']
+        catKeys = sorted(categories, key=lambda x:x[2])
+        shifts  = [0]
+        xticks   = []
+        xticksL  = []
+        yticks   = []
+        yticksL  = []
+        ticksCol = []
+        for idx, key in enumerate(catKeys):
             a1,a2,a3,a4, L1,U1, L2,U2, L3,U3  = key
             LU = sorted(set( [(L1,U1),(L2,U2),(L3,U3)] ))
             LA = " ".join( ["(%.2f,%.2f)"%(l,u)  for l,u in LU] )
-            header.append( ("%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)).replace(' ','') )
-        data   = [categories[key] for key in sortCa]
+            L  = min(L1,L2,L3,U1,U2,U3)
+            U  = max(L1,L2,L3,U1,U2,U3)
+            label = "%s%s%s%s%s%s%s%s"%(a1,'-'*(len(a1)>0),a2,'-'*(len(a1)>0),a3,'-'*(len(a1)>0),a4,LA)
+            col   = COLORS[idx%len(COLORS)]
+            idxs  = categories[key]
+            catd  = data["angles"][idxs]
+            dmin  = np.min(catd)
+            dmax  = np.max(catd)
+            # append xticks labels
+            dmint1 = dmaxt1 = []
+            dmint2 = dmaxt2 = []
+            dmint3 = dmaxt3 = []
+            if dmin<L1:
+                dmint1 = [dmin]
+            if dmax>U1:
+                dmaxt1 = [dmax]
+            if dmin<L2:
+                dmint2 = [dmin]
+            if dmax>U2:
+                dmaxt2 = [dmax]
+            if dmin<L3:
+                dmint3 = [dmin]
+            if dmax>U3:
+                dmaxt3 = [dmax]
+            xticksL.extend( dmint1 + list(np.linspace(start=L1,stop=U1,num=numberOfTicks, endpoint=True)) + dmaxt1 )
+            xticksL.extend( dmint2 + list(np.linspace(start=L2,stop=U2,num=numberOfTicks, endpoint=True)) + dmaxt2 )
+            xticksL.extend( dmint3 + list(np.linspace(start=L3,stop=U3,num=numberOfTicks, endpoint=True)) + dmaxt3 )
+            # rescale histogram
+            resc = dsh = 0
+            if stackHorizontal:
+                resc   = min(L,np.min(catd)) - spacing # rescale to origin + spacing
+                catd  -= resc - shifts[-1] # shift to stack to the right of the last histogram
+                dmin   = np.min(catd)
+                dmax   = np.max(catd)
+                dmint = dmaxt = []
+                L1     -= resc - shifts[-1]
+                U1     -= resc - shifts[-1]
+                L2     -= resc - shifts[-1]
+                U2     -= resc - shifts[-1]
+                L3     -= resc - shifts[-1]
+                U3     -= resc - shifts[-1]
+                dsh    = shifts[-1]
+                LU     = [(L1,U1),(L2,U2),(L3,U3)]
+            # append xticks positions
+            if len(dmint1):
+                dmint1 = [dmin-resc+shifts[-1]]
+            if len(dmaxt1):
+                dmaxt1 = [dmax-resc+shifts[-1]]
+            if len(dmint2):
+                dmint2 = [dmin-resc+shifts[-1]]
+            if len(dmaxt2):
+                dmaxt2 = [dmax-resc+shifts[-1]]
+            if len(dmint3):
+                dmint3 = [dmin-resc+shifts[-1]]
+            if len(dmaxt3):
+                dmaxt3 = [dmax-resc+shifts[-1]]
+            xticks.extend( dmint1 + list(np.linspace(start=L1,stop=U1, num=numberOfTicks, endpoint=True)) + dmaxt1 )
+            xticks.extend( dmint2 + list(np.linspace(start=L2,stop=U2, num=numberOfTicks, endpoint=True)) + dmaxt2 )
+            xticks.extend( dmint3 + list(np.linspace(start=L3,stop=U3, num=numberOfTicks, endpoint=True)) + dmaxt3 )
+            # append shifts
+            # append shifts
+            if stackHorizontal:
+                shifts.append(max(dmax,U))
+                bottom = 0
+            else:
+                bottom = shifts[-1]
+            # get data limits
+            #bins = _get_bins(dmin=dmin, dmax=dmax, boundaries=[L,U], nbins=nbins)
+            bins  = list(np.linspace(start=min(dmin,L),stop=max(dmax,U),num=nbins, endpoint=True))
+            D, _, P = ax.hist(x=catd, bins=bins,rwidth=barsRelativeWidth,
+                              color=col, label=label,
+                              bottom=bottom, histtype='bar')
+            # vertical lines
+            lmp = copy.deepcopy(limitsParams)
+            linestyle = lmp.pop('linestyle',None)
+            if lmp.get('color',None) is None:
+                lmp['color'] = col
+            Y = max(D)
+            B = 0 if stackHorizontal else shifts[-1]
+            for idx, (l,u) in enumerate(LU):
+                ls = linestyle
+                if ls is None:
+                    ls = ['--','-.',':'][idx]
+                ax.plot([l,l],[B,B+Y+0.1*Y], linestyle=ls, **lmp)
+                ax.plot([u,u],[B,B+Y+0.1*Y], linestyle=ls, **lmp)
+            if not stackHorizontal:
+                shifts.append(shifts[-1]+Y+0.1*Y)
+                yticks.append(bottom+Y/2)
+                yticksL.append(Y/2)
+                yticks.append(B+Y)
+                yticksL.append(Y)
+            # adapt ticks color
+            ticksCol.extend([col]*(len(xticksL)-len(ticksCol)))
+        # update ticks
+        ax.set_xticks(xticks)
+        ax.set_xticklabels( ['%.2f'%t for t in xticksL], **xticksParams)
+        if stackHorizontal:
+            ax.set_yticklabels( ['%i'%t for t in ax.get_yticks()], **yticksParams)
+        else:
+            ax.set_yticks(yticks)
+            ax.set_yticklabels( ['%i'%t for t in yticksL], **yticksParams)
+        if colorCodeXticksLabels:
+            for ticklabel, tickcolor in zip(ax.get_xticklabels(), ticksCol):
+                ticklabel.set_color(tickcolor)
+        # plot legend
+        if legendParams is not None:
+            ax.legend(**legendParams)
+        # grid parameters
+        if gridParams is not None:
+            gp = copy.deepcopy(gridParams)
+            axis = gp.pop('axis', 'both')
+            if axis is None:
+                axis = 'x' if stackHorizontal else 'y'
+            ax.grid(axis=axis, **gp)
+        # set axis labels
+        ax.set_xlabel(**xlabelParams)
+        ax.set_ylabel(**ylabelParams)
+        # set title
+        if titleParams is not None:
+            title = copy.deepcopy(titleParams)
+            label = title.pop('label',"").format(frame=frame,standardError=standardError, numberOfRemovedAtoms=numberOfRemovedAtoms,used=self.used)
+            ax.set_title(label=label, **title)
+
+
+    def plot(self, spacing=2, numberOfTicks=3, nbins=20, barsRelativeWidth=0.95,
+                   splitBy=None, stackHorizontal=False, colorCodeXticksLabels=True,
+                   xlabelParams={'xlabel':'$deg.$', 'size':10},
+                   ylabelParams={'ylabel':'number', 'size':10},
+                   limitsParams={'linewidth':1.0, 'color':None, 'linestyle':None},
+                   **kwargs):
+
+         """
+         Alias to Constraint.plot with additional parameters
+
+         :Additional/Adjusted Parameters:
+             #. spacing (float): spacing between definitions histgrams
+             #. numberOfTicks (integer): number of ticks per definition histogram
+             #. nbins (integer): number of bins per definition histogram
+             #. barsRelativeWidth (float): histogram bar relative width >0 and <1
+             #. splitBy (None, string): Split definition histograms by atom
+                element, name or merely distance. accepts None, 'element', 'name'
+             #. stackHorizontal (boolean): whether to stack definition plots
+                horizontally or veritcally
+             #. colorCodeXticksLabels (boolean): whether to color code x ticks
+                per definition color
+             #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+                parameters.
+             #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+                parameters.
+             #. titleParams (None, dict): axes title parameters
+         """
+         return super(DihedralAngleConstraint, self).plot(spacing=spacing, nbins=nbins,
+                                                          numberOfTicks=numberOfTicks,
+                                                          splitBy=splitBy,
+                                                          stackHorizontal=stackHorizontal,
+                                                          colorCodeXticksLabels=colorCodeXticksLabels,
+                                                          barsRelativeWidth=barsRelativeWidth,
+                                                          limitsParams=limitsParams,
+                                                          xlabelParams=xlabelParams,
+                                                          ylabelParams=ylabelParams,
+                                                          **kwargs)
+
+    def _constraint_copy_needs_lut(self):
+        return {'_DihedralAngleConstraint__anglesDefinition':'_DihedralAngleConstraint__anglesDefinition',
+                '_DihedralAngleConstraint__anglesList'      :'_DihedralAngleConstraint__anglesList',
+                '_DihedralAngleConstraint__angles'          :'_DihedralAngleConstraint__angles',
+                '_Constraint__data'                         :'_Constraint__data',
+                '_Constraint__standardError'                :'_Constraint__standardError',
+                '_Constraint__state'                        :'_Constraint__state',
+                '_Constraint__used'                         :'_Constraint__used',
+                '_Engine__state'                            :'_Engine__state',
+                '_Engine__boxCoordinates'                   :'_Engine__boxCoordinates',
+                '_Engine__basisVectors'                     :'_Engine__basisVectors',
+                '_Engine__isPBC'                            :'_Engine__isPBC',
+                '_Engine__moleculesIndex'                   :'_Engine__moleculesIndex',
+                '_Engine__elementsIndex'                    :'_Engine__elementsIndex',
+                '_Engine__numberOfAtomsPerElement'          :'_Engine__numberOfAtomsPerElement',
+                '_Engine__elements'                         :'_Engine__elements',
+                '_Engine__numberDensity'                    :'_Engine__numberDensity',
+                '_Engine__volume'                           :'_Engine__volume',
+                '_atomsCollector'                           :'_atomsCollector',
+                ('engine','_atomsCollector')                :'_atomsCollector',
+               }
+
+
+
+    def _get_export(self, frameIndex, propertiesLUT, format='%s'):
+        # create data, metadata and header
+        frame = propertiesLUT['frames-name'][frameIndex]
+        data  = propertiesLUT['frames-data'][frameIndex]
+        # compute categories
+        names    = self.engine.get_original_data("allNames", frame=frame)
+        elements = self.engine.get_original_data("allElements", frame=frame)
+        atom2  = self.__anglesList[0]
+        atom1  = self.__anglesList[1]
+        atom3  = self.__anglesList[2]
+        atom4  = self.__anglesList[3]
+        lower1 = self.__anglesList[4]
+        upper1 = self.__anglesList[5]
+        lower2 = self.__anglesList[6]
+        upper2 = self.__anglesList[7]
+        lower3 = self.__anglesList[8]
+        upper3 = self.__anglesList[9]
+        consData = data["angles"]
+        header = ['atom_1_index', 'atom_2_index', 'atom_3_index', 'atom_4_index',
+                  'atom_1_element', 'atom_2_element', 'atom_3_element','atom_4_element',
+                  'atom_1_name', 'atom_2_name', 'atom_3_name', 'atom_4_name',
+                  'shell_1_lower_limit', 'shell_1_upper_limit',
+                  'shell_2_lower_limit', 'shell_2_upper_limit',
+                  'shell_3_lower_limit', 'shell_3_upper_limit', 'value']
+        data = []
+        for idx in xrange(self.__anglesList[0].shape[0]):
+            #if self._atomsCollector.is_collected(idx):
+            #    continue
+            if self._atomsCollector.is_collected(atom1[idx]):
+                continue
+            if self._atomsCollector.is_collected(atom2[idx]):
+                continue
+            if self._atomsCollector.is_collected(atom3[idx]):
+                continue
+            if self._atomsCollector.is_collected(atom4[idx]):
+                continue
+            data.append([str(atom1[idx]),str(atom2[idx]),str(atom3[idx]),str(atom4[idx]),
+                             elements[atom1[idx]],elements[atom2[idx]],elements[atom3[idx]],elements[atom4[idx]],
+                             names[atom1[idx]],names[atom2[idx]],names[atom3[idx]],names[atom4[idx]],
+                             format%lower1[idx], format%upper1[idx],
+                             format%lower2[idx], format%upper2[idx],
+                             format%lower3[idx], format%upper3[idx],
+                             format%consData[idx]] )
         # save
-        data = np.transpose(data)
-        np.savetxt(fname     = fname,
-                   X         = data,
-                   fmt       = '%s',
-                   delimiter = delimiter,
-                   header    = " ".join(header),
-                   comments  = comments)
+        return header, data

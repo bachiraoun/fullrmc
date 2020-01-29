@@ -175,7 +175,6 @@ class BiasedEngine(Engine):
                         # update state
                         self.state  = time.time()
                         for c in _usedConstraints:
-                           #c.increment_tried()
                            c.set_state(self.state)
                         # save engine
                         _lastSavedChiSquare = self.biasedStdErr

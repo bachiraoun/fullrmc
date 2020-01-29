@@ -1063,10 +1063,10 @@ class _Container(object):
 
     def __new__(cls, *args, **kwargs):
         #Singleton interface
-        thisSingleton = cls.__dict__.get("__thisSingleton__")
+        thisSingleton = cls.__dict__.get("_thisSingleton__")
         if thisSingleton is not None:
             return thisSingleton
-        cls.__thisSingleton__ = thisSingleton = object.__new__(cls,  *args, **kwargs)
+        cls._thisSingleton__ = thisSingleton = object.__new__(cls,  *args, **kwargs)
         return thisSingleton
 
     def __init__(self):

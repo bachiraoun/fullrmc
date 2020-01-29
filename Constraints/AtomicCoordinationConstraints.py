@@ -8,7 +8,7 @@ to coordination number in spherical shells around atoms.
 """
 # standard libraries imports
 from __future__ import print_function
-import copy
+import copy, re
 
 # external libraries imports
 import numpy as np
@@ -106,6 +106,33 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
 
+    def _codify_update__(self, name='constraint', addDependencies=True):
+        dependencies = []
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        code.append("{name}.set_used({val})".format(name=name, val=self.used))
+        code.append("{name}.set_reject_probability({val})".format(name=name, val=self.rejectProbability))
+        code.append("{name}.set_coordination_number_definition({val})".format(name=name, val=self.__coordNumDef))
+        # return
+        return dependencies, '\n'.join(code)
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Constraints import AtomicCoordinationConstraints'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint\
+(rejectProbability={rejectProbability})".format(name=name, rejectProbability=self.rejectProbability))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        if self.__coordNumDef is not None:
+            code.append("{name}.set_coordination_number_definition({coordDef})".
+            format(name=name, coordDef=self.__coordNumDef))
+        # return
+        return [dependencies], '\n'.join(code)
+
     def __initialize_constraint_data(self):
         # set definition
         self.__coordNumDef = None
@@ -132,6 +159,11 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
     @property
     def coordNumDef(self):
         """Copy of coordination number definition dictionary"""
+        return self.coordinationNumberDefinition
+
+    @property
+    def coordinationNumberDefinition(self):
+        """alias to coordinationNumberDefinition"""
         return copy.deepcopy( self.__coordNumDef )
 
     @property
@@ -143,6 +175,11 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
     def shellsIndexes(self):
         """List of coordination number shell atoms index array."""
         return self.__shellsIndexes
+
+    @property
+    def numberOfCores(self):
+        """Array of number of core atoms"""
+        return self.__numberOfCores
 
     @property
     def lowerShells(self):
@@ -195,7 +232,7 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine set", "update molecules indexes"):
+        if message in ("engine set","update pdb","update molecules indexes","update elements indexes","update names indexes"):
             self.set_coordination_number_definition(self.__coordNumDef)
             # reset constraint is called in set_coordination_number_definition
         elif message in("update boundary conditions",):
@@ -367,16 +404,18 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # set definition
         self.__coordNumDef = coordNumDef
         # dump to repository
-        self._dump_to_repository({'_AtomicCoordinationNumberConstraint__coordNumDef'  :self.__coordNumDef,
-                                  '_AtomicCoordinationNumberConstraint__coordNumData' :self.__coordNumData,
-                                  '_AtomicCoordinationNumberConstraint__weights'      :self.__weights,
-                                  '_AtomicCoordinationNumberConstraint__numberOfCores':self.__numberOfCores,
-                                  '_AtomicCoordinationNumberConstraint__coresIndexes' :self.__coresIndexes,
-                                  '_AtomicCoordinationNumberConstraint__shellsIndexes':self.__shellsIndexes,
-                                  '_AtomicCoordinationNumberConstraint__lowerShells'  :self.__lowerShells,
-                                  '_AtomicCoordinationNumberConstraint__upperShells'  :self.__upperShells,
-                                  '_AtomicCoordinationNumberConstraint__minAtoms'     :self.__minAtoms,
-                                  '_AtomicCoordinationNumberConstraint__maxAtoms'     :self.__maxAtoms})
+        self._dump_to_repository({'_AtomicCoordinationNumberConstraint__coordNumDef'   :self.__coordNumDef,
+                                  '_AtomicCoordinationNumberConstraint__coordNumData'  :self.__coordNumData,
+                                  '_AtomicCoordinationNumberConstraint__asCoreDefIdxs' :self.__asCoreDefIdxs,
+                                  '_AtomicCoordinationNumberConstraint__inShellDefIdxs':self.__inShellDefIdxs,
+                                  '_AtomicCoordinationNumberConstraint__weights'       :self.__weights,
+                                  '_AtomicCoordinationNumberConstraint__numberOfCores' :self.__numberOfCores,
+                                  '_AtomicCoordinationNumberConstraint__coresIndexes'  :self.__coresIndexes,
+                                  '_AtomicCoordinationNumberConstraint__shellsIndexes' :self.__shellsIndexes,
+                                  '_AtomicCoordinationNumberConstraint__lowerShells'   :self.__lowerShells,
+                                  '_AtomicCoordinationNumberConstraint__upperShells'   :self.__upperShells,
+                                  '_AtomicCoordinationNumberConstraint__minAtoms'      :self.__minAtoms,
+                                  '_AtomicCoordinationNumberConstraint__maxAtoms'      :self.__maxAtoms})
         # reset constraint
         self.reset_constraint() # ADDED 2017-JAN-08
 
@@ -434,9 +473,22 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         return self.data
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data. """
-        self.__coordNumData = np.array( [FLOAT_TYPE(0) for _ in self.__coordNumData], dtype=FLOAT_TYPE )
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
+        coordNumData = np.array( [FLOAT_TYPE(0) for _ in self.__coordNumData], dtype=FLOAT_TYPE )
         all_atoms_coord_number_coords(boxCoords      = self.engine.boxCoordinates,
                                       basis          = self.engine.basisVectors,
                                       isPBC          = self.engine.isPBC,
@@ -446,19 +498,24 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
                                       upperShells    = self.__upperShells,
                                       asCoreDefIdxs  = self.__asCoreDefIdxs,
                                       inShellDefIdxs = self.__inShellDefIdxs,
-                                      coordNumData   = self.__coordNumData,
+                                      coordNumData   = coordNumData,
                                       ncores         = self.engine._runtime_ncores)
-        self.__coordNumData /= FLOAT_TYPE(2.)
-        # update data
-        self.set_data( self.__coordNumData )
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        stdErr = self.compute_standard_error(data = self.__coordNumData)
-        self.set_standard_error(stdErr)
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        coordNumData /= FLOAT_TYPE(2.)
+        stdError      = self.compute_standard_error(data = coordNumData)
+        # update
+        if update:
+            self.__coordNumData = coordNumData
+            self.set_data( coordNumData )
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            # set standardError
+            self.set_standard_error(stdError)
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return coordNumData, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -520,6 +577,8 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # compute after move standard error
         self.__coordNumDataAfterMove = self.__coordNumData-self.activeAtomsDataBeforeMove+self.activeAtomsDataAfterMove
         self.set_after_move_standard_error( self.compute_standard_error(data = self.__coordNumDataAfterMove) )
+        # increment tried
+        self.increment_tried()
 
     def accept_move(self, realIndexes, relativeIndexes):
         """
@@ -537,6 +596,8 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
         # update standardError
         self.set_standard_error(self.afterMoveStandardError)
         self.set_after_move_standard_error( None )
+        # increment accepted
+        self.increment_accepted()
 
     def reject_move(self, realIndexes, relativeIndexes):
         """
@@ -627,167 +688,158 @@ class AtomicCoordinationNumberConstraint(RigidConstraint, SingularConstraint):
     def _on_collector_release_atom(self, realIndex):
         pass
 
-
-    def plot(self, ax=None, width=0.6,
-                   barColor = '#99ccff',
-                   cnColor  = '#ffcc00',
-                   cnPtSize   = 20,
-                   stdErrors = True,
-                   xlabel=True, xlabelSize=16,
-                   ylabel=True, ylabelSize=16,
-                   legend=True, legendCols=1, legendLoc='best',
-                   title=True, titleStdErr=True, titleAtRem=True,
-                   titleUsedFrame=True, show=True):
-        """
-        Plot atomic coordination number constraint.
-
-        :Parameters:
-            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If ax is given, the figure won't be rendered and drawn.
-               If None is given a new plot figure will be created and the figue
-               will be rendered and drawn.
-            #. width (number): Bars width, must be >0 and <=1
-            #. barColor (color): boundaries bar color.
-            #. cnColor (color): coordination number data points color.
-            #. cnPtSize (number): coordination number data points size.
-            #. stdErrors (boolean): Whether to show bars standard error.
-            #. xlabel (boolean): Whether to create x label.
-            #. xlabelSize (number): The x label font size.
-            #. ylabel (boolean): Whether to create y label.
-            #. ylabelSize (number): The y label font size.
-            #. legend (boolean): Whether to create the legend or not
-            #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best',
-               'center', 'lower left', 'center right', 'upper left',
-               'upper center', 'lower center' is accepted.
-            #. title (boolean): Whether to create the title or not
-            #. titleStdErr (boolean): Whether to show constraint standard error
-               value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed
-               atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in
-               title.
-            #. show (boolean): Whether to render and show figure before
-               returning.
-
-        :Returns:
-            #. figure (matplotlib Figure): matplotlib used figure.
-            #. axes (matplotlib Axes): matplotlib used axes.
-        """
-        # get constraint value
-        if all([d is None for d in self.data]):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        # check width
-        assert 0<width<=1, LOGGER.error("width must be a number between 0 and 1")
+    def _plot(self, frameIndex, propertiesLUT,
+                    # plotting arguments
+                    ax, dataParams, barParams, txtParams,
+                    xlabelParams, ylabelParams,
+                    xticksParams,yticksParams,
+                    legendParams, titleParams, *args, **kwargs):
+        # get needed data
+        frame                = propertiesLUT['frames-name'][frameIndex]
+        data                 = propertiesLUT['frames-data'][frameIndex]
+        standardError        = propertiesLUT['frames-standard_error'][frameIndex]
+        numberOfRemovedAtoms = propertiesLUT['frames-number_of_removed_atoms'][frameIndex]
         # import matplotlib
         import matplotlib.pyplot as plt
-        # get axes
-        if ax is None:
-            FIG  = plt.figure()
-            AXES = plt.gca()
-        else:
-            AXES = ax
-            FIG  = AXES.get_figure()
         # plot bars
-        ind    = np.arange(1,len(self.data)+1)  # the x locations for the groups
+        barParams = copy.deepcopy(barParams)
+        width  = barParams.pop('width', 0.6)
+        ind    = np.arange(1,len(data)+1)  # the x locations for the groups
+        if not len(self.minAtoms):
+            LOGGER.warn("@{frm} no coordination shells found. It's even not defined or no atoms where found in definition.".format(frm=frame))
+            return
         bottom = self.minAtoms
         height = [self.maxAtoms[idx]-self.minAtoms[idx] for idx in xrange(len(self.maxAtoms))]
-        p = AXES.bar(ind+width/2., height, width, bottom=self.minAtoms, color=barColor, label="boundaries")
+        p = ax.bar(ind+width/2., height, width, bottom=self.minAtoms, **barParams)
         # add coordination number points
-        CN = self.data/self.__numberOfCores
-        AXES.plot(ind+width/2., CN, 'o', label="mean coord num", color=cnColor, markersize=cnPtSize, markevery=1 )
+        CN = data/self.__numberOfCores
+        ax.plot(ind+width/2., CN,  **dataParams)
         # set ticks
-        plt.xticks(ind+width/2., ["%s-%s"%(e[:2]) for e in self.__coordNumDef])
+        ax.set_xticks(ind+width/2.)
+        ax.set_xticklabels(["%s-%s"%(e[:2]) for e in self.__coordNumDef], **xticksParams)
         # compute standard errors
-        if stdErrors:
-            StdErrs  = []
+        if txtParams is not None:
+            stdErrs  = []
             for idx, cn in enumerate( CN ):
                 if cn < self.__minAtoms[idx]:
-                    StdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
+                    stdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
                 elif cn > self.__maxAtoms[idx]:
-                    StdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
+                    stdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
                 else:
-                    StdErrs.append( 0. )
-            for mi,ma, std, rect in zip(self.__minAtoms,self.__maxAtoms,StdErrs, AXES.patches):
+                    stdErrs.append( 0. )
+            for mi,ma, std, rect in zip(self.__minAtoms,self.__maxAtoms,stdErrs, ax.patches):
                 height = rect.get_height()
-                t = AXES.text(x     = rect.get_x() + rect.get_width()/2,
+                t = ax.text(x     = rect.get_x() + rect.get_width()/2,
                               y     = float(ma+mi)/2.,
                               s     = " "+str(std),
-                              color = 'black',
-                              rotation = 90,
-                              horizontalalignment = 'center',
-                              verticalalignment   = 'center')
+                              **txtParams)
         # set limits
         minY = min([min(CN),min(self.minAtoms)])
         maxY = max([max(CN),max(self.maxAtoms)])
-        AXES.set_xlim(0,len(self.data)+1.5)
-        AXES.set_ylim(minY-1,maxY+1)
-        # set axis labels
-        if xlabel:
-            AXES.set_xlabel("Core-Shell atoms", size=xlabelSize)
-        if ylabel:
-            AXES.set_ylabel("Coordination number"  , size=ylabelSize)
-        # set title
-        if title:
-            FIG.canvas.set_window_title('Atomic Coordination Number Constraint')
-            if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
-            else:
-                t = ''
-            if titleAtRem:
-                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
-            if titleStdErr and self.standardError is not None:
-                t += "$std$ $error=%.6f$ "%(self.standardError)
-            if len(t):
-                AXES.set_title(t)
-        # set background color
-        FIG.patch.set_facecolor('white')
+        ax.set_xlim(0,len(data)+1.5)
+        ax.set_ylim(minY-1,maxY+1)
         # plot legend
-        if legend:
-            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc, numpoints=1)
-        #show
-        if show:
-            plt.show()
-        # return axes
-        return FIG, AXES
+        if legendParams is not None:
+            ax.legend(**legendParams)
+        # set axis labels
+        ax.set_xlabel(**xlabelParams)
+        ax.set_ylabel(**ylabelParams)
+        # set title
+        if titleParams is not None:
+            title = copy.deepcopy(titleParams)
+            label = title.pop('label',"").format(frame=frame,standardError=standardError, numberOfRemovedAtoms=numberOfRemovedAtoms,used=self.used)
+            ax.set_title(label=label, **title)
 
-    def export(self, fname, delimiter='     ', comments='# '):
+    def plot(self, dataParams  = {'label':'mean coord num', 'marker':'o', 'linewidth':0, 'color':'#ffcc00','markersize':20, 'markevery':1},
+                   barParams   = {'label':"boundaries", 'color':'#99ccff', 'width':0.6},
+                   txtParams   = {'color':'black', 'fontsize':8, 'rotation':90, 'horizontalalignment':'center', 'verticalalignment':'center'},
+                   xlabelParams={'xlabel':'Core-Shell atoms', 'size':10},
+                   ylabelParams={'ylabel':'Coordination number', 'size':10},
+                   xticksParams={'fontsize': 8, 'rotation':45},
+                   titleParams = {'label':"@{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$", "fontsize":8},
+                   **kwargs):
         """
-        Export atomic coordination number constraint data.
+        Alias to Constraint.plot with additional parameters
 
-        :Parameters:
-            #. fname (path): full file name and path.
-            #. delimiter (string): String or character separating columns.
-            #. comments (string): String that will be prepended to the header.
+        :Additional/Adjusted Parameters:
+            #. dataParams (None, dict): modified constraint data plotting parameters
+            #. barParams (None, dict): matplotlib.axes.Axes.bar parameters
+            #. txtParams (None, dict): matplotlib.axes.Axes.text parameters
+            #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+               parameters.
+            #. xticksParams (None, dict): modified matplotlib.axes.Axes.set_xticklabels
+               parameters.
+            #. titleParams (None, dict): title format.
+            #. show (boolean): Whether to render and show figure before
+               returning.
         """
-        # get constraint value
-        if all([d is None for d in self.data]):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        CN = self.data/self.__numberOfCores
-        StdErrs  = []
+        return super(AtomicCoordinationNumberConstraint, self).plot(dataParams  = dataParams,
+                                                                    barParams   = barParams,
+                                                                    txtParams   = txtParams,
+                                                                    xlabelParams= xlabelParams,
+                                                                    ylabelParams= ylabelParams,
+                                                                    xticksParams= xticksParams,
+                                                                    titleParams = titleParams,
+                                                                    **kwargs)
+
+
+    def _get_export(self, frameIndex, propertiesLUT, format='%s'):
+        # create data, metadata and header
+        data = propertiesLUT['frames-data'][frameIndex]
+        # get numbers and differences
+        CN      = data/self.__numberOfCores
+        stdErrs = []
         for idx, cn in enumerate( CN ):
             if cn < self.__minAtoms[idx]:
-                StdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
+                stdErrs.append( self.__weights[idx]*(self.__minAtoms[idx]-cn) )
             elif cn > self.__maxAtoms[idx]:
-                StdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
+                stdErrs.append( self.__weights[idx]*(cn-self.__maxAtoms[idx]) )
             else:
-                StdErrs.append( 0. )
-        # create header
+                stdErrs.append( 0. )
+        # start creating header and data
         header = ["core-shell","ninimum_coord_num","naximum_coord_num","mean_coord_num","standard_error"]
-        # create data lists
-        data = [["%s-%s"%(e[:2]) for e in self.__coordNumDef],
-                 [str(i) for i in self.__minAtoms],
-                 [str(i) for i in self.__maxAtoms],
-                 [str(i) for i in CN],
-                 [str(i) for i in StdErrs]]
-        # save
-        data = np.transpose(data)
-        np.savetxt(fname     = fname,
-                   X         = data,
-                   fmt       = '%s',
-                   delimiter = delimiter,
-                   header    = " ".join(header),
-                   comments  = comments)
+        # create data
+        data = []
+        for i,e in enumerate(self.__coordNumDef):
+            data.append( ["%s-%s"%(e[:2]),
+                          str(self.__maxAtoms[i]),
+                          str(self.__maxAtoms[i]),
+                          str(CN[i]),
+                          format%(stdErrs[i],)] )
+        # return
+        return header, data
+
+
+
+    def _constraint_copy_needs_lut(self):
+        return {'_AtomicCoordinationNumberConstraint__coresIndexes'  :'_AtomicCoordinationNumberConstraint__coresIndexes',
+                '_AtomicCoordinationNumberConstraint__shellsIndexes' :'_AtomicCoordinationNumberConstraint__shellsIndexes',
+                '_AtomicCoordinationNumberConstraint__lowerShells'   :'_AtomicCoordinationNumberConstraint__lowerShells',
+                '_AtomicCoordinationNumberConstraint__upperShells'   :'_AtomicCoordinationNumberConstraint__upperShells',
+                '_AtomicCoordinationNumberConstraint__asCoreDefIdxs' :'_AtomicCoordinationNumberConstraint__asCoreDefIdxs',
+                '_AtomicCoordinationNumberConstraint__inShellDefIdxs':'_AtomicCoordinationNumberConstraint__inShellDefIdxs',
+                '_AtomicCoordinationNumberConstraint__minAtoms'      :'_AtomicCoordinationNumberConstraint__minAtoms',
+                '_AtomicCoordinationNumberConstraint__maxAtoms'      :'_AtomicCoordinationNumberConstraint__maxAtoms',
+                '_AtomicCoordinationNumberConstraint__weights'       :'_AtomicCoordinationNumberConstraint__weights',
+                '_AtomicCoordinationNumberConstraint__numberOfCores' :'_AtomicCoordinationNumberConstraint__numberOfCores',
+                '_AtomicCoordinationNumberConstraint__coordNumDef'   :'_AtomicCoordinationNumberConstraint__coordNumDef',
+                '_AtomicCoordinationNumberConstraint__coordNumData'  :'_AtomicCoordinationNumberConstraint__coordNumData',
+                '_Constraint__used'                                  :'_Constraint__used',
+                '_Constraint__data'                                  :'_Constraint__data',
+                '_Constraint__standardError'                         :'_Constraint__standardError',
+                '_Constraint__state'                                 :'_Constraint__state',
+                '_Engine__state'                                     :'_Engine__state',
+                '_Engine__boxCoordinates'                            :'_Engine__boxCoordinates',
+                '_Engine__basisVectors'                              :'_Engine__basisVectors',
+                '_Engine__isPBC'                                     :'_Engine__isPBC',
+                '_Engine__moleculesIndex'                            :'_Engine__moleculesIndex',
+                '_Engine__elementsIndex'                             :'_Engine__elementsIndex',
+                '_Engine__numberOfAtomsPerElement'                   :'_Engine__numberOfAtomsPerElement',
+                '_Engine__elements'                                  :'_Engine__elements',
+                '_Engine__numberDensity'                             :'_Engine__numberDensity',
+                '_Engine__volume'                                    :'_Engine__volume',
+                '_atomsCollector'                                    :'_atomsCollector',
+                ('engine','_atomsCollector')                         :'_atomsCollector',
+               }

@@ -10,7 +10,7 @@ on groups rather than on single atoms.
 """
 # standard libraries imports
 from __future__ import print_function
-import inspect
+import inspect, re
 
 # external libraries imports
 import numpy as np
@@ -32,6 +32,7 @@ class Group(object):
         #. moveGenerator (None, MoveGenerator): Move generator instance.
            If None is given AtomsRemoveGenerator is considered by default.
         #. refine (bool): The refinement flag used by the Engine.
+        #. name (str): The group user defined name.
 
     .. code-block:: python
 
@@ -54,14 +55,36 @@ class Group(object):
         # Re-define groups generators as needed ... By default AtomsRemoveGenerator is used.
 
     """
-    def __init__(self, indexes, moveGenerator=None, refine=False):
-        #self.__moveGenerator = TranslationGenerator(group=self)
+    def __init__(self, indexes, moveGenerator=None, refine=False, name=''):
         self.set_indexes(indexes)
         self.set_move_generator(moveGenerator)
         # set refine
         self.set_refine(refine)
+        # set name
+        self.set_name(name)
         # initialize engine
         self.__engine = None
+
+    def _codify__(self, name='group', addDependencies=True, codifyGenerator=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies  = ['from fullrmc.Core import Group']
+        code          = []
+        moveGenerator = None
+        if codifyGenerator:
+            genDep, genCode = self.__moveGenerator._codify__(name='groupGenerator', group=name, addDependencies=addDependencies)
+            dependencies.extend(genDep)
+            code.append(genCode)
+            moveGenerator = 'groupGenerator'
+        if addDependencies:
+            code = dependencies + code
+        code.append("{name} = Group.Group\
+(indexes={indexes}, moveGenerator={moveGenerator}, refine={refine}, name='{n}')".format(name=name,
+        moveGenerator=moveGenerator, indexes=list(self.__indexes),
+        refine=self.__refine, n=self.__name))
+        # return
+        return dependencies, '\n'.join(code)
+
 
     def __len__(self):
         return len(self.__indexes)
@@ -91,6 +114,11 @@ class Group(object):
         """ Refine flag."""
         return self.__refine
 
+    @property
+    def name(self):
+        """ groud user defined name."""
+        return self.__name
+
     def set_refine(self, refine):
         """
         Set the selector refine flag.
@@ -100,6 +128,16 @@ class Group(object):
         """
         assert isinstance(refine, bool), LOGGER.error("refine must be a boolean")
         self.__refine = refine
+
+    def set_name(self, name):
+        """
+        Set the group's name.
+
+        :Parameters:
+            #. name (str): The group user defined name.
+        """
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        self.__name = name
 
     def set_indexes(self, indexes):
         """
@@ -149,13 +187,6 @@ class EmptyGroup(Group):
     Empty group is a special group that takes no atoms indexes. It's mainly
     used to remove atoms from system upon fitting.
 
-    :Parameters:
-        #. indexes (object): list of atoms indexes. This argument will always
-           be disregarded in this particular case.
-        #. moveGenerator (None, MoveGenerator): Move generator instance.
-           If None is given RemoveGenerator is considered by default.
-        #. refine (bool): The refinement flag used by the Engine.
-
     .. code-block:: python
 
         # import fullrmc modules
@@ -176,10 +207,26 @@ class EmptyGroup(Group):
         # Re-define groups generators as needed ... By default RemoveGenerator is used.
 
     """
-    def __init__(self, indexes=None, moveGenerator=None, refine=False):
-        super(EmptyGroup, self).__init__(indexes=None,
-                                         moveGenerator=moveGenerator,
-                                         refine=refine)
+    def __init__(self, *args, **kwargs):
+        super(EmptyGroup, self).__init__(indexes=None, *args, **kwargs)
+
+    def _codify__(self, name='group', group=None, addDependencies=True, codifyGenerator=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies  = ['from fullrmc.Core import Group']
+        code          = []
+        moveGenerator = None
+        if codifyGenerator:
+            genDep, genCode = self.__moveGenerator._codify__(name='groupGenerator',group=name, addDependencies=addDependencies)
+            dependencies.extend(genDep)
+            code.append(genCode)
+            moveGenerator = 'groupGenerator'
+        if addDependencies:
+            code = dependencies + code
+        code.append("{name} = Group.EmptyGroup(moveGenerator={moveGenerator}, \
+refine={refine})".format(name=name, moveGenerator=moveGenerator, refine=self.refine))
+        # return
+        return dependencies, '\n'.join(code)
 
     @property
     def moveGenerator(self):

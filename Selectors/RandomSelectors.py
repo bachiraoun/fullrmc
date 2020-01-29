@@ -29,6 +29,7 @@ RandomSelectors contains GroupSelector classes of random order of selections.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -71,6 +72,18 @@ class RandomSelector(GroupSelector):
         ENGINE.set_group_selector( RandomSelector(engine=ENGINE) )
 
     """
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = ['from fullrmc.Selectors import RandomSelectors']
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        code.append("{name} = RandomSelectors.RandomSelector(engine={engine})"
+        .format(name=name, engine=engine))
+        # return
+        return dependencies, '\n'.join(code)
+
     def select_index(self):
         """
         Select index.
@@ -86,7 +99,7 @@ class WeightedRandomSelector(RandomSelector):
     WeightedRandomSelector generates indexes randomly following groups weighting scheme.
 
     :Parameters:
-        #. engine (None, fullrmc.Engine): The selector RMC engine.
+        #. engine (fullrmc.Engine): The selector stochastic engine.
         #. weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
 
     .. code-block:: python
@@ -107,8 +120,8 @@ class WeightedRandomSelector(RandomSelector):
 
         # set group selector as random selection but with double likelihood to
         # selecting the first and the last group.
-        WEIGHTS = [1 for _ in ENGINE.pdb.indexes]
-        WEIGHTS[0] = WEIGHTS[-1] = 2
+        WEIGHTS = [[idx,1] for idx in range(len(ENGINE.groups))]
+        WEIGHTS[0][1] = WEIGHTS[-1][1] = 2
         ENGINE.set_group_selector( WeightedRandomSelector(engine=ENGINE, weights=WEIGHTS) )
 
     """
@@ -118,11 +131,27 @@ class WeightedRandomSelector(RandomSelector):
         # set weights
         self.set_weights(weights)
 
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        assert engine is not None, LOGGER.error("codifying '%s' requires engine variable name"%self.__class__.__name__)
+        assert isinstance(engine, basestring), LOGGER.error("engine must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', engine) is not None, LOGGER.error("given engine '%s' can't be used as a variable name"%engine)
+        dependencies = 'from fullrmc.Selectors import RandomSelectors'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        weights     = [(idx, w) for idx, w in enumerate(self.__weights) if w!=1]
+        code.append("{name} = RandomSelectors.WeightedRandomSelector(engine={engine}, weights={weights})"
+        .format(name=name, engine=engine, weights=weights))
+        # return
+        return [dependencies], '\n'.join(code)
+
     def __check_single_weight(self, w):
         """Checks a single group weight tuple format"""
         assert isinstance(w, (list,set,tuple)),LOGGER.error("weights list items must be tuples")
         assert len(w)==2, LOGGER.error("weights list tuples must have exactly 2 items")
-        idx  = w[0]
+        idx = w[0]
         wgt = w[1]
         assert is_integer(idx), LOGGER.error("weights list tuples first item must be an integer")
         idx = INT_TYPE(idx)
@@ -215,7 +244,7 @@ class SmartRandomSelector(WeightedRandomSelector):
     selecting groups with more successful moves history.
 
     :Parameters:
-        #. engine (None, fullrmc.Engine): The selector RMC engine.
+        #. engine (fullrmc.Engine): The selector stochastic engine.
         #. weights (None, list): Weights list fed as initial biasing scheme.
            It must be None for equivalent weighting or list of (groupIndex, weight) tuples.
         #. biasFactor (Number): The biasing factor of every group when a step get accepted.
@@ -253,6 +282,22 @@ class SmartRandomSelector(WeightedRandomSelector):
         self.set_bias_factor(biasFactor)
         # set un-bias factor
         self.set_unbias_factor(unbiasFactor)
+
+
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert engine is not None, LOGGER.error("codifying '%s' requires engine variable name"%self.__class__.__name__)
+        dependencies = 'from fullrmc.Selectors import RandomSelectors'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        weights     = [(idx, w) for idx, w in enumerate(self.weights) if w!=1]
+        code.append("{name} = RandomSelectors.SmartRandomSelector(\
+engine={engine}, weights={weights}, biasFactor={biasFactor}, unbiasFactor={unbiasFactor})"
+        .format(name=name, engine=engine, biasFactor=self.biasFactor,
+        unbiasFactor=self.unbiasFactor, weights=weights))
+        # return
+        return [dependencies], '\n'.join(code)
+
 
     def _set_selection_scheme(self):
         """ Sets selection scheme. """

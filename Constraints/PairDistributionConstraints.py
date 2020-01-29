@@ -7,7 +7,7 @@ to experimental pair distribution functions.
 """
 # standard libraries imports
 from __future__ import print_function
-import itertools, inspect, copy, os
+import itertools, inspect, copy, os, re
 
 # external libraries imports
 import numpy as np
@@ -202,7 +202,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
         # create and add constraint
         PDC = PairDistributionConstraint(experimentalData="pdf.dat", weighting="atomicNumber")
         ENGINE.add_constraints(PDC)
-
     """
     def __init__(self, experimentalData, dataWeights=None, weighting="atomicNumber",
                        atomsWeight=None, scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2),
@@ -217,13 +216,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_window_function(windowFunction)
         # set shape function parameters
         self.set_shape_function_parameters(shapeFuncParams)
-        # update plot default parameters
-        self._plotDefaultParameters['xlabelParams'] = {'xlabel':"$r(\\AA)$", 'size':16}
-        if self.__class__.__name__ == 'PairCorrelationConstraint':
-            self._plotDefaultParameters['ylabelParams'] = {'ylabel':"$g(r)(\\AA^{-2})$", 'size':16}
-        else:
-            self._plotDefaultParameters['ylabelParams'] = {'ylabel':"$G(r)(\\AA^{-2})$", 'size':16}
-
 
         # set frame data
         FRAME_DATA = [d for d in self.FRAME_DATA]
@@ -250,6 +242,73 @@ class PairDistributionConstraint(ExperimentalConstraint):
         RUNTIME_DATA.extend( ['_shapeArray'] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)  )
         object.__setattr__(self, 'RUNTIME_DATA', tuple(RUNTIME_DATA) )
+
+    def _codify_update__(self, name='constraint', addDependencies=True):
+        dependencies = []
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        dw = self.dataWeights
+        if dw is not None:
+            dw = list(dw)
+        code.append("dw = {dw}".format(dw=dw))
+        sfp = self._shapeFuncParams
+        if isinstance(sfp, np.ndarray):
+            sfp = list(sfp)
+        code.append("sfp = {sfp}".format(sfp=sfp))
+        wf = self.windowFunction
+        if isinstance(wf, np.ndarray):
+            code.append("wf = np.array({wf})".format(wf=list(wf)))
+        else:
+            code.append("wf = {wf}".format(wf=wf))
+        code.append("{name}.set_used({val})".format(name=name, val=self.used))
+        code.append("{name}.set_scale_factor({val})".format(name=name, val=self.scaleFactor))
+        code.append("{name}.set_adjust_scale_factor({val})".format(name=name, val=self.adjustScaleFactor))
+        code.append("{name}.set_data_weights(dw)".format(name=name))
+        code.append("{name}.set_atoms_weight({val})".format(name=name, val=self.atomsWeight))
+        code.append("{name}.set_window_function(wf)".format(name=name))
+        code.append("{name}.set_shape_function_parameters(sfp)".format(name=name))
+        code.append("{name}.set_limits({val})".format(name=name, val=self.limits))
+        # return
+        return dependencies, '\n'.join(code)
+
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        klass        = self.__class__.__name__
+        dependencies = ['import numpy as np','from fullrmc.Constraints import {klass}s'.format(klass=klass)]
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        x = list(self.experimentalData[:,0])
+        y = list(self.experimentalData[:,1])
+        code.append("x = {x}".format(x=x))
+        code.append("y = {y}".format(y=y))
+        code.append("d = np.transpose([x,y]).astype(np.float32)")
+        dw = self.dataWeights
+        if dw is not None:
+            dw = list(dw)
+        code.append("dw = {dw}".format(dw=dw))
+        sfp = self._shapeFuncParams
+        if isinstance(sfp, np.ndarray):
+            sfp = list(sfp)
+        code.append("sfp = {sfp}".format(sfp=sfp))
+        wf = self.windowFunction
+        if isinstance(wf, np.ndarray):
+            code.append("wf = np.array({wf})".format(wf=list(wf)))
+        else:
+            code.append("wf = {wf}".format(wf=wf))
+        code.append("{name} = {klass}s.{klass}\
+(experimentalData=d, dataWeights=dw, weighting='{weighting}', atomsWeight={atomsWeight}, \
+scaleFactor={scaleFactor}, adjustScaleFactor={adjustScaleFactor}, \
+shapeFuncParams=sfp, windowFunction=wf, limits={limits})".format(name=name, klass=klass,
+                weighting=self.weighting, atomsWeight=self.atomsWeight,
+                scaleFactor=self.scaleFactor, adjustScaleFactor=self.adjustScaleFactor,
+                shapeFuncParams=sfp, limits=self.limits))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        # return
+        return dependencies, '\n'.join(code)
 
     def _on_collector_reset(self):
         pass
@@ -397,19 +456,19 @@ class PairDistributionConstraint(ExperimentalConstraint):
     @property
     def _experimentalX(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__experimentalDistances
 
     @property
     def _experimentalY(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__experimentalPDF
 
     @property
     def _modelX(self):
         """For internal use only to interface
-        ExperimentalConstraint.get_constraint_data_dictionary"""
+        ExperimentalConstraint.get_constraints_properties"""
         return self.__shellCenters
 
     def listen(self, message, argument=None):
@@ -421,7 +480,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
                listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine set", "update molecules indexes"):
+        if message in ("engine set","update pdb","update molecules indexes","update elements indexes","update names indexes"):
             if self.engine is not None:
                 self.__elementsPairs   = sorted(itertools.combinations_with_replacement(self.engine.elements,2))
                 self._elementsWeight   = get_real_elements_weight(elements=self.engine.elements, weightsDict=self.__atomsWeight, weighting=self.__weighting)
@@ -487,7 +546,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
                  set to 0.005.
                * **updateFreq (integer) default (1000) :** The frequency of
                  recomputing the shape function in number of accpeted moves.
-
         """
         self._shapeArray = None
         if shapeFuncParams is None:
@@ -548,8 +606,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
 
     def set_atoms_weight(self, atomsWeight):
         """
-        Custom set atoms weight. This is the way to setting a atoms weights
-        different than the given weighting scheme.
+        Custom set atoms weight. This is the way to customize setting atoms
+        weights different than the given weighting scheme.
 
         :Parameters:
             #. atomsWeight (None, dict): Atoms weight dictionary where keys are
@@ -571,9 +629,6 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 AW[k]=val
         # set atomsWeight
         self.__atomsWeight = AW
-        # dump to repository
-        #self._dump_to_repository({'_PairDistributionConstraint__atomsWeight': self.__atomsWeight})
-        ### FROM HERE ADDED 2018-11-20
         # reset weights
         if self.engine is None:
             self.__elementsPairs   = None
@@ -587,25 +642,34 @@ class PairDistributionConstraint(ExperimentalConstraint):
             for k in self.__weightingScheme:
                 self.__weightingScheme[k] = FLOAT_TYPE(self.__weightingScheme[k])
             if isSubframe:
+                repo   = self.engine._get_repository()
+                assert repo is not None, LOGGER.error("Repository is not defined, not allowed to set atoms weight for a subframe.")
                 mframe = self.engine.usedFrame.split(os.sep)[0]
-                LOGGER.usage("set_atoms_weight for '%s' subframe. This is going be automatically propagated to all '%s' multiframe subframes."%(self.engine.usedFrame,mframe))
+                LOGGER.usage("set_atoms_weight for '%s' subframe. This is going to automatically propagate to all '%s' multiframe subframes."%(self.engine.usedFrame,mframe))
                 for subfrm in self.engine.frames[mframe]['frames_name']:
-                    if os.path.join(mframe,frm) == self.engine.usedFrame:
-                        continue
-                    elements         = repo.pull(relativePath=os.path.join(frame,frm,'_Engine__elements'))
-                    nAtomsPerElement = repo.pull(relativePath=os.path.join(frame,frm,'_Engine__numberOfAtomsPerElement'))
-                    elementsWeight   = repo.pull(relativePath=os.path.join(frame,frm,'constraints',self.constraintName,'_elementsWeight'))
-                    elementsPairs    = sorted(itertools.combinations_with_replacement(elements,2))
-                    elementsWeight   = get_real_elements_weight(elements=elements, weightsDict=self.__atomsWeight, weighting=self.__weighting)
-                    weightingScheme  = get_normalized_weighting(numbers=nAtomsPerElement, weights=elementsWeight)
-                    for k in self.__weightingScheme:
-                        weightingScheme[k] = FLOAT_TYPE(self.__weightingScheme[k])
+                    frame = os.path.join(mframe,subfrm)
+                    if frame != self.engine.usedFrame:
+                        elements         = repo.pull(relativePath=os.path.join(frame,'_Engine__elements'))
+                        nAtomsPerElement = repo.pull(relativePath=os.path.join(frame,'_Engine__numberOfAtomsPerElement'))
+                        elementsWeight   = repo.pull(relativePath=os.path.join(frame,'constraints',self.constraintName,'_elementsWeight'))
+                        elementsPairs    = sorted(itertools.combinations_with_replacement(elements,2))
+                        elementsWeight   = get_real_elements_weight(elements=elements, weightsDict=self.__atomsWeight, weighting=self.__weighting)
+                        weightingScheme  = get_normalized_weighting(numbers=nAtomsPerElement, weights=elementsWeight)
+                        for k in self.__weightingScheme:
+                            weightingScheme[k] = FLOAT_TYPE(self.__weightingScheme[k])
+                    # dump to repository
                     self._dump_to_repository({'_PairDistributionConstraint__elementsPairs'  : elementsPairs,
-                                              '_PairDistributionConstraint__weightingScheme': elementsWeight,
-                                              '_elementsWeight': weightingScheme},
-                                              frame=os.path.join(mframe,frm))
+                                              '_PairDistributionConstraint__weightingScheme': weightingScheme,
+                                              '_PairDistributionConstraint__atomsWeight'    : self.__atomsWeight,
+                                              '_elementsWeight': elementsWeight},
+                                              frame=frame)
             else:
                 assert isNormalFrame, LOGGER.error("Not allowed to set_atoms_weight for multiframe")
+                # dump to repository
+                self._dump_to_repository({'_PairDistributionConstraint__elementsPairs'  : self.__elementsPairs,
+                                          '_PairDistributionConstraint__weightingScheme': self.__weightingScheme,
+                                          '_PairDistributionConstraint__atomsWeight'    : self.__atomsWeight,
+                                          '_elementsWeight': self._elementsWeight})
 
 
 
@@ -934,8 +998,21 @@ class PairDistributionConstraint(ExperimentalConstraint):
         return self._get_constraint_value(self.originalData)
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data."""
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
         intra,inter = full_pairs_histograms_coords( boxCoords        = self.engine.boxCoordinates,
                                                     basis            = self.engine.basisVectors,
                                                     isPBC            = self.engine.isPBC,
@@ -947,16 +1024,22 @@ class PairDistributionConstraint(ExperimentalConstraint):
                                                     histSize         = self.__histogramSize,
                                                     bin              = self.__bin,
                                                     ncores           = self.engine._runtime_ncores )
-        # update data
-        self.set_data({"intra":intra, "inter":inter})
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        totalPDF = self.__get_total_Gr(self.data, rho0=self.engine.numberDensity)
-        self.set_standard_error(self.compute_standard_error(modelData = totalPDF))
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        data     = {"intra":intra, "inter":inter}
+        totalPDF = self.__get_total_Gr(data, rho0=self.engine.numberDensity)
+        stdError = self.compute_standard_error(modelData = totalPDF)
+        # update
+        if update:
+            self.set_data(data)
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            # set standardError
+            self.set_standard_error(stdError)
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return data, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -1042,6 +1125,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         dataInter = self.data["inter"]-self.activeAtomsDataBeforeMove["inter"]+self.activeAtomsDataAfterMove["inter"]
         totalPDF  = self.__get_total_Gr({"intra":dataIntra, "inter":dataInter}, rho0=self.engine.numberDensity)
         self.set_after_move_standard_error( self.compute_standard_error(modelData = totalPDF) )
+        # increment tried
+        self.increment_tried()
 
     def accept_move(self, realIndexes, relativeIndexes):
         """
@@ -1063,6 +1148,8 @@ class PairDistributionConstraint(ExperimentalConstraint):
         self.set_after_move_standard_error( None )
         # set new scale factor
         self._set_fitted_scale_factor_value(self._fittedScaleFactor)
+        # increment accepted
+        self.increment_accepted()
 
     def reject_move(self, realIndexes, relativeIndexes):
         """
@@ -1169,7 +1256,7 @@ class PairDistributionConstraint(ExperimentalConstraint):
             weights[frm] = value
         return weights
 
-    def _get_needed_data_for_constraint_data_dictionary(self):
+    def _constraint_copy_needs_lut(self):
         return {'_PairDistributionConstraint__elementsPairs'        :'_PairDistributionConstraint__elementsPairs',
                 '_PairDistributionConstraint__histogramSize'        :'_PairDistributionConstraint__histogramSize',
                 '_PairDistributionConstraint__weightingScheme'      :'_PairDistributionConstraint__weightingScheme',
@@ -1178,17 +1265,47 @@ class PairDistributionConstraint(ExperimentalConstraint):
                 '_PairDistributionConstraint__windowFunction'       :'_PairDistributionConstraint__windowFunction',
                 '_PairDistributionConstraint__experimentalDistances':'_PairDistributionConstraint__experimentalDistances',
                 '_PairDistributionConstraint__experimentalPDF'      :'_PairDistributionConstraint__experimentalPDF',
+                '_PairDistributionConstraint__minimumDistance'      :'_PairDistributionConstraint__minimumDistance',
+                '_PairDistributionConstraint__maximumDistance'      :'_PairDistributionConstraint__maximumDistance',
+                '_PairDistributionConstraint__bin'                  :'_PairDistributionConstraint__bin',
                 '_shapeArray'                                       :'_shapeArray',
-                #'_fittedScaleFactor'                                :'_fittedScaleFactor',
                 '_ExperimentalConstraint__scaleFactor'              :'_ExperimentalConstraint__scaleFactor',
                 '_ExperimentalConstraint__dataWeights'              :'_ExperimentalConstraint__dataWeights',
                 '_ExperimentalConstraint__multiframePrior'          :'_ExperimentalConstraint__multiframePrior',
                 '_ExperimentalConstraint__multiframeWeight'         :'_ExperimentalConstraint__multiframeWeight',
+                '_ExperimentalConstraint__limits'                   :'_ExperimentalConstraint__limits',
+                '_ExperimentalConstraint__limitsIndexStart'         :'_ExperimentalConstraint__limitsIndexStart',
+                '_ExperimentalConstraint__limitsIndexEnd'           :'_ExperimentalConstraint__limitsIndexEnd',
                 '_usedDataWeights'                                  :'_usedDataWeights',
+                '_Constraint__used'                                 :'_Constraint__used',
                 '_Constraint__data'                                 :'_Constraint__data',
+                '_Constraint__state'                                :'_Constraint__state',
+                '_Engine__state'                                    :'_Engine__state',
+                '_Engine__boxCoordinates'                           :'_Engine__boxCoordinates',
+                '_Engine__basisVectors'                             :'_Engine__basisVectors',
+                '_Engine__isPBC'                                    :'_Engine__isPBC',
+                '_Engine__moleculesIndex'                           :'_Engine__moleculesIndex',
+                '_Engine__elementsIndex'                            :'_Engine__elementsIndex',
                 '_Engine__numberOfAtomsPerElement'                  :'_Engine__numberOfAtomsPerElement',
                 '_Engine__elements'                                 :'_Engine__elements',
                 '_Engine__numberDensity'                            :'_Engine__numberDensity',
                 '_Engine__volume'                                   :'_Engine__volume',
+                '_atomsCollector'                                   :'_atomsCollector',
                 ('engine','_atomsCollector')                        :'_atomsCollector',
                }
+
+    def plot(self, xlabelParams={'xlabel':'$r(\\AA)$', 'size':10},
+                   ylabelParams={'ylabel':'$G(r)(\\AA^{-2})$', 'size':10},
+                   **kwargs):
+        """
+        Alias to ExperimentalConstraint.plot with additional parameters
+
+        :Additional/Adjusted Parameters:
+            #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+               parameters.
+        """
+        return super(PairDistributionConstraint, self).plot(xlabelParams= xlabelParams,
+                                                            ylabelParams= ylabelParams,
+                                                            **kwargs)

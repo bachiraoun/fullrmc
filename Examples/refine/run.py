@@ -31,17 +31,17 @@ class BiasedEngine(Engine):
         super(BiasedEngine, self).__init__(*args, **kwargs)
         self.__improveProbability = improveProbability
         self.biasedStdErr = initialStdErr
-    
+
     def compute_total_standard_error(self, constraints, current=True):
         if generate_random_float() <= self.__improveProbability:
             newStdErr = self.biasedStdErr-generate_random_float()*1e-3
             if newStdErr<=0:
                 raise Exception("biasedStdErr reached 0. restart using bigger initialStdErr")
         else:
-            newStdErr = self.biasedStdErr+generate_random_float()*1e-3    
+            newStdErr = self.biasedStdErr+generate_random_float()*1e-3
         return newStdErr
-    
-    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart", 
+
+    def run(self, numberOfSteps=100000, saveFrequency=1000, savePath="restart",
                   xyzFrequency=None, xyzPath="trajectory.xyz"):
         """
         This is an exact copy of engine run method with slight changes marked with #-->
@@ -73,7 +73,7 @@ class BiasedEngine(Engine):
         _moveTried          = False
         # initialize group selector
         self.groupSelector._runtime_initialize()
-        
+
         self.__realCoords = self.realCoordinates  #<--
         self.__boxCoords  = self.boxCoordinates  #<--
         #   #####################################################################################   #
@@ -92,7 +92,7 @@ class BiasedEngine(Engine):
             groupAtomsIndexes = group.indexes
             # get move generator
             groupMoveGenerator = group.moveGenerator
-            # get group atoms coordinates before applying move 
+            # get group atoms coordinates before applying move
             if _coordsBeforeMove is None or not self.groupSelector.isRecurring:
                 _coordsBeforeMove = np.array(self.realCoordinates[groupAtomsIndexes], dtype=self.realCoordinates.dtype)
             elif self.groupSelector.explore:
@@ -175,7 +175,6 @@ class BiasedEngine(Engine):
                         # update state
                         self.state  = time.time()
                         for c in _usedConstraints:
-                           #c.increment_tried()
                            c.set_state(self.state)
                         # save engine
                         _lastSavedChiSquare = self.biasedStdErr
@@ -188,7 +187,7 @@ class BiasedEngine(Engine):
             #-->        acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated))
             #-->        _xyzfd.write("Generated:%i - Tried:%i(%.3f%%) - Accepted:%i(%.3f%%) - biasedStdErr:%.6f\n" %(self.__generated , self.__tried, triedRatio, self.__accepted, acceptedRatio, self.biasedStdErr))
             #-->        frame = [self.allNames[idx]+ " " + "%10.5f"%self.__realCoords[idx][0] + " %10.5f"%self.__realCoords[idx][1] + " %10.5f"%self.__realCoords[idx][2] + "\n" for idx in self.__pdb.xindexes]
-            #-->        _xyzfd.write("".join(frame)) 
+            #-->        _xyzfd.write("".join(frame))
             triedRatio    = 100.*(float(self.__tried)/float(self.__generated)) #<--
             acceptedRatio = 100.*(float(self.__accepted)/float(self.__generated)) #<--
             _xyzfd.write("%s\n"%(len(groupAtomsIndexes)*2) ) #<--
@@ -197,16 +196,16 @@ class BiasedEngine(Engine):
             frame.extend([self.allNames[idx]+ " " + "%10.5f"%_coordsBeforeMove[idx][0] + " %10.5f"%_coordsBeforeMove[idx][1] + " %10.5f"%_coordsBeforeMove[idx][2] + "\n" for idx in range(_coordsBeforeMove.shape[0])]) #<--
             _xyzfd.write("".join(frame)) #<--
         #   #####################################################################################   #
-        #   ################################# FINISH ENGINE RUN #################################   #        
+        #   ################################# FINISH ENGINE RUN #################################   #
         #-->LOGGER.info("Engine finishes executing all '%i' steps in %s" % (_numberOfSteps, get_elapsed_time(_engineStartTime, format="%d(days) %d:%d:%d")))
         # close .xyz file
         #-->if _xyzFrequency is not None:
         #-->    _xyzfd.close()
         _xyzfd.close() #<--
-  
-  
+
+
 ##########################################################################################
-#####################################  CREATE ENGINE  ####################################  
+#####################################  CREATE ENGINE  ####################################
 # engine variables
 pdbPath = "system.pdb"
 # initialize engine
@@ -231,10 +230,10 @@ def refine(ENGINE, nsteps=1000, rang=5):
     gs = RecursiveGroupSelector(RandomSelector(ENGINE), recur=recur, refine=True, explore=False)
     # run
     for step in range(rang):
-        ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps)  
+        ENGINE.run(numberOfSteps=nsteps, saveFrequency=2*nsteps)
 
 
-        
+
 ##########################################################################################
 #####################################  RUN SIMULATION  ###################################
 # remove all .xyz trajectory files
@@ -247,7 +246,6 @@ refine(ENGINE, 1000)
 ##########################################################################################
 ##################################  VISUALIZE SIMULATION  ################################
 ENGINE.set_pdb(pdbPath)
-ENGINE.visualize( boxToCenter=True, boxWidth=1, 
+ENGINE.visualize( boxToCenter=True, boxWidth=1,
                   otherParams = ['mol new trajectory.xyz', 'mol modstyle 0 1 VDW'],
-                  representationParams='CPK 1.0 0.2 50 50')  
-
+                  representationParams='CPK 1.0 0.2 50 50')

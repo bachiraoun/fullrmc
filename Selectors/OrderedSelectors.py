@@ -6,6 +6,7 @@ OrderedSelectors contains GroupSelector classes of defined order of selection.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -22,7 +23,7 @@ class DefinedOrderSelector(GroupSelector):
     DefinedOrderSelector is a group selector with a defined order of selection.
 
     :Parameters:
-        #. engine (None, fullrmc.Engine): The selector RMC engine.
+        #. engine (None, fullrmc.Engine): The selector stochastic engine.
         #. order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
            If None, order is set automatically to all groups indexes list.
 
@@ -63,6 +64,21 @@ class DefinedOrderSelector(GroupSelector):
         self.set_order(order)
         # initialize selector
         self.__initialize_selector__()
+
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        assert engine is not None, LOGGER.error("codifying '%s' requires engine variable name"%self.__class__.__name__)
+        assert isinstance(engine, basestring), LOGGER.error("engine must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', engine) is not None, LOGGER.error("given engine '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Selectors import OrderedSelectors'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = OrderedSelectors.DefinedOrderSelector(engine={engine}, order={order})"
+        .format(name=name, engine=engine, order=self.order))
+        # return
+        return [dependencies], '\n'.join(code)
 
     def __initialize_selector__(self):
         if self.__order is None:
@@ -146,7 +162,7 @@ class DirectionalOrderSelector(DefinedOrderSelector):
     if expand argument is True or from the closest to the further if expand is False.
 
     :Parameters:
-        #. engine (None, fullrmc.Engine): The selector RMC engine.
+        #. engine (None, fullrmc.Engine): The selector stochastic engine.
         #. center (None, list, set, tuple, numpy.ndarray): The center of expansion.
            If None, the center is automatically set to the origin (0,0,0).
         #. expand (bool): Whether to set the order from the the further to the closest
@@ -222,6 +238,26 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         self.set_adjust_move_generators(adjustMoveGenerators)
         # set expand
         self.set_generators_parameters(generatorsParams)
+
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        assert engine is not None, LOGGER.error("codifying '%s' requires engine variable name"%self.__class__.__name__)
+        assert isinstance(engine, basestring), LOGGER.error("engine must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', engine) is not None, LOGGER.error("given engine '%s' can't be used as a variable name"%engine)
+        dependencies = 'from fullrmc.Selectors import OrderedSelectors'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = OrderedSelectors.DirectionalOrderSelector(\
+engine={engine}, center={center}, expand={expand}, \
+adjustMoveGenerators={adjustMoveGenerators}, \
+generatorsParams={generatorsParams})"
+        .format(name=name, engine=engine, center=list(self.__center),
+        expand=self.__expand, adjustMoveGenerators=self.__adjustMoveGenerators,
+        generatorsParams=self.__generatorsParams))
+        # return
+        return [dependencies], '\n'.join(code)
 
     def _runtime_initialize(self):
         """
@@ -308,8 +344,9 @@ class DirectionalOrderSelector(DefinedOrderSelector):
                         "RG":{"amplitude":10}}
         # update  TranslationTowardsCenterGenerator values
         for gkey in newGenParams:
-            if not gkey in generatorsParams:
-                continue
+            generatorsParams.setdefault(gkey, newGenParams[gkey])
+            #if not gkey in generatorsParams:
+            #    continue
             assert isinstance(generatorsParams[gkey], dict), LOGGER.error("generatorsParams value must be a python dictionary")
             for key in newGenParams[gkey]:
                 newGenParams[gkey][key] = generatorsParams[gkey].get(key, newGenParams[gkey][key])
@@ -326,13 +363,13 @@ class DirectionalOrderSelector(DefinedOrderSelector):
         Set the center.
 
         :Parameters:
-            #. center (None, list, set, tuple, numpy.ndarray): The center of expansion.
+            #. center (None, list, tuple, numpy.ndarray): The center of expansion.
                If None, the center is automatically set to the origin (0,0,0).
         """
         if center is None:
             center = np.array((0,0,0), dtype=FLOAT_TYPE)
         else:
-            assert isinstance(center, (list, set, tuple, np.ndarray)), LOGGER.error("center must a instance among list, set, tuple or numpy.ndarray")
+            assert isinstance(center, (list, tuple, np.ndarray)), LOGGER.error("center must a instance among list, tuple or numpy.ndarray")
             if isinstance(center, np.ndarray):
                 assert len(center.shape)==1,LOGGER.error("center numpy.ndarray must have one dimension")
             center = list(center)

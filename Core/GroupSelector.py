@@ -10,7 +10,7 @@ can be chosen to perform a move upon.
 """
 # standard libraries imports
 from __future__ import print_function
-import inspect
+import inspect, collections, re
 
 # external libraries imports
 import numpy as np
@@ -267,7 +267,6 @@ class RecursiveGroupSelector(GroupSelector):
         RGS = RecursiveGroupSelector(ENGINE.groupSelector, recur=20, refine=False, explore=True)
         ENGINE.set_group_selector(RGS)
     """
-
     def __init__(self, selector, recur=10, override=True, refine=False, explore=False):
         # set selector instance
         assert isinstance(selector, GroupSelector),LOGGER.error("selector must be a fullrmc GroupSelector instance")
@@ -288,6 +287,28 @@ class RecursiveGroupSelector(GroupSelector):
         self.set_explore(explore)
         # initialize
         self.__initialize_selector__()
+
+    def _codify__(self, name='selector', engine=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = collections.OrderedDict()
+        dependencies['from fullrmc.Core import GroupSelector'] = True
+        dep, kod = self.selector._codify__(name='sel', addDependencies=True)
+        for d in dep:
+            _ = dependencies.setdefault(d,True)
+        code = [kod]
+        code.append("{name} = GroupSelector.RecursiveGroupSelector(selector=sel, \
+recur={recur}, override={override}, refine={refine}, explore={explore})"
+        .format(name=name, recur=self.recur, override=self.override,
+        refine=self.refine, explore=self.explore))
+        # set dependencies
+        dependencies = list(dependencies)
+        # add dependencies
+        if addDependencies:
+            code = dependencies + [''] + code
+        # return
+        return dependencies, '\n'.join(code)
+
 
     def __initialize_selector__(self):
         # initialize last selected index

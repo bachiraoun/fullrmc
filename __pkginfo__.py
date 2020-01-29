@@ -38,17 +38,18 @@ Here we describe two methods to installing fullrmc.
 
 
 For your general understanding, fullrmc requires the following:
-   #. Python (>= 2.7 and 3),
+   #. Python (>= 2.7 and < 3) Starting from fullrmc 4.x.y python 3 is supported
    #. NumPy (lowest version tested is 1.7.1)
    #. cython (lowest version tested is 0.21.1)
    #. matplotlib (lowest version tested is 1.4)
-   #. pyrep (lowest version tested is 1.0.2 - 1.0.3 is used starting
-      from fullrmc 3.0.0 - 1.0.4 is used starting from fullrmc 3.1.0
-      - 3.0.3 is used starting from fullrmc 3.1.0)
-   #. pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting
-      from fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0
-      - 0.1.5 is used starting from fullrmc 1.0.1)
-   #. pysimplelog (lowest version tested is 0.2.1)
+   #. pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from
+      fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used
+      starting from fullrmc 1.0.1 - 0.1.7 is used starting from fullrmc 4.0.0)
+   #. pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting
+      from fullrmc 1.2.0 - 0.2.0 is used starting from fullrmc 4.0.0)
+   #. pyrep (lowest version tested is 1.0.2 is used starting from fullrmc
+      2.0.0 - 1.0.3 is used starting from fullrmc 3.0.0 - 1.0.4 is used
+      starting rom fullrmc 3.1.0 - 3.1.0 is used starting from fullrmc 4.0.0)
 
 **Installation using pip:**\n
 Installing fullrmc with pip is done in two steps.
@@ -57,8 +58,9 @@ they meet with fullrmc's version requirement.
 
    .. code-block:: bash
 
-       pip install -U "numpy>=1.7.1"
-       pip install -U "cython>=0.21.1"
+       pip install -U "numpy>=1.17.4"
+       pip install -U "cython>=0.29.14"
+
 
 When you already have a working up-do-date installation of numpy and cython,
 you can proceed to installing fullrmc. The rest of the dependencies will be
@@ -75,28 +77,30 @@ automatically installed and updated while fullrmc is being installed.
     .. code-block:: python
 
         # check whether all packages are already installed
+        from __future__ import print_function
         from pkg_resources import parse_version as PV
-        for name, ver in [('numpy'      ,'1.7.1') ,
-                          ('cython'     ,'0.21.1'),
-                          ('pyrep'      ,'3.0.0') ,
-                          ('pdbparser'  ,'0.1.5') ,
-                          ('pysimplelog','0.3.0') ,
-                          ('matplotlib' ,'1.4'  )]:
+        for name, ver in [('numpy'      ,'1.17.4') ,
+                          ('cython'     ,'0.29.14'),
+                          ('pyrep'      ,'3.1.0') ,
+                          ('pdbparser'  ,'0.1.7') ,
+                          ('pysimplelog','2.0.0') ,
+                          ('matplotlib' ,'2.2.3'  )]:
             try:
                 lib = __import__(name)
             except:
-                print('%s must be installed for fullrmc to run properly'%(name))
+                print('%s must be installed for fullrmc to run properly.'%(name))
             else:
                 if PV(lib.__version__) < PV(ver):
-                    print('%s installed version %s is below minimum suggested version %s. Updating %s is highly recommended.'%(name, lib.__version__, ver, name))
+                    print('%s installed version %s is below minimum suggested version %s. Updating %s is highly) recommended.'%(name, lib.__version__, ver, name)
                 else:
-                    print('%s is properly installed and minimum version requirement is met.'%(name)
+                    print('%s is installed properly and minimum version requirement is met.'%(name))
 
 
    * Locate python's site-packages by executing the following python script:
 
      .. code-block:: python
 
+        from __future__ import print_function
         import os
         os.path.join(os.path.dirname(os.__file__), 'site_packages')
 
@@ -531,13 +535,16 @@ Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Fful
 bug fixed
 
 
+`Version 3.1.3 <https://pypi.python.org/pypi/fullrmc/3.1.3>`_:
+--------------------------------------------------------------
+Some bugs are fixed and documentation is revisited.
+
 
 
 `Version 3.2.0 <https://pypi.python.org/pypi/fullrmc/3.2.0>`_:
 --------------------------------------------------------------
 Raised `issue <https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2F4L1SCEbcAi0%2FsOqvPhiSAgAJ>`_
 bug fixed
-
 
 
 
@@ -549,7 +556,13 @@ bug fixed
 
 
 
-`Version 4.0.0 <https://pypi.python.org/pypi/fullrmc/4.0.0>`_:
+Version 4.0.0:
+--------------
+This version is not published.
+
+
+
+`Version 4.0.1 <https://pypi.python.org/pypi/fullrmc/4.0.1>`_:
 --------------------------------------------------------------
 Starting from this version, fullrmc has become grid computing capable.
 multiframe is implemented to generate a statistical solution of multiple
@@ -572,10 +585,46 @@ Fixes and improvements:
     #. :class:`.PairCorrelationConstraint` scale factor bug fixed
     #. Engine run method explore bug fixed
     #. Amputation number density bug fixed for InfiniteBoundaryConditions
+
+
+
+`Version 4.1.0 <https://pypi.python.org/pypi/fullrmc/4.1.0>`_:
+--------------------------------------------------------------
+Starting from this version, fullrmc stochastic Engine is codify-able. This
+is a new capability that allows exporting the engine across all systems and
+operating system without worrying about serialization compatibility.
+Also, starting from this version, fullrmc requires pylocker to be installed.
+
+
+New Modules and definitions:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   #. Group 'name' property added
+   #. Engine 'codify' method added
+   #. constraints number of tried and accepted moves are tracked now
+   #. constraints advanced plotting and export helper method
+
+Fixes and improvements:
+~~~~~~~~~~~~~~~~~~~~~~~
+    #. Engine remove constraint bug fixed
+    #. :class:`.OrientationGenerator` bugs fixed
+    #. :class:`.DirectionalOrderSelector` bug fixed
+    #. :class:`.BondConstraint` add_bond method deprecated. set_bonds method
+       modified for performance reasons. bondsDefinition property added.
+    #. :class:`.BondsAngleConstraint` add_bond method deprecated. set_bonds
+       method modified for performance reasons. anglesDefinition property
+       added.
+    #. :class:`.DihedralAngleConstraint` add_bond method deprecated. set_bonds
+       method modified for performance reasons. anglesDefinition property
+       added.
+    #. :class:`.ImproperAngleConstraint` add_bond method deprecated. set_bonds
+       method modified for performance reasons. anglesDefinition property
+       added.
+    #. :class:`.PairDistributionConstraint` set_atoms_weight dump to
+       repository bug fixed
 """
 
 
-__version__    = '4.0.0'
+__version__    = '4.1.0'
 
 __author__     = "Bachir Aoun"
 

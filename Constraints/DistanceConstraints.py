@@ -7,7 +7,7 @@ distances between atoms.
 """
 # standard libraries imports
 from __future__ import print_function
-import itertools
+import itertools, re, copy
 
 # external libraries imports
 import numpy as np
@@ -154,7 +154,7 @@ class _DistanceConstraint(RigidConstraint, SingularConstraint):
                listen method.
             #. argument (object): Any type of argument to pass to the listeners.
         """
-        if message in("engine set", "update molecules indexes"):
+        if message in ("engine set","update pdb","update molecules indexes","update elements indexes","update names indexes"):
             self.set_type_definition(self.__typeDefinition, self.__pairsDistanceDefinition)
             # reset constraint is called in set_paris_distance
         elif message in("update boundary conditions",):
@@ -409,18 +409,20 @@ class _DistanceConstraint(RigidConstraint, SingularConstraint):
         :Returns:
             #. standardError (number): The calculated standardError.
         """
-        standardError = np.sum(data.values())
+        standardError = np.sum(list(data.values()))
         return FLOAT_TYPE(standardError)
 
-    def _get_constraint_value(self):
-        if self.data is None:
+    def _get_constraint_value(self, data=None):
+        if data is None:
+            data = self.data
+        if data is None:
             LOGGER.warn("data must be computed first using 'compute_data' method.")
             return np.array([], dtype=FLOAT_TYPE)
         # compute distances
         idi = self.__typePairsIndex[:,0]
         idj = self.__typePairsIndex[:,1]
-        numbers   = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1)
-        distances = (self.data["distanceSum"][idi,idj] + self.data["distanceSum"][idj,idi]).reshape(-1)
+        numbers   = (data["number"][idi,idj] + data["number"][idj,idi]).reshape(-1)
+        distances = (data["distanceSum"][idi,idj] + data["distanceSum"][idj,idi]).reshape(-1)
         nonZero   = np.where(numbers)
         distances[nonZero] /= numbers[nonZero]
         return distances
@@ -452,11 +454,11 @@ class _DistanceConstraint(RigidConstraint, SingularConstraint):
         # create dataDict
         dataDict = {}
         dataDict['typesIndex'] = self.typesIndex[relativeIndex]
-        dataDict['allTypes']    = self.allTypes[relativeIndex]
+        dataDict['allTypes']   = self.allTypes[relativeIndex]
         # reduce all indexes above relativeIndex in typesIndex
         # delete data
         self.__typesIndex = np.delete(self.__typesIndex, relativeIndex, axis=0)
-        self.__allTypes    = np.delete(self.__allTypes,     relativeIndex, axis=0)
+        self.__allTypes   = np.delete(self.__allTypes,     relativeIndex, axis=0)
         self.__numberOfAtomsPerType[dataDict['allTypes']] -= 1
         # collect atom
         self._atomsCollector.collect(realIndex, dataDict=dataDict)
@@ -487,6 +489,20 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         FRAME_DATA.extend(['_MolecularDistanceConstraint__typesStats', ] )
         object.__setattr__(self, 'FRAME_DATA',   tuple(FRAME_DATA)   )
 
+
+    def _codify_update__(self, name='constraint', addDependencies=True):
+        dependencies = []
+        code         = []
+        if addDependencies:
+            code.extend(dependencies)
+        code.append("{name}.set_used({val})".format(name=name, val=self.used))
+        code.append("{name}.set_flexible({val})".format(name=name, val=self.flexible))
+        code.append("{name}.set_type_definition('{val}')".format(name=name, val=self.typeDefinition))
+        code.append("{name}.set_reject_probability({val})".format(name=name, val=self.rejectProbability))
+        code.append("{name}.set_default_distance({val})".format(name=name, val=self.defaultDistance))
+        code.append("{name}.set_pairs_distance({val})".format(name=name, val=self.pairsDistanceDefinition))
+        # return
+        return dependencies, '\n'.join(code)
 
     def __setattr__(self, name, value):
         if name in ('_interMolecular','_intraMolecular','_countWithinLimits','_reduceDistance','_reduceDistanceToUpper','_reduceDistanceToLower'):
@@ -533,8 +549,21 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         return self.__typesStats
 
     @reset_if_collected_out_of_date
-    def compute_data(self):
-        """ Compute constraint's data."""
+    def compute_data(self, update=True):
+        """ Compute constraint's data.
+
+        :Parameters:
+            #. update (boolean): whether to update constraint data and
+               standard error with new computation. If data is computed and
+               updated by another thread or process while the stochastic
+               engine is running, this might lead to a state alteration of
+               the constraint which will lead to a no additional accepted
+               moves in the run
+
+        :Returns:
+            #. data (dict): constraint data dictionary
+            #. standardError (float): constraint standard error
+        """
         # compute data
         nintra,dintra, ninter,dinter = \
         full_atomic_distances_coords( boxCoords             = self.engine.boxCoordinates,
@@ -558,15 +587,21 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         else:
             number      = nintra
             distanceSum = dintra
-        # update data
-        self.set_data( {"number":number, "distanceSum":distanceSum} )
-        self.set_active_atoms_data_before_move(None)
-        self.set_active_atoms_data_after_move(None)
-        # set standardError
-        self.set_standard_error( self._compute_standard_error(distances = self._get_constraint_value()) )
-        # set original data
-        if self.originalData is None:
-            self._set_original_data(self.data)
+        # create data and compute standard error
+        data     = {"number":number, "distanceSum":distanceSum}
+        stdError = self._compute_standard_error(distances = self._get_constraint_value(data))
+        # update
+        if update:
+            self.set_data( data )
+            self.set_active_atoms_data_before_move(None)
+            self.set_active_atoms_data_after_move(None)
+            # set standardError
+            self.set_standard_error( stdError )
+            # set original data
+            if self.originalData is None:
+                self._set_original_data(self.data)
+        # return
+        return data, stdError
 
     def compute_before_move(self, realIndexes, relativeIndexes):
         """
@@ -698,6 +733,8 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         self.set_after_move_standard_error( self._compute_standard_error(distances = self._get_constraint_value()) )
         # change back data attribute
         self.set_data( data )
+        # increment tried
+        self.increment_tried()
 
     def accept_move(self, realIndexes, relativeIndexes):
         """
@@ -717,6 +754,8 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         # update standardError
         self.set_standard_error( self.afterMoveStandardError )
         self.set_after_move_standard_error( None )
+        # increment accepted
+        self.increment_accepted()
 
     def reject_move(self, realIndexes, relativeIndexes):
         """
@@ -778,156 +817,150 @@ class _MolecularDistanceConstraint(_DistanceConstraint):
         """
         pass
 
-    def plot(self, ax=None, width=0.6,
-                   correctColor = '#0066ff',
-                   erroneousColor = '#d62728',
-                   xlabel=True, xlabelSize=16,
-                   ylabel=True, ylabelSize=16,
-                   legend=True, legendCols=1, legendLoc='best', legendText=('correct','erroneous'),
-                   title=True, titleStdErr=True, titleAtRem=True,
-                   titleUsedFrame=True, show=True):
-        """
-        Plot distance constraint's data.
 
-        :Parameters:
-            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
-               If None is given a new plot figure will be created.
-            #. width (number): Bars width, must be >0 and <=1
-            #. correctColor (color): correct data bars color.
-            #. erroneousColor (color): erroneous data bars color.
-            #. xlabel (boolean): Whether to create x label.
-            #. xlabelSize (number): The x label font size.
-            #. ylabel (boolean): Whether to create y label.
-            #. ylabelSize (number): The y label font size.
-            #. legend (boolean): Whether to create the legend or not
-            #. legendCols (integer): Legend number of columns.
-            #. legendLoc (string): The legend location. Anything among
-               'right', 'center left', 'upper right', 'lower right', 'best',
-               'center', 'lower left', 'center right', 'upper left',
-               'upper center', 'lower center' is accepted.
-            #. legendText (list): The legend of number of correct pairs
-               satisfying constraint and number of erroneous pairs unsatisfying
-               constraint condition.
-            #. title (boolean): Whether to create the title or not
-            #. titleStdErr (boolean): Whether to show constraint standard error
-               value in title.
-            #. titleAtRem (boolean): Whether to show engine's number of removed
-               atoms.
-            #. titleUsedFrame(boolean): Whether to show used frame name in
-               title.
-            #. show (boolean): Whether to render and show figure before
-               returning.
-
-        :Returns:
-            #. figure (matplotlib Figure): matplotlib used figure.
-            #. axes (matplotlib Axes): matplotlib used axes.
-        """
-        # get constraint value
-        if self.data is None:
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
-        # check width
-        assert 0<width<=1, LOGGER.error("width must be a number between 0 and 1")
+    def _plot(self, frameIndex, propertiesLUT,
+                    # plotting arguments
+                    ax, inBarParams,outBarParams,
+                    txtParams,xlabelParams, ylabelParams,
+                    xticksParams, yticksParams,
+                    legendParams, titleParams,
+                    gridParams, *args, **kwargs):
+        # get needed data
+        frame                = propertiesLUT['frames-name'][frameIndex]
+        data                 = propertiesLUT['frames-data'][frameIndex]
+        standardError        = propertiesLUT['frames-standard_error'][frameIndex]
+        numberOfRemovedAtoms = propertiesLUT['frames-number_of_removed_atoms'][frameIndex]
         # import matplotlib
         import matplotlib.pyplot as plt
-        # get axes
-        if ax is None:
-            FIG  = plt.figure()
-            AXES = plt.gca()
-        else:
-            AXES = ax
-            FIG  = AXES.get_figure()
         # get numbers and differences
         idi = self.typePairsIndex[:,0]
         idj = self.typePairsIndex[:,1]
-        numbers = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        numbers = (data["number"][idi,idj] + data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
         stats   = (self.typesStats[idi,idj] + self.typesStats[idj,idi]).reshape(-1).astype(FLOAT_TYPE)
         diff    = stats-numbers
         # plot bars
-        ind   = np.arange(1,len(numbers)+1)  # the x locations for the groups
-        p1 = AXES.bar(ind, diff, width, color=correctColor, label=legendText[0])
-        p2 = AXES.bar(ind, numbers, width, bottom=diff, color=erroneousColor, label=legendText[1])
-        AXES.set_xlim(0,len(numbers)+1.5)
-        AXES.set_ylim(0, max(stats)+0.15*max(stats))
+        ind   = np.arange(1,len(numbers)+1)
+        inBarParams = copy.deepcopy(inBarParams)
+        width  = inBarParams.pop('width', 0.6)
+        p1 = ax.bar(ind, diff, width, **inBarParams)
+        outBarParams = copy.deepcopy(outBarParams)
+        width  = outBarParams.pop('width', 0.6)
+        p2 = ax.bar(ind, numbers, width, bottom=diff, **outBarParams)
         # set ticks
-        plt.xticks(ind, ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs])
+        ax.set_xticks(ind)
+        ax.set_xticklabels( ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs], **xticksParams)
         # ratio labels
-        data = self._get_constraint_value()
-        for d, rect in zip(data, AXES.patches):
+        value = self._get_constraint_value(data=data)
+        for d, rect in zip(value, ax.patches):
             height = rect.get_height()
-            t = AXES.text(x     = rect.get_x() + rect.get_width()/2,
-                          y     = height + 5,
-                          s     = " "+str(d),
-                          color = 'black',
-                          rotation = 90,
-                          horizontalalignment = 'center',
-                          verticalalignment   = 'bottom')
-        # set axis labels
-        if xlabel:
-            AXES.set_xlabel("Type pairs", size=xlabelSize)
-        if ylabel:
-            AXES.set_ylabel("Number of pairs"  , size=ylabelSize)
-        # set title
-        if title:
-            FIG.canvas.set_window_title('Molecular Distances Constraint')
-            if titleUsedFrame:
-                t = '$frame: %s$ : '%self.engine.usedFrame.replace('_','\\_')
-            else:
-                t = ''
-            if titleAtRem:
-                t += "$%i$ $rem.$ $at.$ - "%(len(self.engine._atomsCollector))
-            if titleStdErr and self.standardError is not None:
-                t += "$std$ $error=%.6f$ "%(self.standardError)
-            if len(t):
-                AXES.set_title(t)
-        # set background color
-        FIG.patch.set_facecolor('white')
+            t = ax.text(x = rect.get_x() + rect.get_width()/2,
+                        y = height + 5,
+                        s = " "+str(d),
+                        **txtParams)
+        # set limits
+        ax.set_xlim(0,len(numbers)+1.5)
+        ax.set_ylim(0, max(stats)+0.15*max(stats))
         # plot legend
-        if legend:
-            AXES.legend(frameon=False, ncol=legendCols, loc=legendLoc)
-        #show
-        if show:
-            plt.show()
-        # return axes
-        return FIG, AXES
+        if legendParams is not None:
+            ax.legend(**legendParams)
+        # set axis labels
+        ax.set_xlabel(**xlabelParams)
+        ax.set_ylabel(**ylabelParams)
+        # set title
+        if titleParams is not None:
+            title = copy.deepcopy(titleParams)
+            label = title.pop('label',"").format(frame=frame,standardError=standardError, numberOfRemovedAtoms=numberOfRemovedAtoms,used=self.used)
+            ax.set_title(label=label, **title)
+        # grid parameters
+        if gridParams is not None:
+            gp = copy.deepcopy(gridParams)
+            axis = gp.pop('axis', 'both')
+            if axis is None:
+                axis = 'both'
+            ax.grid(axis=axis, **gp)
 
-    def export(self, fname, delimiter='     ', comments='# '):
-        """
-        Export distance constraint's data.
+    def plot(self, inBarParams={'label':"inbound", 'color':'#0066ff', 'width':0.6},
+                   outBarParams={'label':"outbound", 'color':'#d62728', 'width':0.6},
+                   txtParams={'color':'black', 'fontsize':8, 'rotation':90, 'horizontalalignment':'center', 'verticalalignment':'center'},
+                   xlabelParams={'xlabel':'Type pairs', 'size':10},
+                   ylabelParams={'ylabel':'Number of pairs', 'size':10},
+                   xticksParams={'fontsize': 8, 'rotation':45},
+                   **kwargs):
+         """
+         Alias to Constraint.plot with additional parameters
 
-        :Parameters:
-            #. fname (path): full file name and path.
-            #. delimiter (string): String or character separating columns.
-            #. comments (string): String that will be prepended to the header.
-        """
-        # get constraint value
-        output = self.get_constraint_value()
-        if not len(output):
-            LOGGER.warn("%s constraint data are not computed."%(self.__class__.__name__))
-            return
+         :Additional/Adjusted Parameters:
+             #. dataParams (None, dict): modified constraint data plotting parameters
+             #. barParams (None, dict): matplotlib.axes.Axes.bar parameters
+             #. txtParams (None, dict): matplotlib.axes.Axes.text parameters
+             #. xlabelParams (None, dict): modified matplotlib.axes.Axes.set_xlabel
+                parameters.
+             #. ylabelParams (None, dict): modified matplotlib.axes.Axes.set_ylabel
+                parameters.
+             #. xticksParams (None, dict): modified matplotlib.axes.Axes.set_xticklabels
+                parameters.
+             #. titleParams (None, dict): title format.
+             #. show (boolean): Whether to render and show figure before
+                returning.
+         """
+         return super(_MolecularDistanceConstraint, self).plot(inBarParams=inBarParams,
+                                                               outBarParams=outBarParams,
+                                                               txtParams   = txtParams,
+                                                               xlabelParams=xlabelParams,
+                                                               ylabelParams=ylabelParams,
+                                                               xticksParams=xticksParams,
+                                                               **kwargs)
+
+
+    def _constraint_copy_needs_lut(self):
+        return {'_MolecularDistanceConstraint__typesStats':'_MolecularDistanceConstraint__typesStats',
+                '_DistanceConstraint__typePairsIndex'     :'_DistanceConstraint__typePairsIndex',
+                '_DistanceConstraint__typePairs'          :'_DistanceConstraint__typePairs',
+                '_DistanceConstraint__typesIndex'         :'_DistanceConstraint__typesIndex',
+                '_DistanceConstraint__numberOfTypes'      :'_DistanceConstraint__numberOfTypes',
+                '_DistanceConstraint__lowerLimitArray'    :'_DistanceConstraint__lowerLimitArray',
+                '_DistanceConstraint__upperLimitArray'    :'_DistanceConstraint__upperLimitArray',
+                '_Constraint__used'                       :'_Constraint__used',
+                '_Constraint__data'                       :'_Constraint__data',
+                '_Constraint__standardError'              :'_Constraint__standardError',
+                '_Constraint__state'                      :'_Constraint__state',
+                '_Engine__state'                          :'_Engine__state',
+                '_Engine__boxCoordinates'                 :'_Engine__boxCoordinates',
+                '_Engine__basisVectors'                   :'_Engine__basisVectors',
+                '_Engine__isPBC'                          :'_Engine__isPBC',
+                '_Engine__moleculesIndex'                 :'_Engine__moleculesIndex',
+                '_Engine__elementsIndex'                  :'_Engine__elementsIndex',
+                '_Engine__numberOfAtomsPerElement'        :'_Engine__numberOfAtomsPerElement',
+                '_Engine__elements'                       :'_Engine__elements',
+                '_Engine__numberDensity'                  :'_Engine__numberDensity',
+                '_Engine__volume'                         :'_Engine__volume',
+                '_atomsCollector'                         :'_atomsCollector',
+                ('engine','_atomsCollector')              :'_atomsCollector',
+               }
+
+
+    def _get_export(self, frameIndex, propertiesLUT, format='%s'):
+        # create data, metadata and header
+        data = propertiesLUT['frames-data'][frameIndex]
         # get numbers and differences
         idi = self.typePairsIndex[:,0]
         idj = self.typePairsIndex[:,1]
-        numbers = (self.data["number"][idi,idj] + self.data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
+        numbers = (data["number"][idi,idj] + data["number"][idj,idi]).reshape(-1).astype(FLOAT_TYPE)
         stats   = (self.typesStats[idi,idj] + self.typesStats[idj,idi]).reshape(-1).astype(FLOAT_TYPE)
         diff    = stats-numbers
         # set data as strings
-        stats   = [str(i) for i in stats]
-        diff    = [str(i) for i in diff]
-        numbers = [str(i) for i in numbers]
+        stats   = [format%i for i in stats]
+        diff    = [format%i for i in diff]
+        numbers = [format%i for i in numbers]
         pairs   = ["%s-%s"%(el1,el2) for el1,el2 in self.typePairs]
-        stdErr  = self._get_constraint_value()
+        stdErr  = [format%i for i in self._get_constraint_value(data)]
         # start creating header and data
         header = ["description","num_pairs","correct","erroneous","standard_error"]
-        data   = [pairs,stats,diff,numbers,stdErr]
-        # save
-        data = np.transpose(data)
-        np.savetxt(fname     = fname,
-                   X         = data,
-                   fmt       = '%s',
-                   delimiter = delimiter,
-                   header    = " ".join(header),
-                   comments  = comments)
+        data   = []
+        for i in range(len(pairs)):
+            data.append( [pairs[i],stats[i],diff[i],numbers[i],stdErr[i]] )
+        return header, data
+
 
 
 class InterMolecularDistanceConstraint(_MolecularDistanceConstraint):
@@ -1036,6 +1069,24 @@ class InterMolecularDistanceConstraint(_MolecularDistanceConstraint):
                                                                pairsDistanceDefinition = pairsDistanceDefinition,
                                                                flexible                = flexible,
                                                                rejectProbability       = rejectProbability)
+
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Constraints import DistanceConstraints'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = DistanceConstraints.InterMolecularDistanceConstraint\
+(defaultDistance={defaultDistance}, typeDefinition='{typeDefinition}', \
+pairsDistanceDefinition={pairsDistanceDefinition}, flexible={flexible}, \
+rejectProbability={rejectProbability})".format(name=name, defaultDistance=self.defaultDistance,
+                typeDefinition=self.typeDefinition, pairsDistanceDefinition=self.pairsDistanceDefinition,
+                flexible=self.flexible,rejectProbability=self.rejectProbability))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        # return
+        return [dependencies], '\n'.join(code)
 
 
 
@@ -1148,3 +1199,20 @@ class IntraMolecularDistanceConstraint(_MolecularDistanceConstraint):
                                                                pairsDistanceDefinition = pairsDistanceDefinition,
                                                                flexible                = flexible,
                                                                rejectProbability       = rejectProbability)
+
+    def _codify__(self, engine, name='constraint', addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Constraints import DistanceConstraints'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = DistanceConstraints.IntraMolecularDistanceConstraint\
+(defaultDistance={defaultDistance}, typeDefinition='{typeDefinition}', \
+pairsDistanceDefinition={pairsDistanceDefinition}, flexible={flexible}, \
+rejectProbability={rejectProbability})".format(name=name, defaultDistance=self.defaultDistance,
+                typeDefinition=self.typeDefinition, pairsDistanceDefinition=self.pairsDistanceDefinition,
+                flexible=self.flexible,rejectProbability=self.rejectProbability))
+        code.append("{engine}.add_constraints([{name}])".format(engine=engine, name=name))
+        # return
+        return [dependencies], '\n'.join(code)

@@ -1,6 +1,8 @@
 """
-In order to work properly, this script must be put one layer or directory
-outside of fullrmc package directory.
+This script will work from within the main package directory.
+
+python setup.py sdist bdist_wheel
+twine upload dist/fullrmc-... --universal
 """
 ##########################################################################################
 ########################################  IMPORTS  #######################################
@@ -31,11 +33,10 @@ except:
 
 
 # check python version
-if sys.version_info.major == 2:
-    assert sys.version_info.minor>=7, "Only ython 2.7.y is accepted in the 2.x.y version of python"
-else:
-    assert sys.version_info.major == 3, "Only python 2.7.y or python 3.7.y and above are accepted versions"
-    #assert sys.version_info.minor>=7, "Only python 3.7.y and above is accepted in the 3.x.y version of python"
+major, minor = sys.version_info[:2]
+if major==2 and minor!=7:
+    raise RuntimeError("Python version 2.7.x or >=3.x is required.")
+
 
 ## get python 2 and 3 compatibilities
 if sys.version_info.major==3:
@@ -64,7 +65,7 @@ else:
 #################################  PACKAGE PATH AND NAME  ################################
 PACKAGE_PATH    = '.'
 PACKAGE_NAME    = 'fullrmc'
-EXTENSIONS_PATH = os.path.join(PACKAGE_NAME, "Extensions")
+EXTENSIONS_PATH = "Extensions"
 
 
 
@@ -115,6 +116,8 @@ commands = [# include MANIFEST.in
             'global-exclude %s/Examples/*/exportTrajectoryFigures.py'%PACKAGE_NAME,
             'global-exclude %s/Examples/*/extractTrajectoryPDF.py'%PACKAGE_NAME,
             'global-exclude %s/Examples/*/restart.pdb'%PACKAGE_NAME,
+            # exclude MultiframeUtils
+            'global-exclude MultiframeUtils.py*'
             ]
 
 
@@ -168,17 +171,17 @@ LONG_DESCRIPTION = ["FUndamental Library Language for Reverse Monte Carlo or ful
                     "Starting from version 1.x.y fitting non-periodic boundary conditions or isolated molecules is added. ",
                     "fullrmc >= 1.2.y can be compiled with 'openmp' allowing multithreaded fitting. ",
                     "fullrmc >= 2.x.y engine is a single file no more but a pyrep repository. ",
-                    "fullrmc >= 3.x.y dynamically removing atoms upon fitting is enabled. ",]
+                    "fullrmc >= 3.x.y dynamically removing atoms upon fitting is enabled. ",
+                    "fullrmc >= 4.x.y is grid computation capable using softgrid. ",]
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 DESCRIPTION      = [ LONG_DESCRIPTION[0] ]
 
 # get package info
 PACKAGE_INFO={}
 if sys.version_info.major == 2:
-    execfile(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') ), PACKAGE_INFO)
+    execfile(convert_path( '__pkginfo__.py') , PACKAGE_INFO)
 else:
-    exec(open(convert_path( os.path.join(PACKAGE_PATH, PACKAGE_NAME,'__pkginfo__.py') )).read(), PACKAGE_INFO)
-
+    exec(open(convert_path( '__pkginfo__.py')).read(), PACKAGE_INFO)
 
 ##########################################################################################
 ################################### USEFUL DEFINITIONS ###################################
@@ -204,7 +207,7 @@ def get_packages(path, base="", exclude=None):
             packages.update(get_packages(d, module_name, exclude))
     return packages
 
-DATA_EXCLUDE = ('*.rmc','*.data','*.png','*.xyz','*.log','*.pyc', '*~', '.*', '*.so', '*.pyd','*MultiframeUtils.py')
+DATA_EXCLUDE = ('*.rmc','*.data','*.png','*.xyz','*.log','*.pyc', '*~', '.*', '*.so', '*.pyd')
 EXCLUDE_DIRECTORIES = ('*svn','*git','dist', 'EGG-INFO', '*.egg-info',"*.rmc")
 def find_package_data(where='.', package='', relativePath='',
                       exclude=DATA_EXCLUDE, excludeDirectories=EXCLUDE_DIRECTORIES,
@@ -250,7 +253,6 @@ def find_package_data(where='.', package='', relativePath='',
                 else:
                     out.setdefault(package, []).append(prefix+name)
     return out
-
 
 
 ##########################################################################################
@@ -312,18 +314,19 @@ CMDCLASS = {'build_ext' : build_ext}
 
 ##########################################################################################
 #####################################  PACKAGE DATA  #####################################
-# get packages and remove everything that is not fullrmc
-docs = os.path.join(PACKAGE_NAME,"docs")
-PACKAGES = get_packages(path=PACKAGE_PATH, exclude=(docs, ) )
+# get packages and exclude docs
+PACKAGES = get_packages(path=PACKAGE_PATH, base='fullrmc',exclude=('docs', ) )
 
-for package in list(PACKAGES):
-    if PACKAGE_NAME not in package:
-        PACKAGES.pop(package)
-# get package data
-PACKAGE_DATA = find_package_data(where=os.path.join(PACKAGE_NAME, "Examples"),
-                                 relativePath="Examples",
+# add fullrmc package to path. Otherwise installation will dump all files and
+# sub-packages loose in site-packages
+PACKAGES[PACKAGE_NAME] = '.'
+
+# Get fullrmc examples package_data
+PACKAGE_DATA = find_package_data(where="Examples",
+                                 relativePath='Examples',
                                  package='fullrmc',
                                  showIgnored=False)
+
 # metadata
 metadata = dict(# package
                 name             = PACKAGE_NAME,
@@ -350,10 +353,10 @@ metadata = dict(# package
                 platforms        = ["Windows", "Linux", "Mac OS-X", "Unix"],
                 # Dependent packages (distributions)
                 install_requires = ["pysimplelog>=2.0.0",
-                                    "pdbparser>=0.1.7",
-                                    "pylocker>=2.0.0",
-                                    "pyrep>=3.1.0",
-                                    "matplotlib>=2.2.3" ], # numpy and cython are also needed, but this is left out for the user to install.
+                                    "pdbparser>=0.1.8",
+                                    "pyrep>=3.2.0",
+                                    "pylocker>=3.0.0",
+                                    "matplotlib>=3.1.2"], # numpy and cython are also needed, but this is left out for the user to install.
                 setup_requires   = [''],
                 )
 

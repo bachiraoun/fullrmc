@@ -11,14 +11,8 @@ bond-angles, dihedral angles, inter-molecular-distances, etc.
 
 # standard libraries imports
 from __future__ import print_function
-import os
-import time
-import sys
-import uuid
-import tempfile
-import multiprocessing
-import copy
-import inspect
+import os, sys, time, uuid, tempfile, multiprocessing
+import copy, inspect, collections, re
 
 
 # external libraries imports
@@ -45,6 +39,122 @@ from .Core.GroupSelector import GroupSelector
 from .Selectors.RandomSelectors import RandomSelector
 
 
+class InterceptHook(object):
+    """Engine runtime intercept hook. This can be used by a thread or another
+    process to intercept a running stochastic engine to do different actions
+    such as stop, save, export a pdb file or reset the standard error.
+
+    Calling InterceptHook methods on a non-running engine won't do any action.
+
+    :Parameters:
+        #. path (string): Engine repository path
+        #. password (string): Engine repository password. If None,
+           default value will be given hoping that the running engine
+           repository password is also the default one. Otherwise the hook
+           connection will fail.
+
+
+    From a different python process, run the following code to handle a hook
+    of a running engine.
+
+
+    .. code-block:: python
+
+        # import fullrmc's InterceptHook
+        from fullrmc import InterceptHook
+
+        # create hook
+        hook = InterceptHook(path='my_engine.rmc')
+
+        # safely force stopping running engine
+        hook.stop_engine()
+
+        # safely force saving running engine
+        hook.save_engine()
+
+        # safely export a pdb file of the current engine structure status
+        hook.export_pdb()
+
+        # safely reset standard error during engine runtime
+        hook.reset_standard_error()
+
+    """
+    def __init__(self, path, password=None):
+        self.__hook = None
+        if path is not None:
+            rep = Repository(password=password)
+            rep = rep.load_repository(path)
+            self.__hook = rep.locker
+            #assert not self.__hook.isServer, "It's not safe for the hook to be the engine repository server. Make sure to load engine first"
+            #assert self.__hook.isClient, "Hook to engine '%s' not successfully created"%path
+
+    def stop_engine(self):
+        """stop a running engine"""
+        self.__hook.publish('stop_engine')
+
+    def save_engine(self):
+        """force saving a running engine"""
+        self.__hook.publish('save_engine')
+
+    def export_pdb(self):
+        """export a pdb of the current state of a running engine"""
+        self.__hook.publish('export_pdb')
+
+    def reset_standard_error(self):
+        """reset a running engine total standard error"""
+        self.__hook.publish('reset_standard_error')
+
+    @classmethod
+    def get_engine_hook(cls, engine):
+        """Get engine instance intercept hook"""
+        locker = engine._get_repository().locker
+        hook   = InterceptHook(None,None)
+        hook._InterceptHook__hook = locker
+        return hook
+
+    @classmethod
+    def clear(cls, engine):
+        """release all unexecuted hooks from engine"""
+        locker = engine._Engine__repository.locker
+        for m in ['stop_engine','save_engine','export_pdb','reset_standard_error']:
+            _ = locker.pop_message(m)
+
+    @classmethod
+    def _intercept(cls, engine, step, restartPdb, _frame, _usedConstraints, _constraints, _lastSavedTotalStandardError):
+        """meant for internal use only"""
+        locker    = engine._Engine__repository.locker
+        usedFrame = engine.usedFrame
+        stop      = False
+        # reset standard error
+        if locker.pop_message('reset_standard_error') is not None:
+            LOGGER.usage("@%s request to reset engine's standard error is received at step %i"%( usedFrame, step) )
+            _ = engine.initialize_used_constraints(force=True)
+            _ = [c._runtime_initialize() for c in _usedConstraints]
+            engine._Engine__totalStandardError = engine.compute_total_standard_error(_constraints, current="standardError")
+        # save engine
+        if locker.pop_message('save_engine') is not None:
+            LOGGER.usage("@%s request to save engine is received at step %i"%( usedFrame, step) )
+            _lastSavedTotalStandardError = \
+            engine._Engine__on_runtime_step_save_engine(_saveFrequency               = step+1,
+                                                        step                         = step,
+                                                        _frame                       = _frame,
+                                                        _usedConstraints             = _usedConstraints,
+                                                        _lastSavedTotalStandardError = _lastSavedTotalStandardError)
+        # export pdb
+        if locker.pop_message('export_pdb') is not None:
+            LOGGER.usage("@%s request to export pdb is received at step %i"%( usedFrame, step) )
+            if restartPdb is False:
+                engine.export_pdb( 'restart.pdb' )
+            else:
+                engine.export_pdb( restartPdb )
+        # stop engine
+        if locker.get_message('stop_engine') is not None:
+            stop = True
+            LOGGER.usage("@%s request to stop engine is received at step %i"%( usedFrame, step) )
+        # return stop flag and _lastSavedTotalStandardError
+        return stop, _lastSavedTotalStandardError
+
+
 class Engine(object):
     """
     fulrmc's engine, is used to launch a stochastic modelling which is
@@ -68,6 +178,8 @@ class Engine(object):
            path.
         #. timeout (number): The maximum delay or time allowed to successfully
            set the lock upon reading or writing the engine repository
+        #. password (None, string): Engine repository password. If None,
+           default value will be given.
 
     .. code-block:: python
 
@@ -92,7 +204,12 @@ class Engine(object):
         ENGINE.run(numberOfSteps=10000, saveFrequency=10000)
 
     """
-    def __init__(self, path=None, logFile=None, freshStart=False, timeout=10):
+    def __init__(self, path=None, logFile=None, freshStart=False, timeout=10, password=None):
+        # check password
+        if password is not None:
+            assert isinstance(password, basestring), "password must be None or a string"
+        self.__password = password
+
         # set repository and frame data
         ENGINE_DATA   = ('_Engine__frames', '_Engine__usedFrame', )
         ## MUST ADD ORIGINAL DATA TO STORE ALL ORIGINAL PDB ATTRIBUTES
@@ -147,10 +264,10 @@ class Engine(object):
         # check whether an engine exists at this path
         if self.is_engine(path):
             if freshStart:
-                #Repository().remove_repository(path, relatedFiles=True, relatedFolders=True)
-                rep = Repository(timeout=self.__timeout)
+                rep = Repository(timeout=self.__timeout, password=self.__password)
                 rep.DEBUG_PRINT_FAILED_TRIALS = False
                 rep.remove_repository(path, removeEmptyDirs=True)
+                rep.close()
             else:
                 m  = "An Engine is found at '%s'. "%path
                 m += "If you wish to override it set freshStart argument to True. "
@@ -183,10 +300,10 @@ class Engine(object):
         self.__tolerance     = 0.
 
         # set mustSave flag, it indicates  whether saving whole engine is needed before running
-        self.__mustSave       = False
         self.__saveGroupsFlag = True
 
         # set pdb
+        self.__pdb = None
         self.set_pdb(pdb=None)
 
         # create runtime variables and arguments
@@ -195,6 +312,282 @@ class Engine(object):
         # set LOGGER file path
         if logFile is not None:
             self.set_log_file(logFile)
+
+    def codify(self, export='codified_engine.py', name='ENGINE',
+                     engineSaveName='engine.rmc', frames=None, addDependencies=True):
+        """Codify engine full state to a code that once executed it will
+        regenerate and and save the engine on disk. This is a better alternative
+        to transfering engine from one system to another. The generated code
+        is python 2 and 3 compatible and operating system safe allowing
+        to get an executable code to regenerate the engine.
+
+        :Parameters:
+            #. export (None, str): file to write generated codified engine
+               code. If string is given, it's the file path
+            #. name (str): engine variable name in the generate code
+            #. engineSaveName (None,str): directory path to save engine upon
+               executing the codified engine code
+            #. frames (None, str, list): the list of frames to codify. At least
+               one traditional frame must be given. If None, all frames will
+               be codified.
+            #. addDependencies (bool): whether to add imports dependencies
+               to the generated code header. Dependencies will always be
+               added to the code header in the exported file.
+
+        :Returns:
+            #. dependencies (list): list of dependencies import strings
+            #. code (str): the codified engine code
+        """
+        # check parameters
+        if export is not None:
+            assert isinstance(export, basestring), LOGGER.error("export must be None or a file path")
+        if engineSaveName is not None:
+            assert isinstance(engineSaveName, basestring), LOGGER.error("engineSaveName must be a string")
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        if frames is None:
+            frames = list(self.__frames)
+        elif isinstance(frames, basestring):
+            frames = [frames]
+        assert all([frm in self.__frames for frm in frames]), LOGGER.error("codifying frames must all be defined")
+        multiLUT  = {}
+        framesLUT = collections.OrderedDict()
+        for f in frames:
+            if isinstance(f, basestring):
+                frmName  = f
+                frmAlias = f
+            else:
+                assert isinstance(f, (list,tuple)), LOGGER.error("codifying frames list item must be a string or a list")
+                assert len(f) == 2, LOGGER.error("codifying frames list items must be lists of length 2")
+                frmName  = f[0]
+                frmAlias = f[1]
+            assert frmAlias not in framesLUT, LOGGER.error("codifying frame '%s' multiple time is not allowed"%(f,))
+            isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frmName)
+            if isNormalFrame:
+                framesLUT[frmAlias] = frmName
+            else:
+                multiLUT[frmAlias] = frmName
+        assert len(framesLUT), LOGGER.error("codifying at least one traditional frame is mandatory")
+        for mf in multiLUT:
+            framesLUT[mf] = multiLUT[mf]
+        # start dependencies
+        LOGGER.info('Codifying engine ...')
+        dependencies = collections.OrderedDict()
+        dependencies["# This code is auto-generated by fullrmc {ver}".format(ver=self.__version)] = True
+        dependencies["# For questions and concerns use fullrmc's forum http://bachiraoun.github.io/fullrmc/QAForum.html"] = True
+        dependencies["\n# import dependencies"]               = True
+        dependencies['from __future__ import print_function'] = True
+        dependencies['import os, sys']                        = True
+        dependencies['from fullrmc import get_version']       = True
+        dependencies['from fullrmc import Engine']            = True
+        dependencies['from fullrmc.Globals import LOGGER']    = True
+        dependencies['from fullrmc.Globals import FLOAT_TYPE']= True
+        dependencies['from fullrmc.Globals import INT_TYPE']  = True
+        dependencies['from fullrmc.Core.Constraint import ExperimentalConstraint'] = True
+        # initialize code
+        code = ["\n# Check fullrmc's version",
+                "if get_version()!='{ver}':".format(ver=self.__version),
+                "    LOGGER.warn('Engine is codified using fullrmc {vers} while this used fullrmc version is %s'%(get_version(),))".format(vers=self.__version),
+                "\n",
+                "LOGGER.info('Building codified engine')",
+                "\n# Initialize Engine",
+                "{name} = Engine(path='{engineSaveName}')".format(name=name, engineSaveName=engineSaveName)]
+        # create frames
+        rename0 = '0' not in framesLUT
+        priors  = {}
+        for idx, frmAlias in enumerate(framesLUT):
+            frmName = framesLUT[frmAlias]
+            frmData = self.__frames[frmName]
+            ismulti = frmData is not None
+            if idx == 0:
+                assert not ismulti, LOGGER.error("First codified frame must not be multi-frame. PLEASE REPORT")
+                self.set_used_frame(frmName)
+                if rename0:
+                    rename0 = False
+                    code.append("{name}.rename_frame(frame='0', newName='{newFrame}')".format(name=name, newFrame=frmData[0]))
+                # create first frame
+                dep, kod = self._codify_frame__(name=name, pdb=self.__pdb, addConstraints=self.__constraints, updateConstraints=None, addDependencies=False, priors=priors)
+                for d in dep:
+                    _ = dependencies.setdefault(d,True)
+                code.append(kod)
+                # check to save engine
+                if engineSaveName is not None:
+                    code.append("")
+                    code.append("# Save engine")
+                    code.append("{name}.save()".format(name=name))
+            else:
+                # create frame
+                code.append("\n\n# Adding frame '{frame}'".format(frame=frmAlias))
+                if ismulti:
+                    code.append("LOGGER.info(\"Adding multiframe '{frame}'\")".format(frame=frmAlias))
+                else:
+                    code.append("LOGGER.info(\"Adding traditional frame '{frame}'\")".format(frame=frmAlias))
+                if ismulti:
+                    frmData['name'] = frmAlias
+                    frm2set = [("os.path.join('{a}','{n}')".format(a=frmAlias,n=n), os.path.join(frmAlias,n), os.path.join(frmName,n)) for n in frmData['frames_name']]
+                    frmData = [frmData]
+                else:
+                    frmData = ["%s"%frmAlias]
+                    frm2set = [("'%s'"%frmAlias,frmAlias,frmName)]
+                code.append("{name}.add_frames({frmData})".format(name=name, frmData=frmData))
+                # create frame or multiframe code
+                # af: alias path or path to execute on any operating system os.path.join(...)
+                # ap: alias path
+                # of: original file path
+                for idx, (af, ap, of) in enumerate(frm2set):
+                    self.set_used_frame(of)
+                    code.append("\n\n# Creating frame '{ap}'".format(ap=ap))
+                    code.append("LOGGER.info(\"Creating frame '{ap}'\")".format(ap=ap))
+                    code.append("{name}.set_used_frame({frmName})".format(name=name, frmName=af))
+                    if ismulti:
+                        pdb = self.__pdb
+                        if idx == 0:
+                            addConstraints    = self.__constraints
+                            updateConstraints = None
+                            code.append("# Remove all constraints")
+                            code.append("constraints = {name}.constraints".format(name=name))
+                        else:
+                            addConstraints    = [_c for _c in self.__constraints if not isinstance(_c, ExperimentalConstraint)]
+                            updateConstraints = [_c for _c in self.__constraints if isinstance(_c, ExperimentalConstraint)]
+                            code.append("constraints = [_c for _c in {name}.constraints if not isinstance(_c, ExperimentalConstraint)]".format(name=name))
+                            code.append("# Remove non-experimental constraints")
+                        code.append("{name}.remove_constraints(constraints=constraints)".format(name=name))
+                    else:
+                        pdb               = None
+                        addConstraints    = None
+                        updateConstraints = self.__constraints
+                    # codify constraints
+                    dep, kod = self._codify_frame__(name=name, pdb=pdb, addConstraints=addConstraints, updateConstraints=updateConstraints, addDependencies=False, priors=priors)
+                    for d in dep:
+                        _ = dependencies.setdefault(d,True)
+                    code.append(kod)
+                    # check to save engine
+                    if engineSaveName is not None:
+                        code.append("")
+                        code.append("# Save engine")
+                        code.append("{name}.save()".format(name=name))
+        # add dependencies
+        dependencies = list(dependencies)
+        if addDependencies:
+            code = dependencies + [''] + code
+        code = '\n'.join(code)
+        # log
+        LOGGER.info('Engine Codified successfully.')
+        # export
+        if export is not None:
+            with open(export, 'w') as fd:
+                fd.write(code)
+            LOGGER.info("Codified engine successfully exported to '%s'"%(export,))
+        # return
+        return dependencies, code
+
+
+    def _codify_frame__(self, name='ENGINE', pdb=None, addConstraints=None, updateConstraints=None, addDependencies=False, priors=None):
+        def add_get_kod_update(code, dependencies, kod, priors, varName, pbn, addToCode=True):
+            for d in dep:
+                _ = dependencies.setdefault(d,True)
+            if kod not in priors:
+                code.append(kod)
+                prioredVarName = pbn+"_"+varName
+                priors[kod] = prioredVarName
+                assert prioredVarName not in priors, LOGGER.error("codify duplicate prior variable name '%s' found. PLEASE REPORT"%prioredVarName)
+                priors[prioredVarName] = kod
+                if addToCode:
+                    code.append("{prioredVarName} = {varName}".format(prioredVarName=prioredVarName, varName=varName))
+            else:
+                prioredVarName = priors[kod]
+            return code, prioredVarName
+
+        if priors is None:
+            priors = {}
+        assert isinstance(priors, dict), LOGGER.error('priors must be None or a dict')
+        pbn = '_'+self.__usedFrame.replace('-','_').replace(os.sep, '_') # priors basename
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', pbn) is not None, LOGGER.error("code prior basename '%s' can't be used in a variable name. PLEASE REPORT"%(pbn))
+        dependencies = collections.OrderedDict()
+        # create engine
+        code = []
+        # add pdb
+        if pdb is not None:
+            code.append("\n# Create pdb")
+            varName  = "pdb"
+            dep, kod = pdb._codify__(name=varName, addDependencies=False)
+            code, varName = add_get_kod_update(code=code, dependencies=dependencies, kod=kod, priors=priors, varName=varName, pbn=pbn)
+            # set pdb
+            code.append("\n# Set pdb")
+            code.append( "{name}.set_pdb({varName})".format(name=name, varName=varName) )
+        # set real coordinates coordinates
+        code.append("\n# Set real coordinates")
+        code.append("x = {x}".format(x = list(self.__realCoordinates[:,0])))
+        code.append("y = {y}".format(y = list(self.__realCoordinates[:,1])))
+        code.append("z = {z}".format(z = list(self.__realCoordinates[:,2])))
+        code.append("{name}._Engine__realCoordinates = np.transpose([x,y,z]).astype(FLOAT_TYPE)".format(name=name))
+        # set engine coordinates and boundary conditions. This will take care of box coordinates
+        code.append("\n# Set boundary conditions")
+        bc = None
+        if self.isPBC:
+            bc = [list(i) for i in list(self.__boundaryConditions.get_vectors())]
+        code.append( "{name}.set_boundary_conditions({bc})".format(name=name, bc=bc) )
+        # set selector
+        dep, kod = self.__groupSelector._codify__(name='sel', addDependencies=False)
+        code.append("\n# Set group selector")
+        code.append(kod)
+        code.append( "{name}.set_group_selector(sel)".format(name=name) )
+        for d in dep:
+            _ = dependencies.setdefault(d,True)
+        # create groups and move generators LUT
+        mgLUT = {}
+        code.append("groups = []")
+        for idx,gr in enumerate(self.__groups):
+            varName  = 'gr_%i'%idx
+            dep, kod = gr._codify__(name=varName, addDependencies=False, codifyGenerator=False)
+            code, varName = add_get_kod_update(code=code, dependencies=dependencies, kod=kod, priors=priors, varName=varName, pbn=pbn)
+            code.append("groups.append({varName})".format(varName=varName))
+            varName  = "mg"
+            dep, kod =  gr.moveGenerator._codify__(name=varName, addDependencies=False)
+            mgLUT.setdefault(kod, []).append(idx)
+            for d in dep:
+                _ = dependencies.setdefault(d,True)
+        # set groups
+        code.append("\n# Create groups")
+        code.append("{name}.set_groups(groups, name=None, _check=False)".format(name=name))
+        # set move generators
+        code.append("\n# Set groups move generator")
+        for kod in mgLUT:
+            code.append("indexes = {indexes}".format(indexes=mgLUT[kod]))
+            code.append("for idx in indexes:")
+            code.append('    '+ kod.replace("\n", "\n    "))
+            code.append("    {name}.groups[idx].set_move_generator(mg)".format(name=name))
+        # add constraints
+        if addConstraints is not None:
+            code.append("\n# Create and add constraints")
+            for c in addConstraints:
+                dep, kod = c._codify__(engine=name, addDependencies=False)
+                code.append(kod)
+                for d in dep:
+                    _ = dependencies.setdefault(d,True)
+        # update constraints
+        if updateConstraints is not None:
+            for c in updateConstraints:
+                code.append("\n# Update '{cn}' constraint".format(cn=c.constraintName))
+                code.append("constraint = ([None] + [c for c in {name}.constraints if c.constraintName=='{cn}'])[-1]".format(name=name, cn=c.constraintName))
+                code.append("assert constraint is not None, LOGGER.error(\"constraint '%s' not found upon building codified engine \"%('{cn}',))".format(cn=c.constraintName))
+                dep, kod = c._codify_update__(name='constraint', addDependencies=False)
+                code.append(kod)
+                for d in dep:
+                    _ = dependencies.setdefault(d,True)
+        # collect all collected data
+        if len(self._atomsCollector):
+            code.append("\n# Collect removed atoms")
+            for idx in self._atomsCollector.indexes:
+                code("{name}._on_collector_collect_atom(realIndex={idx})".format(name=name, idx=idx))
+        # add dependencies
+        dependencies = list(dependencies)
+        if addDependencies:
+            code = dependencies + [''] + code
+        # return
+        return dependencies, '\n'.join(code)
+
+
 
     def __repr__(self):
         repr = "fullrmc %s (Version %s)"%(self.__class__.__name__, self.__version)
@@ -264,14 +657,10 @@ class Engine(object):
                 assert len(multiFramesName)>=1, LOGGER.error("multiframe dictionary 'frames_name' list number of items must be >=1")
                 multiFramesName = [self.__check_get_frame_name(str(i)) for i in multiFramesName]
                 assert len(multiFramesName) == len(set(multiFramesName)),  LOGGER.error("Multiframe dictionary 'frames_name' list redundancy is not allowed")
-                #if 'type' not in frm:
-                #    frm['type'] = 'statistical'
-                #assert isinstance(frm['type'], basestring), LOGGER.error("Multiframe dictionary 'type' value must be a string")
-                #assert frm['type'] in ('statistical',), LOGGER.error("known multiframe types are 'statistical'")
+                # get frame dictionary copy for usage safety purposes
                 frm = copy.deepcopy(frm)
                 frm['frames_name'] = tuple(multiFramesName)
                 frm['name']        = str(frameName)
-                #frm['type']        = str(frm['type'])
             else:
                 assert isinstance(frm, int), LOGGER.error('Each frame must be either interger a string or a dict')
                 frameName = self.__check_get_frame_name(str(frm))
@@ -330,7 +719,6 @@ class Engine(object):
         self.set_group_selector(None)
         # update constraints in repository
         if self.__repository is not None:
-            #from pprint import pprint;pprint(self.__getstate__())
             self.__repository.update_file(value=self, relativePath='engine')
             self.__repository.update_file(value=self.__state, relativePath=os.path.join(self.__usedFrame, '_Engine__state'))
             self.__repository.update_file(value=self.__lastSelectedGroupIndex, relativePath=os.path.join(self.__usedFrame, '_Engine__lastSelectedGroupIndex'))
@@ -438,18 +826,35 @@ class Engine(object):
         return self.__path
 
     @property
+    def version(self):
+        """ Stochastic engine version."""
+        return self.__version
+
+    @property
     def info(self):
-        """ Engine's information (version, id) tuple."""
+        """ Stochastic engine information (version, id) tuple."""
         return (self.__version, self.__id)
 
     @property
     def frames(self):
-        """ Engine's frames list copy."""
+        """ Stochastic engine frames list copy."""
         return copy.deepcopy(self.__frames)
 
     @property
+    def framesPath(self):
+        """ List of engine traditional frames name and multiframes path."""
+        framesPath = []
+        for n,v in self.__frames.items():
+            if v is None:
+                framesPath.append(n)
+            else:
+                for sn in v['frames_name']:
+                    framesPath.append(os.path.join(n,sn))
+        return framesPath
+
+    @property
     def usedFrame(self):
-        """ Engine's frame in use."""
+        """ Stochatic engine frame in use."""
         return copy.deepcopy(self.__usedFrame)
 
     @property
@@ -673,29 +1078,33 @@ class Engine(object):
         self.__timeout = timeout
 
 
-    def get_original_data(self, name):
+    def get_original_data(self, name, frame=None):
         """
         Get original data as initialized and parsed from pdb.
 
         :Parameters:
             #. name (string): Data name.
+            #. frame (None, string): get original data of a particular frame.
+               If None, engine used frame will be used
 
         :Returns:
             #. value (object): Data value
         """
+        if frame is None:
+            frame = self.__usedFrame
         dname = "_original__"+name
         if self.__repository is None:
             assert dname in self.__frameOriginalData, LOGGER.error("data '%s' doesn't exist, available data are %s"%(name,list(self.__frameOriginalData)))
             value = self.__frameOriginalData[dname]
             assert value is not None, LOGGER.error("data '%s' value seems to be deleted"%name)
         else:
-            #info, m = self.__repository.get_file_info(relativePath=os.path.join(self.__usedFrame,dname))
+            #info, m = self.__repository.get_file_info(relativePath=os.path.join(frame,dname))
             #assert info is not None, LOGGER.error("unable to pull data '%s' (%s)"%(name, m) )
-            #value = self.__repository.pull(relativePath=self.__usedFrame, name=dname)
-            isRepoFile,fileOnDisk, infoOnDisk, classOnDisk = self.__repository.is_repository_file(os.path.join(self.__usedFrame,dname))
+            #value = self.__repository.pull(relativePath=frame, name=dname)
+            isRepoFile,fileOnDisk, infoOnDisk, classOnDisk = self.__repository.is_repository_file(os.path.join(frame,dname))
             assert isRepoFile, LOGGER.error("Original data '%s' is not a repository file"%(dname, ) )
             assert fileOnDisk, LOGGER.error("Original data '%s' is a repository file but not found on disk"%(dname, ) )
-            value = self.__repository.pull(relativePath=os.path.join(self.__usedFrame,dname))
+            value = self.__repository.pull(relativePath=os.path.join(frame,dname))
         return value
 
     def is_engine(self, path, repo=False, mes=False, safeMode=True):
@@ -721,7 +1130,7 @@ class Engine(object):
         """
         assert isinstance(repo, bool), LOGGER.error("repo must be boolean")
         assert isinstance(mes, bool), LOGGER.error("mes must be boolean")
-        rep = Repository(timeout=self.__timeout)
+        rep = Repository(timeout=self.__timeout, password=self.__password)
         rep.DEBUG_PRINT_FAILED_TRIALS = False
         # check if this is a repository
         if path is None:
@@ -816,18 +1225,28 @@ class Engine(object):
         info = {'repository type':'fullrmc engine', 'fullrmc version':__version__, 'engine id':self.__id}
         # path is given
         if path is not None:
-            result, message = self.__check_path_to_create_repository(path)
-            assert result, LOGGER.error(message)
-            REP = Repository(timeout=self.__timeout)
-            REP.DEBUG_PRINT_FAILED_TRIALS = False
-            REP.create_repository(path, info=info)
+            # get real path
+            if path.strip() in ('','.'):
+                path = os.getcwd()
+            path = os.path.realpath( os.path.expanduser(path) )
+            if self.__repository is not None:
+                if path != self.__repository.path:
+                    result, message = self.__check_path_to_create_repository(path)
+                    assert result, LOGGER.error(message)
+                REP = self.__repository
+            else:
+                REP = Repository(timeout=self.__timeout, password=self.__password)
+                REP.DEBUG_PRINT_FAILED_TRIALS = False
+                REP.create_repository(path, info=info)
             self.__path = path
+            path = None
         # first time saving this engine
         elif self.__repository is None:
             assert self.__path is not None, LOGGER.error("Given path and engine's path are both None, must give a valid path for saving.")
-            REP = Repository(timeout=self.__timeout)
+            REP = Repository(timeout=self.__timeout, password=self.__password)
             REP.DEBUG_PRINT_FAILED_TRIALS = False
-            REP.create_repository(self.__path, info=info)
+            success, message = REP.create_repository(self.__path, info=info)
+            assert success, LOGGER.error("Unable to create repository (%s)"%message)
         # engine loaded or saved before
         else:
             REP = self.__repository
@@ -891,8 +1310,6 @@ class Engine(object):
                 #    self._dump_to_repository(value=value, relativePath=os.path.join(frameName, rp), repository=REP)
         # set repository
         self.__repository = REP
-        # set mustSave flag
-        self.__mustSave = False
         # engine saved
         LOGGER.saved("Engine and frame %s data saved successfuly to '%s'"%(self.__usedFrame, self.__path) )
 
@@ -968,8 +1385,6 @@ class Engine(object):
         [getattr(engine, '_Engine__broadcaster').add_listener(c)    for c in getattr(engine, '_Engine__constraints')]
         # set engine group selector
         engine.groupSelector.set_engine(engine)
-        # set engine must save to false
-        object.__setattr__(engine, '_Engine__mustSave', False)
         # return engine instance
         return engine
 
@@ -1007,7 +1422,7 @@ class Engine(object):
                     if not response[0]:
                         missingFrameData.append(name)
                 if len(missingFrameData):
-                    assert self.__frames[self.__usedFrame.split(os.sep)[0]] is None, LOGGER.error("Creating frame '%s' data for the first time when used frame is a multiframe is not allowed."%(relativePath,))
+                    assert self.__frames[self.__usedFrame.split(os.sep)[0]] is None, LOGGER.error("Creating frame '%s' data from none traditional used frame '%s' is not allowed. Set used frame to any traditional frame using 'Engine.set_used_frame' method and retry"%(relativePath,self.__usedFrame))
                     assert len(missingFrameData) == len(frameData), LOGGER.error("Data files %s are missing from frame '%s'. Consider deleting and rebuilding frame."%(missingFrameData,relativePath,))
                 # check original missing data
                 if originalData:
@@ -1031,13 +1446,11 @@ class Engine(object):
                 # create frame data
                 for name in frameData:
                     value = this.__dict__[name]
-                    #self.__repository.dump(value=value, relativePath=os.path.join(relativePath, name), replace=True)
                     self._dump_to_repository(value=value, relativePath=os.path.join(relativePath, name))
             if len(missingOriginalData):
                 LOGGER.frame("Using frame '%s' data to create frame '%s' original data."%(self.__usedFrame, relativePath))
                 for name in self.__frameOriginalData:
                     value = self.__repository.pull(relativePath=os.path.join(self.__usedFrame,name))
-                    #self.__repository.dump(value=value, relativePath=os.path.join(relativePath, name),replace=True)
                     self._dump_to_repository(value=value, relativePath=os.path.join(relativePath, name))
             # return
             return True
@@ -1077,7 +1490,7 @@ class Engine(object):
         return frame in self.__frames
         #return frame in self.__frames
 
-    def add_frames(self, frames):
+    def add_frames(self, frames, create=False):
         """
         Add a one or many (multi)frame to engine.
 
@@ -1085,6 +1498,12 @@ class Engine(object):
             #. frames (string, dict, list): It can be a string to add a single
                frame, a dictionary to add a single multiframe or a list of
                strings and/or dictionaries to add multiple (multi)frames.
+            #. create (boolean): adding a frame to engine doesn't create the
+               frame data in the stochatic engine repository. Frames data
+               are created once frame is used. Setting create to True, forces
+               creating the repository data by copying used frame ones. If used
+               frame is not a traditional frame, create will get automatically
+               reset to False
         """
         _frames = []
         for frm in self.__check_frames(frames, raiseExisting=False):
@@ -1094,6 +1513,15 @@ class Engine(object):
                 continue
             else:
                 _frames.append(frm)
+        # check frames length
+        if not len(_frames):
+            return
+        # check create
+        assert isinstance(create, bool), LOGGER.error('create must be boolean')
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        if not isNormalFrame and create:
+            LOGGER.usage("create flag is reset to 'False' because used frame '%s' is not a normal traditional frame"%self.__usedFrame)
+            create = False
         # create frames directories
         if self.__repository is not None:
             for frm in _frames:
@@ -1105,18 +1533,21 @@ class Engine(object):
                 self.__frames[frm] = None
             else:
                 self.__frames[frm['name']] = frm
+        # create
+        if create:
+            for frm in _frames:
+                if self.__frames[frm] is None:
+                    self.__create_frame_data(frame=frm)
+                else:
+                    self.__create_frame_data(frame=self.__frames[frm]['frames_name'][0])
         # save frames
         if self.__repository is not None:
             self._dump_to_repository(value=self.__frames, relativePath='_Engine__frames')
 
-    def add_frame(self, frame):
+    def add_frame(self, *args, **kwargs):
+        """alias to add_frames
         """
-        Add a single (multi)frame to engine.
-
-        :Parameters:
-            #. frame (string): Frame name.
-        """
-        self.add_frames([frame])
+        return self.add_frames(*args, **kwargs)
 
     def reinit_frame(self, frame):
         """
@@ -1132,12 +1563,12 @@ class Engine(object):
         if isNormalFrame or isSubframe:
             allFrames = [frame]
         else:
-            LOGGER.usage("Re-init multiframe '%s' all %i subframes"%(frame,len(self.__frames[frame]['frames_name']),) )
+            LOGGER.usage("@%s Re-init multiframe all %i subframes"%(frame,len(self.__frames[frame]['frames_name']),) )
             allFrames = [os.path.join(frame, frm) for frm in self.__frames[frame]['frames_name']]
         # get old used frame
         oldUsedFrame = self.__usedFrame
         for frm in allFrames:
-            LOGGER.info("Re-init frame '%s'"%(frm,) )
+            LOGGER.info("Re-initializing frame '%s' ... DON'T INTERRUPT"%(frm,) )
             # temporarily set used frame
             if frm != self.__usedFrame:
                 self.set_used_frame(frm)
@@ -1146,6 +1577,8 @@ class Engine(object):
             #  re-set old used frame
         if self.__usedFrame != oldUsedFrame:
             self.set_used_frame(oldUsedFrame)
+        LOGGER.info("%s re-initialization is successful"%(frame,) )
+
 
     def __validate_frame_name(self, frame):
         assert isinstance(frame, basestring), LOGGER.error("Frame must be a string, '%s' is given instead"%frame)
@@ -1179,18 +1612,18 @@ class Engine(object):
         # return
         return isNormalFrame, isMultiframe, isSubframe
 
-    def set_used_frame(self, frame, updateRepo=True):
+    def set_used_frame(self, frame, _updateRepo=True):
         """
         Switch engine frame.
 
         :Parameters:
             #. frame (string): The frame to switch to and use from now on.
-            #. updateRepo (boolean): whether to update repository usedFrame
-               value
+            #. _updateRepo (boolean): whether to update repository usedFrame
+               value. Meant to be used internally.
         """
         if frame == self.__usedFrame:
             return
-        assert isinstance(updateRepo, bool), "updateRepo must be boolean"
+        assert isinstance(_updateRepo, bool), "_updateRepo must be boolean"
         isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
         if isMultiframe:
             _frame = os.path.join(frame, self.__frames[frame]['frames_name'][0])
@@ -1226,7 +1659,7 @@ class Engine(object):
         # save used frame
         self.__usedFrame = frame
         # update repository
-        if updateRepo:
+        if _updateRepo:
             self.__repository.update_file(value=self.__usedFrame, relativePath='_Engine__usedFrame')
 
     def use_frame(self, *args, **kwargs):
@@ -1235,16 +1668,19 @@ class Engine(object):
 
     def delete_frame(self, frame):
         """
-        Delete frame data from Engine as well as from system.
+        Delete frame data from Engine as well as from repository .
 
         :Parameters:
             #. frame (string): The frame to delete.
         """
         isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(frame)
-        assert frame != self.__usedFrame, LOGGER.error("It's not safe to delete the used frame '%s'"%frame)
+        assert frame != self.__usedFrame, LOGGER.error("It's not allowed to delete the used frame '%s'. Change used frame using Engine.set_used_frame method and try again"%frame)
+        if isMultiframe:
+            _multi = self.usedFrame.split(os.sep)[0]
+            assert frame != _multi, LOGGER.error("It's not allowed to delete multiframe '%s' of used frame '%s'. Change used frame using Engine.set_used_frame method and try again"%(_multi,self.usedFrame))
         if isNormalFrame:
             _f = [f for f in self.__frames if self.__frames[f] is None]
-            assert len(_f)>=1, LOGGER.error("No traditional frames found. This shouldn't have happened. Report issue ...")
+            assert len(_f)>=1, LOGGER.error("No traditional frames found. This shouldn't have happened. PLEASE REPORT")
             assert len(_f)>=2, LOGGER.error("It's not allowed to delete the last traditional frame in engine '%s'"%(_f[0],))
         if isSubframe:
             _name = frame.split(os.sep)[0]
@@ -1451,11 +1887,50 @@ class Engine(object):
         self.__groups = []
         # save groups to repository
         if self.__repository is not None:
-            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
-            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
             self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
 
-    def add_group(self, g, broadcast=True):
+    def remove_groups(self, groups):
+        """ Remove groups by instance, name or index
+
+        :Parameters:
+            #. groups (integer, string, Group, list): groups to remove,
+               this can be a specific group index, or a group name or a group
+               instance or a list of all of those
+        """
+        if not len(self.__groups):
+            LOGGER.warn("engine groups list is empty, nothing can be removed.")
+            return
+        if not isinstance(groups, (list,set,tuple)):
+            groups = [groups]
+        names     = {}
+        indexes   = {}
+        instances = {}
+        for g in groups:
+            if isinstance(g, int):
+                assert g>=0 and g<len(self.__groups), LOGGER.error("group index must be >=0 and <numberOfGroups (%i)"%(len(self.__groups)))
+                indexes[g] = True
+            elif isinstance(g, Group):
+                instances[g] = True
+            else:
+                assert isinstance(g, basestring),  LOGGER.error("group must be either a string or a Group instance or an integer index or a list of those")
+                names[g] = True
+        # populate indexes
+        namesIdxLUT     = dict([(idx, True) for idx,g in enumerate(self.__groups) if g.name in names])
+        instancesIdxLUT = dict([(g, True) for idx,g in enumerate(self.__groups) if g in instances])
+        indexes.update(namesIdxLUT)
+        indexes.update(instancesIdxLUT)
+        # check len indexes
+        if not len(indexes):
+            LOGGER.warn('Given groups to remove are not found in stochastic engine')
+            return
+        # set groups
+        self.__groups = [g for idx,g in enumerate(self.__groups) if idx not in indexes]
+        # save groups to repository
+        if self.__repository is not None:
+            self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
+
+
+    def add_group(self, g, name=None, _check=True):
         """
         Add a group to engine's groups list.
 
@@ -1463,51 +1938,63 @@ class Engine(object):
             #. g (Group, integer, list, set, tuple numpy.ndarray): Group
                instance, integer, list, tuple, set or numpy.ndarray of atoms
                index.
-            #. broadcast (boolean): Whether to broadcast "update groups".
-               This is to be used interally only. Keep default value unless
-               you know what you are doing.
+            #. name (None, string): group name. If g is a Group instance,
+               Group.set_name will be called if given name is not None. If
+               g is not a Group instance and name is None it will automatically
+               changed to 'group'.
+            #. _check (boolean): meant to be used internally
         """
         if isinstance(g, EmptyGroup):
             gr = g
+            if name is not None:
+                g.set_name(g)
         elif isinstance(g, Group):
-            assert np.max(g.indexes)<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in system")
+            if _check:
+                assert np.max(g.indexes)<self.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms '%i' in system"%self.numberOfAtoms)
             gr = g
-        elif is_integer(g):
-            g = INT_TYPE(g)
-            assert g<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in pdb")
-            gr = Group(indexes= [g] )
-        elif isinstance(g, (list, set, tuple)):
-            sortedGroup = sorted(set(g))
-            assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
-            assert is_integer(sortedGroup[-1]), LOGGER.error("group indexes must be integers")
-            assert sortedGroup[-1]<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in pdb")
-            gr = Group(indexes= sortedGroup )
+            if name is not None:
+                g.set_name(g)
         else:
-            assert isinstance(g, np.ndarray), LOGGER.error("each group in groups can be either a list, set, tuple, numpy.ndarray or fullrmc Group instance")
-            # check group dimension
-            assert len(g.shape) == 1, LOGGER.error("each group must be a numpy.ndarray of dimension 1")
-            assert len(g), LOGGER.error("group found to have no indexes")
-            # check type
-            assert "int" in g.dtype.name, LOGGER.error("each group in groups must be of integer type")
-            # sort and check limits
-            sortedGroup = sorted(set(g))
-            assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
-            assert sortedGroup[-1]<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in pdb")
-            gr = Group(indexes= g )
+            if name is None:
+                name = 'group'
+            if is_integer(g):
+                g = INT_TYPE(g)
+                if _check:
+                    assert g<self.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms '%i' in system"%self.numberOfAtoms)
+                gr = Group(indexes=[g], name=name )
+            elif isinstance(g, (list, set, tuple)):
+                sortedGroups = list(g)
+                if _check:
+                    sortedGroup = sorted(set(g))
+                    assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
+                    assert is_integer(sortedGroup[-1]), LOGGER.error("group indexes must be integers")
+                    assert sortedGroup[-1]<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in pdb")
+                gr = Group(indexes=sortedGroup, name=name )
+            else:
+                assert isinstance(g, np.ndarray), LOGGER.error("each group in groups can be either a list, set, tuple, numpy.ndarray or fullrmc Group instance")
+                # check group dimension
+                if _check:
+                    assert len(g.shape) == 1, LOGGER.error("each group must be a numpy.ndarray of dimension 1")
+                    assert len(g), LOGGER.error("group found to have no indexes")
+                    # check type
+                    assert "int" in g.dtype.name, LOGGER.error("each group in groups must be of integer type")
+                    # sort and check limits
+                    sortedGroup = sorted(set(g))
+                    assert len(sortedGroup) == len(g), LOGGER.error("redundant indexes found in group")
+                    assert sortedGroup[-1]<self.__pdb.numberOfAtoms, LOGGER.error("group index must be smaller than number of atoms in pdb")
+                gr = Group(indexes=g, name=name )
         # append group
         self.__groups.append( gr )
         # set group engine
         gr._set_engine(self)
         # broadcast to constraints
-        if broadcast:
-            self.__broadcaster.broadcast("update groups")
+        #if _broadcast:
+        #    self.__broadcaster.broadcast("update groups") ## NOWEHERE THIS IS LISTENED TO
          # save groups
         if self.__repository is not None and self.__saveGroupsFlag:
-            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
-            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'), replace=True)
             self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
 
-    def set_groups(self, groups):
+    def set_groups(self, groups, name='group', add=False, _check=True):
         """
         Set engine's groups.
 
@@ -1518,33 +2005,46 @@ class Engine(object):
                by set_group method. If None is given, single atom groups of
                all atoms will be all automatically created which is the same
                as using set_groups_as_atoms method.
+            #. name (None, string, list): groups name. If string is given, the same
+               name will be given to all groups. If list is given, it must have
+               the same length as the number of given groups
+            #. add (boolean): whether to newly generated groups to old ones
+            #. _check (boolean): meant to be used internally
         """
+        assert isinstance(add, bool), LOGGER.error("add must be a boolean")
         self.__saveGroupsFlag = False
         lastGroups            = self.__groups
-        self.__groups         = []
+        if not add:
+            self.__groups = []
         try:
             if groups is None:
-                self.__groups = [Group(indexes=[idx]) for idx in self.__pdb.xindexes]
+                if not isinstance(name, (list,tuple)):
+                    name = [name for _ in range(self.numberOfAtoms)]
+                assert len(name) == self.numberOfAtoms, "list name must have the same length as the system's number of atoms if given groups is None"
+                self.__groups.extend( [Group(indexes=[idx], name=name[idx]) for idx in range(self.numberOfAtoms)] )
             elif isinstance(groups, Group):
-                self.add_group(groups, broadcast=False)
+                if isinstance(name, (list,tuple,set)):
+                    assert len(name)==1, "name list must he of length 1 if given groups is a Group instance"
+                    name = name[0]
+                self.add_group(groups, name=name, _check=_check)
             else:
-                assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a None, Group, list, set or tuple")
-                for g in groups:
-                    self.add_group(g, broadcast=False)
-        except Exception as e:
+                assert isinstance(groups, (list,tuple)), "groups must be a None, Group, list or tuple"
+                if not isinstance(name, (list,tuple)):
+                    name = [name for _ in groups]
+                for idx,g in enumerate(groups):
+                    self.add_group(g=g, name=name[idx], _check=_check)
+        except Exception as err:
             self.__saveGroupsFlag = True
             self.__groups         = lastGroups
-            raise Exception(LOGGER.error(e))
+            raise Exception(LOGGER.error(err))
             return
         # save groups to repository
         if self.__repository is not None:
-            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
-            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
             self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
-        # broadcast to constraints
-        self.__broadcaster.broadcast("update groups")
+        # broadcast updating groups
+        #self.__broadcaster.broadcast("update groups")  ## NOWEHERE THIS IS LISTENED TO
 
-    def add_groups(self, groups):
+    def add_groups(self, groups, name=None, _check=True):
         """
         Add groups to engine.
 
@@ -1552,58 +2052,84 @@ class Engine(object):
             #. groups (Group, list): Group instance or list of groups,
                where every group must be a Group instance or a
                numpy.ndarray of atoms index of type numpy.int32.
+            #. name (None, string, list): groups name. If string is given, the same
+               name will be given to all groups. If list is given, it must have
+               the same length as the number of given groups
+            #. _check (boolean): meant to be used internally
+
+        THIS METHOD WILL BE DEPRECATED. Must use 'set_groups' instead with 'add' flag set to True
         """
+        LOGGER.implement("'add_groups' method is going to be deprecated. Must use set_groups with add flat set to True")
         self.__saveGroupsFlag = False
         lastGroups            = [g for g in self.__groups]
         try:
             if isinstance(groups, Group):
-                self.add_group(groups, broadcast=False)
-            else:
-                assert isinstance(groups, (list,tuple,set)), LOGGER.error("groups must be a list of numpy.ndarray")
-                for g in groups:
-                    self.add_group(g, broadcast=False)
-        except Exception as e:
+                groups = [groups]
+            assert isinstance(groups, (list,tuple)), "groups must be a Group instance or list of Group instances or sublists of atom indexes or numpy.ndarray"
+            if not isinstance(name, (list,tuple)):
+                name = [name for _ in groups]
+            assert len(name) == len(groups), "name list must have the same length as given groups list"
+            for idx, g in enumerate(groups):
+                self.add_group(g=g, name=name[idx], _check=_check)
+        except Exception as err:
             self.__saveGroupsFlag = True
             self.__groups = lastGroups
-            raise Exception(LOGGER.error(e))
+            raise Exception(LOGGER.error(err))
             return
         # save groups to repository
         if self.__repository is not None:
-            #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
-            #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
             self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
         # broadcast to constraints
-        self.__broadcaster.broadcast("update groups")
+        #self.__broadcaster.broadcast("update groups")  ## NOWEHERE THIS IS LISTENED TO
 
-    def set_groups_as_atoms(self):
-        """ Automatically set engine's groups as single atom group for
-        all atoms."""
-        self.set_groups(None)
+    def set_groups_as_atoms(self, name='atom', add=False):
+        """ Automatically creates groups as single atom group for
+        all atoms. If add is True, created groups will be added to engine
+        existing ones otherwise old groups will be removed.
 
-    def set_groups_as_molecules(self):
-        """ Automatically set engine's groups indexes according to
-        molecules indexes. """
-        molecules = list(set(self.__moleculesIndex))
-        moleculesIndex = {}
-        for idx in range(len(self.__moleculesIndex)):
-            mol = self.__moleculesIndex[idx]
-            if not mol in moleculesIndex:
-                moleculesIndex[mol] = []
-            moleculesIndex[mol].append(idx)
-        # create groups
-        keys = sorted(moleculesIndex)
+        :Parameters:
+            #. name (string, list): groups name. If string is given, the same
+               name will be given to all groups. If list is given, it must have
+               the same length as the number of molecules in the system
+            #. add (boolean): whether to newly generated groups to old ones
+        """
+        # set groups
+        self.set_groups(None, name=name, add=add)
+
+    def set_groups_as_molecules(self, name='molecule', add=False):
+        """ Automatically create molecular groups of atom indexes according to
+        molecules indexes. If add is True, created groups will be added to engine
+        existing ones otherwise old groups will be removed.
+
+        :Parameters:
+            #. name (string, list): groups name. If string is given, the same
+               name will be given to all groups. If list is given, it must have
+               the same length as the number of molecules in the system
+            #. add (boolean): whether to newly generated groups to old ones
+        """
+        # check values
+        assert isinstance(add, bool), LOGGER.error("add must be a boolean")
+        if isinstance(name, basestring):
+            name = [name for _ in range(self.__numberOfMolecules)]
+        assert isinstance(name, (list,tuple)), LOGGER.error("name must be a string or a list of strings")
+        assert len(name) == self.__numberOfMolecules, LOGGER.error("name list must have the same length as number of molecules '%i'"%(self.__numberOfMolecules,))
+        # build molecules index LUT
+        moleculesIndex = collections.OrderedDict()
+        for idx, mol in enumerate(self.__moleculesIndex):
+            moleculesIndex.setdefault(mol,[]).append(idx)
         # reset groups
-        self.__groups = []
+        if not add:
+            self.__groups = []
         # add groups
-        for k in keys:
-            self.add_group(np.array(moleculesIndex[k], dtype=INT_TYPE), broadcast=False)
+        for idx, k in enumerate(moleculesIndex):
+            self.add_group(g=np.array(moleculesIndex[k], dtype=INT_TYPE), name=name[idx])
         # save groups to repository
         if self.__repository is not None:
             #self.__repository.dump(value=self.__groups, relativePath=self.__usedFrame, name='_Engine__groups', replace=True)
             #self.__repository.update_file(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
             self._dump_to_repository(value=self.__groups, relativePath=os.path.join(self.__usedFrame,'_Engine__groups'))
         # broadcast to constraints
-        self.__broadcaster.broadcast("update groups")
+        #self.__broadcaster.broadcast("update groups")  ## NOWEHERE THIS IS LISTENED TO
 
     def set_pdb(self, pdb, boundaryConditions=None, names=None, elements=None, moleculesIndex=None, moleculesName=None):
         """
@@ -1617,8 +2143,8 @@ class Engine(object):
         scratch or redefining all constraints definitions.
 
         :Parameters:
-            #. pdb (pdbparser, string): the configuration pdb as a pdbparser
-               instance or a path string to a pdb file.
+            #. pdb (pdbparser, string, list): the configuration pdb as a pdbparser
+               instance or a path string to a pdb file or a list of pdb lines.
             #. boundaryConditions (None, InfiniteBoundaries, PeriodicBoundaries,
                numpy.ndarray, number): The configuration's boundary conditions.
                If None, boundaryConditions will be parsed from pdb if existing
@@ -1641,6 +2167,11 @@ class Engine(object):
                length of the number of atoms. If None is given, it is
                automatically generated as the pdb residues name.
         """
+        # forbid resetting for normal frame. ADDED 2020-01-10
+        isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
+        if self.__pdb is not None:
+            if len(self.__pdb) and (pdb is not self.__pdb):
+                assert not isNormalFrame, LOGGER.error("Resetting pdb for normal frame is not allowed")
         if pdb is None:
             pdb = pdbparser()
             bc  = PeriodicBoundaries()
@@ -1664,19 +2195,19 @@ class Engine(object):
         # set boundary conditions
         if boundaryConditions is None:
             boundaryConditions = pdb.boundaryConditions
-        self.set_boundary_conditions(boundaryConditions)
+        self.set_boundary_conditions(boundaryConditions, _broadcast=False)
         # get elementsIndex
-        self.set_elements_index(elements)
+        self.set_elements_index(elements, _broadcast=False)
         # get namesIndex
-        self.set_names_index(names)
+        self.set_names_index(names, _broadcast=False)
         # get moleculesIndex
-        self.set_molecules_index(moleculesIndex=moleculesIndex, moleculesName=moleculesName)
+        self.set_molecules_index(moleculesIndex=moleculesIndex, moleculesName=moleculesName, _broadcast=False)
         # broadcast to constraints
         self.__broadcaster.broadcast("update pdb")
         # reset engine flags
         self.reset_engine()
 
-    def set_boundary_conditions(self, boundaryConditions):
+    def set_boundary_conditions(self, boundaryConditions, _broadcast=True):
         """
         Sets the configuration's boundary conditions. Any type of periodic or
         infinite boundary conditions is allowed and not restricted to cubic.
@@ -1703,6 +2234,7 @@ class Engine(object):
                numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
                If number is given, it's like a numpy.ndarray of shape (1,),
                it is assumed as a cubic box of box length equal to number.
+            #. _broadcast (boolean): for internal use only
         """
         if boundaryConditions is None:
             boundaryConditions = InfiniteBoundaries()
@@ -1762,12 +2294,9 @@ class Engine(object):
             self.__frameOriginalData['_original__numberDensity'] = self.__numberDensity
 
         # broadcast to constraints
-        self.__broadcaster.broadcast("update boundary conditions")
+        if _broadcast:
+            self.__broadcaster.broadcast("update boundary conditions")
 
-        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
-        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
-#        # set mustSave flag
-#        self.__mustSave = True
 
     def set_number_density(self, numberDensity):
         """
@@ -1796,11 +2325,8 @@ class Engine(object):
         if self.__repository is not None:
             self.__repository.update_file(value=self.__numberDensity, relativePath=os.path.join(self.__usedFrame,'_Engine__numberDensity'))
             self.__repository.update_file(value=self.__volume, relativePath=os.path.join(self.__usedFrame,'_Engine__volume'))
-        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
-#        # set mustSave flag
-#        self.__mustSave = True
 
-    def set_molecules_index(self, moleculesIndex=None, moleculesName=None):
+    def set_molecules_index(self, moleculesIndex=None, moleculesName=None, _broadcast=True):
         """
         Set moleculesIndex list, assigning each atom to a molecule.
 
@@ -1812,6 +2338,7 @@ class Engine(object):
             #. moleculesName (None, list): Molecules name list. Must have the
                length of the number of atoms. If None is given, it will be
                automatically generated as the pdb residues name.
+            #. _broadcast (boolean): for internal use only
         """
         if not self.__pdb.numberOfAtoms:
             moleculesIndex = []
@@ -1884,14 +2411,10 @@ class Engine(object):
             self.__frameOriginalData['_original__moleculesIndex']    = copy.deepcopy( self.__moleculesIndex  )
             self.__frameOriginalData['_original__moleculesName']     = copy.deepcopy( self.__moleculesName    )
         # broadcast to constraints
-        self.__broadcaster.broadcast("update molecules indexes")
+        if _broadcast:
+            self.__broadcaster.broadcast("update molecules indexes")
 
-        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
-        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
-#        # set mustSave flag
-#        self.__mustSave = True
-
-    def set_elements_index(self, elements=None):
+    def set_elements_index(self, elements=None, _broadcast=True):
         """
         Set elements and elementsIndex lists, assigning a type element
         to each atom.
@@ -1901,6 +2424,7 @@ class Engine(object):
                length of the number of atoms. If None is given,
                elements will be calculated automatically  by parsing pdb
                instance.
+            #. _broadcast (boolean): for internal use only
         """
         if elements is None:
             elements = self.__pdb.elements
@@ -1941,20 +2465,17 @@ class Engine(object):
             self.__frameOriginalData['_original__elementsIndex']           = copy.deepcopy( self.__elementsIndex )
             self.__frameOriginalData['_original__numberOfAtomsPerElement'] = copy.deepcopy( self.__numberOfAtomsPerElement )
         # broadcast to constraints
-        self.__broadcaster.broadcast("update elements indexes")
+        if _broadcast:
+            self.__broadcaster.broadcast("update elements indexes")
 
-        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IS
-        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
-#        # set mustSave flag
-#        self.__mustSave = True
-
-    def set_names_index(self, names=None):
+    def set_names_index(self, names=None, _broadcast=True):
         """
         Set names and namesIndex list, assigning a name to each atom.
 
         :Parameters:
             #. names (None, list): The names list. If None is given, names
-            will be generated automatically by parsing pdbparser instance.
+               will be generated automatically by parsing pdbparser instance.
+            #. _broadcast (boolean): for internal use only
         """
         if names is None:
             names = self.__pdb.names
@@ -1995,12 +2516,8 @@ class Engine(object):
             self.__frameOriginalData['_original__namesIndex']           = copy.deepcopy( self.__namesIndex )
             self.__frameOriginalData['_original__numberOfAtomsPerName'] = copy.deepcopy( self.__numberOfAtomsPerName )
         # broadcast to constraints
-        self.__broadcaster.broadcast("update names indexes")
-
-        # MUST DO SOMETHING ABOUT IT HERE, BECAUSE THIS CAN BE A BIG PROBLEM IF
-        # SETTING A NEW PDB AT THE MIDDLE OF A FIT, ALL FRAMES MUST BE RESET.
-#        # set mustSave flag
-#        self.__mustSave = True
+        if _broadcast:
+            self.__broadcaster.broadcast("update names indexes")
 
     def visualize(self, frame=None, commands=None, foldIntoBox=False, boxToCenter=False,
                         boxWidth=2, boxStyle="solid", boxColor="yellow",
@@ -2204,7 +2721,7 @@ class Engine(object):
             os.remove(tclFile)
 
 
-    def add_constraints(self, constraints, toAllSubframes=False):
+    def add_constraints(self, constraints, allSubframes=False):
         """
         Add constraints to the engine. If used frame is a normal frame, all
         other normal frames will have the constraints added. If used frame
@@ -2215,12 +2732,12 @@ class Engine(object):
         :Parameters:
             #. constraints (Constraint, list, set, tuple): A constraint instance or
                list of constraints instances
-            #. toAllSubframes (boolean): Whether to also add non-experimental
+            #. allSubframes (boolean): Whether to also add non-experimental
                constraints to all other multiframe subframes in case engine
                used frame is a multiframe subframe.
         """
         # check arguments
-        assert isinstance(toAllSubframes, bool), LOGGER.usage("toAllSubframes must be boolean")
+        assert isinstance(allSubframes, bool), LOGGER.error("allSubframes must be boolean")
         if isinstance(constraints,(list,set,tuple)):
             constraints = list(constraints)
         else:
@@ -2229,48 +2746,58 @@ class Engine(object):
         for c in constraints:
             assert isinstance(c, Constraint), LOGGER.error("Constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been added to the engine.")
             assert not c.is_in_engine(self), LOGGER.error("Constraint '%s' of unique id '%s' already exist in engine. None of the constraints have been added to the engine."%(c.__class__.__name__,c.constraintId))
-
         ## get used frame category
         isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
         ## copy engine just for testing purposes
-        _engine = copy.deepcopy(self)
-        _engine._Engine__constraints = self.constraints
-        ## check singular constraints
+        error = None
+        try:
+            repo    = self.__repository
+            self.__repository = None # shouldn't copy serverlocker
+            _engine = copy.deepcopy(self)
+        except Exception as err:
+            error = err
+        finally:
+            self.__repository = repo
+        assert error is None, LOGGER.error("Unable to copy engine (%s)"%error)
+        # get copy of constraints list
+        _engine._Engine__constraints = [c for c in self.__constraints]
+        _engine._Engine__constraints.extend(constraints)
+        # check for singularity of constraints in used frame
+        [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in constraints]
+        for _c in _engine._Engine__constraints:
+            if isinstance(_c, SingularConstraint):
+                assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine. None of the constraints have been added to the engine."%_c.__class__.__name__)
         if isNormalFrame:
-            _engine._Engine__constraints.extend(constraints)
-            [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in constraints]
-            for _c in _engine._Engine__constraints:
-                if isinstance(_c, SingularConstraint):
-                    assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine. None of the constraints have been added to the engine."%_c.__class__.__name__)
             LOGGER.info("Given constraints will be added to all normal frames in engine")
-
         else:
+            ## check unicity in every subframe and singularity of constraints
             assert self.__repository is not None, LOGGER.error("Adding constraints to multiframe is not allowed before building repository. Use engine save method first.")
-            _multi  = self.__usedFrame.split(os.sep)[0]
-            _frames = [os.path.join(_multi, frm) for frm in self.__frames[_multi]['frames_name']]
+            _multi     = self.__usedFrame.split(os.sep)[0]
+            _frames    = [os.path.join(_multi, frm) for frm in self.__frames[_multi]['frames_name']]
+            _expConsts = [_c for _c in constraints if isinstance(_c, ExperimentalConstraint)]
+            _expCnames = [c.__class__.__name__ for c in _expConsts]
             for frm in _frames:
+                if frm == self.__usedFrame:
+                    continue
                 _constraints = self.__repository.pull(relativePath=os.path.join(frm,'_Engine__constraints'))
                 [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in _constraints]
                 _engine._Engine__constraints = _constraints
-                for c in constraints:
+                # get this subframe constraints to add
+                _consts = constraints if allSubframes else _expConsts
+                # check unicity in every subframe
+                for c in _consts:
                     assert not c.is_in_engine(_engine), LOGGER.error("Constraint '%s' of unique id '%s' already exist in frame '%s' engine. None of the constraints have been added to the engine."%(c.__class__.__name__,c.constraintId,frm))
-                _engine._Engine__constraints.extend(constraints)
-                [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in constraints]
-                # check constraints being singular
-                if frm == self.usedFrame:
-                    _notExpConsts = [_c for _c in getattr(_engine, '_Engine__constraints') if not isinstance(_c, ExperimentalConstraint)]
-                    for _c in _engine._Engine__constraints:
-                        if isinstance(_c, SingularConstraint):
-                            assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine for frame '%s'. None of the constraints have been added to the engine."%(_c.__class__.__name__,frm))
-                else:
-                    _expConsts = [_c for _c in getattr(_engine, '_Engine__constraints') if isinstance(_c, ExperimentalConstraint)]
-                    for _c in _expConsts:
-                        if isinstance(_c, SingularConstraint):
-                            assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine for frame '%s'. None of the constraints have been added to the engine."%(_c.__class__.__name__,frm))
-            if toAllSubframes:
-                LOGGER.info("All given constraints will be added all of %i subframes of multiframe '%s'"%(len(self.__frames[_multi]['frames_name']),_multi))
+                _engine._Engine__constraints.extend(_consts)
+                [object.__setattr__(_c, '_Constraint__engine',_engine) for _c in _consts]
+                # check for constraints singularity
+                for _c in _engine._Engine__constraints:
+                    if isinstance(_c, SingularConstraint):
+                        assert _c.is_singular(_engine), LOGGER.error("Only one instance of constraint '%s' is allowed in the same engine for frame '%s'. None of the constraints have been added to the engine."%(_c.__class__.__name__,frm))
+            _cnames = [c.__class__.__name__ for c in constraints]
+            if allSubframes:
+                LOGGER.info("Given constraints %s will be added all of %i subframes of multiframe '%s'"%(_cnames, len(self.__frames[_multi]['frames_name']),_multi))
             else:
-                LOGGER.info("All given constraints will be added to the used subframe '%s'. But experimental constraints only will be added to all other '%i' subframes of multiframe '%s'"%(self.__usedFrame,len(self.__frames[_multi]['frames_name'])-1,_multi))
+                LOGGER.info("Given constraints %s will be added to the used subframe '%s'. But only experimental constraints '%s' will be added to all other '%i' subframes of multiframe '%s'"%(_cnames, self.__usedFrame,_expCnames,len(self.__frames[_multi]['frames_name'])-1,_multi))
         ## add constraints to current used frame
         for c in constraints:
             c._Constraint__engine = None
@@ -2289,7 +2816,6 @@ class Engine(object):
                 self.__repository.add_directory( cp )
                 for dname in c.FRAME_DATA:
                     value = c.__dict__[dname]
-                    #self.__repository.dump(value=value, relativePath=os.path.join(cp,dname), replace=True) # set replace to True because of early listen method call
                     self._dump_to_repository(value=value, relativePath=os.path.join(cp,dname))
             # Add constraint to all traditional frames
             if isNormalFrame:
@@ -2308,7 +2834,7 @@ class Engine(object):
             else:
                 # update _Engine__constraints file
                 self.__repository.update_file(value=self.__constraints, relativePath=os.path.join(self.__usedFrame,'_Engine__constraints'))
-                if toAllSubframes:
+                if allSubframes:
                     toAddConstraints = constraints
                     toAddConstsName  = [_c.constraintName for _c in toAddConstraints]
                 else:
@@ -2327,26 +2853,25 @@ class Engine(object):
                         _engine._Engine__constraints.extend(toAddConstraints)
                         # copy constraints directory
                         for c, cn in zip(toAddConstraints,toAddConstsName):
-                            tpath = os.path.join(self.__usedFrame, 'constraints', cn)
-                            cpath = os.path.join(frame, 'constraints', c.constraintName)
-                            success, error = self.__repository.copy_directory(relativePath=tpath, newRelativePath=cpath, raiseError=False)
+                            fromPath = os.path.join(self.__usedFrame, 'constraints', cn)
+                            toPath   = os.path.join(frame, 'constraints', c.constraintName)
+                            success, error = self.__repository.copy_directory(relativePath=fromPath, newRelativePath=toPath, raiseError=True)
                             assert success, LOGGER.error(error)
                         # update _Engine__constraints file
                         self.__repository.update_file(value=_engine._Engine__constraints, relativePath=os.path.join(frame,'_Engine__constraints'))
 
 
-    def remove_constraints(self, constraints, toAllSubframes=False):
+    def remove_constraints(self, constraints, allSubframes=False):
         """
         Remove constraints from engine list of constraints.
 
         :Parameters:
             #. constraints (Constraint, list, set, tuple): A constraint
                instance or list of constraints instances.
-            #. toAllSubframes (boolean): Whether to also remove non-experimental
+            #. allSubframes (boolean): Whether to also remove non-experimental
                constraints from all other multiframe subframes in case engine
                used frame is a multiframe subframe.
         """
-        assert isinstance(toAllSubframes, bool), LOGGER.usage("toAllSubframes must be boolean")
         if not len(self.__constraints):
             LOGGER.warn("No constraint found in engine")
             return
@@ -2356,7 +2881,7 @@ class Engine(object):
             constraints = [constraints]
         for c in constraints:
             assert isinstance(c, Constraint), LOGGER.error("Constraints must be a Constraint instance or a list of Constraint instances. None of the constraints have been removed engine.")
-        removingIds = [c.constraintId for c in constraints]
+        removingIds = dict( [(c.constraintId,True)for c in constraints] )
         ## get used frame category
         isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
         if isSubframe:
@@ -2376,18 +2901,21 @@ class Engine(object):
         else:
             self.__constraints = engineConstraints
             if len(removedConstraints)<len(constraints):
-                _removedIds = [c.constraintId for c in removedConstraints]
+                _removedIds = dict( [(c.constraintId, True) for c in removedConstraints] )
                 for c in constraints:
                     if c.constraintId not in _removedIds:
-                        LOGGER.warn("Constraint '%s' of id '%s' is not found in frame '%s' engine list of constraints"%(c.__class__.__name__, c.constraintId, self.__usedFrame,))
+                        LOGGER.warn("Constraint '%s' of id '%s' is not removed because it's not found in frame '%s' engine list of constraints"%(c.__class__.__name__, c.constraintId, self.__usedFrame,))
         # save changes to repository
         if self.__repository is not None:
             if len(removedConstraints):
-                self.__repository.update_file(value=self.__constraints, relativePath=os.path.join(self.__usedFrame, '_Engine__constraints'))
+                ## THIS IS COMMENTED 2019-12-21
+                ## GOT TO DECIDE WHETHER TO HAVE EACH TARDITIONAL FRAME HAVE ITS OWN CONSTRAINTS OR NOT
+                #self.__repository.update_file(value=self.__constraints, relativePath=os.path.join(self.__usedFrame, '_Engine__constraints'))
                 for c in removedConstraints:
                     cp = os.path.join(self.__usedFrame, 'constraints', c.constraintName)
                     self.__repository.remove_directory(relativePath=cp, clean=True)
             if isNormalFrame:
+                # remove all constraints from all other normal frames
                 for c in removedConstraints:
                     for fn in self.__frames:
                         if self.__frames[fn] is not None:
@@ -2396,8 +2924,10 @@ class Engine(object):
                             continue
                         cp = os.path.join(fn, 'constraints', c.constraintName)
                         self.__repository.remove_directory(relativePath=cp, clean=True)
+                self.__repository.update_file(value=engineConstraints, relativePath='_Engine__constraints')
             else:
-                if not toAllSubframes:
+                self.__repository.update_file(value=engineConstraints, relativePath=os.path.join(self.__usedFrame,'_Engine__constraints'))
+                if not allSubframes:
                     constraints = [_c for _c in constraints if isinstance(_c, ExperimentalConstraint)]
                     removingIds = [c.constraintId for c in constraints]
                 if len(constraints):
@@ -2430,7 +2960,7 @@ class Engine(object):
 
 
     def reset_constraints(self):
-        """ Reset constraints flags. """
+        """ Reset used normal frame constraints flags. """
         for c in self.__constraints:
             c.reset_constraint(reinitialize=True)
         # update constraints in repository used frame only
@@ -2446,28 +2976,26 @@ class Engine(object):
         #            #self.__repository.dump(value=value, relativePath=cp, name=name, replace=True)
         #            self.__repository.dump(value=value, relativePath=os.path.join(cp,name), replace=True)
         if self.__repository is not None:
-            #self.__repository.dump(value=self, relativePath='.', name='engine', replace=True)
-            #self.__repository.update_file(value=self, relativePath='engine') ### NOT NEEDED ANYMORE SINCE __constraints is a MULTIFRAME_DATA
             for c in self.__constraints:
-                if isinstance(self.__usedFrame, basestring):
-                    _framep = [self.__usedFrame]
-                else:
-                    _framep = [os.path.join(self.__usedFrame['name'], i) for i in self.__usedFrame['frames_name']]
                 for dname in c.FRAME_DATA:
                     value = c.__dict__[dname]
-                    for _fp in _framep:
-                        rp = os.path.join(_fp, 'constraints', c.constraintName, dname)
-                        self.__repository.update_file(value=value, relativePath=rp)
-#        # set mustSave flag
-#        self.__mustSave = True
+                    rp = os.path.join(self.__usedFrame, 'constraints', c.constraintName, dname)
+                    self.__repository.update_file(value=value, relativePath=rp)
+                #if isinstance(self.__usedFrame, basestring):
+                #    _framep = [self.__usedFrame]
+                #else:
+                #    _framep = [os.path.join(self.__usedFrame['name'], i) for i in self.__usedFrame['frames_name']]
+                #for dname in c.FRAME_DATA:
+                #    value = c.__dict__[dname]
+                #    for _fp in _framep:
+                #        rp = os.path.join(_fp, 'constraints', c.constraintName, dname)
+                #        self.__repository.update_file(value=value, relativePath=rp)
 
     def reset_engine(self):
         """ Re-initialize engine and resets constraints flags and data. """
         self._reinit_engine()
         # reset constraints flags
         self.reset_constraints()
-#        # set mustSave flag
-#        self.__mustSave = True
 
     def compute_total_standard_error(self, constraints, current="standardError"):
         """
@@ -2825,7 +3353,6 @@ class Engine(object):
                     # update state
                     self.__state  = time.time()
                     for c in _usedConstraints:
-                       #c.increment_tried()
                        c.set_state(self.__state)
                     # save engine
                     _lastSavedTotalStandardError = self.__totalStandardError
@@ -2876,6 +3403,9 @@ class Engine(object):
                This argument is only effective if fullrmc is compiled with
                openmp.
         """
+        assert self.__repository is not None, LOGGER.error("Engine repository is not defined. Use Engine.save method before calling run method.")
+        assert self.__repository.locker is not None, LOGGER.error("Engine repository locker is not defined. Try to reload engine.")
+        assert self.__repository.locker.isClient or self.__repository.locker.isServer, LOGGER.error("Engine respository locker seems down. Try to reload engine")
         # make sure it's a normal frame
         isNormalFrame, isMultiframe, isSubframe = self.get_frame_category(self.__usedFrame)
         assert isNormalFrame or isSubframe, LOGGER.error("Calling run is only allowed when used frame is a traditional frame or a subframe")
@@ -2920,13 +3450,23 @@ class Engine(object):
         _rejectRemove                = False
         _movedRealCoordinates        = None
         _movedBoxCoordinates         = None
-        # save whole engine if must be done
-        if self.__mustSave: # Currently it is always False. will check and fix it later
-            self.save()
+        # clear intercept hook
+        InterceptHook.clear(engine=self)
         #   #####################################################################################   #
         #   #################################### RUN ENGINE #####################################   #
         LOGGER.info("Engine @%s started %i steps, total standard error is: %.6f"%( self.__usedFrame, _numberOfSteps, self.__totalStandardError) )
         for step in xrange(_numberOfSteps):
+            ## intercept hook action
+            stop, _lastSavedTotalStandardError = InterceptHook._intercept(engine=self,
+                                                                          step=step,
+                                                                          restartPdb=restartPdb,
+                                                                          _frame=_frame,
+                                                                          _usedConstraints=_usedConstraints,
+                                                                          _constraints=_constraints,
+                                                                          _lastSavedTotalStandardError=_lastSavedTotalStandardError)
+            if stop:
+                return
+
             ## constraint runtime_on_step
             [c._runtime_on_step() for c in _usedConstraints]
             ## increment generated

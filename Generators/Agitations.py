@@ -31,6 +31,7 @@ structures such as distances, angles, etc.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -105,6 +106,21 @@ class DistanceAgitationGenerator(MoveGenerator):
         self.set_shrink(shrink)
         # set agitated
         self.set_agitate(agitate)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Agitations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Agitations.DistanceAgitationGenerator\
+(group={group}, amplitude={amplitude}, symmetric={symmetric}, \
+shrink={shrink}, agitate={agitate})"
+.format(name=name, group=group, amplitude=self.amplitude,
+        symmetric=self.symmetric, shrink=self.shrink, agitate=self.agitate))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def amplitude(self):
@@ -306,6 +322,21 @@ class AngleAgitationGenerator(MoveGenerator):
         self.set_shrink(shrink)
         # set agitated
         self.set_agitate(agitate)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Agitations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Agitations.AngleAgitationGenerator\
+(group={group}, amplitude={amplitude}, symmetric={symmetric}, \
+shrink={shrink}, agitate={agitate})"
+.format(name=name, group=group, amplitude=self.amplitude*FLOAT_TYPE(180.)/PI,
+        symmetric=self.symmetric, shrink=self.shrink, agitate=self.agitate))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def amplitude(self):

@@ -62,6 +62,7 @@ Translations contains all translation like MoveGenerator classes.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -112,6 +113,18 @@ class TranslationGenerator(MoveGenerator):
         super(TranslationGenerator, self).__init__(group=group)
         # set amplitude
         self.set_amplitude(amplitude)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationGenerator\
+(group={group}, amplitude={amplitude})".format(name=name, group=group, amplitude=self.amplitude))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def amplitude(self):
@@ -225,6 +238,19 @@ class TranslationAlongAxisGenerator(TranslationGenerator):
         self.set_axis(axis)
         # set direction
         self.set_direction(direction)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationAlongAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis}, direction={direction})\
+".format(name=name, group=group, amplitude=self.amplitude, axis=list(self.__axis), direction=self.__direction))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def axis(self):
@@ -347,6 +373,19 @@ class TranslationTowardsAxisGenerator(TranslationAlongAxisGenerator):
         # set angle
         self.set_angle(angle)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationTowardsAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis}, direction={direction}, angle={angle})\
+".format(name=name, group=group, amplitude=self.amplitude, axis=list(self.axis), direction=self.direction, angle=self.__angle/PI*FLOAT_TYPE(180.)))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def angle(self):
         """ Tolerance maximum angle in rad."""
@@ -449,6 +488,19 @@ class TranslationAlongSymmetryAxisGenerator(TranslationGenerator):
         self.set_axis(axis)
         # set direction
         self.set_direction(direction)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationAlongSymmetryAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis}, direction={direction})\
+".format(name=name, group=group, amplitude=self.amplitude, axis=self.axis, direction=self.direction))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def axis(self):
@@ -592,6 +644,19 @@ class TranslationTowardsSymmetryAxisGenerator(TranslationAlongSymmetryAxisGenera
         # set angle
         self.set_angle(angle)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationTowardsSymmetryAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis}, direction={direction}, angle={angle})\
+".format(name=name, group=group, amplitude=self.amplitude, axis=self.axis, direction=self.direction, angle=self.__angle/PI*FLOAT_TYPE(180.)))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def angle(self):
         """ Tolerance maximum angle in rad."""
@@ -692,6 +757,19 @@ class TranslationAlongSymmetryAxisPath(PathGenerator):
         PathGenerator.__init__(self, group=group, path=path, randomize=randomize)
         # set axis
         self.set_axis(axis)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Translations.TranslationAlongSymmetryAxisPath\
+(group={group}, axis={axis}, path={path}, randomize={randomize})\
+".format(name=name, group=group, axis=self.axis, path=list(self.path), randomize=self.randomize))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def axis(self):
@@ -841,6 +919,21 @@ class TranslationTowardsCenterGenerator(TranslationGenerator):
         self.set_center(center)
         # set angle
         self.set_angle(angle)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Translations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        center = list(self.center)[0]
+        center = {center:list(self.center[center])}
+        code.append("{name} = Translations.TranslationTowardsCenterGenerator\
+(group={group}, amplitude={amplitude}, center={center}, direction={direction}, angle={angle})\
+".format(name=name, group=group, amplitude=self.amplitude, center=center, direction=self.direction, angle=self.__angle/PI*FLOAT_TYPE(180.)))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def direction(self):

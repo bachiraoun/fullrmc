@@ -11,6 +11,8 @@ customize and set any possibly imaginable rule.
 from __future__ import print_function
 import os, inspect, copy, uuid, re, itertools, shutil
 from random import random as randfloat
+from collections import OrderedDict
+from datetime import datetime
 
 # external libraries imports
 import numpy as np
@@ -56,6 +58,8 @@ class Constraint(ListenerBase):
         object.__setattr__(self, 'FRAME_DATA',      tuple(FRAME_DATA)      )
         object.__setattr__(self, 'RUNTIME_DATA',    tuple(RUNTIME_DATA)    )
 
+    def _codify__(self, *args, **kwargs):
+        raise Exception(LOGGER.impl("'%s' method must be overloaded"%inspect.stack()[0][3]))
 
     def __setattr__(self, name, value):
         if name in ('FRAME_DATA','RUNTIME_DATA',):
@@ -178,7 +182,6 @@ class Constraint(ListenerBase):
         if self.__engine is not None:
             usedFrame = self.__engine.usedFrame
         return usedFrame
-
 
     @property
     def computationCost(self):
@@ -304,6 +307,88 @@ class Constraint(ListenerBase):
         """
         pass
 
+    def _get_constraints_copy(self, frame):
+        """Get constraint copy for given frame. This is meant to be used
+        internally. If used wrong, engine values can be altered unvoluntarely.
+        It's generally meant to be used for plot and export purposes.
+
+        :Parameters:
+            #. frame (string): can be a traditional frame a d subframe or
+               a multiframe
+
+        :Returns:
+            #. constraintsLUT (dict): a dictionary where keys are the given frame and
+               all subframes if a multiframe is given. Values are the
+               constraint copy or the constraint itself for used frame
+        """
+        neededData = self._constraint_copy_needs_lut()
+        isNormalFrame, isMultiframe, isSubframe = self.engine.get_frame_category(frame=frame)
+        # get frames constraint data
+        if isNormalFrame or isSubframe:
+            frames       = [frame]
+            framesName   = [frame,]
+        else:
+            frames       = [os.path.join(frame,frm) for frm in self.engine.frames[frame]['frames_name']]
+            framesName   = self.engine.frames[frame]['frames_name']
+        # build frame data
+        constraintsLUT  = OrderedDict()
+        repo            = self.engine._get_repository()
+        for frm in frames:
+            if not repo.is_repository_directory(os.path.join(frm, 'constraints',self.constraintName)):
+                LOGGER.usage("@{frm} constraint '{cn}' not found in stochastic engine repository. This can happen for subframes or if frame has never been used, try calling stochastic engine 'set_used_frame(\"{frm}\")'".format(cn=self.constraintName,frm=frm))
+                continue
+            if frm == self.engine.usedFrame:
+                _constraint = self
+            else:
+                _constraint = copy.deepcopy(self)
+                object.__setattr__(_constraint.engine, '_Engine__usedFrame', frm)
+                if not repo.is_repository_directory(frm):
+                    LOGGER.usage("Frame '{frm}' not found in stochastic engine repository. This can happen if frame has never been used, try calling stochastic engine 'set_used_frame(\"{frm}\")'".format(frm=frm))
+                    continue
+                # load needed data to restore constraint defined in _constraint_copy_needs_lut
+                for name in neededData:
+                    repoName = neededData[name]
+                    if isinstance(name, tuple):
+                        if name[0]=='engine':
+                            value = repo.pull(relativePath=os.path.join(frm,repoName))
+                            object.__setattr__(_constraint.engine, name[1], value)
+                        else:
+                            raise Exception(LOGGER.error('Wrong neededData format. Report issue'))
+                    elif repoName.startswith('_Engine__'):
+                        value = repo.pull(relativePath=os.path.join(frm,repoName))
+                        object.__setattr__(_constraint.engine, name, value)
+                    else:
+                        value = repo.pull(relativePath=os.path.join(frm,'constraints',_constraint.constraintName,repoName))
+                        object.__setattr__(_constraint, name, value)
+            constraintsLUT[frm] = _constraint
+        # return
+        return constraintsLUT
+
+    def _get_constraints_data(self, frame):
+        """Get constraint and data for given frame. This is meant to be used
+        internally. If used wrong, engine values can be altered unvoluntarely.
+        It's generally meant to be used for plot and export purposes.
+
+        :Parameters:
+            #. frame (string): can be a traditional frame a d subframe or
+               a multiframe
+
+        :Returns:
+            #. dataLUT (dict): a dictionary where keys are the given frame and
+               all subframes if a multiframe is given. Values are dictionaries
+               of the constraint and data copy
+        """
+        dataLUT = self._get_constraints_copy(frame)
+        for frm in dataLUT:
+            _constraint = dataLUT[frm]
+            _data       = _constraint.data
+            if _data is None or _constraint.engine.state != _constraint.state:
+                LOGGER.usage("Computing constraint '{name}' data @{frame} without updating nor altering constraint properties and stochastic engine repository files".format(name=self.constraintName, frame=frm))
+                _data, _ = _constraint.compute_data(update=False)
+            dataLUT[frm] = {'constraint':_constraint, 'data':_data}
+        # return
+        return dataLUT
+
     def is_in_engine(self, engine):
         """
         Get whether constraint is already in defined and added to engine.
@@ -393,6 +478,9 @@ class Constraint(ListenerBase):
         """
         assert isinstance(value, bool), LOGGER.error("value must be boolean")
         # get used frame
+        if self.engine is not None:
+            print(self.engine)
+            print(self.engine.usedFrame)
         usedIncluded, frame, allFrames = get_caller_frames(engine=self.engine,
                                                            frame=frame,
                                                            subframeToAll=True,
@@ -580,6 +668,55 @@ class Constraint(ListenerBase):
         compute_standard_error method and passing constraint's data."""
         self.set_standard_error(self.compute_standard_error(data = self.data))
 
+    def get_constraints_properties(self, frame):
+        """
+        Get a dictionary look up table of constraint's properties
+
+        :Parameters:
+            #. frame (string): frame to pull and build contraint data. It can
+               be a traditional frame, a multiframe or a subframe
+
+        :Returns:
+            #. propertiesLUT (dictionary): properties value look up table. Keys
+               are described herein. All keys start with 'frames-' and values
+               are list of properties for every and each frame.
+
+                * frames-name: list of all frames name
+                * frames-weight: list of all frames weight
+                * frames-number_of_removed_atoms: list of number of removed atoms from each frame
+                * frames-constraint: list of constraint copy
+                * frames-data: list of constraint data
+                * frames-standard_error: list of all frames standard error
+        """
+        constraintsData = self._get_constraints_data(frame)
+        # initialise properties LUT
+        propertiesLUT = OrderedDict()
+        propertiesLUT['frames-name']                      = []
+        propertiesLUT['frames-weight']                    = []
+        propertiesLUT['frames-number_of_removed_atoms']   = []
+        propertiesLUT['frames-constraint']                = []
+        propertiesLUT['frames-data']                      = []
+        propertiesLUT['frames-standard_error']            = []
+        # set properties LUT
+        for frm in constraintsData:
+            _constraint = constraintsData[frm]['constraint']
+            _data       = constraintsData[frm]['data']
+            _stdErr     = _constraint.compute_standard_error(_data)
+            _weight     = _constraint.multiframeWeight if _constraint.multiframeWeight is not None else FLOAT_TYPE(1.0)
+            _nRemAt     = len(_constraint.engine._atomsCollector)
+            # append properties
+            propertiesLUT['frames-name'].append(frm)
+            propertiesLUT['frames-weight'].append(_weight)
+            propertiesLUT['frames-number_of_removed_atoms'].append(_nRemAt)
+            propertiesLUT['frames-constraint'].append(_constraint)
+            propertiesLUT['frames-data'].append(_data)
+            propertiesLUT['frames-standard_error'].append(_stdErr)
+        # return
+        return propertiesLUT
+
+    def _constraint_copy_needs_lut(self, *args, **kwargs):
+        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
+
     def get_constraint_value(self):
         """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
@@ -592,7 +729,7 @@ class Constraint(ListenerBase):
         """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
-    def compute_data(self):
+    def compute_data(self, update=True):
         """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
@@ -648,13 +785,160 @@ class Constraint(ListenerBase):
         """Method must be overloaded in children classes."""
         raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
-    def export(self, *args, **kwargs):
-        """Method must be overloaded in children classes."""
-        LOGGER.warn("%s export method is not implemented"%(self.__class__.__name__))
+    def export(self, fileName, frame=None, format='%s', delimiter='\t', comments='#'):
+        """
+        Export constraint data to text file or to an archive of files.
 
-    def plot(self, *args, **kwargs):
-        """Method must be overloaded in children classes."""
-        LOGGER.warn("%s plot method is not implemented"%(self.__class__.__name__))
+        :Parameters:
+            #. fileName (path): full file name and path.
+            #. frame (None, string): frame name to export data from. If multiframe
+               is given, multiple files will be created with subframe name
+               appended to the end.
+            #. format (string): string format to export the data.
+               format is as follows (%[flag]width[.precision]specifier)
+            #. delimiter (string): String or character separating columns.
+            #. comments (string): String that will be prepended to the header.
+        """
+        if frame is None:
+            frame = self.engine.usedFrame
+        # get constraint properties LUT
+        propertiesLUT = self.get_constraints_properties(frame=frame)
+        # get number of frames
+        metadata = ["This file is auto-generated by fullrmc '%s' at %s"%(self.engine.version, datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')),
+                    "Contains exported data of constraint '%s'"%self.__class__.__name__,
+                    "For questions and concerns use fullrmc's forum http://bachiraoun.github.io/fullrmc/QAForum.html",
+                    "",
+                    "Engine name:                    %s"%os.path.basename(self.engine.path),
+                    "Frames name:                    %s"%propertiesLUT['frames-name'],
+                    "frames number of removed atoms: %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-number_of_removed_atoms']))),
+                    "Frames standard error:          %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-standard_error']))),
+                    ]
+        headers = []
+        data    = []
+        for idx, frameName in enumerate(propertiesLUT['frames-name']):
+            cons = propertiesLUT['frames-constraint'][idx]
+            h, d = cons._get_export(frameIndex=idx, format=format,
+                                    propertiesLUT = propertiesLUT)
+            headers.append(h)
+            data.append(d)
+        # write constraint data
+        lines = []
+        lines.append( '\n'.join(["%s %s"%(comments,i) for i in metadata]) )
+        for h,d,fn in zip(headers, data, propertiesLUT['frames-name']):
+            lines.append('\n%s'%comments)
+            h = delimiter.join(h)
+            d = '\n'.join([delimiter.join(l) for l in d])
+            lines.append('\n%s @%s'%(comments,fn))
+            lines.append('\n%s %s'%(comments,h))
+            lines.append('\n%s'%(d))
+        lines = ''.join(lines)
+        if fileName is not None:
+            with open(fileName, 'w') as fd:
+                fd.write(lines)
+        # return
+        return lines
+        #with open(fileName, 'w') as fd:
+        #    fd.write('\n'.join(["%s %s"%(comments,i) for i in metadata]))
+        #    for h,d,fn in zip(headers, data, propertiesLUT['frames-name']):
+        #        fd.write('\n%s'%comments)
+        #        h = delimiter.join(h)
+        #        #d = '\n'.join(['%s %s'%(' '*len(comments),delimiter.join(l)) for l in d])
+        #        d = '\n'.join([delimiter.join(l) for l in d])
+        #        fd.write('\n%s @%s'%(comments,fn))
+        #        fd.write('\n%s %s'%(comments,h))
+        #        fd.write('\n%s'%(d))
+
+
+    def plot(self, frame=None, axes=None,
+                   subAdParams  = {'left':None,'bottom':None,'right':None,'top':None,'wspace':None,'hspace':0.4},
+                   dataParams   = {'label':'Y', 'linewidth':2},
+                   xlabelParams = {'xlabel':'Core-Shell atoms', 'size':10},
+                   ylabelParams = {'ylabel':'Coordination number', 'size':10},
+                   xticksParams = {'fontsize': 8, 'rotation':90},
+                   yticksParams = {'fontsize': 8, 'rotation':0},
+                   legendParams = {'frameon':False, 'ncol':1, 'loc':'upper right', "fontsize":8},
+                   titleParams  = {'label':"@{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$ - $used$ $({used})$", "fontsize":10},
+                   gridParams   = None,
+                   show=True, **paramsKwargs):
+        """
+        Plot constraint data. This can be overloaded in children classes.
+
+        :Parameters:
+            #. frame (None, string): The frame name to plot. If None, used frame
+               will be plotted.
+            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+               If None is given a new plot figure will be created.
+            #. subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+               parameters subplots adjust parameters.
+            #. dataParams (None, dict): constraint data plotting parameters
+            #. xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+               parameters.
+            #. legendParams (None, dict):matplotlib.axes.Axes.legend
+               parameters.
+            #. xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+               parameters.
+            #. yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+               parameters.
+            #. titleParams (None, dict): matplotlib.axes.Axes.set_title parameters
+            #. gridParams (None, dict): matplotlib.axes.Axes.grid parameters
+            #. show (boolean): Whether to render and show figure before
+               returning.
+
+        :Returns:
+            #. figure (matplotlib Figure): matplotlib used figure.
+            #. axes (matplotlib Axes): matplotlib used axes.
+        """
+        # get frame
+        if frame is None:
+            frame = self.engine.usedFrame
+        import matplotlib.pyplot as plt
+        # get properties look up table
+        propertiesLUT  = self.get_constraints_properties(frame=frame)
+        # get matplotlib axes
+        numberOfFrames = len(propertiesLUT['frames-weight'])
+        if numberOfFrames == 0:
+            LOGGER.warn("@{frm} constraint '{cn}' not data found to plot. This can happen if constraint definition doesn't match the pdb atomic content".format(cn=self.constraintName,frm=frame))
+            return
+        nrows          = int(np.sqrt(float(numberOfFrames)))
+        ncols          = int(np.ceil(float(numberOfFrames)/nrows))
+        if numberOfFrames >1 or axes is None:
+            fig, axes = plt.subplots(nrows=nrows, ncols=ncols)
+            fig.patch.set_facecolor('white')
+            name = ' '.join(re.findall('[A-Z][^A-Z]*', self.__class__.__name__))
+            fig.canvas.set_window_title(name)
+        else:
+            fig = axes.get_figure()
+        # flatten axes representation and remove unused ones
+        if numberOfFrames>1:
+            axes = axes.flatten()
+            [a.remove() for a in axes[len(propertiesLUT['frames-name']):]]
+        else:
+            axes = [axes]
+        # adjust subplots
+        if subAdParams is not None:
+            fig.subplots_adjust(**subAdParams)
+        # plot all frames
+        for idx in range(numberOfFrames):
+            cons = propertiesLUT['frames-constraint'][idx]
+            cons._plot(frameIndex    = idx,
+                       propertiesLUT = propertiesLUT,
+                       ax            = axes[idx],
+                       dataParams    = dataParams,
+                       xlabelParams  = xlabelParams,
+                       ylabelParams  = ylabelParams,
+                       xticksParams  = xticksParams,
+                       yticksParams  = yticksParams,
+                       legendParams  = legendParams,
+                       titleParams   = titleParams,
+                       gridParams    = gridParams,
+                       **paramsKwargs)
+        # show
+        if show:
+            plt.show()
+        # return
+        return fig, axes
 
 
 class ExperimentalConstraint(Constraint):
@@ -697,16 +981,6 @@ class ExperimentalConstraint(Constraint):
     def __init__(self, experimentalData, dataWeights=None, scaleFactor=1.0, adjustScaleFactor=(0, 0.8, 1.2) ):
         # initialize constraint
         super(ExperimentalConstraint, self).__init__()
-        # set plotting default parameters.
-        self._plotDefaultParameters = {}
-        self._plotDefaultParameters['expParams']    = {'label':"experimental","color":'red','marker':'o','markersize':7.5, 'markevery':1, 'zorder':0}
-        self._plotDefaultParameters['totParams']    = {'label':"total", 'color':'black','linewidth':3.0, 'zorder':1}
-        self._plotDefaultParameters['noWParams']    = {'label':"total - no window", 'color':'black','linewidth':1.0, 'zorder':1}
-        self._plotDefaultParameters['shaParams']    = {'label':"shape function", 'color':'black','linewidth':1.0, 'linestyle':'dashed', 'zorder':2}
-        self._plotDefaultParameters['parParams']    = {'linewidth':1.0, 'markevery':5, 'markersize':5, 'zorder':3}
-        self._plotDefaultParameters['legendParams'] = {'frameon':False, 'ncol':2, 'loc':'best'}
-        self._plotDefaultParameters['xlabelParams'] = None
-        self._plotDefaultParameters['ylabelParams'] = None
         # set the constraint's experimental data
         self.__dataWeights      = None
         self._usedDataWeights   = None # this is the same as dataWeights but restricted to given limits
@@ -969,17 +1243,31 @@ class ExperimentalConstraint(Constraint):
         if called after adding constraint to stochastic engine.
 
         :Parameters:
-            #. experimentalData (numpy.ndarray, string): Experimental data as
-               numpy.ndarray or string path to load data using numpy.loadtxt
-               method.
+            #. experimentalData (numpy.ndarray, string, list, tuple):
+               Experimental data as numpy.ndarray or string path to load data
+               using numpy.loadtxt method. If list or tuple are given, they
+               will be automatically converted to a numpy array by calling
+               numpy.array(experimentalData). Finally experimental data type
+               will be converted to fullrmc.Globals.FLOAT_TYPE
         """
         assert self.engine is None, LOGGER.error("Experimental data must be set before engine is set") # ADDED 2018-11-21
         if isinstance(experimentalData, basestring):
             try:
                 experimentalData = np.loadtxt(str(experimentalData), dtype=FLOAT_TYPE)
-            except Exception as e:
-                raise Exception(LOGGER.error("unable to load experimentalData path '%s' (%s)"%(experimentalData, e)))
-        assert isinstance(experimentalData, np.ndarray), LOGGER.error("experimentalData must be a numpy.ndarray or string path to load data using numpy.loadtxt.")
+            except Exception as err:
+                raise Exception(LOGGER.error("unable to load experimentalData path '%s' (%s)"%(experimentalData, err)))
+        if isinstance(experimentalData, (list,tuple)):
+            try:
+                experimentalData = np.array(experimentalData)
+            except Exception as err:
+                raise Exception(LOGGER.error("unable to convert given experimentalData list to a numpy array (%s)"%(experimentalData, err)))
+        else:
+            assert isinstance(experimentalData, np.ndarray), LOGGER.error("experimentalData must be a numpy.ndarray or string path to load data using numpy.loadtxt.")
+        # cast to FLOAT_TYPE
+        try:
+            experimentalData = experimentalData.astype(FLOAT_TYPE)
+        except Exception as err:
+            raise Exception(LOGGER.error("unable to cast experimentalData numpy array data type to fullrmc.Globals.FLOAT_TYPE '%s' (%s)"%(experimentalData, FLOAT_TYPE, err)))
         # check data format
         valid, message = self.check_experimental_data(experimentalData)
         # set experimental data
@@ -1022,7 +1310,7 @@ class ExperimentalConstraint(Constraint):
             except Exception as e:
                 raise Exception(LOGGER.error("unable to cast dataWeights as a numpy array (%s)"%(e)))
             assert len(dataWeights.shape) == 1, LOGGER.error("dataWeights must be a vector")
-            assert len(dataWeights) == self.__experimentalData.shape[0], LOGGER.error("dataWeights must be a of the same length as experimental data")
+            assert len(dataWeights) == self.__experimentalData.shape[0], LOGGER.error("dataWeights length '%i' must be equal to experimental data length '%i'"%(len(dataWeights),self.__experimentalData.shape[0]))
             assert np.min(dataWeights) >=0, LOGGER.error("dataWeights negative values are not allowed")
             assert np.sum(dataWeights), LOGGER.error("dataWeights must be a non-zero array")
             dataWeights /= FLOAT_TYPE( np.sum(dataWeights) )
@@ -1166,186 +1454,174 @@ class ExperimentalConstraint(Constraint):
         else:
             return np.add.reduce(self.__dataWeights*(diff)**2)
 
-    def _get_needed_data_for_constraint_data_dictionary(self, *args, **kwargs):
-        raise Exception(LOGGER.impl("%s '%s' method must be overloaded"%(self.__class__.__name__,inspect.stack()[0][3])))
 
-    def get_constraint_data_dictionary(self, frame):
+    def get_constraints_properties(self, frame):
         """
-        Get a dictionary of all constraint meaningful data to plot or export.
+        Get a dictionary look up table of constraint's properties that
+        are needed to plot or export
 
         :Parameters:
             #. frame (string): frame to pull and build contraint data. It can
                be a traditional frame, a multiframe or a subframe
 
         :Returns:
-            #. data (dictionary): Dictionary of all meaningful data including:
+            #. propertiesLUT (dictionary): properties value look up table. Keys
+               are described herein. Values of keys that start with 'frames-'
+               are a list for all frames. Values of keys that start with
+               'weighted-' are weighted values for all frames
 
-                * output: list of frames dictionary constraint data
-                * experimental_x: numpy array of experimental x data.
-                * experimental_y: numpy array of experimental y data.
-                * model_x: numpy array of model x data.
-                * frames_weight: list of all frames weight.
-                * frames_name: list of all frames name.
-                * number_of_atoms_removed: list of number of removed atoms from
+                * frames-name: list of all frames name.
+                * frames-weight: list of all frames weight.
+                * frames-number_of_removed_atoms: list of number of removed atoms from
                   each frame.
-                * shape_array: list of system shape function (numpy array) of
+                * frames-experimental_x: list of numpy array of experimental x data.
+                * frames-experimental_y: list of numpy array of experimental y data.
+                * frames-output: list of frames dictionary constraint output data
+                * frames-model_x: list of numpy array of model x data.
+                * frames-shape_array: list of system shape function (numpy array) of
                   all frames.
-                * window_function: list of window function (numpy array) of
+                * frames-window_function: list of window function (numpy array) of
                   all frames.
-                * scale_factor: list of all frames scale factor.
-                * standard_error: list of all frames standard error.
-                * weighted_output: dictionary of all frames weighted constraint
-                  data using 'frames_weight'
-                * weighted_number_of_atoms_removed: All frames averaged number
-                  of removed atoms using 'frames_weight'
-                * weighted_scale_factor: All frames averaged scale factor
-                  using 'frames_weight'
-                * weighted_standard_error: All frames weighted standard error
-                  using 'frames_weight'
+                * frames-scale_factor: list of all frames scale factor.
+                * frames-standard_error: list of all frames standard error.
+                * weighted-output: dictionary of all frames weighted constraint
+                  data using 'frames-weight'
+                * weighted-number_of_removed_atoms: All frames averaged number
+                  of removed atoms using 'frames-weight'
+                * weighted-scale_factor: All frames averaged scale factor
+                  using 'frames-weight'
+                * weighted-standard_error: All frames weighted standard error
+                  using 'frames-weight'
 
         """
-        from collections import OrderedDict
-        neededData = self._get_needed_data_for_constraint_data_dictionary()
-        isNormalFrame, isMultiframe, isSubframe = self.engine.get_frame_category(frame=frame)
-        # get frames constraint data
-        if isNormalFrame or isSubframe:
-            frames       = [frame]
-            framesName   = [frame,]
-        else:
-            frames       = [os.path.join(frame,frm) for frm in self.engine.frames[frame]['frames_name']]
-            framesName   = self.engine.frames[frame]['frames_name']
-        # initiate
-        framesData = OrderedDict()
-        framesData['output']                           = []
-        framesData['experimental_x']                   = []
-        framesData['experimental_y']                   = []
-        framesData['model_x']                          = []
-        framesData['frames_weight']                    = []
-        framesData['frames_name']                      = []
-        framesData['number_of_atoms_removed']          = []
-        framesData['window_function']                  = []
-        framesData['shape_array']                      = []
-        framesData['scale_factor']                     = []
-        framesData['standard_error']                   = []
-        framesData['weighted_output']                  = None
-        framesData['weighted_number_of_atoms_removed'] = None
-        framesData['weighted_scale_factor']            = None
-        framesData['weighted_standard_error']          = None
-        # loop frames and get data
-        _constraint = None
-        for frm in frames:
-            if frm == self.engine.usedFrame:
-                output   = self._get_constraint_value(self.data, applyMultiframePrior=False)
-                stdErr   = self.compute_standard_error(modelData = output["total"])
-                expDis   = self._experimentalX
-                expData  = self._experimentalY
-                modelX   = self._modelX
-                weight   = self.multiframeWeight if self.multiframeWeight is not None else FLOAT_TYPE(1.0)
-                nRemAt   = len(self.engine._atomsCollector)
-                sArray   = None
-                if hasattr(self, '_shapeArray'):
-                    sArray = self._shapeArray
-                wFunc    = self.windowFunction
-                sFactor  = self.scaleFactor
-            else:
-                repo = self.engine._get_repository()
-                if _constraint is None:
-                    _constraint = copy.deepcopy(self)
-                object.__setattr__(_constraint.engine, '_Engine__usedFrame', frm)
-                for name in neededData:
-                    repoName = neededData[name]
-                    if isinstance(name, tuple):
-                        if name[0]=='engine':
-                            value = repo.pull(relativePath=os.path.join(frm,repoName))
-                            object.__setattr__(_constraint.engine, name[1], value)
-                        else:
-                            raise Exception(LOGGER.error('Wrong neededData format. Report issue'))
-                    elif repoName.startswith('_Engine__'):
-                        value = repo.pull(relativePath=os.path.join(frm,repoName))
-                        object.__setattr__(_constraint.engine, name, value)
-                    else:
-                        value = repo.pull(relativePath=os.path.join(frm,'constraints',_constraint.constraintName,repoName))
-                        object.__setattr__(_constraint, name, value)
-                # append frames data
-                if _constraint.data is None:
-                    LOGGER.warn("%s constraint data for frame are not computed."%(self.__class__.__name__))
-                    return None
-                # get attributes
-                output = _constraint._get_constraint_value(_constraint.data, applyMultiframePrior=False)
-                stdErr = _constraint.compute_standard_error(modelData = output["total"])
-                if len(framesData['experimental_x'])>0:
-                    assert np.allclose(framesData['experimental_x'], _constraint._experimentalX), LOGGER.error("Frames experimentalX must match")
-                    assert np.allclose(framesData['experimental_y'], _constraint._experimentalY), LOGGER.error("Frames experimentalY must match")
-                    assert np.allclose(framesData['model_x'], _constraint._modelX), LOGGER.error("Frames modelX must match")
-                else:
-                    expDis   = _constraint._experimentalX
-                    expData  = _constraint._experimentalY
-                    modelX   = _constraint._modelX
-                weight = _constraint.multiframeWeight if _constraint.multiframeWeight is not None else FLOAT_TYPE(1.0)
-                nRemAt   = len(_constraint.engine._atomsCollector)
-                sArray   = None
-                if hasattr(self, '_shapeArray'):
-                    sArray = _constraint._shapeArray
-                wFunc    = _constraint.windowFunction
-                sFactor  = _constraint.scaleFactor
-            # append frame data
-            framesData['output'].append(output)
-            framesData['frames_name'].append(frm)
-            framesData['experimental_x'].append(expDis)
-            framesData['experimental_y'].append(expData)
-            framesData['model_x'].append(modelX)
-            framesData['frames_weight'].append(weight)
-            framesData['number_of_atoms_removed'].append(nRemAt)
-            framesData['shape_array'].append(sArray)
-            framesData['window_function'].append(wFunc)
-            framesData['scale_factor'].append(sFactor)
-            framesData['standard_error'].append(stdErr)
+        # get properties LUT
+        constraintsData = self._get_constraints_data(frame)
+        # initialize properties look up table
+        propertiesLUT = OrderedDict()
+        propertiesLUT['frames-name']                      = []
+        propertiesLUT['frames-weight']                    = []
+        propertiesLUT['frames-number_of_removed_atoms']   = []
+        propertiesLUT['frames-constraint']                = []
+        propertiesLUT['frames-data']                      = []
+        propertiesLUT['frames-standard_error']            = []
+        propertiesLUT['frames-experimental_x']            = []
+        propertiesLUT['frames-experimental_y']            = []
+        propertiesLUT['frames-output']                    = []
+        propertiesLUT['frames-model_x']                   = []
+        propertiesLUT['frames-limits']                    = []
+        propertiesLUT['frames-limit_index_start']         = []
+        propertiesLUT['frames-limit_index_end']           = []
+        propertiesLUT['frames-shape_array']               = []
+        propertiesLUT['frames-window_function']           = []
+        propertiesLUT['frames-scale_factor']              = []
+        propertiesLUT['frames-standard_error']            = []
+        propertiesLUT['weighted-output']                  = None
+        propertiesLUT['weighted-number_of_removed_atoms'] = None
+        propertiesLUT['weighted-scale_factor']            = None
+        propertiesLUT['weighted-standard_error']          = None
+        # set properties LUT
+        for frm in constraintsData:
+            _constraint = constraintsData[frm]['constraint']
+            _data       = constraintsData[frm]['data']
+            _weight     = _constraint.multiframeWeight if _constraint.multiframeWeight is not None else FLOAT_TYPE(1.0)
+            _nRemAt     = len(_constraint.engine._atomsCollector)
+            # compute properties
+            _output   = _constraint._get_constraint_value(_data, applyMultiframePrior=False)
+            _stdErr   = _constraint.compute_standard_error(modelData = _output["total"])
+            _expDis   = _constraint._experimentalX
+            _expData  = _constraint._experimentalY
+            _modelX   = _constraint._modelX
+            _weight   = _constraint.multiframeWeight if _constraint.multiframeWeight is not None else FLOAT_TYPE(1.0)
+            _nRemAt   = len(_constraint.engine._atomsCollector)
+            _sArray   = None
+            _limits   = _constraint.limits
+            _idxStart = _constraint.limitsIndexStart
+            _idxEnd   = _constraint.limitsIndexEnd
+            if hasattr(_constraint, '_shapeArray'):
+                _sArray = _constraint._shapeArray
+            _wFunc    = _constraint.windowFunction
+            _sFactor  = _constraint.scaleFactor
+            # append properties
+            propertiesLUT['frames-name'].append(frm)
+            propertiesLUT['frames-weight'].append(_weight)
+            propertiesLUT['frames-number_of_removed_atoms'].append(_nRemAt)
+            propertiesLUT['frames-constraint'].append(_constraint)
+            propertiesLUT['frames-data'].append(_data)
+            propertiesLUT['frames-standard_error'].append(_stdErr)
+            propertiesLUT['frames-experimental_x'].append(_expDis)
+            propertiesLUT['frames-experimental_y'].append(_expData)
+            propertiesLUT['frames-output'].append(_output)
+            propertiesLUT['frames-limits'].append(_limits)
+            propertiesLUT['frames-limit_index_start'].append(_idxStart)
+            propertiesLUT['frames-limit_index_end'].append(_idxEnd)
+            propertiesLUT['frames-model_x'].append(_modelX)
+            propertiesLUT['frames-shape_array'].append(_sArray)
+            propertiesLUT['frames-window_function'].append(_wFunc)
+            propertiesLUT['frames-scale_factor'].append(_sFactor)
+            propertiesLUT['frames-standard_error'].append(_stdErr)
+        ## warn about data limit difference
+        _setStart  = set(propertiesLUT['frames-limit_index_start'])
+        _setEnd    = set(propertiesLUT['frames-limit_index_end'])
+        _setLimits = set(propertiesLUT['frames-limits'])
+        _allMatch  = len(_setStart)==len(_setEnd)==len(_setLimits)==1
+        if not _allMatch:
+            LOGGER.warn("@{frame} constraint '{cn}' used data limits '{lim}' are not unique for all subrames. Mesoscopic structure weighting will be performed by data point".format(cn=self.constraintName, frame=frame, lim=list(_setLimits)))
         ## compute frames weighted
-        framesWeight = np.array(framesData['frames_weight'], dtype=FLOAT_TYPE)
+        framesWeight = np.array(propertiesLUT['frames-weight'], dtype=FLOAT_TYPE)
         if np.sum(framesWeight)==0:
             if len(framesWeight)==1:
                 framesWeight = np.array([1])
             else:
-                raise Exception("Frames weight sum is found to be 0. PLEASE REPORT THIS BUG")
+                raise Exception("Frames weight sum is found to be 0. PLEASE REPORT")
         weightedOutput = {}
-        for key in framesData['output'][0]:
-            if any([framesData['output'][i][key] is None for i, w in enumerate(framesWeight)]):
+        for key in propertiesLUT['frames-output'][0]:
+            if any([propertiesLUT['frames-output'][i][key] is None for i, w in enumerate(framesWeight)]):
                 weightedOutput[key] = None
-            else:
-                weightedOutput[key] = np.sum([w*framesData['output'][i][key] for i, w in enumerate(framesWeight)], axis=0)
+                LOGGER.warn("@{frame} constraint '{cn}' mesoscopic structure building is skipped for output key '{key}' because it's not computed for all subframes".format(cn=self.constraintName, frame=frame, key=key))
+            elif _allMatch:
+                weightedOutput[key] = np.sum([w*propertiesLUT['frames-output'][i][key] for i, w in enumerate(framesWeight)], axis=0)
                 weightedOutput[key] = weightedOutput[key]/sum(framesWeight)
-        framesData['weighted_output']                  = weightedOutput
-        framesData['weighted_number_of_atoms_removed'] = np.average(framesData['number_of_atoms_removed'], weights=framesWeight)
-        framesData['weighted_standard_error']          = self.compute_standard_error(modelData=weightedOutput['total'])
-        framesData['weighted_scale_factor']            = np.average(framesData['scale_factor'], weights=framesWeight)
+            else:
+                _len =  max(_setEnd)
+                _out = np.zeros(_len+1)
+                _pws = np.zeros(_len+1)
+                for i, w in enumerate(framesWeight):
+                    if w == 0:
+                        continue
+                    _s = propertiesLUT['frames-limit_index_start'][i]
+                    _e = propertiesLUT['frames-limit_index_end'][i]
+                    _w = np.zeros(_len+1)
+                    _w[_s:_e+1]    = w
+                    _pws[_s:_e+1] += w
+                    _out[_s:_e+1] += w*propertiesLUT['frames-output'][i][key]
+                assert not len(np.where(_pws==0)[0]), LOGGER.error("@{frame} constraint '{cn}' output key '{key}' data range weights contain 0 values. PLEASE REPORT".format(cn=self.constraintName, frame=frame, key=key))
+                weightedOutput[key] = _out/_pws
+        propertiesLUT['weighted-output']                  = weightedOutput
+        propertiesLUT['weighted-number_of_removed_atoms'] = np.average(propertiesLUT['frames-number_of_removed_atoms'], weights=framesWeight)
+        propertiesLUT['weighted-standard_error']          = _constraint.compute_standard_error(modelData=weightedOutput['total'])
+        propertiesLUT['weighted-scale_factor']            = np.average(propertiesLUT['frames-scale_factor'], weights=framesWeight)
         # return
-        return framesData
+        return propertiesLUT
 
 
     def _plot(self, frame, output, experimentalX, experimentalY,
                     shellCenters, shapeArray, numberOfRemovedAtoms,
                     standardError, scaleFactor, multiframeWeight,
                     # plotting arguments
-                    ax=None, intra=True, inter=True, totalNoWindow=False,
+                    ax, intra=True, inter=True, totalNoWindow=False,
                     xlabelParams=None,
                     ylabelParams=None,
                     legendParams=None,
-                    titleFormat = "",
+                    titleParams = "",
                     expParams = {'label':"experimental","color":'red','marker':'o','markersize':7.5, 'markevery':1, 'zorder':0},
                     totParams = {'label':"total", 'color':'black','linewidth':3.0, 'zorder':1},
                     noWParams = {'label':"total - no window", 'color':'black','linewidth':1.0, 'zorder':1},
                     shaParams = {'label':"shape function", 'color':'black','linewidth':1.0, 'linestyle':'dashed'},
                     parParams = {'linewidth':1.0, 'markevery':5, 'markersize':5, 'zorder':-1},
+                    gridParams= None,
                     show=True):
         # import matplotlib
         import matplotlib.pyplot as plt
-        # get axes
-        if ax is None:
-            FIG  = plt.figure()
-            AXES = plt.gca()
-        else:
-            AXES = ax
-            FIG  = AXES.get_figure()
         # Create plotting styles
         COLORS  = ["b",'g','c','y','m']
         MARKERS = ["",'.','+','^','|']
@@ -1354,12 +1630,12 @@ class ExperimentalConstraint(Constraint):
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(['-'], COLORS)]
         INTER_STYLES = [r[0] + r[1]for r in itertools.product(MARKERS, INTER_STYLES)]
         # plot experimental
-        AXES.plot(experimentalX,experimentalY, **expParams)
-        AXES.plot(shellCenters, output["total"], **totParams )
+        ax.plot(experimentalX,experimentalY, **expParams)
+        ax.plot(shellCenters, output["total"], **totParams )
         if totalNoWindow and output["total_no_window"] is not None:
-            AXES.plot(shellCenters, output["total_no_window"], **noWParams )
+            ax.plot(shellCenters, output["total_no_window"], **noWParams )
         if shapeArray is not None:
-            AXES.plot(shellCenters, shapeArray, **shaParams )
+            ax.plot(shellCenters, shapeArray, **shaParams )
         # plot partials
         intraStyleIndex = 0
         interStyleIndex = 0
@@ -1368,100 +1644,95 @@ class ExperimentalConstraint(Constraint):
             if key in ("total", "total_no_window"):
                 continue
             elif "intra" in key and intra:
-                AXES.plot(shellCenters, val, INTRA_STYLES[intraStyleIndex], label=key, **parParams )
+                ax.plot(shellCenters, val, INTRA_STYLES[intraStyleIndex], label=key, **parParams )
                 intraStyleIndex+=1
             elif "inter" in key and inter:
-                AXES.plot(shellCenters, val, INTER_STYLES[interStyleIndex], label=key, **parParams )
+                ax.plot(shellCenters, val, INTER_STYLES[interStyleIndex], label=key, **parParams )
                 interStyleIndex+=1
         # plot legend
         if legendParams is not None:
-            AXES.legend(**legendParams)
+            ax.legend(**legendParams)
         # set title
-        if len(titleFormat):
-            name = ' '.join(re.findall('[A-Z][^A-Z]*', self.__class__.__name__))
-            FIG.canvas.set_window_title(name)
-            # format title
-            title = titleFormat.format(frame=frame,
-                                       standardError=standardError,
-                                       numberOfRemovedAtoms=numberOfRemovedAtoms,
-                                       scaleFactor=scaleFactor,
-                                       multiframeWeight=multiframeWeight)
-            AXES.set_title(title)
+        # set title
+        if titleParams is not None:
+            title = copy.deepcopy(titleParams)
+            label = title.pop('label',"").format(frame=frame,
+                                                 standardError=standardError,
+                                                 numberOfRemovedAtoms=numberOfRemovedAtoms,
+                                                 scaleFactor=scaleFactor,
+                                                 used=self.used,
+                                                 multiframeWeight=multiframeWeight)
+            ax.set_title(label=label, **title)
+
         # set axis labels
         if xlabelParams is not None:
-            #AXES.set_xlabel("$r(\AA)$", size=16)
-            AXES.set_xlabel(**xlabelParams)
+            ax.set_xlabel(**xlabelParams)
         if ylabelParams is not None:
-            AXES.set_ylabel(**ylabelParams)
-        # set background color
-        FIG.patch.set_facecolor('white')
-        #show
-        if show:
-            plt.show()
-        return FIG, AXES
+            ax.set_ylabel(**ylabelParams)
+        # grid parameters
+        if gridParams is not None:
+            gp = copy.deepcopy(gridParams)
+            axis = gp.pop('axis', 'both')
+            if axis is None:
+                axis = 'both'
+            ax.grid(axis=axis, **gp)
 
-    def plot(self, frame=None, multiplot=False,
-                   ax=None, intra=True, inter=True, shapeFunc=True,
-                   xlabelParams=True,
-                   ylabelParams=True,
-                   legendParams=True,
-                   expParams=None,
-                   totParams=None,
-                   noWParams=None,
-                   shaParams=None,
-                   parParams=None,
-                   titleFormat = "@{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$",
-                   show=True):
+
+    def plot(self, frame=None, axes = None, asMesoscopic=False,
+                   intra=True, inter=True, shapeFunc=True,
+                   subAdParams  = {'left':None,'bottom':None,'right':None,'top':None,'wspace':None,'hspace':0.4},
+                   totParams    = {'label':"total", 'color':'black','linewidth':3.0, 'zorder':1},
+                   expParams    = {'label':"experimental","color":'red','marker':'o','markersize':7.5, 'markevery':1, 'zorder':0},
+                   noWParams    = {'label':"total - no window", 'color':'black','linewidth':1.0, 'zorder':1},
+                   shaParams    = {'label':"shape function", 'color':'black','linewidth':1.0, 'linestyle':'dashed', 'zorder':2},
+                   parParams    = {'linewidth':1.0, 'markevery':5, 'markersize':5, 'zorder':3},
+                   xlabelParams = {'xlabel':'X', 'size':10},
+                   ylabelParams = {'ylabel':'Y', 'size':10},
+                   xticksParams = {'fontsize': 8, 'rotation':0},
+                   yticksParams = {'fontsize': 8, 'rotation':0},
+                   legendParams = {'frameon':False, 'ncol':2, 'loc':'upper right', "fontsize":8},
+                   titleParams  = {'label':"@{frame} (${numberOfRemovedAtoms:.1f}$ $rem.$ $at.$) $Std.Err.={standardError:.3f}$\n$scale$ $factor$=${scaleFactor:.2f}$ - $multiframe$ $weight$=${multiframeWeight:.3f}$ - $used$ $({used})$", "fontsize":10},
+                   gridParams   = None,
+                   show=True, **paramsKwargs):
         """
-        Plot constraint data
+        Plot constraint data. This can be overloaded in children classes.
 
         :Parameters:
             #. frame (None, string): The frame name to plot. If None, used frame
                will be plotted.
-            #. multiplot (boolean): If multiframe is given, multiplot insures
-               plotting all frames differently in a single multiplot figure.
-               In this case, given ax is ommitted.
-            #. ax (None, matplotlib Axes): matplotlib Axes instance to plot in.
+            #. axes (None, matplotlib Axes): matplotlib Axes instance to plot in.
                If None is given a new plot figure will be created.
+            #. asMesoscopic (boolean): If given frame is a multiframe is,
+               when true, asMesoscopic considers all frames as a statistical
+               average of all frames in a mesoscopic system. All subframes
+               will be then plotted as a single weighted mesoscopic structure.
+               If asMesocopic is False and given frame is a multiframe
+               given ax will be disregarded
             #. intra (boolean): Whether to add intra-molecular pair
                distribution function features to the plot.
             #. inter (boolean): Whether to add inter-molecular pair
                distribution function features to the plot.
             #. shapeFunc (boolean): Whether to add shape function to the plot
                only when exists.
-            #. xlabelParams (dict, boolean): matplotlib.axes.Axes.set_xlabel
-               parameters. If True, default parameters given by constraint's
-               property _plotDefaultParameters is set. If False x axes label is
-               omitted
-            #. ylabelParams (dict, boolean): matplotlib.axes.Axes.set_ylabel
-               parameters. If True,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If False y axes label is
-               omitted
-            #. legendParams (dict, boolean):matplotlib.axes.Axes.legend
-               parameters. If True,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If False is omitted
-            #. titleFormat (string): title format. If empty string is given no
-               title will be added to figure axes
-            #. expParams (None, dict): experimental data matplotlib.pyplot.plot
-               parameters. If None,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If dict, it will be the
-               update dict to _plotDefaultParameters
-            #. totParams (None, dict): total data matplotlib.pyplot.plot
-               parameters. If None,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If dict, it will be the
-               update dict to _plotDefaultParameters
-            #. noWParams (None, dict): constraint no-window total data matplotlib.pyplot.plot
-               parameters. If None,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If dict, it will be the
-               update dict to _plotDefaultParameters
-            #. shaParams (None, dict): constraint shape array data matplotlib.pyplot.plot
-               parameters. If None,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If dict, it will be the
-               update dict to _plotDefaultParameters
-            #. parParams (None, dict): constraint partial data matplotlib.pyplot.plot
-               parameters. If None,  default parameters given by constraint's
-               property _plotDefaultParameters is set. If dict, it will be the
-               update dict to _plotDefaultParameters
+            #. subAdParams (None, dict): matplotlib.artist.Artist.subplots_adjust
+               parameters subplots adjust parameters.
+            #. totParams (None, dict): constraint total plotting parameters
+            #. expParams (None, dict): constraint experimental data parameters
+            #. noWParams (None, dict): constraint total without window parameters
+            #. shaParams (None, dict): constraint shape function parameters
+            #. parParams (None, dict): constraint partials parameters
+            #. xlabelParams (None, dict): matplotlib.axes.Axes.set_xlabel
+               parameters.
+            #. ylabelParams (None, dict): matplotlib.axes.Axes.set_ylabel
+               parameters.
+            #. legendParams (None, dict):matplotlib.axes.Axes.legend
+               parameters.
+            #. xticksParams (None, dict):matplotlib.axes.Axes.set_xticklabels
+               parameters.
+            #. yticksParams (None, dict):matplotlib.axes.Axes.set_yticklabels
+               parameters.
+            #. titleParams (None, dict): matplotlib.axes.Axes.set_title parameters
+            #. gridParams (None, dict): matplotlib.axes.Axes.grid parameters
             #. show (boolean): Whether to render and show figure before
                returning.
 
@@ -1469,139 +1740,92 @@ class ExperimentalConstraint(Constraint):
             #. figure (matplotlib Figure): matplotlib used figure.
             #. axes (matplotlib Axes): matplotlib used axes.
         """
-        assert isinstance(multiplot, bool), LOGGER.error("multiplot must be boolean")
-        # check expParams
-        if expParams is None:
-            expParams = {}
-        assert isinstance(expParams, dict), "expParams must be None or dict"
-        default   = copy.deepcopy( self._plotDefaultParameters['expParams'] )
-        default.update(expParams)
-        expParams = default
-        # check totParams
-        if totParams is None:
-            totParams = {}
-        assert isinstance(totParams, dict), "totParams must be None or dict"
-        default   = copy.deepcopy( self._plotDefaultParameters['totParams'] )
-        default.update(totParams)
-        totParams = default
-        # check noWParams
-        if noWParams is None:
-            noWParams = {}
-        assert isinstance(noWParams, dict), "noWParams must be None or dict"
-        default   = copy.deepcopy( self._plotDefaultParameters['noWParams'] )
-        default.update(noWParams)
-        noWParams = default
-        # check shaParams
-        if shaParams is None:
-            shaParams = {}
-        assert isinstance(shaParams, dict), "shaParams must be None or dict"
-        default   = copy.deepcopy( self._plotDefaultParameters['shaParams'] )
-        default.update(shaParams)
-        shaParams = default
-        # check parParams
-        if parParams is None:
-            parParams = {}
-        assert isinstance(parParams, dict), "parParams must be None or dict"
-        default   = copy.deepcopy( self._plotDefaultParameters['parParams'] )
-        default.update(parParams)
-        parParams = default
-        # check xlabel
-        if xlabelParams is False:
-            xlabelParams = None
-        elif xlabelParams is True:
-            xlabelParams = self._plotDefaultParameters['xlabelParams']
-        elif  isinstance(xlabelParams, dict):
-            default   = copy.deepcopy( self._plotDefaultParameters['xlabelParams'] )
-            default.update(xlabelParams)
-            xlabelParams = default
-        else:
-            assert xlabelParams is None, "xlabelParams must be None, boolean or dict"
-        # check ylabel
-        if ylabelParams is False:
-            ylabelParams = None
-        elif ylabelParams is True:
-            ylabelParams = self._plotDefaultParameters['ylabelParams']
-        elif  isinstance(ylabelParams, dict):
-            default = copy.deepcopy( self._plotDefaultParameters['ylabelParams'] )
-            default.update(ylabelParams)
-            ylabelParams = default
-        else:
-            assert ylabelParams is None, "ylabelParams must be None, boolean or dict"
-        # check ylabel
-        if legendParams is False:
-            legendParams = None
-        elif legendParams is True:
-            legendParams = self._plotDefaultParameters['legendParams']
-        elif  isinstance(legendParams, dict):
-            default = copy.deepcopy( self._plotDefaultParameters['legendParams'] )
-            default.update(legendParams)
-            legendParams = default
-        else:
-            assert legendParams is None, "legendParams must be None, boolean or dict"
+        assert isinstance(asMesoscopic, bool), LOGGER.error('asMesoscopic must be boolean')
         # get frame
         if frame is None:
             frame = self.engine.usedFrame
-        isNormalFrame, isMultiframe, isSubframe = self.engine.get_frame_category(frame=frame)
-        framesData = self.get_constraint_data_dictionary(frame=frame)
-        if framesData is None:
-            return
-        # get number of frames
-        numberOfFrames = len(framesData['frames_weight'])
-        multiplot      = multiplot and numberOfFrames>1
-        if multiplot:
-            import matplotlib.pyplot as plt
-            nrows     = int(np.sqrt(float(numberOfFrames)))
-            ncols     = int(np.ceil(float(numberOfFrames)/nrows))
-            fig, axes = plt.subplots(nrows=nrows, ncols=ncols)
-            axes      = axes.flatten()
-            fig.subplots_adjust(hspace=0.4)
-            for idx, output in enumerate(framesData['output']):
-                _show = show and idx==len(framesData['output'])-1
-                FIG, AXES = self._plot(frame                 = framesData['frames_name'][idx],
-                                       output                = output,
-                                       experimentalX         = framesData['experimental_x'][idx],
-                                       experimentalY         = framesData['experimental_y'][idx],
-                                       shellCenters          = framesData['model_x'][idx],
-                                       shapeArray            = framesData['shape_array'][idx] if shapeFunc else None,
-                                       numberOfRemovedAtoms  = framesData['number_of_atoms_removed'][idx],
-                                       standardError         = framesData['standard_error'][idx],
-                                       scaleFactor           = framesData['scale_factor'][idx],
-                                       multiframeWeight      = framesData['frames_weight'][idx],
-                                       ax=axes[idx], intra=intra, inter=inter,
-                                       xlabelParams = xlabelParams,
-                                       ylabelParams = ylabelParams,
-                                       legendParams = legendParams,
-                                       expParams    = expParams,
-                                       totParams    = totParams,
-                                       noWParams    = noWParams,
-                                       shaParams    = shaParams,
-                                       parParams    = parParams,
-                                       titleFormat  = titleFormat,
-                                       show=_show)
+        import matplotlib.pyplot as plt
+        # get properties look up table
+        propertiesLUT  = self.get_constraints_properties(frame=frame)
+        # reset asMesoscopic
+        asMesoscopic = asMesoscopic and len(propertiesLUT['frames-name'])>1
+        # get matplotlib axes
+        if not asMesoscopic:
+            numberOfFrames = len(propertiesLUT['frames-weight'])
+            nrows          = int(np.sqrt(float(numberOfFrames)))
+            ncols          = int(np.ceil(float(numberOfFrames)/nrows))
         else:
-            FIG, AXES = self._plot(frame                 = frame,
-                                   output                = framesData['weighted_output'],
-                                   experimentalX         = framesData['experimental_x'][0],
-                                   experimentalY         = framesData['experimental_y'][0],
-                                   shellCenters          = framesData['model_x'][0],
-                                   shapeArray            = framesData['shape_array'][0] if shapeFunc else None,
-                                   numberOfRemovedAtoms  = framesData['weighted_number_of_atoms_removed'],
-                                   standardError         = framesData['weighted_standard_error'],
-                                   scaleFactor           = framesData['weighted_scale_factor'],
-                                   multiframeWeight      = np.sum(framesData['frames_weight']),
-                                   ax=ax, intra=intra, inter=inter,
-                                   xlabelParams = xlabelParams,
-                                   ylabelParams = ylabelParams,
-                                   legendParams = legendParams,
-                                   expParams    = expParams,
-                                   totParams    = totParams,
-                                   noWParams    = noWParams,
-                                   shaParams    = shaParams,
-                                   parParams    = parParams,
-                                   titleFormat  = titleFormat,
-                                   show=show)
+            numberOfFrames = nrows = ncols = 1
+        if numberOfFrames >1 or axes is None:
+            fig, axes = plt.subplots(nrows=nrows, ncols=ncols)
+            fig.patch.set_facecolor('white')
+            name = ' '.join(re.findall('[A-Z][^A-Z]*', self.__class__.__name__))
+            fig.canvas.set_window_title(name)
+        else:
+            fig = axes.get_figure()
+        # flatten axes representation and remove unused ones
+        if numberOfFrames>1:
+            axes = axes.flatten()
+            [a.remove() for a in axes[len(propertiesLUT['frames-name']):]]
+        else:
+            axes = [axes]
+        # adjust subplots
+        if subAdParams is not None:
+            fig.subplots_adjust(**subAdParams)
+        if not asMesoscopic:
+            for idx in range(len(propertiesLUT['frames-name'])):
+                cons = propertiesLUT['frames-constraint'][idx]
+                cons._plot(frame                 = propertiesLUT['frames-name'][idx],
+                           output                = propertiesLUT['frames-output'][idx],
+                           experimentalX         = propertiesLUT['frames-experimental_x'][idx],
+                           experimentalY         = propertiesLUT['frames-experimental_y'][idx],
+                           shellCenters          = propertiesLUT['frames-model_x'][idx],
+                           shapeArray            = propertiesLUT['frames-shape_array'][idx] if shapeFunc else None,
+                           numberOfRemovedAtoms  = propertiesLUT['frames-number_of_removed_atoms'][idx],
+                           standardError         = propertiesLUT['frames-standard_error'][idx],
+                           scaleFactor           = propertiesLUT['frames-scale_factor'][idx],
+                           multiframeWeight      = propertiesLUT['frames-weight'][idx],
+                           ax=axes[idx], intra=intra, inter=inter,
+                           xlabelParams = xlabelParams,
+                           ylabelParams = ylabelParams,
+                           legendParams = legendParams,
+                           expParams    = expParams,
+                           totParams    = totParams,
+                           noWParams    = noWParams,
+                           shaParams    = shaParams,
+                           parParams    = parParams,
+                           gridParams   = gridParams,
+                           titleParams  = titleParams)
+        else:
+            propertiesLUT['frames-experimental_x']
+            lenT = len(propertiesLUT['weighted-output']['total'])
+            idx  = [i for i,d in enumerate(propertiesLUT['frames-experimental_x']) if len(d)==lenT][0]
+            self._plot(frame                 = frame,
+                       output                = propertiesLUT['weighted-output'],
+                       experimentalX         = propertiesLUT['frames-experimental_x'][idx],
+                       experimentalY         = propertiesLUT['frames-experimental_y'][idx],
+                       shellCenters          = propertiesLUT['frames-model_x'][idx],
+                       shapeArray            = None,
+                       numberOfRemovedAtoms  = propertiesLUT['weighted-number_of_removed_atoms'],
+                       standardError         = propertiesLUT['weighted-standard_error'],
+                       scaleFactor           = propertiesLUT['weighted-scale_factor'],
+                       multiframeWeight      = np.sum(propertiesLUT['frames-weight']),
+                       ax=axes[0], intra=intra, inter=inter,
+                       xlabelParams = xlabelParams,
+                       ylabelParams = ylabelParams,
+                       legendParams = legendParams,
+                       expParams    = expParams,
+                       totParams    = totParams,
+                       noWParams    = noWParams,
+                       shaParams    = shaParams,
+                       parParams    = parParams,
+                       gridParams   = gridParams,
+                       titleParams  = titleParams)
+        # show
+        if show:
+            plt.show()
         # return
-        return FIG, AXES
+        return fig, axes
 
 
     def plot_multiframe_weights(self, frame, ax=None, titleFormat = "@{frame} [subframes probability distribution]", show=True):
@@ -1635,16 +1859,16 @@ class ExperimentalConstraint(Constraint):
         else:
             AXES = ax
             FIG  = AXES.get_figure()
-        #
-        data   = self.get_constraint_data_dictionary(frame=frame)
-        totals = [i['total'] for i in data['output']]
-        frames = data['frames_name']
-        stderr = data['standard_error']
-        ratios = data['frames_weight']
+        # get constraint properties LUT
+        propertiesLUT   = self.get_constraints_properties(frame=frame)
+        totals = [i['total'] for i in propertiesLUT['frames-output']]
+        frames = propertiesLUT['frames-name']
+        stderr = propertiesLUT['frames-standard_error']
+        ratios = propertiesLUT['frames-weight']
         # plot bars
         bars = plt.bar(range(len(frames)), ratios, align='center', alpha=0.5)
         #plt.xticks(range(len(frames)), frames, rotation=90)
-        plt.xticks(range(len(frames)), self.engine.frames[frame]['frames_name'])
+        plt.xticks(range(len(frames)), self.engine.frames[frame]['frames-name'])
         # plot weights text
         pos  = plt.gca().get_xticks()
         ylim = plt.gca().get_ylim()
@@ -1672,56 +1896,49 @@ class ExperimentalConstraint(Constraint):
         # return
         return FIG, AXES
 
-    def _export(self, fileName, framesData, format='%12.5f', delimiter='\t', comments='# '):
+
+    def _get_export(self, propertiesLUT, format='%12.5f'):
         # create data, metadata and header
-        metadata = []
         header   = []
         data     = []
-        if 'frames_name' in framesData:
-            metadata = ["Frames name:                    %s"%framesData['frames_name'],
-                        "frames number of removed atoms: %s"%dict(list(zip(framesData['frames_name'],framesData['number_of_atoms_removed']))),
-                        "frames multiframe weights:      %s"%dict(list(zip(framesData['frames_name'],framesData['frames_weight']))),
-                        "Frames scale factor:            %s"%dict(list(zip(framesData['frames_name'],framesData['scale_factor']))),
-                        "Frames standard error:          %s"%dict(list(zip(framesData['frames_name'],framesData['standard_error']))),
-                        ]
-            for idx, frm in enumerate(framesData['frames_name']):
+        if 'frames-name' in propertiesLUT:
+            for idx, frm in enumerate(propertiesLUT['frames-name']):
                 # append experimental distances
-                header.append('%s:experimental_x'%frm)
-                data.append(framesData['experimental_x'][idx])
+                header.append('@%s:experimental_x'%frm)
+                data.append(propertiesLUT['frames-experimental_x'][idx])
                 # append experimental data
-                header.append('%s:experimental_y'%frm)
-                data.append(framesData['experimental_y'][idx])
+                header.append('@%s:experimental_y'%frm)
+                data.append(propertiesLUT['frames-experimental_y'][idx])
                 # append experimental data
-                header.append('%s:model_x'%frm)
-                data.append(framesData['model_x'][idx] )
+                header.append('@%s:model_x'%frm)
+                data.append(propertiesLUT['frames-model_x'][idx] )
                 # loop all outputs
-                output = framesData['output'][idx]
+                output = propertiesLUT['frames-output'][idx]
                 for dn in output:
                     header.append('%s:%s'%(frm,dn))
                     data.append(output[dn])
         # append weighted data
-        if len([k for k in framesData if k.startswith('weighted_')]):
-            metadata.append("Weighted number of removed atoms: %s"%framesData['weighted_number_of_atoms_removed'])
-            metadata.append("Weighted frames scale factor:     %s"%framesData['weighted_scale_factor'])
-            metadata.append("Weighted frames standard error:   %s"%framesData['weighted_standard_error'])
-            output = framesData['weighted_output']
+        if len([k for k in propertiesLUT if k.startswith('weighted-')]):
             for dn in output:
-                header.append('weighted_%s'%(dn))
+                header.append('mesoscopic-%s'%(dn))
                 data.append(output[dn])
-        # finalize metadata
-        metadata.append(" ".join(header))
-        # create array and export
-        data = np.transpose(data).astype(float)
-        # save
-        np.savetxt(fname     = fileName,
-                   X         = data,
-                   fmt       = format,
-                   delimiter = delimiter,
-                   header    = "\n".join(metadata),
-                   comments  = comments)
+        # adjust data length
+        maxLen = max( [len(d) for d in data] )
+        for idx, d in enumerate(data):
+            d = [format%i for i in d]
+            lenDiff = maxLen - len(d)
+            if lenDiff>0:
+                d += ['']*lenDiff
+            data[idx] = d
+        # transpose data
+        tdata = []
+        for idx in range(maxLen):
+            tdata.append( [d[idx] for d in data ] )
+        # return
+        return header, tdata
 
 
-    def export(self, fileName, frame=None, splitFrames=False, format='%12.5f', delimiter=' ', comments='# '):
+    def export(self, fileName, frame=None, format='%12.5f', delimiter='\t', comments='#'):
         """
         Export constraint data to text file or to an archive of files.
 
@@ -1730,9 +1947,6 @@ class ExperimentalConstraint(Constraint):
             #. frame (None, string): frame name to export data from. If multiframe
                is given, multiple files will be created with subframe name
                appended to the end.
-            #. splitFrames (boolean): whether to split frames into multiple
-               files and create and archive (.zip) of frames data. If given
-               frame is a normal frame or a subframe this option is not used.
             #. format (string): string format to export the data.
                format is as follows (%[flag]width[.precision]specifier)
             #. delimiter (string): String or character separating columns.
@@ -1740,45 +1954,48 @@ class ExperimentalConstraint(Constraint):
         """
         if frame is None:
             frame = self.engine.usedFrame
-        framesData = self.get_constraint_data_dictionary(frame=frame)
-        if framesData is None:
-            return
-        # get number of frames
-        if len(framesData['frames_name'])==1 or not splitFrames:
-            self._export(fileName = fileName,
-                         framesData = framesData,
-                         format=format, delimiter=delimiter,
-                         comments=comments )
-        else:
-            dirname, filename   = os.path.split(fileName)
-            if not len(dirname):
-                dirname = os.getcwd()
-            filename, extension = os.path.splitext(filename)
-            zipFilePath = os.path.join(dirname, filename)
-            if os.path.isfile( zipFilePath+'.zip' ):
-                LOGGER.warn("File '%s' is removed and replaced with new one"%(zipFilePath,))
-            _dirname = os.path.join(dirname, '.'+str(uuid.uuid1()))
-            os.makedirs(_dirname)
-            try:
-                for idx, frameName in enumerate(framesData['frames_name']):
-                    _framesData = dict([(key,[framesData[key][idx]]) for key in framesData if not key.startswith('weighted_')])
-                    self._export(framesData=_framesData,
-                                 fileName=os.path.join(_dirname,'%s.txt'%frameName.replace(os.sep, '_')),
-                                 format=format, delimiter=delimiter,
-                                 comments=comments )
-                # exported weighted
-                _framesData = dict([(key,framesData[key]) for key in framesData if key.startswith('weighted_')])
-                self._export(framesData=_framesData,
-                             fileName=os.path.join(_dirname,'%s_weighted.txt'%frame.replace(os.sep, '_')),
-                             format=format, delimiter=delimiter,
-                             comments=comments )
-                # create zip file
-                shutil.make_archive(zipFilePath, 'zip', _dirname)
-            except Exception as err:
-                print(Exception(err))
-            finally:
-                # remove directory
-                shutil.rmtree(_dirname)
+        # get constraint properties LUT
+        propertiesLUT = self.get_constraints_properties(frame=frame)
+        # get metadata
+        metadata = ["This file is auto-generated by fullrmc '%s' at %s"%(self.engine.version, datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S')),
+                    "Contains exported data of constraint '%s'"%self.__class__.__name__,
+                    "For questions and concerns use fullrmc's forum http://bachiraoun.github.io/fullrmc/QAForum.html",
+                    "",
+                    "Engine name:                    %s"%os.path.basename(self.engine.path),
+                    "Frames name:                    %s"%propertiesLUT['frames-name'],
+                    "Frames number of removed atoms: %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-number_of_removed_atoms']))),
+                    "Frames multiframe weights:      %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-weight']))),
+                    "Frames scale factor:            %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-scale_factor']))),
+                    "Frames standard error:          %s"%dict(list(zip(propertiesLUT['frames-name'],propertiesLUT['frames-standard_error']))),
+                    ]
+        if len([k for k in propertiesLUT if k.startswith('weighted-')]):
+            metadata.append("Mesoscopic number of removed atoms: %s"%propertiesLUT['weighted-number_of_removed_atoms'])
+            metadata.append("Mesoscopic frames scale factor:     %s"%propertiesLUT['weighted-scale_factor'])
+            metadata.append("Mesoscopic frames standard error:   %s"%propertiesLUT['weighted-standard_error'])
+        # get header and data
+        header, data = self._get_export(propertiesLUT = propertiesLUT,format=format)
+        # write constraint data
+        lines = []
+        lines.append( '\n'.join(["%s %s"%(comments,i) for i in metadata]) )
+        lines.append( '\n%s'%comments )
+        h = delimiter.join(header)
+        d = '\n'.join([delimiter.join(l) for l in data])
+        lines.append( '\n%s %s'%(comments,h) )
+        lines.append( '\n%s'%(d) )
+        lines = ''.join(lines)
+        if fileName is not None:
+            with open(fileName, 'w') as fd:
+                fd.write(lines)
+        return lines
+        #with open(fileName, 'w') as fd:
+            #fd.write('\n'.join(["%s %s"%(comments,i) for i in metadata]))
+            #fd.write('\n%s'%comments)
+            #h = delimiter.join(header)
+            #d = '\n'.join([delimiter.join(l) for l in data])
+            #fd.write('\n%s %s'%(comments,h))
+            #fd.write('\n%s'%(d))
+
+
 
 
 

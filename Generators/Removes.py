@@ -2,6 +2,7 @@
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -36,6 +37,24 @@ class AtomsRemoveGenerator(RemoveGenerator):
         super(AtomsRemoveGenerator, self).__init__(group=group,
                                                    maximumCollected=maximumCollected,
                                                    atomsList=atomsList)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Removes'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        atomsList = None
+        if self.atomsList is not None:
+            atomsList = list(self.atomsList)
+        code.append("{name} = Removes.AtomsRemoveGenerator\
+(group={group}, maximumCollected={maximumCollected}, atomsList={atomsList})"
+.format(name=name, group=group, maximumCollected=self.maximumCollected,atomsList=atomsList,))
+        code.append("{name}.set_allow_fitting_scale_factor({allowFittingScaleFactor})"
+        .format(name=name, allowFittingScaleFactor=self.allowFittingScaleFactor))
+        # return
+        return [dependencies], '\n'.join(code)
 
     def pick_from_list(self, engine):
         """

@@ -144,15 +144,16 @@ Tetrahydrofuran simple example yet complete and straight to the point
     ## Tetrahydrofuran (THF) molecule sketch
     ##
     ##              O
-    ##   H41      /   \      H11
-    ##      \  /         \  /
-    ## H42-- C4    THF    C1 --H12
-    ##        \  MOLECULE /
-    ##         \         /
+    ##   H41      /   \\      H11
+    ##      \\  /         \\  /
+    ## H42-- C4    THF     C1 --H12
+    ##        \\ MOLECULE  /
+    ##         \\         /
     ##   H31-- C3-------C2 --H21
-    ##        /         \\
+    ##        /          \\
     ##     H32            H22
     ##
+
 
     #   #####################################################################################   #
     #   ############################### IMPORT WHAT IS NEEDED ###############################   #
@@ -322,7 +323,7 @@ positions separately.
 # import package info
 from __future__ import print_function
 from .__pkginfo__ import __version__, __author__, __email__, __onlinedoc__, __repository__, __pypi__
-from .Engine import Engine
+from .Engine import Engine, InterceptHook
 
 def get_version():
     """Get fullrmc's version number."""
@@ -347,6 +348,7 @@ def get_repository():
 def get_pypi():
     """Get fullrmc's official online repository link."""
     return __pypi__
+
 
 ### python version checker
 import sys

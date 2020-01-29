@@ -43,6 +43,7 @@ Rotations contains all rotation like MoveGenerator classes.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -91,6 +92,18 @@ class RotationGenerator(MoveGenerator):
         super(RotationGenerator, self).__init__(group=group)
         # set amplitude
         self.set_amplitude(amplitude)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Rotations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Rotations.RotationGenerator\
+(group={group}, amplitude={amplitude})".format(name=name, group=group, amplitude=self.amplitude*FLOAT_TYPE(180)/PI))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def amplitude(self):
@@ -205,6 +218,19 @@ class RotationAboutAxisGenerator(RotationGenerator):
         # set amplitude
         self.set_axis(axis)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Rotations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Rotations.RotationAboutAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis})"\
+.format(name=name, group=group, amplitude=self.amplitude*FLOAT_TYPE(180)/PI, axis=list(self.axis)))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def axis(self):
         """ Rotation axis vector."""
@@ -303,6 +329,19 @@ class RotationAboutSymmetryAxisGenerator(RotationGenerator):
         # set amplitude
         self.set_axis(axis)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Rotations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Rotations.RotationAboutSymmetryAxisGenerator\
+(group={group}, amplitude={amplitude}, axis={axis})"\
+.format(name=name, group=group, amplitude=self.amplitude*FLOAT_TYPE(180)/PI, axis=self.axis))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def axis(self):
         """ Rotation axis index."""
@@ -398,6 +437,20 @@ class RotationAboutSymmetryAxisPath(PathGenerator):
         PathGenerator.__init__(self, group=group, path=path, randomize=randomize)
         # set axis
         self.set_axis(axis)
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Rotations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        code.append("{name} = Rotations.RotationAboutSymmetryAxisPath\
+(group={group}, axis={axis}, path={path}, randomize={randomize})"\
+.format(name=name, group=group, axis=self.axis,
+        path=[p*FLOAT_TYPE(180)/PI for p in self.path], randomize=self.randomize))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def axis(self):
@@ -560,6 +613,28 @@ class OrientationGenerator(MoveGenerator):
         # set flip
         self.set_flip(flip)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Rotations'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        groupAxis = list(self.groupAxis)[0]
+        if isinstance(self.groupAxis[groupAxis], (list,set,tuple,np.ndarray)):
+            groupAxis = {groupAxis:list(self.groupAxis[groupAxis])}
+        else:
+            groupAxis = {groupAxis:self.groupAxis[groupAxis]}
+        orientationAxis = list(self.orientationAxis)[0]
+        orientationAxis = {orientationAxis:list(self.orientationAxis[orientationAxis])}
+        code.append("{name} = Rotations.OrientationGenerator\
+(group={group}, maximumOffsetAngle={maximumOffsetAngle},\
+orientationAxis={orientationAxis}, flip={flip})"\
+.format(name=name, group=group, maximumOffsetAngle=self.maximumOffsetAngle*FLOAT_TYPE(180)/PI,
+        groupAxis=groupAxis, orientationAxis=orientationAxis, flip=self.flip))
+        # return
+        return [dependencies], '\n'.join(code)
+
     @property
     def maximumOffsetAngle(self):
         """ Maximum offset angle in degrees between groupAxis and
@@ -637,7 +712,7 @@ class OrientationGenerator(MoveGenerator):
         """
         assert isinstance(groupAxis, dict), LOGGER.error("groupAxis must be a dictionary")
         assert len(groupAxis) == 1, LOGGER.error("groupAxis must have a single key")
-        key = groupAxis[0]
+        key = list(groupAxis)[0]
         val = groupAxis[key]
         if key == "fixed":
             self.__mustComputeGroupAxis = False
@@ -677,7 +752,7 @@ class OrientationGenerator(MoveGenerator):
         """
         assert isinstance(orientationAxis, dict), LOGGER.error("orientationAxis must be a dictionary")
         assert len(orientationAxis) == 1, LOGGER.error("orientationAxis must have a single key")
-        key = orientationAxis[0]
+        key = list(orientationAxis)[0]
         val = orientationAxis[key]
         if key == "fixed":
             self.__mustComputeOrientationAxis = False

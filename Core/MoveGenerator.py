@@ -10,7 +10,7 @@ possible to fully customize how a group of atoms should move.
 """
 # standard libraries imports
 from __future__ import print_function
-import inspect
+import collections, inspect, re
 from random import randint, shuffle
 
 # external libraries imports
@@ -37,6 +37,9 @@ class MoveGenerator(object):
         super(MoveGenerator, self).__init__()
         # set group
         self.set_group(group)
+
+    def _codify__(self, *args, **kwargs):
+        raise Exception(LOGGER.impl("'%s' method must be overloaded"%inspect.stack()[0][3]))
 
     @property
     def group(self):
@@ -152,7 +155,7 @@ class RemoveGenerator(MoveGenerator):
     """
     def __init__(self, group=None, maximumCollected=None, allowFittingScaleFactor=False, atomsList=None):
         if self.__class__.__name__ == "RemoveGenerator":
-            raise Exception(LOGGER.usage("%s instanciation is not allowed"%(self.__class__.__name__)))
+            raise Exception(LOGGER.error("%s instanciation is not allowed"%(self.__class__.__name__)))
         super(RemoveGenerator, self).__init__(group=group)
         # set collectorState
         self._collectorState = None
@@ -275,7 +278,7 @@ class RemoveGenerator(MoveGenerator):
         :Parameters:
             #. coordinates (np.ndarray): Not used here.
         """
-        raise Exception(LOGGER.usage("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.error("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def transform_coordinates(self, coordinates, argument):
         """
@@ -286,7 +289,7 @@ class RemoveGenerator(MoveGenerator):
                the translation.
             #. argument (object): Not used here.
         """
-        raise Exception(LOGGER.usage("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
+        raise Exception(LOGGER.error("%s '%s' is not allowed in removes generators"%(self.__class__.__name__,inspect.stack()[0][3])))
 
     def pick_from_list(self, engine):
         """
@@ -602,6 +605,7 @@ class PathGenerator(MoveGenerator):
         """
         valid, message = self.check_path(path)
         if not valid:
+            LOGGER.error(message)
             raise Exception(message)
         # normalize path
         self.__path = self.normalize_path( path )
@@ -697,6 +701,33 @@ class MoveGeneratorCombinator(MoveGenerator):
         # set randomize
         self.set_shuffle(shuffle=shuffle)
 
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = collections.OrderedDict()
+        dependencies['from fullrmc.Core import MoveGenerator'] = True
+        code         = []
+        combination  = []
+        # codify generators
+        for idx, gen in enumerate(self.__combination):
+            nm      = '%s_%i'%(name,idx)
+            dep, cd = gen._codify__(group=None, name=nm, addDependencies=True)
+            code.append(cd)
+            combination.append(nm)
+            for d in dep:
+                _ = dependencies.setdefault(d,True)
+        # codify combinator
+        code.append("{name} = MoveGenerator.MoveGeneratorCombinator\
+(group={group}, combination=[{combination}], shuffle={shuffle})"
+.format(name=name, group=group, combination=', '.join(combination), shuffle=self.shuffle))
+        # set dependencies
+        dependencies = list(dependencies)
+        # add dependencies
+        if addDependencies:
+            code = dependencies + [''] + code
+        # return
+        return dependencies, '\n'.join(code)
+
     @property
     def shuffle(self):
         """ Shuffle flag."""
@@ -739,11 +770,11 @@ class MoveGeneratorCombinator(MoveGenerator):
             #. combination (list): The list of MoveGenerator instances.
         """
         assert isinstance(combination, (list,set,tuple)), LOGGER.error("combination must be a list")
-        combination = list(combination)
+        assert len(combination)>1, LOGGER.error("Combination list must contain more than 1 item")
         for c in combination:
             assert isinstance(c, MoveGenerator), LOGGER.error("every item in combination list must be a MoveGenerator instance")
             assert not isinstance(c, SwapGenerator), LOGGER.error("SwapGenerator is not allowed to be combined")
-            assert not isinstance(c, SwapGenerator), LOGGER.error("RemoveGenerator is not allowed to be combined")
+            assert not isinstance(c, RemoveGenerator), LOGGER.error("RemoveGenerator is not allowed to be combined")
             c.set_group(self.group)
         self.__combination = combination
 
@@ -841,6 +872,33 @@ class MoveGeneratorCollector(MoveGenerator):
         self.set_weights(weights)
         # initialize flags
         self.__initialize_generator()
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = collections.OrderedDict()
+        dependencies['from fullrmc.Core import MoveGenerator'] = True
+        code        = []
+        collection  = []
+        weights     = [(idx, w) for idx, w in enumerate(self.__generatorsWeight) if w!=1]
+        # codify generators
+        for idx, gen in enumerate(self.__collection):
+            nm      = '%s_%i'%(name,idx)
+            dep, cd = gen._codify__(group=None, name=nm, addDependencies=True)
+            code.append(cd)
+            collection.append(nm)
+            for d in dep:
+                _ = dependencies.setdefault(d,True)
+        # codify combinator
+        code.append("{name} = MoveGenerator.MoveGeneratorCollector\
+(group={group}, collection=[{collection}], randomize={randomize}, weights={weights})"
+.format(name=name, group=group, collection=', '.join(collection),
+        weights=weights,randomize=self.randomize))
+        # add dependencies
+        if addDependencies:
+            code = list(dependencies) + [''] + code
+        # return
+        return list(dependencies), '\n'.join(code)
 
     def __initialize_generator(self):
         self.__step = 0

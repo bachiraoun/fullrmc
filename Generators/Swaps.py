@@ -7,6 +7,7 @@ Swaps contains all swap or atoms position exchange MoveGenerator classes.
 """
 # standard libraries imports
 from __future__ import print_function
+import re
 
 # external libraries imports
 import numpy as np
@@ -74,6 +75,22 @@ class SwapPositionsGenerator(SwapGenerator):
             # the rest are oxygen atoms. Default RandomTranslation generator are kept.
 
     """
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Swaps'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        swapList = self.swapList
+        if swapList is not None:
+            swapList = [list(sl) for sl in swapList]
+        code.append("{name} = Swaps.SwapPositionsGenerator\
+(group={group}, swapLength={swapLength}, swapList={swapList})"
+.format(name=name, group=group, swapLength=self.swapLength, swapList=swapList))
+        # return
+        return [dependencies], '\n'.join(code)
+
     def check_group(self, group):
         """
         Check the generator's group.
@@ -157,6 +174,22 @@ class SwapCentersGenerator(SwapGenerator):
     """
     def __init__(self, group=None, swapList=None):
         super(SwapCentersGenerator, self).__init__(group=group, swapLength=None, swapList=swapList )
+
+    def _codify__(self, name='generator', group=None, addDependencies=True):
+        assert isinstance(name, basestring), LOGGER.error("name must be a string")
+        assert re.match('[a-zA-Z_][a-zA-Z0-9_]*$', name) is not None, LOGGER.error("given name '%s' can't be used as a variable name"%name)
+        dependencies = 'from fullrmc.Generators import Swaps'
+        code         = []
+        if addDependencies:
+            code.append(dependencies)
+        swapList = self.swapList
+        if swapList is not None:
+            swapList = [list(sl) for sl in swapList]
+        code.append("{name} = Swaps.SwapPositionsGenerator\
+(group={group}, swapList={swapList})"
+.format(name=name, group=group, swapList=swapList))
+        # return
+        return [dependencies], '\n'.join(code)
 
     @property
     def swapLength(self):

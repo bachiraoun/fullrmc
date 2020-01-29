@@ -13,13 +13,16 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 
 Next on the list
 ================
-* Super-computing
+* software as a service
 
 News
 ====
 * fullrmc engine is now a repository instead of a single file
 * fullrmc supports frames.
 * Dynamically removing atoms upon fitting to creating materials defects
+* Not open sourced yet but fullrmc is now softgrid enabled. You will be able to 
+  simulate mesoscopic atomic systems and get important information such as nanoparticle
+  size distribution and more
 
 Ask your questions
 ==================
@@ -28,24 +31,30 @@ https://groups.google.com/forum/#!forum/fullrmc
 Installation
 ============
 ##### fullrmc requires:
-* Python (>= 2.7 and < 3),
+* Python (>= 2.7 and < 3) Starting from fullrmc 4.x.y python 3 is supported
 * NumPy (lowest version tested is 1.7.1)
 * cython (lowest version tested is 0.21.1)
 * matplotlib (lowest version tested is 1.4)
 * pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from fullrmc 0.3.0 -
-  0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1)
-* pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 )
+  0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used starting from fullrmc 1.0.1 -
+  0.1.7 is used starting from fullrmc 4.0.0 - 0.1.8 is used starting from fullrmc
+  4.0.2)
+* pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting from fullrmc 1.2.0 - 2.0.0 is used starting from fullrmc 4.0.0)
 * pyrep (lowest version tested is 1.0.2 is used starting from fullrmc 2.0.0 - 1.0.3 is
-  used starting from fullrmc 3.0.0 - 1.0.4 is used starting rom fullrmc 3.1.0)
+  used starting from fullrmc 3.0.0 - 1.0.4 is used starting from fullrmc 3.1.0 - 3.1.0
+  is used starting from fullrmc 4.0.1 - 3.2.0 is used starting from fullrmc
+  4.0.2)
+* pylocker (3.0.0 is used starting from fullrmc 4.0.2)
 
 ##### Installation using pip:
 numpy and cython must be installed and updated manually.
 
 ```bash
-pip install -U "numpy>=1.7.1"
-pip install -U "cython>=0.21.1"
+pip install -U "numpy>=1.17.4"
+pip install -U "cython>=0.29.14"
 pip install fullrmc
 ```
+
 
 ##### Installation by cloning github repository
 Ensure all fullrmc required packages are installed and up to data by executing the
@@ -54,12 +63,13 @@ following python script:
 # check whether all packages are already installed
 from __future__ import print_function
 from pkg_resources import parse_version as PV
-for name, ver in [('numpy'      ,'1.7.1') ,
-                  ('cython'     ,'0.21.1'),
-                  ('pyrep'      ,'1.0.4') ,
-                  ('pdbparser'  ,'0.1.5') ,
-                  ('pysimplelog','0.2.1') ,
-                  ('matplotlib' ,'1.4'  )]:
+for name, ver in [('numpy'      ,'1.17.4') ,
+                  ('cython'     ,'0.29.14'),
+                  ('pyrep'      ,'3.2.0') ,
+                  ('pdbparser'  ,'0.1.8') ,
+                  ('pysimplelog','2.0.0') ,
+                  ('pylocker'   ,'3.0.0') ,
+                  ('matplotlib' ,'3.1.2'  )]:
     try:
         lib = __import__(name)
     except:

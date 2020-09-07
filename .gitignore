@@ -6,6 +6,7 @@
 *.cpp
 *.log
 *.rmc
+*.stc
 *.xyz
 *.DS_Store 
 *restart.pdb

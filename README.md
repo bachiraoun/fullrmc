@@ -18,15 +18,13 @@ Next on the list
 News
 ====
 * fullrmc is now available on the cloud with an advanced user interface
-* fullrmc cloud offer new types of computations
-    *  statistical
-    *  mesoscopic
-    *  nanoscopic
+* fullrmc cloud version provides additional features that are not open sourced
+    * Mixture models: Using multiframe meta-structure, fullrmc cloud allows to model complex systems such as multi-phase systems, distribution of nanoparticles. in solution, etc.
+    * Coarse Graining: multiframe coarse grain computation is enabled in certain meta-structure conditions.
+    * Statistical calculation: using the concept of multiframe, fullrmc enrichs the single box approach with the statistical approach where multiple frames can be fit simulatenously using the same or different stochastic approach
+    * Mesoscopic: a mesoscopic system is a fullrmc multiframe atomic system where atoms from different subframes are considered far enough from each other to have any cross correlation showing in the experimental data. 
+    * Nanoscopic: a nanoscopic system is like a mesoscopic one but correlation between atoms from different subframes is not negligeable.
 
-* Dynamically removing atoms upon fitting to creating materials defects
-* Not open sourced yet but fullrmc is now softgrid enabled. You will be able to 
-  simulate mesoscopic atomic systems and get important information such as nanoparticle
-  size distribution and more
 
 Ask your questions
 ==================

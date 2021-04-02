@@ -18,6 +18,7 @@ Next on the list
 News
 ====
 * fullrmc is now available on the cloud with an advanced user interface
+![](images/webapp_viewer.png)
 * fullrmc cloud version provides additional features that are not open sourced
     * Mixture models: Using multiframe meta-structure, fullrmc cloud allows to model complex systems such as multi-phase systems, distribution of nanoparticles. in solution, etc.
     * Coarse Graining: multiframe coarse grain computation is enabled in certain meta-structure conditions.
@@ -26,7 +27,7 @@ News
     * Nanoscopic: a nanoscopic system is like a mesoscopic one but correlation between atoms from different subframes is not negligeable.
 
 
-![](images/webapp_viewer.png)
+
 
 Ask your questions
 ==================

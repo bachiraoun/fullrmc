@@ -26,6 +26,8 @@ News
     * Nanoscopic: a nanoscopic system is like a mesoscopic one but correlation between atoms from different subframes is not negligeable.
 
 
+![](images/webapp_viewer.png)
+
 Ask your questions
 ==================
 https://groups.google.com/forum/#!forum/fullrmc

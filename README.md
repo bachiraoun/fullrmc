@@ -11,9 +11,6 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms.
 
-Next on the list
-================
-* software as a service
 
 News
 ====
@@ -22,7 +19,7 @@ News
 * fullrmc cloud version provides additional features that are not open sourced
     * Mixture models: Using multiframe meta-structure, fullrmc cloud allows to model complex systems such as multi-phase systems, distribution of nanoparticles in solution, etc.
     * Statistical calculation: using the concept of multiframe, fullrmc enrichs the single box approach with the statistical approach where multiple frames can be fit simulatenously using the same or different stochastic approach
-    * Mesoscopic: a mesoscopic system is a fullrmc multiframe atomic system where atoms from different subframes are considered far enough from each other to have any cross correlation showing in the experimental data. 
+    * Mesoscopic: a mesoscopic system is a fullrmc multiframe atomic system where atoms from different subframes are considered far enough from each other to have any cross correlation showing in the experimental data.
     * Nanoscopic: a nanoscopic system is like a mesoscopic one but correlation between atoms from different subframes is not negligeable.
     * Coarse grains: multiframe coarse grain computation is enabled in the nanoscopic meta-structure conditions.
 

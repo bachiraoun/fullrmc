@@ -17,8 +17,12 @@ Next on the list
 
 News
 ====
-* fullrmc engine is now a repository instead of a single file
-* fullrmc supports frames.
+* fullrmc is now available on the cloud with an advanced user interface
+* fullrmc cloud offer new types of computations
+    *  statistical
+    *  mesoscopic
+    *  nanoscopic
+
 * Dynamically removing atoms upon fitting to creating materials defects
 * Not open sourced yet but fullrmc is now softgrid enabled. You will be able to 
   simulate mesoscopic atomic systems and get important information such as nanoparticle

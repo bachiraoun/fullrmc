@@ -13,8 +13,10 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 
 fullrmc on the cloud
 ====================
-Reserve your machine on the cloud and run fullrmc using its advanced user interface. Features such as multiframe computing including all of the statistical, mesoscopic and nanoscopic computations are only available in the cloud version of fullrmc.
+Reserve your virtual machine(s) with the requirements (cpus, memory, storage) and run fullrmc using its advanced user interface. Features such as multiframe computing including all of the statistical, mesoscopic and nanoscopic computations are only available in the cloud version of fullrmc.
 ![](images/webapp_viewer.png)
+fullrmc virtual machines are multi-users ready. A fullrmc machine owner can manage multiple users on the machine and can distribute the allocations per user. A user can run multiple fullrmc sessions and therefore do multiple stochastic simulations at the same time.
+
 
 News
 ====

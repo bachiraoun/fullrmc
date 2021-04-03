@@ -13,12 +13,12 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 
 fullrmc on the cloud
 ====================
+Reserve your machine on the cloud and run fullrmc using its advanced user interface. Features such as multiframe computing including all of the statistical, mesoscopic and nanoscopic computations are only available in the cloud version of fullrmc.
 ![](images/webapp_viewer.png)
 
 News
 ====
 * fullrmc is now available on the cloud with an advanced user interface
-
 * fullrmc cloud version provides additional features that are not open sourced
     * Mixture models: Using multiframe meta-structure, fullrmc cloud allows to model complex systems such as multi-phase systems, distribution of nanoparticles in solution, etc.
     * Statistical calculation: using the concept of multiframe, fullrmc enrichs the single box approach with the statistical approach where multiple frames can be fit simulatenously using the same or different stochastic approach

@@ -11,11 +11,14 @@ FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/a
 5. Selection of groups to perform moves can be done manually OR automatically, randomly OR NOT !!
 6. Supports Artificial Intelligence and Reinforcement Machine Learning algorithms.
 
+fullrmc on the cloud
+====================
+![](images/webapp_viewer.png)
 
 News
 ====
 * fullrmc is now available on the cloud with an advanced user interface
-![](images/webapp_viewer.png)
+
 * fullrmc cloud version provides additional features that are not open sourced
     * Mixture models: Using multiframe meta-structure, fullrmc cloud allows to model complex systems such as multi-phase systems, distribution of nanoparticles in solution, etc.
     * Statistical calculation: using the concept of multiframe, fullrmc enrichs the single box approach with the statistical approach where multiple frames can be fit simulatenously using the same or different stochastic approach

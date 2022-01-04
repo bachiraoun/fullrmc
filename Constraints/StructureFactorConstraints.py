@@ -1188,6 +1188,7 @@ shapeFuncParams=sfp, windowFunction=wf, limits={limits})".format(name=name, klas
                 '_StructureFactorConstraint__maximumDistance'     :'_StructureFactorConstraint__maximumDistance',
                 '_StructureFactorConstraint__bin'                 :'_StructureFactorConstraint__bin',
                 '_ExperimentalConstraint__scaleFactor'            :'_ExperimentalConstraint__scaleFactor',
+                '_ExperimentalConstraint__adjustScaleFactor'      :'_ExperimentalConstraint__adjustScaleFactor',
                 '_ExperimentalConstraint__dataWeights'            :'_ExperimentalConstraint__dataWeights',
                 '_ExperimentalConstraint__multiframePrior'        :'_ExperimentalConstraint__multiframePrior',
                 '_ExperimentalConstraint__multiframeWeight'       :'_ExperimentalConstraint__multiframeWeight',

@@ -1,5 +1,5 @@
 **This git repository is only updated with new releases of fullrmc. A private repository is used for development.**
-
+ 
 fullrmc
 =======
 FUndamental Library Language for Reverse Monte Carlo or fullrmc is a molecular/atomic stochastic fitting platform to reverse modeling experimental data. fullrmc is not a standard RMC software but exceeds in its capabilities and functionalities traditional RMC and Metropolis-Hastings algoritm. Therefore RMC appellation in fullrmc, is not accurate but it’s retained to respecting the community terminology. RMC is probably best known for its applications in condensed matter physics and solid state chemistry. RMC is used to solve an inverse problem whereby an atomic model is adjusted until its atoms position have the greatest consistency with a set of experimental data. fullrmc is a python package with its core and calculation modules optimized and compiled in Cython/c. fullrmc’s Engine sub-module is the main module that contains the definition of ‘Engine’ which is the main and only class used to launch the stochastic calculation. fullrmc is a fully object-oriented package where everything can be overloaded allowing easy development, implementation and maintenance of the code. It's core sub-package and modules are fully optimized written in cython/C. fullrmc is unique in its approach, among other functionalities:

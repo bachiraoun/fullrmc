@@ -110,15 +110,9 @@ http://bachiraoun.github.io/fullrmc/
 
 Citing fullrmc
 ==============
-If you use fullrmc in a scientific publication,
-we would appreciate citations to the following two articles:
+*  Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* (2016), 37, 1102–1111
 
-
-**Text entry:**
-
-Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* (2016), 37, 1102–1111
-
-Bachir Aoun; Stochastic atomic modeling and optimization with fullrmc; *J. Appl. Cryst.* (2022). 55, 1664-1676
+* Bachir Aoun; Stochastic atomic modeling and optimization with fullrmc; *J. Appl. Cryst.* (2022). 55, 1664-1676
 
 
 Authors and developers

@@ -111,57 +111,14 @@ http://bachiraoun.github.io/fullrmc/
 Citing fullrmc
 ==============
 If you use fullrmc in a scientific publication,
-we would appreciate citations to the following paper:
+we would appreciate citations to the following two articles:
 
 
 **Text entry:**
 
-Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* 2016, 37, 1102–1111. DOI: 10.1002/jcc.24304
+Bachir Aoun; Fullrmc, a Rigid Body Reverse Monte Carlo Modeling Package Enabled with Machine Learning and Artificial Intelligence; *J. Comput. Chem.* (2016), 37, 1102–1111
 
-**Bibtex entry:**
-```
-
-    @article {JCC:JCC24304,
-    author = {Aoun, Bachir},
-    title = {Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence},
-    journal = {Journal of Computational Chemistry},
-    volume = {37},
-    number = {12},
-    issn = {1096-987X},
-    url = {http://dx.doi.org/10.1002/jcc.24304},
-    doi = {10.1002/jcc.24304},
-    pages = {1102--1111},
-    keywords = {reverse monte carlo, rigid body, machine learning, pair distribution function, modeling},
-    year = {2016},
-    }
-```
-
-**EndNote entry:**
-```
-
-    Provider: John Wiley & Sons, Ltd
-    Content:text/plain; charset="UTF-8"
-
-    TY  - JOUR
-    AU  - Aoun, Bachir
-    TI  - Fullrmc, a rigid body reverse monte carlo modeling package enabled with machine learning and artificial intelligence
-    JO  - Journal of Computational Chemistry
-    JA  - J. Comput. Chem.
-    VL  - 37
-    IS  - 12
-    SN  - 1096-987X
-    UR  - http://dx.doi.org/10.1002/jcc.24304
-    DO  - 10.1002/jcc.24304
-    SP  - 1102
-    EP  - 1111
-    KW  - reverse Monte Carlo
-    KW  - rigid body
-    KW  - machine learning
-    KW  - pair distribution function
-    KW  - modeling
-    PY  - 2016
-    ER  -
-```
+Bachir Aoun; Stochastic atomic modeling and optimization with fullrmc; *J. Appl. Cryst.* (2022). 55, 1664-1676
 
 
 Authors and developers

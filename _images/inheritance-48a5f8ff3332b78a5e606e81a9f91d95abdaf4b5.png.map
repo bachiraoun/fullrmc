@@ -1,0 +1,4 @@
+<map id="inheritance44452de893" name="inheritance44452de893">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node2" href="#fullrmc.Generators.Walks.WalkGenerator" target="_top" title="Generate random walk moves upon groups of atoms." alt="" coords="164,5,271,32"/>
+</map>

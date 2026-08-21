@@ -21,7 +21,7 @@ DistanceConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 CoordinationConstraints
 -----------------------
 .. automodule:: fullrmc.Constraints.AtomicCoordinationConstraints
@@ -35,21 +35,21 @@ BondConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 AngleConstraints
 ----------------
 .. automodule:: fullrmc.Constraints.AngleConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 DihedralAngleConstraints
 ------------------------
 .. automodule:: fullrmc.Constraints.DihedralAngleConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 ImproperAngleConstraints
 ------------------------
 .. automodule:: fullrmc.Constraints.ImproperAngleConstraints
@@ -63,10 +63,17 @@ PairDistributionConstraints
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 PairCorrelationConstraints
 ---------------------------
 .. automodule:: fullrmc.Constraints.PairCorrelationConstraints
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+RadialDistributionConstraints
+-----------------------------
+.. automodule:: fullrmc.Constraints.RadialDistributionConstraints
     :members:
     :undoc-members:
     :show-inheritance:

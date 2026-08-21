@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fullrmc.SystemBuilderUtils module &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '6.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="next" title="fullrmc.Selectors package" href="fullrmc.Selectors.html" />
+            <link rel="prev" title="fullrmc.OptimizationEngine module" href="fullrmc.OptimizationEngine.html" />
+
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
+        <div class="menu">
+            <ul>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle active-group" tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="active" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+        </div>
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
+        <style>
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
+        
+        <div style="margin-top:10px"> </div>
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
+             accesskey="N">next</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.OptimizationEngine.html" title="fullrmc.OptimizationEngine module"
+             accesskey="P">previous</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+        
+        
+        
+
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <section id="module-fullrmc.SystemBuilderUtils">
+<span id="fullrmc-systembuilderutils-module"></span><h1>fullrmc.SystemBuilderUtils module<a class="headerlink" href="#module-fullrmc.SystemBuilderUtils" title="Link to this heading">¶</a></h1>
+<p>This module provides builders used to generate the initial atomic
+configuration (pdb) that a fullrmc <a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> will
+optimize. It covers amorphous systems and nanoparticles built by randomly
+inserting and orienting molecular building blocks, crystal supercells and
+nanoparticles built from a unitcell, atoms element transmutation and
+multi-domain (e.g. core-shell, substrate-supported) systems combining
+several of the above builders together.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.generate_random_float">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">generate_random_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.generate_random_float" title="Link to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.get_bounds">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">get_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">objName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bndName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">varName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isInt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canbeEqual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.get_bounds" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize a value into a validated (lower, upper) bounds tuple.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>objName (str): name of the calling object’s class, used to
+build descriptive assertion error messages</p></li>
+<li><p>bndName (str): name of the bounds family being validated
+(e.g. <code class="docutils literal notranslate"><span class="pre">'ellipsoid'</span></code>, <code class="docutils literal notranslate"><span class="pre">'supercell'</span></code>), used in error messages</p></li>
+<li><p>varName (str): name of the specific variable being validated
+(e.g. <code class="docutils literal notranslate"><span class="pre">'a'</span></code>, <code class="docutils literal notranslate"><span class="pre">'b'</span></code>), used in error messages</p></li>
+<li><p>val (number, list, tuple): the value to normalize. If a single
+number is given, it is used as both the lower and upper bound.
+If a list or tuple, it must contain exactly the
+<code class="docutils literal notranslate"><span class="pre">(lower,</span> <span class="pre">upper)</span></code> bound values</p></li>
+<li><p>isInt (boolean): whether the bounds must be integers rather
+than floats</p></li>
+<li><p>minv (None, number): if given, the lower bound must be &gt;= minv</p></li>
+<li><p>maxv (None, number): if given, the lower bound must be &lt;= maxv</p></li>
+<li><p>canbeEqual (boolean): whether the upper bound is allowed to be
+exactly equal to the lower bound</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>bounds (tuple): the validated (lower, upper) bounds tuple, cast
+to INT_TYPE if <code class="docutils literal notranslate"><span class="pre">isInt</span></code> is True or FLOAT_TYPE otherwise</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.get_ellipsoid_dimension_bounds">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">get_ellipsoid_dimension_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.get_ellipsoid_dimension_bounds" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize and validate a single ellipsoid semi-axis dimension
+bounds value, enforcing a minimum length of 1 angstrom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>obj (object): the calling builder instance, used only to read
+its class name for descriptive assertion error messages</p></li>
+<li><p>vn (str): name of the ellipsoid dimension being validated
+(e.g. <code class="docutils literal notranslate"><span class="pre">'a'</span></code>, <code class="docutils literal notranslate"><span class="pre">'b'</span></code> or <code class="docutils literal notranslate"><span class="pre">'c'</span></code>), used in error messages</p></li>
+<li><p>val (number, list, tuple): the dimension bounds value. If a
+single number is given, it is used as both the lower and upper
+bound. If a list or tuple, it must contain exactly the
+<code class="docutils literal notranslate"><span class="pre">(lower,</span> <span class="pre">upper)</span></code> bound values</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>bounds (tuple): the validated (lower, upper) FLOAT_TYPE bounds
+tuple</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.get_ellipsoid_params">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">get_ellipsoid_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.get_ellipsoid_params" title="Link to this definition">¶</a></dt>
+<dd><p>Randomly draw the three semi-axes lengths of an ellipsoid within
+given bounds for each axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>obj (object): the calling builder instance, used only to read
+its class name for descriptive assertion error messages</p></li>
+<li><p>a (number, list, tuple): semi-axis ‘a’ bounds, in the same
+format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+<li><p>b (number, list, tuple): semi-axis ‘b’ bounds, in the same
+format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+<li><p>c (number, list, tuple): semi-axis ‘c’ bounds, in the same
+format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>dimensions (tuple): a tuple of the three randomly drawn
+<code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b,</span> <span class="pre">c)</span></code> semi-axes lengths</p></li>
+<li><p>bounds (tuple): a tuple of the three validated
+<code class="docutils literal notranslate"><span class="pre">(aBounds,</span> <span class="pre">bBounds,</span> <span class="pre">cBounds)</span></code> bounds tuples the dimensions
+were drawn from</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.get_supercell_params">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">get_supercell_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.get_supercell_params" title="Link to this definition">¶</a></dt>
+<dd><p>Randomly draw the three integer supercell repetitions along a, b
+and c within given bounds for each axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>obj (object): the calling builder instance, used only to read
+its class name for descriptive assertion error messages</p></li>
+<li><p>a (integer, list, tuple): supercell repetition along ‘a’
+bounds, in the same format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+<li><p>b (integer, list, tuple): supercell repetition along ‘b’
+bounds, in the same format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+<li><p>c (integer, list, tuple): supercell repetition along ‘c’
+bounds, in the same format accepted by <a class="reference internal" href="#fullrmc.SystemBuilderUtils.get_bounds" title="fullrmc.SystemBuilderUtils.get_bounds"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_bounds()</span></code></a></p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>supercell (tuple): a tuple of the three randomly drawn
+<code class="docutils literal notranslate"><span class="pre">(a,</span> <span class="pre">b,</span> <span class="pre">c)</span></code> integer repetitions</p></li>
+<li><p>bounds (tuple): a tuple of the three validated
+<code class="docutils literal notranslate"><span class="pre">(aBounds,</span> <span class="pre">bBounds,</span> <span class="pre">cBounds)</span></code> bounds tuples the repetitions
+were drawn from</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.get_orientation_vector">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">get_orientation_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.get_orientation_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Validate and normalize a 3D vector into a unit orientation vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>obj (object): the calling builder instance, used only to read
+its class name for descriptive assertion error messages</p></li>
+<li><p>vector (list, tuple, numpy.ndarray): the 3 items non-zero
+vector to normalize</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>vector (numpy.ndarray): the normalized unit vector</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">BaseAmorphousBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrictions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_mappingUnit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base Builder for all builder implemenations. It must not be instanciated</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>structs (pdbparser.pdbparser, list): list of primary structures
+(e.g. molecules) to use upon building the atomic configuration</p></li>
+<li><p>boundaryConditions (PeriodicBoundaries, numpy.ndarray, number):
+The configuration’s boundary conditions.
+If numpy.ndarray is given, it must be pass-able
+to a PeriodicBoundaries instance. Normally any real
+numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it’s like a numpy.ndarray of shape (1,),
+it is assumed as a cubic box of box length equal to number.</p></li>
+<li><p>bonds (None, dict): dictionary of defined atom pairs bonds that will
+be used upon building structure to prevent elements pair distance
+below bonds threshold</p></li>
+<li><p>stoichiometry (None, list): stoichriometry ratios between the different
+given primary structures. If None, then all structures stoichriometry will
+be the same</p></li>
+<li><p>density (number): configuration desired density in g/cm^3. e.g. for
+a pure water system at room temperature and under normal pressure
+conditions, density must be equal to 0.997.
+If None is given, the density will be automatically set to 0.997</p></li>
+<li><p>restrictions (None, string, list): list of geometric restrictions to
+be applied when creating the system. e.g. ‘(x**2 + y**2 + z**2)**0.5 &lt;=10’
+can be used to prevent any atom to be place in a sphere centered
+around 0 and of radius 10 angstrom</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_name">
+<span class="sig-name descname"><span class="pre">set_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_name" title="Link to this definition">¶</a></dt>
+<dd><p>Set the builder’s name, used to name the built pdb structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): the builder’s name</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs">
+<span class="sig-name descname"><span class="pre">set_pdbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdbs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs" title="Link to this definition">¶</a></dt>
+<dd><p>Set building blocks primary structures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdbs (pdbparser.pdbparser, list): list of primary structures
+(e.g. molecules) to use upon building the atomic configuration</p></li>
+<li><p>bonds (None, dict): dictionary of defined atom pairs bonds that will
+be used upon building structure to prevent elements pair distance
+below bonds threshold</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_bonds_cutoff">
+<span class="sig-name descname"><span class="pre">set_bonds_cutoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_fudgeFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.26</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_bonds_cutoff" title="Link to this definition">¶</a></dt>
+<dd><p>Set bonds matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>bonds (None, dict): dictionary of defined atom pairs bonds that will
+be used upon building structure to prevent elements pair distance
+below bonds threshold</p></li>
+<li><p>_fudgeFactor (number): internal flag. Fraction of the sum of
+the two elements’ covalent radii used as the default bond
+cutoff distance for any element pair not explicitly given
+in <code class="docutils literal notranslate"><span class="pre">bonds</span></code></p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_stoichiometry">
+<span class="sig-name descname"><span class="pre">set_stoichiometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inWeight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_stoichiometry" title="Link to this definition">¶</a></dt>
+<dd><p>Set the building blocks stoichiometry ratios</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>stoichiometry (None, list): stoichriometry ratios between the different
+given primary structures. If None, then all structures stoichriometry will
+be the same</p></li>
+<li><p>inWeight (bool): whether to set stoichiometry in pdbs weight or in insertion number</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions">
+<span class="sig-name descname"><span class="pre">set_boundary_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions" title="Link to this definition">¶</a></dt>
+<dd><p>Set the final structure desired boundary conditions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>boundaryConditions (PeriodicBoundaries, numpy.ndarray, number):
+The configuration’s boundary conditions.
+If numpy.ndarray is given, it must be pass-able
+to a PeriodicBoundaries instance. Normally any real
+numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it’s like a numpy.ndarray of shape (1,),
+it is assumed as a cubic box of box length equal to number.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_density">
+<span class="sig-name descname"><span class="pre">set_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">density</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_density" title="Link to this definition">¶</a></dt>
+<dd><p>Set the final structure density in g/cm^3</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>density (number): configuration desired density in g/cm^3. e.g. for
+a pure water system at room temperature and under normal pressure
+conditions, density must be equal to 0.997.
+If None is given, the density will be automatically set to 0.997</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_insertion_number">
+<span class="sig-name descname"><span class="pre">set_insertion_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">insertionNumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_insertion_number" title="Link to this definition">¶</a></dt>
+<dd><p>Set the insertion parameter. This is another way to force the number
+of insertions per given primary structure. This will automatically
+reset the density of the system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>insertionNumber (list): list of integers</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_restrictions">
+<span class="sig-name descname"><span class="pre">set_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">restrictions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_restrictions" title="Link to this definition">¶</a></dt>
+<dd><p>Set the geometric restrictions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>restrictions (None, string, list): list of geometric restrictions to
+be applied when creating the system. e.g. ‘(x**2 + y**2 + z**2)**0.5 &lt;=10’
+can be used to prevent any atom to be place in a sphere centered
+around 0 and of radius 10 angstrom</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_prior_structure">
+<span class="sig-name descname"><span class="pre">set_prior_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pdb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_prior_structure" title="Link to this definition">¶</a></dt>
+<dd><p>Set existing prior structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (None, pdbparser.pdbparser): Set a prior structure that
+is considered present at time 0. If None, any previously
+set prior structure is cleared</p></li>
+<li><p>name (None, str): the prior structure’s name. If None, the
+given <code class="docutils literal notranslate"><span class="pre">pdb</span></code>’s own name is used instead</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build configuration</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.get_pdb">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.get_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Get a pdbparser instance of the built structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): the built structure</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousSystem">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">AmorphousSystem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stoichiometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrictions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_mappingUnit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousSystem" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAmorphousBuilder</span></code></a></p>
+<p>Create amorphous system using random translations and rotations</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousSystem.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxAttempts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_logInc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_interceptHook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousSystem.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build the amorphous system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>order (bool, list): order of insertion.
+If True, insertion will start with the biggest pdb building
+block to the smallest.
+If False, shuffled order of insertion will be used.
+If list, it must be a list of building blocks indexes</p></li>
+<li><p>maxAttempts (integer): the maximum number of attempts to insert
+a specific pdb building block before moving to the next one.</p></li>
+<li><p>_reset (boolean): internal flag. If True, or if the builder
+was never built before, all build attributes are reset
+before starting a fresh insertion</p></li>
+<li><p>_logInc (integer): internal flag. Percent complete increment
+step at which a progress message is logged, between 0 and
+100</p></li>
+<li><p>_log (boolean): internal flag. Whether to log progress and
+completion messages</p></li>
+<li><p>_debug (boolean): internal flag. If True, log a debug
+message whenever an accepted insertion violates the
+minimum bond distance with already inserted atoms</p></li>
+<li><p>_interceptHook (None, object): internal flag. Optional hook
+instance polled for a <code class="docutils literal notranslate"><span class="pre">'stop_builder'</span></code> message between
+insertions, allowing the build to be interrupted gracefully</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (None, boolean): True if the build was
+interrupted early via <code class="docutils literal notranslate"><span class="pre">_interceptHook</span></code>, False if it ran
+to completion, or None if there was nothing left to insert</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousNanoparticle">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">AmorphousNanoparticle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousSystem" title="fullrmc.SystemBuilderUtils.AmorphousSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmorphousSystem</span></code></a></p>
+<p>Create an isolated amorphous nanoparticle shaped as an ellipsoid,
+by randomly inserting and orienting building blocks within an
+ellipsoid of semi-axes a, b and c rather than throughout the whole
+periodic simulation box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>a (number, list, tuple): ellipsoid semi-axis ‘a’ length bounds
+in angstrom, must be &gt;=1. If a single number is given, it is
+used as both the lower and upper bound. If a list or tuple, it
+must contain the <code class="docutils literal notranslate"><span class="pre">(lower,</span> <span class="pre">upper)</span></code> bound values, and the
+actual length is drawn randomly within them</p></li>
+<li><p>b (number, list, tuple): ellipsoid semi-axis ‘b’ length bounds,
+same format as <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>c (number, list, tuple): ellipsoid semi-axis ‘c’ length bounds,
+same format as <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>*args, **kwargs: other arguments and keyword arguments
+forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseAmorphousBuilder</span></code></a>. <code class="docutils literal notranslate"><span class="pre">boundaryConditions</span></code>
+must not be given, it is automatically computed from the
+ellipsoid dimensions</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_pdbs">
+<span class="sig-name descname"><span class="pre">set_pdbs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_pdbs" title="Link to this definition">¶</a></dt>
+<dd><p>Set building blocks primary structures. Same as
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseAmorphousBuilder.set_pdbs()</span></code></a>, additionally resetting all
+building blocks ellipsoid penetration ratios to their default
+value of 1 via <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_penetration" title="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_penetration"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_penetration()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>*args, **kwargs: arguments and keyword arguments
+forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseAmorphousBuilder.set_pdbs()</span></code></a></p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>result (None): always None, forwarded from
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_pdbs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseAmorphousBuilder.set_pdbs()</span></code></a> which doesn’t
+return a value</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_penetration">
+<span class="sig-name descname"><span class="pre">set_penetration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">penetration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_penetration" title="Link to this definition">¶</a></dt>
+<dd><p>Set how deeply each building block is allowed to penetrate
+through the ellipsoid surface upon insertion.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>penetration (None, list): list of penetration ratios, one
+per building block pdb, in the same order as given to
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_pdbs" title="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_pdbs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_pdbs()</span></code></a>. Each ratio must be &gt;0 and &lt;=1, where 1
+means the building block must be fully contained inside
+the ellipsoid and smaller values allow it to stick out
+further past the ellipsoid surface. If None, all building
+blocks are set to a penetration ratio of 1</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build the amorphous nanoparticle. Same as <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousSystem.build" title="fullrmc.SystemBuilderUtils.AmorphousSystem.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AmorphousSystem.build()</span></code></a>,
+additionally clearing the built pdb’s boundary conditions (the
+nanoparticle is isolated, not periodic) and recomputing its
+number density and density from the ellipsoid volume rather than
+the periodic box volume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>*args, **kwargs: arguments and keyword arguments
+forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousSystem.build" title="fullrmc.SystemBuilderUtils.AmorphousSystem.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AmorphousSystem.build()</span></code></a></p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (None, boolean): same as
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousSystem.build" title="fullrmc.SystemBuilderUtils.AmorphousSystem.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AmorphousSystem.build()</span></code></a>’s return value</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_boundary_conditions">
+<span class="sig-name descname"><span class="pre">set_boundary_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle.set_boundary_conditions" title="Link to this definition">¶</a></dt>
+<dd><p>Automatically compute and set the periodic boundary conditions
+big enough to contain the ellipsoid plus a padding margin large
+enough to fit the biggest building block, and set the ellipsoid’s
+volume accordingly. Unlike
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseAmorphousBuilder.set_boundary_conditions()</span></code></a>, this method
+takes no boundary conditions argument since it is entirely
+derived from the ellipsoid semi-axes lengths <code class="docutils literal notranslate"><span class="pre">a</span></code>, <code class="docutils literal notranslate"><span class="pre">b</span></code> and
+<code class="docutils literal notranslate"><span class="pre">c</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseCrystalBuilder">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">BaseCrystalBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supercell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base builder for all crystal-based builder implementations built
+from one or more unitcells. It must not be instanciated directly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>structs (CrystalMaker, dict, str, list): the primary crystal
+unitcell structure(s) to build from. Each item can be a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">pdbparser.Utilities.Crystallography.CrystalMaker</span></code>
+instance, a dictionary of keyword arguments used to
+instanciate one, or a string cif file path</p></li>
+<li><p>supercell (None, int, list, tuple): unused by this base class,
+kept for subclasses convenience</p></li>
+<li><p>name (string): the builder’s name</p></li>
+<li><p>*args, **kwargs: unused, accepted for subclasses convenience</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_name">
+<span class="sig-name descname"><span class="pre">set_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_name" title="Link to this definition">¶</a></dt>
+<dd><p>Set the builder’s name, used to name the built pdb structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): the builder’s name</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_cifs">
+<span class="sig-name descname"><span class="pre">set_cifs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cifs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_cifs" title="Link to this definition">¶</a></dt>
+<dd><p>Set building blocks primary structures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>cifs (pdbparser.Utilities.Crystallography.CrystalMaker, list): list of primary structures
+(e.g. unitcells) to use upon building the atomic configuration</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalSupercell">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">CrystalSupercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supercell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">10,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalSupercell" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder" title="fullrmc.SystemBuilderUtils.BaseCrystalBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCrystalBuilder</span></code></a></p>
+<p>Build a periodic crystal supercell structure by repeating a
+single unitcell along its a, b and c basis vectors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>structs (CrystalMaker, dict, str): a single primary crystal
+unitcell structure, in any format accepted by
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_cifs" title="fullrmc.SystemBuilderUtils.BaseCrystalBuilder.set_cifs"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseCrystalBuilder.set_cifs()</span></code></a></p></li>
+<li><p>supercell (int, list, tuple): number of unitcell repetitions
+bounds along a, b and c. If a single number is given, it is
+used as both the lower and upper bound for all three
+directions. If a list or tuple of 3 items, each item is either
+a number or a <code class="docutils literal notranslate"><span class="pre">(lower,</span> <span class="pre">upper)</span></code> bounds pair for the
+corresponding direction, and the actual repetition count is
+drawn randomly within them</p></li>
+<li><p>*args, **kwargs: other arguments and keyword arguments
+forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder" title="fullrmc.SystemBuilderUtils.BaseCrystalBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCrystalBuilder</span></code></a></p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalSupercell.boundaryConditions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">boundaryConditions</span></span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.boundaryConditions" title="Link to this definition">¶</a></dt>
+<dd><p>The built structure’s boundary conditions, or None if the
+structure hasn’t been built yet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalSupercell.set_supercell">
+<span class="sig-name descname"><span class="pre">set_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supercell</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.set_supercell" title="Link to this definition">¶</a></dt>
+<dd><p>Set the supercell repetitions along a, b and c, drawing the
+actual repetition counts randomly within given bounds. Setting
+this after a structure was already built clears the built
+structure if the drawn supercell changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>supercell (int, list, tuple): number of unitcell
+repetitions bounds along a, b and c, in the same format
+accepted by this class’s constructor</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalSupercell.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supercell</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_interceptHook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build the crystal supercell structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>supercell (None, int, list, tuple): if given, forwarded to
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.set_supercell" title="fullrmc.SystemBuilderUtils.CrystalSupercell.set_supercell"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_supercell()</span></code></a> to redraw the supercell repetitions
+before building. If None, the previously set supercell is
+used</p></li>
+<li><p>_debug (boolean): internal flag, currently unused, kept
+for interface consistency with other builders</p></li>
+<li><p>_log (boolean): internal flag. Whether to log start and
+completion messages</p></li>
+<li><p>_interceptHook (None, object): internal flag, cleared
+before building. Kept for interface consistency with other
+builders; supercell creation itself cannot be interrupted
+mid-way</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (boolean): always False, kept for
+interface consistency with other builders’ <a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.build" title="fullrmc.SystemBuilderUtils.CrystalSupercell.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a></p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalSupercell.get_pdb">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalSupercell.get_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Get a pdbparser instance of the built structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): the built structure</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalNanoparticle">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">CrystalNanoparticle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,</span> <span class="pre">30)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orientation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder" title="fullrmc.SystemBuilderUtils.BaseCrystalBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCrystalBuilder</span></code></a></p>
+<p>Build an isolated crystal nanoparticle shaped as an ellipsoid, by
+generating a large enough crystal supercell from a single unitcell,
+orienting it and keeping only the atoms (or unitcells) falling inside
+the ellipsoid of semi-axes a, b and c.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>a (number, list, tuple): ellipsoid semi-axis ‘a’ length bounds
+in angstrom, must be &gt;=1. If a single number is given, it is
+used as both the lower and upper bound. If a list or tuple, it
+must contain the <code class="docutils literal notranslate"><span class="pre">(lower,</span> <span class="pre">upper)</span></code> bound values, and the
+actual length is drawn randomly within them</p></li>
+<li><p>b (number, list, tuple): ellipsoid semi-axis ‘b’ length bounds,
+same format as <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>c (number, list, tuple): ellipsoid semi-axis ‘c’ length bounds,
+same format as <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>orientation (None, list): forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle.set_orientation" title="fullrmc.SystemBuilderUtils.CrystalNanoparticle.set_orientation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">set_orientation()</span></code></a></p></li>
+<li><p>*args, **kwargs: other arguments and keyword arguments
+forwarded to <a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseCrystalBuilder" title="fullrmc.SystemBuilderUtils.BaseCrystalBuilder"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCrystalBuilder</span></code></a></p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalNanoparticle.set_orientation">
+<span class="sig-name descname"><span class="pre">set_orientation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orientation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle.set_orientation" title="Link to this definition">¶</a></dt>
+<dd><p>Set the nanoparticle’s crystallographic orientation, used to
+rotate the supercell before cutting out the ellipsoid so that a
+chosen crystal direction aligns with the x-axis, and rotate the
+final ellipsoid-cut nanoparticle back to its original
+orientation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>orientation (None, list, tuple, numpy.ndarray): the 3
+items non-zero orientation vector. If None, defaults to
+<code class="docutils literal notranslate"><span class="pre">(1,0,0)</span></code> i.e. no rotation</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalNanoparticle.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strategy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'atomic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_interceptHook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build the crystal nanoparticle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>strategy (str): how atoms falling outside the ellipsoid
+are handled once the oversized supercell is generated.
+<code class="docutils literal notranslate"><span class="pre">'atomic'</span></code> keeps only the individual atoms found inside
+the ellipsoid regardless of their unitcell. <code class="docutils literal notranslate"><span class="pre">'keep</span> <span class="pre">unitcell'</span></code>
+keeps every atom belonging to a unitcell that has at least
+one atom inside the ellipsoid. <code class="docutils literal notranslate"><span class="pre">'remove</span> <span class="pre">unitcell'</span></code>
+removes every atom belonging to a unitcell that has at
+least one atom outside the ellipsoid</p></li>
+<li><p>_debug (boolean): internal flag, currently unused, kept
+for interface consistency with other builders</p></li>
+<li><p>_log (boolean): internal flag. Whether to log start and
+completion messages</p></li>
+<li><p>_interceptHook (None, object): internal flag, cleared
+before building. Kept for interface consistency with other
+builders; the ellipsoid cut itself cannot be interrupted
+mid-way</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (boolean): always False, kept for
+interface consistency with other builders’ <a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle.build" title="fullrmc.SystemBuilderUtils.CrystalNanoparticle.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a></p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.CrystalNanoparticle.get_pdb">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle.get_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Get a pdbparser instance of the built structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): the built structure</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AtomsTransmutator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">AtomsTransmutator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">structs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Build a new structure from an existing one by randomly
+transmuting a fraction of its atoms from one element (or atom name)
+to another, e.g. to simulate isotopic substitution or doping.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>structs (CrystalMaker, pdbparser.pdbparser): the existing
+structure to transmute atoms from. If a CrystalMaker instance
+is given, it is first converted to a pdbparser instance
+(generating a (1,1,1) supercell if needed)</p></li>
+<li><p>name (string): the builder’s name</p></li>
+<li><p>*args, **kwargs: unused, accepted for interface consistency
+with the other builders</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AtomsTransmutator.boundaryConditions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">boundaryConditions</span></span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator.boundaryConditions" title="Link to this definition">¶</a></dt>
+<dd><p>The original (pre-transmutation) structure’s boundary
+conditions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AtomsTransmutator.set_name">
+<span class="sig-name descname"><span class="pre">set_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator.set_name" title="Link to this definition">¶</a></dt>
+<dd><p>Set the builder’s name, used to name the built pdb structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): the builder’s name</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AtomsTransmutator.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transmutations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_interceptHook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build the transmuted structure by copying the original
+structure and randomly transmuting a fraction of its atoms
+according to the given transmutation rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>transmutations (dict): the transmutation rules. It can
+either be a flat dict mapping an element symbol to a
+<code class="docutils literal notranslate"><span class="pre">(newElement,</span> <span class="pre">newAtomName,</span> <span class="pre">ratio)</span></code> tuple (shorthand for
+<code class="docutils literal notranslate"><span class="pre">{'elements':</span> <span class="pre">...}</span></code>), or a dict with up to two keys:
+<code class="docutils literal notranslate"><span class="pre">'elements'</span></code> mapping an element symbol to a
+<code class="docutils literal notranslate"><span class="pre">(newElement,</span> <span class="pre">newAtomName,</span> <span class="pre">ratio)</span></code> tuple applied to every
+atom of that element, and <code class="docutils literal notranslate"><span class="pre">'names'</span></code> mapping a specific
+atom name to a <code class="docutils literal notranslate"><span class="pre">(newElement,</span> <span class="pre">newAtomName,</span> <span class="pre">ratio)</span></code> tuple
+applied only to atoms with that exact name (checked before
+and taking precedence over the <code class="docutils literal notranslate"><span class="pre">'elements'</span></code> rule).
+<code class="docutils literal notranslate"><span class="pre">ratio</span></code> must be between 0 and 1 and is the per-atom
+probability of actually transmuting that atom</p></li>
+<li><p>_log (boolean): internal flag. Whether to log start and
+completion messages</p></li>
+<li><p>_interceptHook (None, object): internal flag, cleared
+before building. Kept for interface consistency with other
+builders; the transmutation loop itself cannot be
+interrupted mid-way</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (boolean): always False, kept for
+interface consistency with other builders’ <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator.build" title="fullrmc.SystemBuilderUtils.AtomsTransmutator.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a></p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.AtomsTransmutator.get_pdb">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator.get_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Get a pdbparser instance of the built structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): the built structure</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.SystemBuilderUtils.</span></span><span class="sig-name descname"><span class="pre">NanoDomains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unknown'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_mappingUnit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Build a multi-domain system by inserting several independently
+built domains (e.g. isolated nanoparticles, amorphous chunks,
+transmuted structures) next to and possibly intersecting each other,
+optionally around a fixed substrate domain. This allows building
+complex systems such as core-shell nanoparticles, substrate-supported
+nanoparticles or heterogeneous multi-phase assemblies, using any
+combination of the other builders in this module as sub-builders for
+each domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>domains (list): list of domain definition dictionaries. Each
+dictionary can have the following keys:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'name'</span></code> (str): the domain’s name, defaults to
+<code class="docutils literal notranslate"><span class="pre">'domain</span> <span class="pre">%i'%idx</span></code>. Automatically de-duplicated if reused</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'structure'</span></code> (str, list, pdbparser.pdbparser, CrystalMaker):
+the domain’s structure, either given directly as a pdb or
+cif file path, a list of pdb file lines, a pdbparser
+instance or a CrystalMaker instance, or used as the
+<code class="docutils literal notranslate"><span class="pre">structs</span></code> argument of <code class="docutils literal notranslate"><span class="pre">'builder'</span></code> when one is given</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'domain_molecules_name'</span></code> (None, str): optional molecules
+name override, maximum 3 characters</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'single_atoms'</span></code> (bool): whether the domain is inserted
+atom by atom rather than as a whole rigid block. Defaults to
+False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'intersection_likelihood'</span></code> (number): probability &gt;=0
+that this domain is allowed to intersect with previously
+inserted domains rather than being rejected. Defaults to 0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'number_of_insertions'</span></code> (int): number of times this
+domain is inserted. Defaults to 1</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'fresh_build_per_insertion'</span></code> (bool): whether the domain’s
+sub-builder is rebuilt from scratch (new random
+conformation) at every insertion, or built once and reused.
+Defaults to True</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'insert_all_or_none'</span></code> (bool): whether the whole domain
+insertion must be rejected if any of its atoms can’t be
+placed. Defaults to False</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'allow_replacement'</span></code> (bool): whether later domains are
+allowed to intersect and replace this domain’s atoms.
+Defaults to True</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'randomly_rotate'</span></code> (bool): whether to randomly rotate the
+domain upon insertion. Defaults to True</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'randomly_translate'</span></code> (bool): whether to randomly
+translate the domain upon insertion. Defaults to True</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'fixed_position'</span></code> (None, ‘center’, list): force the
+domain’s position instead of randomly translating it</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'fixed_orientation'</span></code> (None, list): force the domain’s
+orientation instead of randomly rotating it</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'builder'</span></code> (None, str, class): optional sub-builder class
+(or its name) among <a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalNanoparticle" title="fullrmc.SystemBuilderUtils.CrystalNanoparticle"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrystalNanoparticle</span></code></a>,
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousNanoparticle" title="fullrmc.SystemBuilderUtils.AmorphousNanoparticle"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmorphousNanoparticle</span></code></a>, <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AmorphousSystem" title="fullrmc.SystemBuilderUtils.AmorphousSystem"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmorphousSystem</span></code></a>,
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.CrystalSupercell" title="fullrmc.SystemBuilderUtils.CrystalSupercell"><code class="xref py py-class docutils literal notranslate"><span class="pre">CrystalSupercell</span></code></a> and <a class="reference internal" href="#fullrmc.SystemBuilderUtils.AtomsTransmutator" title="fullrmc.SystemBuilderUtils.AtomsTransmutator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsTransmutator</span></code></a>,
+used to generate the domain’s structure from <code class="docutils literal notranslate"><span class="pre">'structure'</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'builder_kwargs'</span></code> (dict): keyword arguments forwarded to
+the sub-builder’s constructor when <code class="docutils literal notranslate"><span class="pre">'builder'</span></code> is given</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'build_kwargs'</span></code> (dict): keyword arguments forwarded to
+the sub-builder’s <a class="reference internal" href="#fullrmc.SystemBuilderUtils.NanoDomains.build" title="fullrmc.SystemBuilderUtils.NanoDomains.build"><code class="xref py py-meth docutils literal notranslate"><span class="pre">build()</span></code></a> method when <code class="docutils literal notranslate"><span class="pre">'builder'</span></code> is
+given</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'substrate'</span></code> (bool): marks this domain as the fixed
+substrate. At most one domain may be a substrate. When set,
+<code class="docutils literal notranslate"><span class="pre">'number_of_insertions'</span></code> is forced to 1 and
+<code class="docutils literal notranslate"><span class="pre">'randomly_translate'</span></code>, <code class="docutils literal notranslate"><span class="pre">'randomly_rotate'</span></code>,
+<code class="docutils literal notranslate"><span class="pre">'fixed_position'</span></code> and <code class="docutils literal notranslate"><span class="pre">'fixed_orientation'</span></code> are forced
+to their neutral values, since the substrate defines the
+system’s boundary conditions itself</p></li>
+</ul>
+</li>
+<li><p>boundaryConditions (None, PeriodicBoundaries, numpy.ndarray,
+number): the configuration’s boundary conditions, in the same
+format accepted by
+<a class="reference internal" href="#fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions" title="fullrmc.SystemBuilderUtils.BaseAmorphousBuilder.set_boundary_conditions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">BaseAmorphousBuilder.set_boundary_conditions()</span></code></a>. Must not
+be given when one of the domains is a substrate, since the
+substrate’s own boundary conditions are used instead</p></li>
+<li><p>bonds (None, dict): dictionary of defined atom pairs bonds
+that will be used upon building structure to prevent elements
+pair distance below bonds threshold</p></li>
+<li><p>name (string): the builder’s name</p></li>
+<li><p>_mappingUnit (number): internal flag. Approximate real-space
+size in angstrom of one cell of the internal insertion map
+grid used to speed up overlap detection</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains.set_name">
+<span class="sig-name descname"><span class="pre">set_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains.set_name" title="Link to this definition">¶</a></dt>
+<dd><p>Set the builder’s name, used to name the built pdb structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): the builder’s name</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains.set_boundary_conditions">
+<span class="sig-name descname"><span class="pre">set_boundary_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains.set_boundary_conditions" title="Link to this definition">¶</a></dt>
+<dd><p>Set the final structure desired boundary conditions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>boundaryConditions (PeriodicBoundaries, numpy.ndarray, number):
+The configuration’s boundary conditions.
+If numpy.ndarray is given, it must be pass-able
+to a PeriodicBoundaries instance. Normally any real
+numpy.ndarray of shape (1,), (3,1), (9,1), (3,3) is allowed.
+If number is given, it’s like a numpy.ndarray of shape (1,),
+it is assumed as a cubic box of box length equal to number.</p></li>
+<li><p>_check (boolean): internal flag, currently unused (checks
+are commented out), kept for interface consistency</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains.set_bonds_cutoff">
+<span class="sig-name descname"><span class="pre">set_bonds_cutoff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bonds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_fudgeFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains.set_bonds_cutoff" title="Link to this definition">¶</a></dt>
+<dd><p>Set bonds matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>bonds (None, number, dict): dictionary of defined atom
+pairs bonds that will be used upon building structure to
+prevent elements pair distance below bonds threshold. If
+a number is given, it is used as the bond cutoff distance
+for every element pair</p></li>
+<li><p>_fudgeFactor (None, number): internal flag. If given,
+updates the fraction of the sum of the two elements’
+covalent radii used as the default bond cutoff distance
+for any element pair not explicitly given in <code class="docutils literal notranslate"><span class="pre">bonds</span></code></p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains.build">
+<span class="sig-name descname"><span class="pre">build</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">failAll</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_maxNumberOfIntersections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_flexibleLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_interceptHook</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains.build" title="Link to this definition">¶</a></dt>
+<dd><p>Build domains system.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>order (bool, list): order of insertion.
+If True, insertion will start with the biggest pdb building
+block to the smallest.
+If False, shuffled order of insertion will be used.
+If list, it must be a list of building blocks indexes</p></li>
+<li><p>failAll (bool): whether to fail the build if any of the given
+domains failed to be built.
+Failing to build the substrate will always result in failing
+the whole build</p></li>
+<li><p>_maxNumberOfIntersections (integer): internal flag. Initial
+size of the per-atom buffer used to track how many
+already-built atoms a newly inserted domain’s atoms
+intersect with. Automatically grown by increments of 8 up
+to <code class="docutils literal notranslate"><span class="pre">_flexibleLimit</span></code> if this initial size is exceeded</p></li>
+<li><p>_flexibleLimit (integer): internal flag. Hard upper limit
+on the automatic growth of the intersections buffer
+described above. If reached without finding a valid
+(non-overflowing) intersection count, the domain’s atoms
+are all rejected</p></li>
+<li><p>_debug (boolean): internal flag, currently unused, kept
+for interface consistency with other builders</p></li>
+<li><p>_log (boolean): internal flag. Whether to log progress and
+completion messages</p></li>
+<li><p>_interceptHook (None, object): internal flag. Optional hook
+instance polled for a <code class="docutils literal notranslate"><span class="pre">'stop_builder'</span></code> message between
+domain insertions, allowing the build to be interrupted
+gracefully</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>builtIntercepted (boolean): True if the build was
+interrupted early via <code class="docutils literal notranslate"><span class="pre">_interceptHook</span></code>, False if it ran
+to completion</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.SystemBuilderUtils.NanoDomains.get_pdb">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.SystemBuilderUtils.NanoDomains.get_pdb" title="Link to this definition">¶</a></dt>
+<dd><p>Get a pdbparser instance of the built structure</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): the built structure</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="fullrmc.OptimizationEngine.html"
+                          title="previous chapter">fullrmc.OptimizationEngine module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fullrmc.Selectors.html"
+                          title="next chapter">fullrmc.Selectors package</a></p>
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.Selectors.html" title="fullrmc.Selectors package"
+             >next</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.OptimizationEngine.html" title="fullrmc.OptimizationEngine module"
+             >previous</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
+    </body>
+</html>

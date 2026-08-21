@@ -3,33 +3,33 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fullrmc.Selectors package &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
     
-    <title>fullrmc.Selectors package &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
-    
-    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.1.0',
+        VERSION:     '6.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
             <link rel="next" title="fullrmc.Generators package" href="fullrmc.Generators.html" />
-            <link rel="prev" title="fullrmc.Core package" href="fullrmc.Core.html" />
+            <link rel="prev" title="fullrmc.SystemBuilderUtils module" href="fullrmc.SystemBuilderUtils.html" />
 
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -42,53 +42,122 @@
 
     <body>
         <!-- ------------------------------------- -->
-        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
         <div class="menu">
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="versions.html">Versions</a></li>
-                <li><a href="QAForum.html">Q&A Forum</a></li>
-                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
-                <li><a href="fullrmc.Generators.html">Generators</a></li>
-                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
-                <li><a href="examples.html">Examples</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="cloud.html">Cloud Services</a></li>
-                <!-- pypi and github forkme link images table -->
-                <li>
-                    <table style="position: absolute; right:0; top:0;">
-                        <!-- pypi image -->
-                        <td><a href="https://pypi.python.org/pypi/fullrmc">
-                            <img height="40";
-                                 src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>
-                        </a></td>
-                        <!-- github image -->
-                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
-                            <img height="40";
-                                 src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />
-                        </a></td>
-                    </table>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle active-group" tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="active" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
                 </li>
                 <!-- ------------------------------------- -->
             </ul>
-            <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;
-                z-index: 9999; position:Fixed;
-                left: 0; top: 0; width: 100%; }
-            .menu ul { list-style: none; }
-            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
-            .menu ul li a { font-size:16px; color:white;}
-            .menu ul li a:hover{ text-decoration: underline;}
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
         </style>
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>
+        <div style="margin-top:10px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -110,12 +179,12 @@
         
         </li>
         <li class="right" >
-          <a href="fullrmc.Core.html" title="fullrmc.Core package"
+          <a href="fullrmc.SystemBuilderUtils.html" title="fullrmc.SystemBuilderUtils module"
              accesskey="P">previous</a>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -132,225 +201,330 @@ is used at the stochastic engine’s runtime to select groups upon which a
 move will be applied. Therefore it has become possible to fully customize the
 selection of groups of atoms and to choose  when and how frequently a group
 can be chosen to perform a move upon.</p>
-<div class="graphviz"><img src="_images/inheritance-caace5b68edd6ff0a0d4dceaa7f1371b7991b248.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="_images/inheritance-1fe87466d83aec0b7d2cef1dac55fe55aa86d75e.png" alt="Inheritance diagram of fullrmc.Core.GroupSelector" usemap="#inheritance241b5f69c1" class="inheritance graphviz" /></div>
 <map id="inheritance241b5f69c1" name="inheritance241b5f69c1">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" target="_top" title="Recursive selector is the only selector that can use the recursive" alt="" coords="161,5,327,29"/>
-</map><dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">GroupSelector</code><span class="sig-paren">(</span><em>engine=None</em><span class="sig-paren">)</span></dt>
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,110,32"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.RecursiveGroupSelector" target="_top" title="Recursive selector is the only selector that can use the recursive" alt="" coords="158,5,321,32"/>
+</map><dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Core.GroupSelector.</span></span><span class="sig-name descname"><span class="pre">GroupSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Group selector is the parent class that selects groups to perform
 moves at stochastic engine’s runtime.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector’s stochastic engine instance.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): Selector’s stochastic engine instance.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="attribute">
-<dt>
-<code class="descname">engine</code></dt>
-<dd><p>Stochastic engine’s instance.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Create a selector instance given instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): Instantiation parameters as returned by the
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code> property.</p></li>
+<li><p>engine (None, fullrmc.Engine): The stochastic engine to
+attach to the created selector instance.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>obj (GroupSelector): The created instance.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">refine</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): A dictionary holding the class definition
+name and the constructor keyword arguments. This is the
+exact dictionary consumed by <code class="docutils literal notranslate"><span class="pre">create</span></code> to rebuild an
+identical selector instance.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Design pattern implementation, must be overloaded by every
+GroupSelector sub-class that needs a way to update its state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): The update parameters, sub-class specific.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">engine</span></span></dt>
+<dd><p>Stochastic engine’s instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): The selector’s stochastic
+engine instance.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">refine</span></span></dt>
 <dd><p>Get refine flag value. It will always return False because
 refine is a property of RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>refine (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">explore</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">explore</span></span></dt>
 <dd><p>Get explore flag value. It will always return False because
 explore is a property of RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>explore (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willSelect</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willSelect</span></span></dt>
 <dd><p>Get whether next step a new selection is occur or still the same
 group is going to be selected again. It will always return True
 because recurrence is a property of RecursiveGroupSelector instances
 only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willSelect (bool): Always True on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willRecur</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willRecur</span></span></dt>
 <dd><p>Get whether next step the same group will be returned. It will
 always return False because this is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willRecur (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willRefine</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willRefine</span></span></dt>
 <dd><p>Get whether selection is recurring and refine flag is True. It
 will always return False because recurrence is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willRefine (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willExplore</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willExplore</span></span></dt>
 <dd><p>Get whether selection is recurring and explore flag is True.
 It will always return False because recurrence is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willExplore (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isNewSelection</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isNewSelection</span></span></dt>
 <dd><p>Get whether the last step a new selection was made. It will
 always return True because recurrence is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isNewSelection (bool): Always True on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isRecurring</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isRecurring</span></span></dt>
 <dd><p>Get whether the last step the same group was returned. It will
 always return False because this is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isRecurring (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isRefining</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isRefining</span></span></dt>
 <dd><p>Get whether selection is recurring and refine flag is True. It
 will always return False because recurrence is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isRefining (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isExploring</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isExploring</span></span></dt>
 <dd><p>Get whether selection is recurring and explore flag is True. It
 will always return False because recurrence is a property of
 RecursiveGroupSelector instances only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isExploring (bool): Always False on a plain GroupSelector.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Set selector’s stochastic engine instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): Selector’s stochastic engine.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): Selector’s stochastic engine.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>This method must be overloaded in every GroupSelector sub-class</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">move_accepted</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">move_accepted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>This method is called by the stochastic engine when a move generated
 on a group is accepted. This method is empty must be overloaded when
 needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">move_rejected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">move_rejected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>This method is called by the stochastic engine when a move generated
 on a group is rejected. This method is empty must be overloaded when
 needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">fullrmc.Core.GroupSelector.</code><code class="descname">RecursiveGroupSelector</code><span class="sig-paren">(</span><em>selector</em>, <em>recur=10</em>, <em>override=True</em>, <em>refine=False</em>, <em>explore=False</em><span class="sig-paren">)</span></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Core.GroupSelector.</span></span><span class="sig-name descname"><span class="pre">RecursiveGroupSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">selector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recur</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">override</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">explore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupSelector</span></code></a></p>
 <p>Recursive selector is the only selector that can use the recursive
 property on a selection. It is used as a wrapper around a GroupSelector
 instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>selector (fullrmc.Core.GroupSelector.GroupSelector): The selector
-instance to wrap.</li>
-<li>recur (integer): Set number of times to recur. It must be a
-positive integer.</li>
-<li>override (boolean): Override temporary recur value.
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>selector (fullrmc.Core.GroupSelector.GroupSelector): The selector
+instance to wrap.</p></li>
+<li><p>recur (integer): Set number of times to recur. It must be a
+positive integer.</p></li>
+<li><p>override (boolean): Override temporary recur value.
 recur value will be overridden only when selected group move
 generator is a PathGenerator instance. In this particular case,
 recur value will be temporary changed to the number of moves
 stored in the PathGenerator. If selected group move generator
 is not a PathGenerator instance, recur value will take back its
-original value.</li>
-<li>refine (boolean): Its an engine flag that is used to refine
+original value.</p></li>
+<li><p>refine (boolean): Its an engine flag that is used to refine
 the position of a group until recurrence expires and a new group
 is selected. Refinement is done by applying moves upon the selected
 group always from its initial position at the time it was selected
-until recurrence expires, then the best position is kept.</li>
-<li>explore (boolean): Its an engine flag that is used to make a group
+until recurrence expires, then the best position is kept.</p></li>
+<li><p>explore (boolean): Its an engine flag that is used to make a group
 explore the space around it until recurrence expires and a new
 group is selected. Exploring is done by applying moves upon
 the selected group starting from its initial position and evolving
 in a trajectory like way until recurrence expires, then the best
-position is kept.</li>
+position is kept.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p><strong>NB</strong>: refine and explore flags can’t both be set to True at the same time.
 When this happens refine flag gets automatically switched to False.
 The usage of those flags is very important because they allow groups of
@@ -392,11 +566,11 @@ moves enhancing the structure are stored.
 src="https://www.youtube.com/embed/wafgTfHNpvs?rel=0"
 frameborder="0" allowfullscreen>
 </iframe><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Core.GroupSelector</span> <span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Core.GroupSelector</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecursiveGroupSelector</span>
 
 <span class="c1"># create engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
@@ -407,283 +581,434 @@ frameborder="0" allowfullscreen>
 
 <span class="c1">##### Wrap engine group selector with a recursive group selector. #####</span>
 <span class="c1"># create recursive group selector. Recurrence is set to 20 with explore flag set to True.</span>
-<span class="n">RGS</span> <span class="o">=</span> <span class="n">RecursiveGroupSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">groupSelector</span><span class="p">,</span> <span class="n">recur</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">refine</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">explore</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">RGS</span> <span class="o">=</span> <span class="n">RecursiveGroupSelector</span><span class="p">(</span><span class="n">ENGINE</span><span class="o">.</span><span class="n">groupSelector</span><span class="p">,</span> <span class="n">recur</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">refine</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">explore</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span><span class="n">RGS</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt>
-<code class="descname">selector</code></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Create a selector instance given instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): Instantiation parameters as returned by the
+<code class="docutils literal notranslate"><span class="pre">parameters</span></code> property.</p></li>
+<li><p>engine (None, fullrmc.Engine): The stochastic engine to
+attach to the created wrapped selector instance.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>obj (RecursiveGroupSelector): The created instance.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): A dictionary holding the class definition
+name, the wrapped selector’s own parameters, and the recur,
+override, refine and explore constructor keyword arguments.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">selector</span></span></dt>
 <dd><p>The wrapped selector instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>selector (GroupSelector): The wrapped selector instance.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">lastSelectedIndex</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">lastSelectedIndex</span></span></dt>
 <dd><p>The last selected group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>lastSelectedIndex (None, integer): The last selected group
+index in the engine’s groups list, or None if no selection
+has been made yet.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willSelect</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willSelect</span></span></dt>
 <dd><p>Get whether next step a new selection is occur or still the same
 group is going to be selected again.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willSelect (bool): Whether next step a new selection will be
+made.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willRecur</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willRecur</span></span></dt>
 <dd><p>Get whether next step the same group will be returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willRecur (bool): Whether next step the same group is
+returned.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willRefine</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willRefine</span></span></dt>
 <dd><p>Get whether next step the same group will be returned and
 refine flag is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willRefine (bool): Whether next step will refine.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">willExplore</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">willExplore</span></span></dt>
 <dd><p>Get whether next step the same group will be returned and
 explore flag is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>willExplore (bool): Whether next step will explore.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isNewSelection</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isNewSelection</span></span></dt>
 <dd><p>Get whether this last step a new selection was made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isNewSelection (bool): Whether the last step made a new
+selection.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isRecurring</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isRecurring</span></span></dt>
 <dd><p>Get whether this last step the same group was returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isRecurring (bool): Whether the last step recurred on the
+same group.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isRefining</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isRefining</span></span></dt>
 <dd><p>Get whether this last step the same group was returned and
 refine flag is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isRefining (bool): Whether the last step was a refining
+recurrence.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">isExploring</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">isExploring</span></span></dt>
 <dd><p>Get whether this last step the same group was returned and
 explore flag is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>isExploring (bool): Whether the last step was an exploring
+recurrence.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">override</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">override</span></span></dt>
 <dd><p>Override flag value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>override (bool): The override flag value.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">refine</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">refine</span></span></dt>
 <dd><p>Refine flag value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>refine (bool): The refine flag value.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">explore</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">explore</span></span></dt>
 <dd><p>Explore flag value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>explore (bool): The explore flag value.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">currentRecur</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">currentRecur</span></span></dt>
 <dd><p>The current recur value which is selected group dependant
 when override flag is True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>currentRecur (integer): The current, possibly overridden,
+recur value.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">recur</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">recur</span></span></dt>
 <dd><p>The current recur value. The set recur value can change during engine
 runtime if override flag is True. To get the recur value as set by
 set_recur method recurAsSet must be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>recur (integer): The current recur value.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">recurAsSet</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">recurAsSet</span></span></dt>
 <dd><p>Get recur value as set but set_recur method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>recurAsSet (integer): The recur value as originally set via
+set_recur, unaffected by runtime overriding.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">position</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">position</span></span></dt>
 <dd><p>Get the position of the selector in the path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>position (integer): The current position counter, i.e. the
+number of recurring steps already taken since the last new
+selection.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">engine</code></dt>
+<dl class="py property">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">engine</span></span></dt>
 <dd><p>Get the wrapped selector engine instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): The wrapped selector’s
+stochastic engine instance.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_engine</code><span class="sig-paren">(</span><em>engine</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Sets the wrapped selector stochastic engine instance.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector stochastic engine.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): The selector stochastic engine.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_recur</code><span class="sig-paren">(</span><em>recur</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_recur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recur</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Sets the recur value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>recur (integer): Set the recur value.
-It must be a positive integer.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>recur (integer): Set the recur value.
+It must be a positive integer.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_override</code><span class="sig-paren">(</span><em>override</em><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_override</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">override</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Select override value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>override (boolean): Override selector recur value only when
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>override (boolean): Override selector recur value only when
 selected group move generator is a PathGenerator instance.
 Overridden recur value is temporary and totally selected group
 dependant. If selected group move generator is not a
 PathGenerator instance, recur value will take back selector’s
-recur value.</li>
+recur value.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_refine</code><span class="sig-paren">(</span><em>refine</em><span class="sig-paren">)</span></dt>
-<dd><p>Select override value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>refine (boolean): Its an engine flag that is used to refine the
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_refine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">refine</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Set the refine flag value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>refine (boolean): Its an engine flag that is used to refine the
 position of a group until recurrence expires and a new group is
 selected. Refinement is done by applying moves upon the selected
 group always from its initial position at the time it was
 selected until recurrence expires, then the best position
-is kept.</li>
+is kept.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">set_explore</code><span class="sig-paren">(</span><em>explore</em><span class="sig-paren">)</span></dt>
-<dd><p>Select override value.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>explore (boolean): Its an engine flag that is used to make a
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_explore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">explore</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Set the explore flag value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>explore (boolean): Its an engine flag that is used to make a
 group explore the space around it until recurrence expires and
 a new group is selected. Exploring is done by applying moves upon
 the selected group starting from its initial position and
 evolving in a trajectory like way until recurrence expires,
-then the best position is kept.</li>
+then the best position is kept.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
 <dd><p>Select new index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<div class="section" id="fullrmc-selectors-package">
-<h1>fullrmc.Selectors package<a class="headerlink" href="#fullrmc-selectors-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-fullrmc.Selectors.OrderedSelectors">
-<span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Permalink to this headline">¶</a></h2>
-<p>OrderedSelectors contains GroupSelector classes of defined order of selection.</p>
-<div class="graphviz"><img src="_images/inheritance-34040951b4225347ae7b9c4736aca8deeb421cd6.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance graphviz" /></div>
+<section id="fullrmc-selectors-package">
+<h1>fullrmc.Selectors package<a class="headerlink" href="#fullrmc-selectors-package" title="Link to this heading">¶</a></h1>
+<section id="module-fullrmc.Selectors.OrderedSelectors">
+<span id="orderedselectors"></span><h2>OrderedSelectors<a class="headerlink" href="#module-fullrmc.Selectors.OrderedSelectors" title="Link to this heading">¶</a></h2>
+<p>OrderedSelectors contains GroupSelector classes that select groups in a
+user-defined or automatically computed order.</p>
+<div class="graphviz"><img src="_images/inheritance-9e2641073e666630e91866e7bcaa7c3ee0d54a09.png" alt="Inheritance diagram of fullrmc.Selectors.OrderedSelectors" usemap="#inheritancec550f91c65" class="inheritance graphviz" /></div>
 <map id="inheritancec550f91c65" name="inheritancec550f91c65">
-<area shape="rect" id="node1" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a defined order of selection." alt="" coords="161,5,311,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector with a defined order of selection." alt="" coords="359,5,526,29"/>
-<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
-</map><dl class="class">
-<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.OrderedSelectors.</code><code class="descname">DefinedOrderSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>order=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
-<p>DefinedOrderSelector is a group selector with a defined order of selection.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector stochastic engine.</li>
-<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.
-If None, order is set automatically to all groups indexes list.</li>
+<area shape="rect" id="node1" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a user&#45;defined order of" alt="" coords="158,5,304,32"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector whose order of selection is" alt="" coords="352,5,515,32"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,110,32"/>
+</map><dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.OrderedSelectors.</span></span><span class="sig-name descname"><span class="pre">DefinedOrderSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupSelector</span></code></a></p>
+<p>DefinedOrderSelector is a group selector with a user-defined order of
+selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): The engine instance used by the
+selector.</p></li>
+<li><p>order (None, list, set, tuple, numpy.ndarray): The order in which
+groups are selected. If None, the order is automatically set to
+the full list of group indexes.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import external libraries</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DefinedOrderSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Selectors.OrderedSelectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">DefinedOrderSelector</span>
 
 <span class="c1"># create engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
@@ -703,120 +1028,148 @@ If None, order is set automatically to all groups indexes list.</li>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DefinedOrderSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order">
-<code class="descname">order</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order" title="Permalink to this definition">¶</a></dt>
-<dd><p>List copy of the order of selection.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index">
-<code class="descname">index</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index" title="Permalink to this definition">¶</a></dt>
-<dd><p>The current selection index.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order">
-<code class="descname">set_order</code><span class="sig-paren">(</span><em>order</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set selector groups order.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>order (None, list, set, tuple, numpy.ndarray): The selector order of groups.</li>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): The current state and instantiation
+parameters dictionary.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index">
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): The selected group index in engine groups list.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.update" title="Link to this definition">¶</a></dt>
+<dd><p>Update instance using parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): instantiation parameters. Can be pure (key,value)
+dictionary or as returned from parameters instance property</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">order</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.order" title="Link to this definition">¶</a></dt>
+<dd><p>A copy of the group-selection order, as a list of group indexes,
+or None if no order has been set yet.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.index" title="Link to this definition">¶</a></dt>
+<dd><p>The current pointer position within order. This is not a group
+index; the next group index is order[index % len(order)].</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order">
+<span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.set_order" title="Link to this definition">¶</a></dt>
+<dd><p>Set the selector’s group order.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>order (None, list, set, tuple, numpy.ndarray): The order in
+which groups are selected.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector.select_index" title="Link to this definition">¶</a></dt>
+<dd><p>Select a group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): The selected group’s index in the engine’s
+groups list.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.OrderedSelectors.</code><code class="descname">DirectionalOrderSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>center=None</em>, <em>expand=True</em>, <em>adjustMoveGenerators=False</em>, <em>generatorsParams={'RG': {'amplitude': 10}</em>, <em>'TG': {'amplitude': 0.1</em>, <em>'angle': 90</em>, <em>'damping': 0.1}}</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector</span></code></a></p>
-<p>DirectionalOrderSelector is a group selector with a defined order of selection.
-The order of selection is computed automatically at engine runtime by computing
-Groups distance to center, and setting the order from the further to the closest
-if expand argument is True or from the closest to the further if expand is False.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic">
-<li><p class="first">engine (None, fullrmc.Engine): The selector stochastic engine.</p>
-</li>
-<li><p class="first">center (None, list, set, tuple, numpy.ndarray): The center of expansion.
-If None, the center is automatically set to the origin (0,0,0).</p>
-</li>
-<li><p class="first">expand (bool): Whether to set the order from the the further to the closest
-or from the closest to the further if it is set to False.</p>
-</li>
-<li><p class="first">adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-be changed automatically at engine runtime to a MoveGeneratorCollector of
-TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
-Generators parameters can be given by generatorsParams. It is advisable to
-set this flag to True in order to take advantage of an automatic and intelligent directional moves.</p>
-</li>
-<li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
-If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
-‘TG’ key is for TranslationTowardsCenterGenerator parameters and ‘RG’ key is
-for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
-is not the same for all groups but intelligently allowing certain groups to move more than
-others according to damping parameter.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.OrderedSelectors.</span></span><span class="sig-name descname"><span class="pre">DirectionalOrderSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adjustMoveGenerators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generatorsParams</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'RG':</span> <span class="pre">{'amplitude':</span> <span class="pre">10},</span> <span class="pre">'TG':</span> <span class="pre">{'amplitude':</span> <span class="pre">0.1,</span> <span class="pre">'angle':</span> <span class="pre">90,</span> <span class="pre">'damping':</span> <span class="pre">0.1}}</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefinedOrderSelector</span></code></a></p>
+<p>DirectionalOrderSelector is a group selector whose order of selection is
+computed automatically at engine runtime. Each group’s distance to a
+center is computed, and the order is set from the farthest to the
+closest group if expand is True, or from the closest to the farthest if
+expand is False.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic">
+<li><p>engine (None, fullrmc.Engine): The engine instance used by the
+selector.</p></li>
+<li><p>center (None, string, list, tuple, numpy.ndarray): The center
+of expansion. If None, the center is automatically set to the
+origin (0,0,0). If a list, tuple, or numpy.ndarray, it must be
+the center position as (x,y,z). If a string, the center is
+calculated at runtime upon calling the run method. It must be a
+valid element weighting scheme defined in the pdbparser database,
+in addition to ‘geometric’, ‘x’, ‘xrays’, ‘x-rays’, ‘xray’,
+‘x-ray’, ‘neutron’, ‘neutrons’.</p></li>
+<li><p>expand (bool): Whether to set the order from the farthest to the
+closest group, or from the closest to the farthest if set to
+False.</p></li>
+<li><p>adjustMoveGenerators (bool): If set to True, all groups’ move
+generator instances will be automatically replaced at engine
+runtime by a MoveGeneratorCollector combining a
+TranslationTowardsCenterGenerator and a RotationGenerator (the
+latter only for groups of more than one atom). Generator
+parameters can be given through generatorsParams. It is
+advisable to set this flag to True to take advantage of
+automatic, intelligent directional moves.</p></li>
+<li><p>generatorsParams (None, dict): Parameters for the automatically
+created move generators. If None, default parameters are used.
+If a dictionary is given, only two keys are allowed. ‘TG’ is for
+TranslationTowardsCenterGenerator parameters and ‘RG’ is for
+RotationGenerator parameters. The TranslationTowardsCenterGenerator
+amplitude is not the same for every group; groups closer to the
+center are intelligently allowed to move less than groups farther
+away, according to the damping parameter.</p>
 <p><strong>Parameters are the following:</strong></p>
 <ul class="simple">
-<li>TG_amp = generatorsParams[‘TG’][‘amplitude’]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>TG_ang = generatorsParams[‘TG’][‘angle’]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
-<li>TG_dam = generatorsParams[‘TG’][‘damping’]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>RG_ang = generatorsParams[‘RG’][‘amplitude’]: Used as RotationGenerator angle parameters.</li>
+<li><p>TG_amp = generatorsParams[‘TG’][‘amplitude’]: TranslationTowardsCenterGenerator’s amplitude parameter.</p></li>
+<li><p>TG_ang = generatorsParams[‘TG’][‘angle’]: TranslationTowardsCenterGenerator’s angle parameter.</p></li>
+<li><p>TG_dam = generatorsParams[‘TG’][‘damping’]: Fractional damping applied to TG_amp based on distance from the center.</p></li>
+<li><p>RG_ang = generatorsParams[‘RG’][‘amplitude’]: RotationGenerator’s amplitude parameter.</p></li>
 </ul>
 <p><strong>Parameters are used as the following:</strong></p>
 <ul>
-<li><p class="first">TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
-<p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
+<li><p>TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<p>Where TG_amp*TG_dam &lt;= AMPLITUDE &lt;= TG_amp, groups closer to the center getting the smaller amplitude.</p>
 </li>
-<li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
-</li>
-<li><p class="first">MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p>
-</li>
+<li><p>RG = RotationGenerator(amplitude=RG_ang)</p></li>
+<li><p>MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p></li>
 </ul>
-<p><strong>NB: The parameters are not checked for errors until engine runtime.</strong></p>
+<p><strong>NB: These parameters are not checked for errors until engine runtime.</strong></p>
 </li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <iframe width="560" height="315"
 src="https://www.youtube.com/embed/6nsNJrOhLu4?rel=0"
 frameborder="0" allowfullscreen>
 </iframe><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Selectors.OrderedSelectors</span> <span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Selectors.OrderedSelectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">DirectionalOrderSelector</span>
 
 <span class="c1"># create engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
@@ -825,252 +1178,307 @@ frameborder="0" allowfullscreen>
 <span class="c1"># Re-define groups if needed ...</span>
 <span class="c1"># Re-define groups generators as needed ...</span>
 
-<span class="c1"># Set the order of selection from further to the closest to a (1,1,1).</span>
-<span class="c1"># Automatically adjust the groups move generators allowing modulation of amplitudes.</span>
+<span class="c1"># Set the order of selection from the farthest to the closest to (1,1,1).</span>
+<span class="c1"># Automatically adjust the groups&#39; move generators, allowing modulation of amplitudes.</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">DirectionalOrderSelector</span><span class="p">(</span><span class="n">engine</span> <span class="o">=</span> <span class="n">ENGINE</span><span class="p">,</span>
                                                     <span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                                                    <span class="n">adjustMoveGenerators</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span> <span class="p">)</span>
+                                                    <span class="n">adjustMoveGenerators</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand">
-<code class="descname">expand</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>expand flag.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): The current state and instantiation
+parameters dictionary.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center">
-<code class="descname">center</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center" title="Permalink to this definition">¶</a></dt>
-<dd><p>center (X,Y,Z) coordinates.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.update" title="Link to this definition">¶</a></dt>
+<dd><p>Update instance using parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): instantiation parameters. Can be pure (key,value)
+dictionary or as returned from parameters instance property</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators">
-<code class="descname">adjustMoveGenerators</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators" title="Permalink to this definition">¶</a></dt>
-<dd><p>adjustMoveGenerators flag.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">expand</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.expand" title="Link to this definition">¶</a></dt>
+<dd><p>The expand flag.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams">
-<code class="descname">generatorsParams</code><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams" title="Permalink to this definition">¶</a></dt>
-<dd><p>Automatic generators parameters.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.center" title="Link to this definition">¶</a></dt>
+<dd><p>The center of expansion: (X,Y,Z) coordinates once resolved, or
+still the original weighting-scheme string if runtime resolution
+hasn’t happened yet.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters">
-<code class="descname">set_generators_parameters</code><span class="sig-paren">(</span><em>generatorsParams</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set move generators parameters.</p>
-<ol class="arabic">
-<li><p class="first">generatorsParams (None, dict): The automatically created moves generators parameters.
-If None is given, default parameters are used. If a dictionary is given, only two keys are allowed.
-‘TG’ key is for TranslationTowardsCenterGenerator parameters and ‘RG’ key is
-for RotationGenerator parameters. TranslationTowardsCenterGenerator amplitude parameter
-is not the same for all groups but intelligently allowing certain groups to move more than
-others according to damping parameter.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">adjustMoveGenerators</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.adjustMoveGenerators" title="Link to this definition">¶</a></dt>
+<dd><p>The adjustMoveGenerators flag.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">generatorsParams</span></span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.generatorsParams" title="Link to this definition">¶</a></dt>
+<dd><p>The automatic move generators’ parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters">
+<span class="sig-name descname"><span class="pre">set_generators_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">generatorsParams</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_generators_parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Set the move generators’ parameters.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><blockquote>
+<div><ol class="arabic simple">
+<li><p>generatorsParams (None, dict): Parameters for the
+automatically created move generators. If None, default
+parameters are used. If a dictionary is given, only two keys
+are allowed. ‘TG’ is for TranslationTowardsCenterGenerator
+parameters and ‘RG’ is for RotationGenerator parameters. The
+TranslationTowardsCenterGenerator amplitude is not the same
+for every group; groups closer to the center are
+intelligently allowed to move less than groups farther away,
+according to the damping parameter.</p></li>
+</ol>
+</div></blockquote>
 <p><strong>Parameters are the following:</strong></p>
 <ul class="simple">
-<li>TG_amp = generatorsParams[‘TG’][‘amplitude’]: Used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>TG_ang = generatorsParams[‘TG’][‘angle’]: Used as TranslationTowardsCenterGenerator angle parameters.</li>
-<li>TG_dam = generatorsParams[‘TG’][‘damping’]: Also used for TranslationTowardsCenterGenerator amplitude parameters.</li>
-<li>RG_ang = generatorsParams[‘RG’][‘amplitude’]: Used as RotationGenerator angle parameters.</li>
+<li><p>TG_amp = generatorsParams[‘TG’][‘amplitude’]: TranslationTowardsCenterGenerator’s amplitude parameter.</p></li>
+<li><p>TG_ang = generatorsParams[‘TG’][‘angle’]: TranslationTowardsCenterGenerator’s angle parameter.</p></li>
+<li><p>TG_dam = generatorsParams[‘TG’][‘damping’]: Fractional damping applied to TG_amp based on distance from the center.</p></li>
+<li><p>RG_ang = generatorsParams[‘RG’][‘amplitude’]: RotationGenerator’s amplitude parameter.</p></li>
 </ul>
 <p><strong>Parameters are used as the following:</strong></p>
 <ul>
-<li><p class="first">TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
-<p>Where TG_amp &lt; AMPLITUDE &lt; TG_amp.TG_dam</p>
+<li><p>TG = TranslationTowardsCenterGenerator(center={“fixed”:center}, amplitude=AMPLITUDE, angle=TG_ang)</p>
+<p>Where TG_amp*TG_dam &lt;= AMPLITUDE &lt;= TG_amp, groups closer to the center getting the smaller amplitude.</p>
 </li>
-<li><p class="first">RG = RotationGenerator(amplitude=RG_ang)</p>
-</li>
-<li><p class="first">MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p>
-</li>
+<li><p>RG = RotationGenerator(amplitude=RG_ang)</p></li>
+<li><p>MoveGeneratorCollector(collection=[TG,RG], randomize=True)</p></li>
 </ul>
-<p><strong>NB: The parameters are not checked for errors until engine runtime.</strong></p>
-</li>
-</ol>
+<p><strong>NB: These parameters are not checked for errors until engine runtime.</strong></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center">
-<code class="descname">set_center</code><span class="sig-paren">(</span><em>center</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center">
+<span class="sig-name descname"><span class="pre">set_center</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_center" title="Link to this definition">¶</a></dt>
 <dd><p>Set the center.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>center (None, list, tuple, numpy.ndarray): The center of expansion.
-If None, the center is automatically set to the origin (0,0,0).</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>center (None, string, list, tuple, numpy.ndarray): The center
+of expansion. If None, the center is automatically set to the
+origin (0,0,0). If a list, tuple, or numpy.ndarray, it must
+be the center position as (x,y,z). If a string, the center is
+calculated at runtime upon calling the run method. It must be
+a valid element weighting scheme defined in the pdbparser
+database, in addition to ‘geometric’, ‘x’, ‘xrays’,
+‘x-rays’, ‘xray’, ‘x-ray’, ‘neutron’, ‘neutrons’.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand">
-<code class="descname">set_expand</code><span class="sig-paren">(</span><em>expand</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set expand.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>expand (bool): Whether to set the order from the the further to the closest
-or from the closest to the further if it is set to False.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand">
+<span class="sig-name descname"><span class="pre">set_expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expand</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_expand" title="Link to this definition">¶</a></dt>
+<dd><p>Set the expand flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>expand (bool): Whether to set the order from the farthest to
+the closest group, or from the closest to the farthest if
+set to False.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators">
-<code class="descname">set_adjust_move_generators</code><span class="sig-paren">(</span><em>adjustMoveGenerators</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set expand.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>adjustMoveGenerators (bool): If set to True, all groups move generator instances will
-be changed automatically at engine runtime to a MoveGeneratorCollector of
-TranslationTowardsCenterGenerator and a randomRotation (for only more than 2 atoms groups).
-Generators parameters can be given by generatorsParams. It is advisable to
-set this flag to True in order to take advantage of an automatic and intelligent directional moves.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators">
+<span class="sig-name descname"><span class="pre">set_adjust_move_generators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjustMoveGenerators</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector.set_adjust_move_generators" title="Link to this definition">¶</a></dt>
+<dd><p>Set the adjustMoveGenerators flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>adjustMoveGenerators (bool): If set to True, all groups’
+move generator instances will be automatically replaced at
+engine runtime by a MoveGeneratorCollector combining a
+TranslationTowardsCenterGenerator and a RotationGenerator
+(the latter only for groups of more than one atom).
+Generator parameters can be given through
+generatorsParams. It is advisable to set this flag to True
+to take advantage of automatic, intelligent directional
+moves.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-fullrmc.Selectors.RandomSelectors">
-<span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Permalink to this headline">¶</a></h2>
-<p>RandomSelectors contains GroupSelector classes of random order of selections.</p>
-<div class="graphviz"><img src="_images/inheritance-fd8d2faa51a59934ed621e6a58cdfdc0c13e2a32.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance graphviz" /></div>
+</section>
+<section id="module-fullrmc.Selectors.RandomSelectors">
+<span id="randomselectors"></span><h2>RandomSelectors<a class="headerlink" href="#module-fullrmc.Selectors.RandomSelectors" title="Link to this heading">¶</a></h2>
+<p>RandomSelectors contains GroupSelector classes that select groups in random
+order.</p>
+<div class="graphviz"><img src="_images/inheritance-e84a2e4dda5e106db7f2e75d99828be3ecc4ba63.png" alt="Inheritance diagram of fullrmc.Selectors.RandomSelectors" usemap="#inheritance35cb12d385" class="inheritance graphviz" /></div>
 <map id="inheritance35cb12d385" name="inheritance35cb12d385">
-<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,113,29"/>
-<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates indexes randomly for engine group selection." alt="" coords="161,5,281,29"/>
-<area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates indexes randomly following groups weighting scheme." alt="" coords="329,5,506,29"/>
-<area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed with machine learning algorithm." alt="" coords="554,5,710,29"/>
-</map><table border="1" class="docutils">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,110,32"/>
+<area shape="rect" id="node2" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates group indexes randomly for engine group selection." alt="" coords="158,5,276,32"/>
+<area shape="rect" id="node4" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates group indexes randomly, following a" alt="" coords="324,5,496,32"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed by a machine learning" alt="" coords="544,5,698,32"/>
+</map><p>The example below demonstrates machine learning applied to group selection.
+Each group is set to a single atom and assigned a random translation move
+generator, with two different amplitudes used so that moves are accepted at
+different ratios. <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmartRandomSelector</span></code></a> is used to enable machine
+learning on top of this group selection. No experimental constraints are
+used; only inter-molecular distance, intra-molecular bond, angle, and
+improper angle constraints are applied to preserve the integrity of the
+system and its molecules. As shown below, machine learning on group
+selection is highly effective at improving the ratio of accepted moves.
+Still, how fast the system converges, and how high the acceptance ratio
+gets, remains strongly correlated with the move generator assigned to each
+group.</p>
+<table class="docutils align-default">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td colspan="2">Machine learning on group selection is shown herein. Groups are set to single atom where only random
-translation moves generators with different amplitudes are used allowing moves to be accepted in different
-ratios. In those two examples <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmartRandomSelector</span></code></a> allowing machine learning upon group
-selection. No experimental constraints are used but only inter-molecular distances, intra-molecular bonds,
-angles and improper angles constraints are used to keep the integrity of the system and molecules.
-As one can see, group selection machine learning is very effective allowing consequent improvement on the
-accepted moves. Still, fast convergence of the system and the ratio of accepted moves is highly correlated
-with the move generator assigned to the groups.</td>
-</tr>
-<tr class="row-even"><td><div class="first last figure align-left" id="id1">
-<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p3.png"><img alt="_images/machineLearningSelectionAmp0p3.png" src="_images/machineLearningSelectionAmp0p3.png" style="width: 375px; height: 300px;" /></a>
-<p class="caption"><span class="caption-text">25% of assigned moves generators amplitude is set
-to 10A allowing very few moves on those groups
-to be accepted and the rest of moves generators
-amplitudes is set to 0.3A.</span></p>
-</div>
+<tbody>
+<tr class="row-odd"><td><figure class="align-left" id="id1">
+<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p3.png"><img alt="_images/machineLearningSelectionAmp0p3.png" src="_images/machineLearningSelectionAmp0p3.png" style="width: 375px; height: 300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">25% of the assigned move generators have their amplitude set to
+<span class="math notranslate nohighlight">\(10 \AA\)</span>, so very few of their moves are accepted; the
+remaining 75% have their amplitude set to <span class="math notranslate nohighlight">\(0.3 \AA\)</span>.</span><a class="headerlink" href="#id1" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 </td>
-<td><div class="first last figure align-left" id="id2">
-<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p25.png"><img alt="_images/machineLearningSelectionAmp0p25.png" src="_images/machineLearningSelectionAmp0p25.png" style="width: 375px; height: 300px;" /></a>
-<p class="caption"><span class="caption-text">25% of assigned moves generators amplitude is set
-to 10A allowing very few moves on those groups
-to be accepted and the rest of moves generators
-amplitudes is set to 0.25A.</span></p>
-</div>
+<td><figure class="align-left" id="id2">
+<a class="reference internal image-reference" href="_images/machineLearningSelectionAmp0p25.png"><img alt="_images/machineLearningSelectionAmp0p25.png" src="_images/machineLearningSelectionAmp0p25.png" style="width: 375px; height: 300px;" />
+</a>
+<figcaption>
+<p><span class="caption-text">25% of the assigned move generators have their amplitude set to
+<span class="math notranslate nohighlight">\(10 \AA\)</span>, so very few of their moves are accepted; the
+remaining 75% have their amplitude set to <span class="math notranslate nohighlight">\(0.25 \AA\)</span>.</span><a class="headerlink" href="#id2" title="Link to this image">¶</a></p>
+</figcaption>
+</figure>
 </td>
 </tr>
 </tbody>
 </table>
-<dl class="class">
-<dt id="fullrmc.Selectors.RandomSelectors.RandomSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">RandomSelector</code><span class="sig-paren">(</span><em>engine=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Core.GroupSelector.GroupSelector</span></code></a></p>
-<p>RandomSelector generates indexes randomly for engine group selection.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (None, fullrmc.Engine): The selector fullrmc engine instance.</li>
-</ol>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span> <span class="c1"># import external libraries</span>
- <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.generate_random_float">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.RandomSelectors.</span></span><span class="sig-name descname"><span class="pre">generate_random_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.generate_random_float" title="Link to this definition">¶</a></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
 
- <span class="c1"># import fullrmc modules</span>
- <span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
- <span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">RandomSelector</span>
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.RandomSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.RandomSelectors.</span></span><span class="sig-name descname"><span class="pre">RandomSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" title="fullrmc.Core.GroupSelector.GroupSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">GroupSelector</span></code></a></p>
+<p>RandomSelector generates group indexes randomly for engine group selection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (None, fullrmc.Engine): The engine instance used by the
+selector.</p></li>
+</ol>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import external libraries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># import fullrmc modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Selectors.RandomSelectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomSelector</span>
 
 <span class="c1"># create engine</span>
- <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
- <span class="c1"># set pdb file</span>
- <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
+<span class="c1"># set pdb file</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
 
- <span class="c1"># Add constraints ...</span>
- <span class="c1"># Re-define groups if needed ...</span>
- <span class="c1"># Re-define groups generators as needed ...</span>
+<span class="c1"># Add constraints ...</span>
+<span class="c1"># Re-define groups if needed ...</span>
+<span class="c1"># Re-define groups generators as needed ...</span>
 
- <span class="c1"># set group selector as random selection from all defined groups.</span>
- <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>
+<span class="c1"># set group selector as random selection from all defined groups.</span>
+<span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">RandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.RandomSelector.select_index">
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.RandomSelector.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): The current state and instantiation
+parameters dictionary.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.RandomSelector.select_index">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.RandomSelector.select_index" title="Link to this definition">¶</a></dt>
+<dd><p>Select a group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): The selected group’s index in the engine’s
+groups list.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">WeightedRandomSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.RandomSelectors.RandomSelector</span></code></a></p>
-<p>WeightedRandomSelector generates indexes randomly following groups weighting scheme.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (fullrmc.Engine): The selector stochastic engine.</li>
-<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.RandomSelectors.</span></span><span class="sig-name descname"><span class="pre">WeightedRandomSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomSelector</span></code></a></p>
+<p>WeightedRandomSelector generates group indexes randomly, following a
+per-group weighting scheme.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (fullrmc.Engine): The engine instance used by the selector.</p></li>
+<li><p>weights (None, list): Weights list. It must be None for equivalent
+weighting, or a list of (groupIndex, weight) tuples.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">WeightedRandomSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Selectors.RandomSelectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeightedRandomSelector</span>
 
 <span class="c1"># create engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
@@ -1086,108 +1494,130 @@ amplitudes is set to 0.25A.</span></p>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">WeightedRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights">
-<code class="descname">weights</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups weight of selection as initialized.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight">
-<code class="descname">groupsWeight</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups weight of selection at current state.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme">
-<code class="descname">selectionScheme</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme" title="Permalink to this definition">¶</a></dt>
-<dd><p>Groups selection scheme used upon group selection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights">
-<code class="descname">set_weights</code><span class="sig-paren">(</span><em>weights</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set groups selection weighting scheme.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>weights (None, list): Weights list. It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): The current state and instantiation
+parameters dictionary.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_group_weight">
-<code class="descname">set_group_weight</code><span class="sig-paren">(</span><em>groupWeight</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_group_weight" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a single group weight.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>groupWeight (list, set, tuple): Group weight list composed of groupIndex as first element and groupWeight as second.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.update" title="Link to this definition">¶</a></dt>
+<dd><p>Update instance using parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): instantiation parameters. Can be pure (key,value)
+dictionary or as returned from parameters instance property</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.select_index">
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">weights</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.weights" title="Link to this definition">¶</a></dt>
+<dd><p>Groups’ weights, as set upon initialization or via set_weights.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">groupsWeight</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.groupsWeight" title="Link to this definition">¶</a></dt>
+<dd><p>Groups’ normalized selection weight at the current state, derived
+from selectionScheme.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">selectionScheme</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.selectionScheme" title="Link to this definition">¶</a></dt>
+<dd><p>Cumulative selection scheme (normalized cumulative sum of groups’
+weights) used to pick a group index upon selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights">
+<span class="sig-name descname"><span class="pre">set_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_weights" title="Link to this definition">¶</a></dt>
+<dd><p>Set the groups’ selection weighting scheme.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>weights (None, list): Weights list. It must be None for
+equivalent weighting, or a list of (groupIndex, weight)
+tuples.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector">
-<em class="property">class </em><code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">SmartRandomSelector</code><span class="sig-paren">(</span><em>engine</em>, <em>weights=None</em>, <em>biasFactor=1</em>, <em>unbiasFactor=None</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">fullrmc.Selectors.RandomSelectors.WeightedRandomSelector</span></code></a></p>
-<p>SmartRandomSelector is a random group selector fed with machine learning algorithm.
-The indexes generation is biased and it evolves throughout the simulation towards
-selecting groups with more successful moves history.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>engine (fullrmc.Engine): The selector stochastic engine.</li>
-<li>weights (None, list): Weights list fed as initial biasing scheme.
-It must be None for equivalent weighting or list of (groupIndex, weight) tuples.</li>
-<li>biasFactor (Number): The biasing factor of every group when a step get accepted.
-Must be a positive number.</li>
-<li>unbiasFactor(None, Number): Whether to un-bias a group’s weight when a move is rejected.
-If None, un-biasing is turned off.
-Un-biasing will be performed only if group weight remains positive.</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_group_weight">
+<span class="sig-name descname"><span class="pre">set_group_weight</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groupWeight</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.set_group_weight" title="Link to this definition">¶</a></dt>
+<dd><p>Set a single group’s weight.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>groupWeight (list, set, tuple): Group weight tuple composed
+of the group index as first element and the group’s weight
+as second.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.select_index">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector.select_index" title="Link to this definition">¶</a></dt>
+<dd><p>Select a group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): The selected group’s index in the engine’s
+groups list.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Selectors.RandomSelectors.</span></span><span class="sig-name descname"><span class="pre">SmartRandomSelector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">biasFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unbiasFactor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedRandomSelector</span></code></a></p>
+<p>SmartRandomSelector is a random group selector fed by a machine learning
+algorithm. Group index generation is biased and evolves throughout the
+simulation towards selecting groups with a more successful history of
+accepted moves.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (fullrmc.Engine): The engine instance used by the selector.</p></li>
+<li><p>weights (None, list): Weights list fed as the initial biasing
+scheme. It must be None for equivalent weighting, or a list of
+(groupIndex, weight) tuples.</p></li>
+<li><p>biasFactor (Number): The biasing factor added to a group’s weight
+when one of its moves is accepted. Must be a positive number.</p></li>
+<li><p>unbiasFactor(None, Number): Whether to unbias a group’s weight
+when one of its moves is rejected. If None, unbiasing is turned
+off. Unbiasing is only performed while the group’s weight remains
+positive.</p></li>
+</ol>
+</dd>
+</dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># import fullrmc modules</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc.Selectors.RandomSelectors</span> <span class="kn">import</span> <span class="n">SmartRandomSelector</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Selectors.RandomSelectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">SmartRandomSelector</span>
 
 <span class="c1"># create engine</span>
-<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.rmc&#39;</span><span class="p">)</span>
+<span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s1">&#39;my_engine.stc&#39;</span><span class="p">)</span>
 
 <span class="c1"># set pdb file</span>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_pdb</span><span class="p">(</span><span class="s1">&#39;system.pdb&#39;</span><span class="p">)</span>
@@ -1201,118 +1631,126 @@ Un-biasing will be performed only if group weight remains positive.</li>
 <span class="n">ENGINE</span><span class="o">.</span><span class="n">set_group_selector</span><span class="p">(</span> <span class="n">SmartRandomSelector</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">)</span> <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor">
-<code class="descname">biasFactor</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.parameters">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">parameters</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.parameters" title="Link to this definition">¶</a></dt>
+<dd><p>Get current state and instantiation parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>parameters (dict): The current state and instantiation
+parameters dictionary.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.update" title="Link to this definition">¶</a></dt>
+<dd><p>Update instance using parameters</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>params (dict): instantiation parameters. Can be pure (key,value)
+dictionary or as returned from parameters instance property</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">biasFactor</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.biasFactor" title="Link to this definition">¶</a></dt>
 <dd><p>The biasing factor.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor">
-<code class="descname">unbiasFactor</code><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">unbiasFactor</span></span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.unbiasFactor" title="Link to this definition">¶</a></dt>
 <dd><p>The unbiasing factor.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor">
-<code class="descname">set_bias_factor</code><span class="sig-paren">(</span><em>biasFactor</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor">
+<span class="sig-name descname"><span class="pre">set_bias_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">biasFactor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_bias_factor" title="Link to this definition">¶</a></dt>
 <dd><p>Set the biasing factor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>biasFactor (Number): The biasing factor of every group when a step get accepted.
-Must be a positive number.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>biasFactor (Number): The biasing factor added to a group’s
+weight when one of its moves is accepted. Must be a positive
+number.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor">
-<code class="descname">set_unbias_factor</code><span class="sig-paren">(</span><em>unbiasFactor</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor">
+<span class="sig-name descname"><span class="pre">set_unbias_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">unbiasFactor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.set_unbias_factor" title="Link to this definition">¶</a></dt>
 <dd><p>Set the unbiasing factor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>unbiasFactor(None, Number): Whether to unbias a group’s weight when a move is rejected.
-If None, unbiasing is turned off.
-Unbiasing will be performed only if group weight remains positive.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>unbiasFactor(None, Number): Whether to unbias a group’s weight
+when one of its moves is rejected. If None, unbiasing is
+turned off. Unbiasing is only performed while the group’s
+weight remains positive.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted">
-<code class="descname">move_accepted</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is called by the engine when a move generated on a group is accepted.
-This method is empty must be overloaded when needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted">
+<span class="sig-name descname"><span class="pre">move_accepted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_accepted" title="Link to this definition">¶</a></dt>
+<dd><p>Called by the engine when a move generated on a group is accepted.
+Increases the selection weight of the accepted group (and all groups
+after it in the cumulative scheme) by biasFactor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected">
-<code class="descname">move_rejected</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method is called by the engine when a move generated on a group is rejected.
-This method is empty must be overloaded when needed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected">
+<span class="sig-name descname"><span class="pre">move_rejected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.move_rejected" title="Link to this definition">¶</a></dt>
+<dd><p>Called by the engine when a move generated on a group is rejected.
+If unbiasFactor is not None, decreases the selection weight of the
+rejected group (and all groups after it in the cumulative scheme) by
+unbiasFactor, as long as its weight stays positive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): the selected group index in engine groups list</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index">
-<code class="descname">select_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ol class="first last arabic simple">
-<li>index (integer): the selected group index in engine groups list</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index">
+<span class="sig-name descname"><span class="pre">select_index</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.SmartRandomSelector.select_index" title="Link to this definition">¶</a></dt>
+<dd><p>Select a group index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>index (integer): The selected group’s index in the engine’s
+groups list.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="fullrmc.Selectors.RandomSelectors.generate_random_float">
-<code class="descclassname">fullrmc.Selectors.RandomSelectors.</code><code class="descname">generate_random_float</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Selectors.RandomSelectors.generate_random_float" title="Permalink to this definition">¶</a></dt>
-<dd><p>random() -&gt; x in the interval [0, 1).</p>
-</dd></dl>
-
-</div>
-</div>
+</section>
+</section>
 
 
         </div>
@@ -1321,8 +1759,9 @@ This method is empty must be overloaded when needed.</p>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">fullrmc.Selectors package</a><ul>
 <li><a class="reference internal" href="#module-fullrmc.Selectors.OrderedSelectors">OrderedSelectors</a></li>
 <li><a class="reference internal" href="#module-fullrmc.Selectors.RandomSelectors">RandomSelectors</a></li>
@@ -1330,24 +1769,27 @@ This method is empty must be overloaded when needed.</p>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="fullrmc.Core.html"
-                        title="previous chapter">fullrmc.Core package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="fullrmc.Generators.html"
-                        title="next chapter">fullrmc.Generators package</a></p>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="fullrmc.SystemBuilderUtils.html"
+                          title="previous chapter">fullrmc.SystemBuilderUtils module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fullrmc.Generators.html"
+                          title="next chapter">fullrmc.Generators package</a></p>
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         
@@ -1373,16 +1815,18 @@ This method is empty must be overloaded when needed.</p>
         
         </li>
         <li class="right" >
-          <a href="fullrmc.Core.html" title="fullrmc.Core package"
+          <a href="fullrmc.SystemBuilderUtils.html" title="fullrmc.SystemBuilderUtils module"
              >previous</a>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">
                     &copy; Copyright 2015, Bachir Aoun.
             </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
     </body>
 </html>

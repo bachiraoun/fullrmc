@@ -1,7 +1,7 @@
 fullrmc.Core package
 ====================
 
-   
+
 Collection
 ----------
 
@@ -9,8 +9,8 @@ Collection
     :members:
     :undoc-members:
     :show-inheritance:
-    
-    
+
+
 Constraint
 ----------
 
@@ -54,7 +54,7 @@ boundary conditions collection
 
 .. autofunction:: fullrmc.Core.boundary_conditions_collection.get_reciprocal_basis
 .. autofunction:: fullrmc.Core.boundary_conditions_collection.transform_coordinates
-.. autofunction:: fullrmc.Core.boundary_conditions_collection.box_coordinates_real_distances    
+.. autofunction:: fullrmc.Core.boundary_conditions_collection.box_coordinates_real_distances
 
 
 reciprocal space
@@ -64,7 +64,7 @@ reciprocal space
 
 .. autofunction:: fullrmc.Core.reciprocal_space.gr_to_sq
 .. autofunction:: fullrmc.Core.reciprocal_space.Gr_to_sq
-.. autofunction:: fullrmc.Core.reciprocal_space.sq_to_Gr  
+.. autofunction:: fullrmc.Core.reciprocal_space.sq_to_Gr
 
 
 pairs distances
@@ -74,7 +74,7 @@ pairs distances
 
 .. autofunction:: fullrmc.Core.pairs_distances.from_to_points_differences
 .. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_point
-.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_indexcoords    
+.. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_indexcoords
 .. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_multi_points
 .. autofunction:: fullrmc.Core.pairs_distances.pairs_differences_to_multi_indexcoords
 
@@ -83,7 +83,7 @@ pairs distances
 .. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_multi_points
 .. autofunction:: fullrmc.Core.pairs_distances.pairs_distances_to_multi_indexcoords
 
- 
+
 atomic coordination number
 --------------------------
 
@@ -91,7 +91,7 @@ atomic coordination number
 
 .. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_subdists
 .. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_totdists
-.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_coords    
+.. autofunction:: fullrmc.Core.atomic_coordination.single_atom_single_shell_coords
 .. autofunction:: fullrmc.Core.atomic_coordination.single_atom_multi_shells_totdists
 .. autofunction:: fullrmc.Core.atomic_coordination.single_atom_multi_shells_coords
 .. autofunction:: fullrmc.Core.atomic_coordination.single_atom_coord_number_totdists
@@ -100,20 +100,18 @@ atomic coordination number
 .. autofunction:: fullrmc.Core.atomic_coordination.multi_atoms_coord_number_coords
 .. autofunction:: fullrmc.Core.atomic_coordination.all_atoms_coord_number_totdists
 .. autofunction:: fullrmc.Core.atomic_coordination.all_atoms_coord_number_coords
-    
-    
+
+
 atomic distances
 ----------------
 
 .. automodule::   fullrmc.Core.atomic_distances
 
-.. autofunction:: fullrmc.Core.atomic_distances.single_atomic_distances_dists
 .. autofunction:: fullrmc.Core.atomic_distances.multiple_atomic_distances_coords
-.. autofunction:: fullrmc.Core.atomic_distances.multiple_atomic_distances_dists
 .. autofunction:: fullrmc.Core.atomic_distances.full_atomic_distances_coords
-.. autofunction:: fullrmc.Core.atomic_distances.full_atomic_distances_dists
-    
-    
+
+
+
 bonds
 -----
 
@@ -156,10 +154,3 @@ pairs histogram
 .. autofunction:: fullrmc.Core.pairs_histograms.multiple_pairs_histograms_dists
 .. autofunction:: fullrmc.Core.pairs_histograms.full_pairs_histograms_coords
 .. autofunction:: fullrmc.Core.pairs_histograms.full_pairs_histograms_dists
-
-
-
-
-
-
-

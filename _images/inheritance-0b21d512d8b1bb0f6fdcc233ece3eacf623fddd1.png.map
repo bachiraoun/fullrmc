@@ -1,0 +1,12 @@
+<map id="inheritance84bba9a8f9" name="inheritance84bba9a8f9">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.AmplitudeUtils" target="_top" title="Mixin class adding amplitude bounds checking and amplitude get/set" alt="" coords="44,309,151,336"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.AxisUtils" target="_top" title="Mixin class adding axis, direction and randomization&#45;angle get/set" alt="" coords="289,259,364,285"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PositionUtils" target="_top" title="Utils class managing position setting and runtime calculations." alt="" coords="50,259,145,285"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="42,107,153,133"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCollector" target="_top" title="MoveGeneratorCollector collects MoveGenerators instances and applies" alt="" coords="245,5,408,32"/>
+<area shape="rect" id="node6" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" target="_top" title="MoveGeneratorCombinator combines all moves of a list of MoveGenerators" alt="" coords="238,56,415,83"/>
+<area shape="rect" id="node7" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="274,107,379,133"/>
+<area shape="rect" id="node8" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" target="_top" title="This is a very particular move generator that will not generate moves on" alt="" coords="263,157,390,184"/>
+<area shape="rect" id="node10" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" target="_top" title="It is a particular move generator that instead of generating a" alt="" coords="271,208,382,235"/>
+<area shape="rect" id="node9" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RequireMoveGeneratorMeta" target="_top" title="Metaclass enforcing that every class using it (except the internal" alt="" coords="5,56,190,83"/>
+</map>

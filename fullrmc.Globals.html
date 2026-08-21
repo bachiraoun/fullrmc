@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>fullrmc.Globals module &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
+    
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '6.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+            <link rel="author" title="About these documents" href="about.html" />
+            <link rel="index" title="Index" href="genindex.html" />
+            <link rel="search" title="Search" href="search.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="next" title="fullrmc.OptimizationEngine module" href="fullrmc.OptimizationEngine.html" />
+            <link rel="prev" title="fullrmc.Engine module" href="fullrmc.Engine.html" />
+
+    <!-- -------------------------------------------------------------------------- -->
+    <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
+    <!-- ----- BY SPHINX. THEREFORE \AA WILL BE RENDERED AS Angstrom SYMBOL. ------ -->
+        <script type="text/x-mathjax-config"> MathJax.Hub.Config({
+        "TeX": {Macros: {AA : "{\\unicode{x212B}}"}}, "HTML-CSS": {scale: 100}});
+        </script>
+    
+    </head>
+
+    <body>
+        <!-- ------------------------------------- -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
+        <div class="menu">
+            <ul>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                </li>
+                <!-- ------------------------------------- -->
+            </ul>
+        </div>
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
+        <style>
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
+        </style>
+        <!-- ------ ENF OF MENU BAR CREATION ----- -->
+        <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
+        
+        <div style="margin-top:10px"> </div>
+        
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.OptimizationEngine.html" title="fullrmc.OptimizationEngine module"
+             accesskey="N">next</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.Engine.html" title="fullrmc.Engine module"
+             accesskey="P">previous</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+        
+        
+        
+
+        <div class="document">
+        <div class="documentwrapper">
+            <div class="bodywrapper">
+        <div class="body">
+        
+  <section id="module-fullrmc.Globals">
+<span id="fullrmc-globals-module"></span><h1>fullrmc.Globals module<a class="headerlink" href="#module-fullrmc.Globals" title="Link to this heading">¶</a></h1>
+<p>This module provides all the global types, variables and some general methods that fullrmc needs.</p>
+<section id="types">
+<h2>Types:<a class="headerlink" href="#types" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>INT_TYPE: The integer data type adopted by fullrmc.</p></li>
+<li><p>FLOAT_TYPE: The floating data type adopted by fullrmc.</p></li>
+</ol>
+</section>
+<section id="variables">
+<h2>Variables:<a class="headerlink" href="#variables" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>PRECISION: The floating data type precision variable.</p></li>
+<li><p>FLOAT_PLUS_INFINITY: The floating data type maximum possible number.</p></li>
+<li><p>FLOAT_MINUS_INFINITY: The floating data type minimum possible number.</p></li>
+<li><p>INT_PLUS_INFINITY: The integer data type maximum possible number.</p></li>
+<li><p>INT_MINUS_INFINITY: The integer data type minimum possible number.</p></li>
+<li><p>PI: pi, the ratio of a circle’s circumference to its diameter.</p></li>
+</ol>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="fullrmc.Globals.range">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.Globals.</span></span><span class="sig-name descname"><span class="pre">range</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.range" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Globals.</span></span><span class="sig-name descname"><span class="pre">Evaluators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Evaluators" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators.default">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">default</span></span><a class="headerlink" href="#fullrmc.Globals.Evaluators.default" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators.allEvaluators">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">allEvaluators</span></span><a class="headerlink" href="#fullrmc.Globals.Evaluators.allEvaluators" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Evaluators.add" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators.pop">
+<span class="sig-name descname"><span class="pre">pop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Evaluators.pop" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Globals.Evaluators.get_evaluator">
+<span class="sig-name descname"><span class="pre">get_evaluator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Evaluators.get_evaluator" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fullrmc.Globals.Definitions">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.Globals.</span></span><span class="sig-name descname"><span class="pre">Definitions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Definitions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Globals.Definitions.definitions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">definitions</span></span><a class="headerlink" href="#fullrmc.Globals.Definitions.definitions" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of fullrmc’s classes definition</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="fullrmc.Globals.Definitions.modules">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">modules</span></span><a class="headerlink" href="#fullrmc.Globals.Definitions.modules" title="Link to this definition">¶</a></dt>
+<dd><p>Dictionary of fullrmc’s modules</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Globals.Definitions.get_definition">
+<span class="sig-name descname"><span class="pre">get_definition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Definitions.get_definition" title="Link to this definition">¶</a></dt>
+<dd><p>Get a class definition by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): class name</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>klass (class): the class implementation</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fullrmc.Globals.Definitions.get_module">
+<span class="sig-name descname"><span class="pre">get_module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fullrmc.Globals.Definitions.get_module" title="Link to this definition">¶</a></dt>
+<dd><p>Get loaded module by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>name (string): module name</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>module (module): the module instance</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+        </div>
+            </div>
+        </div>
+        
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">fullrmc.Globals module</a><ul>
+<li><a class="reference internal" href="#types">Types:</a></li>
+<li><a class="reference internal" href="#variables">Variables:</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="fullrmc.Engine.html"
+                          title="previous chapter">fullrmc.Engine module</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fullrmc.OptimizationEngine.html"
+                          title="next chapter">fullrmc.OptimizationEngine module</a></p>
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+        
+        <div class="clearer"></div>
+        </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a>
+        </li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.OptimizationEngine.html" title="fullrmc.OptimizationEngine module"
+             >next</a>
+             |
+        
+        </li>
+        <li class="right" >
+          <a href="fullrmc.Engine.html" title="fullrmc.Engine module"
+             >previous</a>
+             |
+        
+        </li>
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+      </ul>
+    </div>
+            <div class="footer">
+                    &copy; Copyright 2015, Bachir Aoun.
+            </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
+    </body>
+</html>

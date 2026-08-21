@@ -3,31 +3,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Use the cloud &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
     
-    <title>Use the cloud (Will be available soon) &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
-    
-    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.1.0',
+        VERSION:     '6.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
 
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -40,53 +39,122 @@
 
     <body>
         <!-- ------------------------------------- -->
-        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
         <div class="menu">
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="versions.html">Versions</a></li>
-                <li><a href="QAForum.html">Q&A Forum</a></li>
-                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
-                <li><a href="fullrmc.Generators.html">Generators</a></li>
-                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
-                <li><a href="examples.html">Examples</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="cloud.html">Cloud Services</a></li>
-                <!-- pypi and github forkme link images table -->
-                <li>
-                    <table style="position: absolute; right:0; top:0;">
-                        <!-- pypi image -->
-                        <td><a href="https://pypi.python.org/pypi/fullrmc">
-                            <img height="40";
-                                 src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>
-                        </a></td>
-                        <!-- github image -->
-                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
-                            <img height="40";
-                                 src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />
-                        </a></td>
-                    </table>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle active-group" tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="active" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
                 </li>
                 <!-- ------------------------------------- -->
             </ul>
-            <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;
-                z-index: 9999; position:Fixed;
-                left: 0; top: 0; width: 100%; }
-            .menu ul { list-style: none; }
-            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
-            .menu ul li a { font-size:16px; color:white;}
-            .menu ul li a:hover{ text-decoration: underline;}
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
         </style>
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>
+        <div style="margin-top:10px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -101,7 +169,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -113,8 +181,10 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="use-the-cloud-will-be-available-soon">
-<h1>Use the cloud (Will be available soon)<a class="headerlink" href="#use-the-cloud-will-be-available-soon" title="Permalink to this headline">¶</a></h1>
+  <p>To check and request fullrmc on the cloud, visit fullrmc’s <a class="reference external" href="https://www.fullrmc.com">website</a> and
+contact <a class="reference external" href="mailto:info&#37;&#52;&#48;fullrmc&#46;com">info<span>&#64;</span>fullrmc<span>&#46;</span>com</a> for any questions.</p>
+<section id="use-the-cloud">
+<h1>Use the cloud<a class="headerlink" href="#use-the-cloud" title="Link to this heading">¶</a></h1>
 <p>fullrmc runs a stochastic engine that runs as a sequential process. To speed
 up the calculation for big systems, pthreads are used to parallelize certain
 parts of the computation blocks. This turns out to be beneficial when the
@@ -127,137 +197,503 @@ and systems then a single atomic system simulation will never be enough to get
 an accurate solution. For that particular reason in fullrmc we introduce the
 concept of ‘multiframe’ and we use <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> to enable running fullrmc’s
 multiframe on any set of connected commodity hardware to perform synchronous
-and asynchronous multiframe computation.</p>
+and asynchronous multiframe computation. See <a class="reference internal" href="runModes.html"><span class="doc">Run Modes</span></a> for
+an explanation of the statistical, mesoscopic, and nanoscopic modes this
+enables.</p>
 <p><a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> is not open sourced and it can’t be distributed along with fullrmc.
-Therefore fullrmc <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> enabled will be available as software as as
-solution on cloud infrastructures such as Microsoft AZURE.</p>
-<dl class="class">
-<dt>
-<em class="property">class </em><code class="descclassname">fullrmc.MultiframeUtils.</code><code class="descname">WorkersManagement</code><span class="sig-paren">(</span><em>repoTimeout=10</em>, <em>requestTimeout=60</em><span class="sig-paren">)</span></dt>
+Therefore fullrmc <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> enabled will be available as a software as a
+solution on cloud infrastructures such as Microsoft AZURE, Amazon AWS, Akamai Linode, etc.</p>
+<p>MultiframeUtils contains helper classes to run and build fullrmc
+multiframe stochastic engine structures.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">WorkersManagement</span></code> is used on a <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> worker to run a
+multiframe’s subframes concurrently in statistical, mesoscopic or
+nanoscopic mode.</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiframeStructureBuilder</span></code> is used to reorganize a
+multiframe’s subframes’ atom coordinates into a single, coherent
+nanoscale structure.</p>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.MultiframeUtils.</span></span><span class="sig-name descname"><span class="pre">generate_random_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>random() -&gt; x in the interval [0, 1).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-prename descclassname"><span class="pre">fullrmc.MultiframeUtils.</span></span><span class="sig-name descname"><span class="pre">log_transfer_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>WorkersManagement method decorator that catches any exception raised
+by the decorated method, logs it and transfers it to the connected
+executor or orchestrator, then disconnects (executor case) or stops
+(orchestrator case).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>func (function): The WorkersManagement bound method to wrap.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>wrapper (function): The wrapped method that transparently
+forwards to func and handles its exceptions.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.MultiframeUtils.</span></span><span class="sig-name descname"><span class="pre">WorkersManagement</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">repoTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requestTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Used by remote <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a> worker
-to run fullrmc stochastic engine</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fullrmc.Engine</span> <span class="kn">import</span> <span class="n">Engine</span>
-<span class="kn">from</span> <span class="nn">fullrmc</span> <span class="kn">import</span> <span class="n">MultiframeUtils</span>
+<p>Used by a remote <a class="reference external" href="https://bachiraoun.github.io/softgrid/index.html">softgrid</a>
+worker to run a fullrmc stochastic engine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>repoTimeout (number): The engine’s repository read/write lock
+timeout in seconds.</p></li>
+<li><p>requestTimeout (number): The maximum time in seconds to wait
+for a request to be fulfilled before giving up.</p></li>
+</ol>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Engine</span><span class="w"> </span><span class="kn">import</span> <span class="n">Engine</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiframeUtils</span>
 
 <span class="c1"># create engine</span>
 <span class="n">ENGINE</span> <span class="o">=</span> <span class="n">Engine</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
 
 <span class="c1"># run on grid</span>
 <span class="n">WM</span> <span class="o">=</span> <span class="n">MultiframeUtils</span><span class="o">.</span><span class="n">WorkersManagement</span><span class="p">()</span>
-<span class="n">WM</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="s1">&#39;size_distribution&#39;</span><span class="p">,</span> <span class="n">orchestrator</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">ENGINE</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="s1">&#39;size_distribution&#39;</span><span class="p">,</span> <span class="n">orchestrator</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
-<span class="c1"># run independant.</span>
-<span class="n">WM</span><span class="o">.</span><span class="n">run_independant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nCycle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># run statistical</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">run_statistical</span><span class="p">(</span><span class="n">nCycle</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="c1"># run dependant</span>
-<span class="n">WM</span><span class="o">.</span><span class="n">run_dependant</span><span class="p">(</span><span class="n">nCycle</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">firstNAccepted</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subframesWeight</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1"># run mesoscopic</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">run_mesoscopic</span><span class="p">(</span><span class="n">nCycle</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">firstNAccepted</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">subframesWeight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># run nanoscopic</span>
+<span class="n">WM</span><span class="o">.</span><span class="n">run_nanoscopic</span><span class="p">(</span><span class="n">nCycle</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">numberOfSteps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">saveFrequency</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl class="method">
-<dt>
-<code class="descname">start</code><span class="sig-paren">(</span><em>engine</em>, <em>multiframe</em>, <em>orchestrator=None</em>, <em>workerRequestLoopTimeout=3600</em><span class="sig-paren">)</span></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt>
-<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Stop WorkersManagement by disconnecting softgrid computation</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orchestrator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">workerRequestLoopTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">43200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">killAtStop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gridLogKwargsUpdate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'logTypes':</span> <span class="pre">{'execution_finished':</span> <span class="pre">{'fileFlag':</span> <span class="pre">False,</span> <span class="pre">'stdoutFlag':</span> <span class="pre">False},</span> <span class="pre">'execution_started':</span> <span class="pre">{'fileFlag':</span> <span class="pre">False,</span> <span class="pre">'stdoutFlag':</span> <span class="pre">False},</span> <span class="pre">'result':</span> <span class="pre">{'fileFlag':</span> <span class="pre">False,</span> <span class="pre">'stdoutFlag':</span> <span class="pre">False}}}</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Start a grid computation session for a multiframe. This connects to
+(or creates) a softgrid orchestrator, launches one worker per
+subframe, and loads the corresponding stochastic engine subframe
+onto each worker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (fullrmc.Engine): The stochastic engine instance
+whose used frame must be a multiframe.</p></li>
+<li><p>multiframe (string): The multiframe name to distribute
+across workers, one subframe per worker.</p></li>
+<li><p>orchestrator (None, softgrid.Orchestrator): The orchestrator
+to connect to. If None, a new local orchestrator is created.</p></li>
+<li><p>workerRequestLoopTimeout (number): The maximum time in
+seconds a worker’s request loop is allowed to run for.</p></li>
+<li><p>killAtStop (None, bool): Whether launched workers must be
+killed when this instance’s <code class="xref py py-meth docutils literal notranslate"><span class="pre">stop()</span></code> is called. If
+None, the orchestrator’s default behavior is kept.</p></li>
+<li><p>gridLogKwargsUpdate (dict): Logger configuration update
+passed to the orchestrator to control which softgrid log
+types are printed to stdout or written to file.</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">run_dependant</code><span class="sig-paren">(</span><em>nCycle=100</em>, <em>firstNAccepted=1</em>, <em>numberOfSteps=100</em>, <em>subframesWeight=10</em>, <em>normalize=1</em>, <em>driftTolerance=1</em>, <em>saveFrequency=10</em>, <em>cycleTimeout=900</em><span class="sig-paren">)</span></dt>
-<dd><p>Run all remote subframes as whole dependant structure. Subframes
-weighted (subframesWeight) atomic configuration will be used to compute
-stochastic engine’s total standard error. Subframes constraints will
-also be using subframesWeight and prior to compute constraints
-standard error.
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Stop WorkersManagement by disconnecting from the softgrid
+computation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>kill (None, bool): Whether to also kill the connected
+workers upon disconnecting. If None, the killAtStop value
+given at <code class="xref py py-meth docutils literal notranslate"><span class="pre">start()</span></code> time is used instead.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run_nanoscopic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nCycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberOfSteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateFrequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moveAtoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moveSubframes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleMinSteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subframeMinSelected</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subframeMinAccepted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveFrequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Run all remote subframes as a single, whole nanoscopic structure.
+Subframes’ atomic configurations are treated as a connected system
+to compute the stochastic engine’s total standard error.
+Unlike the mesoscopic computation, this nanoscopic computation
+takes correlations between subframes into account.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>nCycle (int): Number of stochastic engine cycles.</p></li>
+<li><p>numberOfSteps (int): Number of steps per cycle.
+If moveAtoms is False, this parameter is ignored.</p></li>
+<li><p>updateFrequency (int): Frequency, in number of accepted
+steps, at which subframes communicate back and update all
+constraints’ nanoscopic data.
+If moveAtoms is False, this parameter is ignored.</p></li>
+<li><p>moveAtoms (boolean): Whether to create independent moves within
+each and every subframe, enhancing short range correlations.</p></li>
+<li><p>moveSubframes (boolean): Whether to move each subframe
+independently as a whole grained entity, enhancing long
+range correlations.</p></li>
+<li><p>cycleMinSteps (boolean, int): Minimum number of moveSubframes
+steps in a cycle before the cycle is finished. If True,
+cycleMinSteps is automatically set to the number of
+subframes.
+If moveSubframes is False, this parameter is ignored.</p></li>
+<li><p>subframeMinSelected (int, list): Minimum number of times a
+subframe must be selected for a move before a cycle is
+finished.
+If moveSubframes is False, this parameter is ignored.</p></li>
+<li><p>subframeMinAccepted (int, list): Minimum number of times a
+subframe move must be accepted before a cycle is finished.
+If moveSubframes is False, this parameter is ignored.</p></li>
+<li><p>optimize (boolean): Whether to optimize parameters during
+stochastic engine runtime. Optimization parameters are
+defined separately in the engine constraints.</p></li>
+<li><p>translation (None, number): Grains engine groups’ translation
+amplitude. If moveSubframes is False, this parameter is
+ignored.</p></li>
+<li><p>rotation (None, number): Grains engine groups’ rotation
+amplitude in degrees. If moveSubframes is False, this
+parameter is ignored.</p></li>
+<li><p>swap (boolean): Whether to allow swapping subframes’ center
+positions. If moveSubframes is False, this parameter is
+ignored.</p></li>
+<li><p>saveFrequency (int): Frequency, in cycles, at which all
+subframes are saved.</p></li>
+<li><p>cycleTimeout (None, integer): Estimated time, in seconds,
+for the stochastic engine to perform one cycle across all
+frames on remote workers. A timeout error is raised if
+cycleTimeout is exhausted before all workers finish the
+cycle’s work.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run_mesoscopic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nCycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">firstNAccepted</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberOfSteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subframesWeight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">driftTolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rescaleLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowStatistical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveFrequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">900</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Run all remote subframes as a single, whole mesoscopic structure.
+Subframes’ weighted (subframesWeight) atomic configurations are
+used to compute the stochastic engine’s total standard error.
+Subframes’ constraints also use subframesWeight prior to computing
+constraints’ standard error.
 This computation is valid under the assumption that all subframes
-might exist in the measured and modeled atomic system but they are
-far enough from each other to neglect any cross structural interactions
-and correlation</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>nCycle (int): number of stochastic engine cycles</li>
-<li>firstNAccepted (int): number of accepted moves on subframes
-before returning result</li>
-<li>numberOfSteps (int): maximum number of steps per cycle</li>
-<li>subframesWeight (None, boolean, integer, list): Weights of
-subframes constributing to experimental constraints. If None,
-subframes weight will be fixed to normalize/numberOfSubframes if
-normalize is not None or 1./numberOfSubframes.
-If False, weights will be used as is. If True, weights will be
-updated after each cycle using non negative least square with the
-added condition of all weights must sum to 1. If integer, it’s
-the frequency of updating the weights in number of cycles. If
-list, it’s the fixed user defined weights to every and each
-subframe, Subframes prior are always computed after every and
-each cycle. In updated weights happen to be all 0 or only
-one subframe weight is not 0, weights will be automatically
-rescaled to  normalize/numberOfSubframes or 1./numberOfSubframes.</li>
-<li>normalize (None, number): used to normalize subframesWeight
-whether those are given or computed. Normalization will linearly
-adjust subframesWeight to ensure sum(subframesWeight) = normalize
-If None, no normalization will be done. If number it must be a
-positive non zero number. A logical value to normalize is 1 which
-minimizes the interaction between constraints scaleFactor and
-subframesWeight value</li>
-<li>driftTolerance (integer): To avoid updated subframesWeight
-drift and divergence. weights are checked for any sudden jump
-jump (increase) or drop (decrease) that doubles or split by half
-previous cycle frame weight. In case drift occurs, previous cycle
-subframesWeight are used. Tolerance defines the number of
-successive cycles weight drifts before stopping the execution.</li>
-<li>saveFrequency (int): frequency of saving all frames in between
-cycles</li>
-<li>cycleTimeout (None, integer): Estimated time for stochastic
-engine to perform 1 cycle for all frames on remote workers.
-Timeout error will be raise if cycleTimeout is exhausted before
-all workers finish the cycle work.</li>
+might exist in the measured and modeled atomic system, but that
+they are far enough from each other to neglect any cross-structural
+interactions and correlations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>nCycle (int): Number of stochastic engine cycles.</p></li>
+<li><p>firstNAccepted (int): Number of accepted moves on subframes
+before returning the result.</p></li>
+<li><p>numberOfSteps (int): Maximum number of steps per cycle.</p></li>
+<li><p>subframesWeight (None, boolean, integer, list): Weights of
+subframes contributing to experimental constraints. If None,
+subframes’ weight is fixed to 1./numberOfSubframes.
+If False, weights are used as is. If True, weights are
+updated after each cycle using non-negative least squares
+with the added condition that all weights must sum to 1.
+If integer, it is the frequency, in number of cycles, at
+which weights are updated. If list, it is the fixed,
+user-defined weight for every and each subframe. Subframes’
+priors are always computed after every and each cycle. If
+updated weights happen to be all 0, or only one subframe’s
+weight is non-zero, weights are automatically rescaled to
+1./numberOfSubframes.</p></li>
+<li><p>driftTolerance (integer): Used to avoid updated
+subframesWeight drift and divergence. Weights are checked
+for any sudden jump (increase) or drop (decrease) that
+doubles or halves the previous cycle’s frame weight. If
+drift occurs, the previous cycle’s subframesWeight is used
+instead. driftTolerance defines the number of successive
+cycles of weight drift allowed before stopping execution.</p></li>
+<li><p>rescaleLimit (int): Defines the minimum number of subframes
+with a computed weight of 0 that triggers an automatic
+rescale. When the number of subframes with weight 0 is
+equal to or greater than rescaleLimit, all subframes’
+weights are automatically adjusted and rescaled to
+1./numberOfSubframes.</p></li>
+<li><p>allowStatistical (boolean, int, list): Whether to allow
+non-participating subframes within the mesoscopic structure
+(0 weight) to run statistically, giving them a chance to
+catch up and get re-integrated into the whole structure. If
+True is given, allowStatistical is automatically set to the
+given numberOfSteps. If an integer is given, it must be
+&gt;=0. If a list is given, it must have the same number of
+items as the number of subframes, with values that are
+booleans or integers.</p></li>
+<li><p>optimize (boolean): Whether to optimize parameters during
+stochastic engine runtime. Optimization parameters are
+defined separately in the engine constraints.</p></li>
+<li><p>saveFrequency (int): Frequency, in cycles, at which all
+frames are saved.</p></li>
+<li><p>cycleTimeout (None, integer): Estimated time, in seconds,
+for the stochastic engine to perform one cycle across all
+frames on remote workers. A timeout error is raised if
+cycleTimeout is exhausted before all workers finish the
+cycle’s work.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">run_independant</code><span class="sig-paren">(</span><em>nCycle=10</em>, <em>numberOfSteps=1000</em>, <em>saveFrequency=1</em>, <em>cycleTimeout=3600</em><span class="sig-paren">)</span></dt>
-<dd><p>run all remote subframes as totally independant structures</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ol class="first last arabic simple">
-<li>nCycle (int): number of total independant cycles</li>
-<li>numberOfSteps (int): number of steps per cycle</li>
-<li>saveFrequency (int): frequency of saving all frames in between
-cycles</li>
-<li>cycleTimeout (None, integer): Estimated time for stochastic
-engine to perform 1 cycle for all frames on remote workers.
-Timeout error will be raise if cycleTimeout is exhausted before
-all workers finish the cycle work.</li>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">run_statistical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nCycle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberOfSteps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updateLoss</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">saveFrequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cycleTimeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3600</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Run all remote subframes as totally independent structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>nCycle (int): Number of total independent cycles.</p></li>
+<li><p>numberOfSteps (int): Number of steps per cycle.</p></li>
+<li><p>updateLoss (boolean): Whether to train the loss function
+during stochastic engine runtime. This only takes effect if
+the chosen loss is not static but machine-learning enabled.</p></li>
+<li><p>optimize (boolean): Whether to optimize parameters during
+stochastic engine runtime. Optimization parameters are
+defined separately in the engine constraints.</p></li>
+<li><p>saveFrequency (int): Frequency, in cycles, at which all
+frames are saved.</p></li>
+<li><p>cycleTimeout (None, integer): Estimated time, in seconds,
+for the stochastic engine to perform one cycle across all
+frames on remote workers. A timeout error is raised if
+cycleTimeout is exhausted before all workers finish the
+cycle’s work.</p></li>
 </ol>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
-<dd><p>Call all remote subFrames to save.</p>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Call all remote subframes to save.</p>
 </dd></dl>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">fullrmc.MultiframeUtils.</span></span><span class="sig-name descname"><span class="pre">MultiframeStructureBuilder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">engine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiframe</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberDensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Multiframe structure builder used to reorganize subframes’ atom
+coordinates and create a single, coherent multiframe structure out of
+all of its subframes’ atoms. This is mostly used for nanoscale
+computations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>engine (fullrmc.Engine): The fullrmc engine.</p></li>
+<li><p>multiframe (str): The engine’s multiframe.</p></li>
+<li><p>boundaryConditions (None, boundaryConditions): The multiframe
+structure’s boundaryConditions. If None, this is computed using
+the provided numberDensity.</p></li>
+<li><p>numberDensity (None, number): If boundaryConditions is given,
+this is not used. Otherwise, numberDensity is used to create
+the boundaryConditions. Default value is half of pure water’s
+number density.</p></li>
+</ol>
+</dd>
+</dl>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.MultiframeUtils</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultiframeStructureBuilder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fullrmc.Globals</span><span class="w"> </span><span class="kn">import</span> <span class="n">WATER_NUMBER_DENSITY</span>
+<span class="n">MSB</span> <span class="o">=</span> <span class="n">MultiframeStructureBuilder</span><span class="p">(</span><span class="n">engine</span><span class="o">=</span><span class="n">E</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="s1">&#39;multi&#39;</span><span class="p">,</span> <span class="n">boundaryConditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numberDensity</span><span class="o">=</span><span class="n">WATER_NUMBER_DENSITY</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+<span class="n">MSB</span><span class="o">.</span><span class="n">build_random</span><span class="p">()</span>
+<span class="n">pdb</span> <span class="o">=</span> <span class="n">MSB</span><span class="o">.</span><span class="n">get_pdb</span><span class="p">()</span>
+<span class="n">pdb</span><span class="o">.</span><span class="n">visualize</span><span class="p">()</span>
+</pre></div>
 </div>
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_multiframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multiframe</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Set the multiframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>multiframe (str): The engine’s multiframe.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_boundary_conditions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundaryConditions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numberDensity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Set boundary conditions and number density. If both
+boundaryConditions and numberDensity are None, the multiframe
+structure must be nanoscopic.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>boundaryConditions (None, boundaryConditions): The multiframe
+structure’s boundaryConditions. If None, this is computed
+using the provided numberDensity.</p></li>
+<li><p>numberDensity (None, number): If boundaryConditions is
+given, this is not used. Otherwise, numberDensity is used
+to create the boundaryConditions.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">realCoordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Translate given real space coordinates within boundary conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>realCoordinates (numpy.ndarray): The atoms’ coordinates to
+translate.</p></li>
+<li><p>vector (None, numpy.ndarray): The translation vector to
+apply. If None, a random vector towards the positive
+quadrant is generated.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>coordinates (numpy.ndarray): The translated coordinates.</p></li>
+<li><p>vector (numpy.ndarray): The translation vector used.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">realCoordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotationAxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotationAngle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Rotate given real space coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>realCoordinates (numpy.ndarray): The atoms’ coordinates to
+rotate.</p></li>
+<li><p>rotationAxis (None, numpy.ndarray): The rotation axis
+vector to use. If None, a random unit vector is generated.</p></li>
+<li><p>rotationAngle (None, number): The rotation angle, in
+radians, to use. If None, a random angle is generated.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>coordinates (numpy.ndarray): The rotated coordinates. If
+realCoordinates has one atom or fewer, rotation is a no-op
+and the input coordinates are returned unchanged.</p></li>
+<li><p>rotationAxis (None, numpy.ndarray): The rotation axis
+vector used, or None if realCoordinates has one atom or
+fewer.</p></li>
+<li><p>rotationAngle (None, number): The rotation angle used, or
+None if realCoordinates has one atom or fewer.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_box_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">realCoordinates</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Transform real space coordinates to box space coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>realCoordinates (numpy.ndarray): The atoms’ coordinates to
+transform.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>boxCoordinates (numpy.ndarray): The box coordinates.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_real_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boxCoordinates</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Transform box space coordinates to real space coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>boxCoordinates (numpy.ndarray): The atoms’ coordinates to
+transform.</p></li>
+</ol>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><ol class="arabic simple">
+<li><p>realCoordinates (numpy.ndarray): The real coordinates.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">build_random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lowerDistance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxTrials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shuffle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'big</span> <span class="pre">first'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moveFirst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Randomize subframes’ structures within the boundary conditions box
+by applying translations and rotations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>lowerDistance (number): Minimum contact distance.</p></li>
+<li><p>maxTrials (integer): Maximum number of trials to insert a
+subframe.</p></li>
+<li><p>shuffle (string, list, tuple, boolean): Whether to shuffle
+frames before insertion. If string, ‘big first’ or ‘small
+first’ are accepted. If list, it must be a list of
+integers ranging from 0 to the number of subframes.
+Otherwise, if True, subframes are randomly shuffled for
+insertion.</p></li>
+<li><p>translate (boolean): Whether to apply translations.</p></li>
+<li><p>rotate (boolean): Whether to apply rotations.</p></li>
+<li><p>moveFirst (boolean): Whether to apply a random translation
+and rotation to the first inserted subframe.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">update_multiframe_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span></dt>
+<dd><p>Push the built multiframe structure coordinates to the subframes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>force (boolean): Whether to force re-updating the
+coordinates if they were already updated.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_pdb</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Get a single pdb from the multiframe structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><ol class="arabic simple">
+<li><p>pdb (pdbparser.pdbparser): The pdb instance.</p></li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
 
 
         </div>
@@ -266,18 +702,16 @@ all workers finish the cycle work.</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         
@@ -296,11 +730,13 @@ all workers finish the cycle work.</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">
                     &copy; Copyright 2015, Bachir Aoun.
             </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
     </body>
 </html>

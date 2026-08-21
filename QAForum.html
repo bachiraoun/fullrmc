@@ -3,31 +3,30 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>FAQ &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
     
-    <title>FAQ &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
-    
-    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.1.0',
+        VERSION:     '6.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
 
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -40,53 +39,122 @@
 
     <body>
         <!-- ------------------------------------- -->
-        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
         <div class="menu">
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="versions.html">Versions</a></li>
-                <li><a href="QAForum.html">Q&A Forum</a></li>
-                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
-                <li><a href="fullrmc.Generators.html">Generators</a></li>
-                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
-                <li><a href="examples.html">Examples</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="cloud.html">Cloud Services</a></li>
-                <!-- pypi and github forkme link images table -->
-                <li>
-                    <table style="position: absolute; right:0; top:0;">
-                        <!-- pypi image -->
-                        <td><a href="https://pypi.python.org/pypi/fullrmc">
-                            <img height="40";
-                                 src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>
-                        </a></td>
-                        <!-- github image -->
-                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
-                            <img height="40";
-                                 src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />
-                        </a></td>
-                    </table>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle active-group" tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="active" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
                 </li>
                 <!-- ------------------------------------- -->
             </ul>
-            <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;
-                z-index: 9999; position:Fixed;
-                left: 0; top: 0; width: 100%; }
-            .menu ul { list-style: none; }
-            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
-            .menu ul li a { font-size:16px; color:white;}
-            .menu ul li a:hover{ text-decoration: underline;}
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
         </style>
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>
+        <div style="margin-top:10px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -101,7 +169,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -113,26 +181,26 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="faq">
-<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+  <section id="faq">
+<h1>FAQ<a class="headerlink" href="#faq" title="Link to this heading">¶</a></h1>
 <p>Herein is a list of some of the Frequently Asked Questions (FAQ).
 Click on title to get directed to the answer and detailed explanation page.</p>
 <ul class="simple">
-<li><a class="reference external" href="fullrmc.FAQ.bestPractices.html">Best practices</a>: What is
-the best way to setting and launching a stochastic fitting engine?</li>
-<li><a class="reference external" href="fullrmc.FAQ.pdbFile.html">PDB file</a>: What is a .pdb file and how it is used in fullrmc?</li>
-<li><a class="reference external" href="fullrmc.FAQ.molecules.html">Molecules</a>: How are molecules defined in fullrmc?</li>
-<li><a class="reference external" href="fullrmc.FAQ.multiprocessing.html">Multiprocessing</a>: Does fullrmc runs on multicore?</li>
-<li><a class="reference external" href="fullrmc.FAQ.removingAtoms.html">Removing atoms</a>: Is it possible to simulate
-voids and defects in fullrmc by dynamically removing atoms from system while fitting?</li>
-<li><a class="reference external" href="fullrmc.FAQ.logger.html">Logger</a>: Is it possible to modify fullrmc’s logger
-settings?</li>
-<li><a class="reference external" href="fullrmc.FAQ.atomicFormFactor.html">Atomic form factor</a>: Is it possible to compute
-atomic form factor and account for Q-dependent x-ray scattering?</li>
+<li><p><a class="reference external" href="fullrmc.FAQ.bestPractices.html">Best practices</a>: What is
+the best way to setting and launching a stochastic fitting engine?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.pdbFile.html">PDB file</a>: What is a .pdb file and how it is used in fullrmc?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.molecules_unitcells.html">Molecules &amp; Unitcells</a>: How are molecules and crystal unitcells defined in fullrmc?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.multiprocessing.html">Multiprocessing</a>: Does fullrmc runs on multicore?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.removingAtoms.html">Removing atoms</a>: Is it possible to simulate
+voids and defects in fullrmc by dynamically removing atoms from system while fitting?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.logger.html">LOGGER</a>: Is it possible to modify fullrmc’s logger
+settings?</p></li>
+<li><p><a class="reference external" href="fullrmc.FAQ.atomicFormFactor.html">Atomic form factor</a>: Is it possible to compute
+atomic form factor and account for Q-dependent x-ray scattering?</p></li>
 </ul>
-</div>
-<div class="section" id="q-a-forum">
-<h1>Q&amp;A Forum<a class="headerlink" href="#q-a-forum" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="q-a-forum">
+<h1>Q&amp;A Forum<a class="headerlink" href="#q-a-forum" title="Link to this heading">¶</a></h1>
 <iframe id="forum_embed"
   src="javascript:void(0)"
   scrolling="no"
@@ -146,7 +214,7 @@ atomic form factor and account for Q-dependent x-ray scattering?</li>
      'https://groups.google.com/forum/embed/?place=forum/fullrmc'
      + '&showsearch=true&showpopout=true&showtabs=false'
      + '&parenturl=' + encodeURIComponent(window.location.href);
-</script></div>
+</script></section>
 
 
         </div>
@@ -155,24 +223,24 @@ atomic form factor and account for Q-dependent x-ray scattering?</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">FAQ</a></li>
 <li><a class="reference internal" href="#q-a-forum">Q&amp;A Forum</a></li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         
@@ -191,11 +259,13 @@ atomic form factor and account for Q-dependent x-ray scattering?</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">
                     &copy; Copyright 2015, Bachir Aoun.
             </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
     </body>
 </html>

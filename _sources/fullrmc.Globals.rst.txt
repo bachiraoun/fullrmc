@@ -1,0 +1,7 @@
+fullrmc.Globals module
+=======================
+
+.. automodule:: fullrmc.Globals
+    :members:
+    :undoc-members:
+    :show-inheritance:

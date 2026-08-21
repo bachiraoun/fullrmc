@@ -1,0 +1,7 @@
+<map id="inheritancefd4366267b" name="inheritancefd4366267b">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.Group.CenteredSubsetGroup" target="_top" title="Subset group implementation that, at stochastic engine runtime, randomly" alt="" coords="271,5,421,32"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.Group.SubsetGroup" target="_top" title="SubsetGroup is a group that, at stochastic engine runtime, activates a" alt="" coords="125,31,223,57"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.Group.RandomSubsetGroup" target="_top" title="Subset group implementation that randomly samples atoms indexes from the" alt="" coords="273,56,419,83"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" target="_top" title="Empty group is a special group that takes no atoms indexes. It&#39;s mainly" alt="" coords="127,81,221,108"/>
+<area shape="rect" id="node4" href="fullrmc.Core.html#fullrmc.Core.Group.Group" target="_top" title="A Group is a set of atoms indexes container." alt="" coords="5,56,77,83"/>
+</map>

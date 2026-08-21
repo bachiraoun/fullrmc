@@ -1,0 +1,67 @@
+:orphan:
+
+Run Modes
+=========
+The Problem That Led to fullrmc describes a system that could not be
+reduced to one well-defined structure: mixtures of phases, grain sizes,
+local domains, defects, and competing structural hypotheses that all had
+to be represented and refined at once. fullrmc's **multiframe** concept
+addresses exactly this: each candidate structure or coexisting phase is
+represented as a **subframe**, and multiple subframes are refined together
+against the same experimental data.
+
+How those subframes relate to one another physically is not always the
+same, so fullrmc offers three run modes, each built on a different
+assumption about how much subframes influence each other.
+
+.. note::
+   Run modes are part of fullrmc's **Cloud Services**, powered by
+   softgrid_, and are not included in the free, locally installable
+   fullrmc package.
+
+Statistical
+-----------
+Every subframe is refined as a **totally independent structure**. No
+assumption is made about how the candidate structures relate to one
+another; each is simply fit on its own against the same experimental
+data. This is the right starting point when nothing is yet known about
+whether or how the candidate structures coexist or interact, for example
+when screening a broad set of structural hypotheses before narrowing
+them down.
+
+Mesoscopic
+----------
+Subframes are assumed to coexist within the same sample but to be **far
+enough apart that any cross-structural correlation between them can be
+neglected**. Rather than being fit independently, each subframe
+contributes to the overall experimental fit weighted by its estimated
+population fraction, and that weighting can itself be refined
+automatically as the fit progresses. This models situations such as a
+distribution of nanoparticle sizes, coexisting local structures, or
+grains far enough apart to be structurally decoupled, where the sample
+is genuinely a statistical mixture of distinguishable structures rather
+than one connected system.
+
+Nanoscopic
+----------
+Subframes are treated as parts of **one connected physical system**,
+and correlations between them are explicitly computed rather than
+neglected. This is the appropriate mode when structural domains
+physically interact, such as adjoining grains, interfaces, or coupled
+defects, where the structure of one subframe genuinely affects its
+neighbors and the fit must capture that coupling rather than treating
+each piece in isolation.
+
+Choosing the right mode
+-----------------------
+The three modes form a progression in how much inter-structure
+correlation is assumed: none in statistical, partial in mesoscopic, full
+in nanoscopic. Which one is appropriate depends on the physics of the
+system being modeled, not on convenience. Assuming independence between
+structures that are physically coupled will bias the fit just as much
+as forcing correlation onto structures that do not actually interact.
+
+For parameter-level detail on launching each run mode, see
+:doc:`fullrmc.MultiframeUtils <cloud>`.
+
+.. _softgrid: https://bachiraoun.github.io/softgrid/index.html

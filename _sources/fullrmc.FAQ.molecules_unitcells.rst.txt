@@ -1,0 +1,36 @@
+:orphan:
+
+molecules & unitcells
+=====================
+fullrmc is not a reverse monte carlo fitting tool but a stochastic engine library
+to model all kind of homogeneous and hybrid materials such as liquids, crystals,
+atomic and molecular systems, biological structures or any mixture of those.
+fullrmc recognizes molecules and crystal structure unitcells and make use of
+those to enable users with helper functions to define certain constraints
+properties such as bonds and angles.
+
+From the pdb structure, fullrmc recognizes molecules or a unitcell as the
+collection of consecutive atoms sharing the same "Residue name",
+"Sequence number" and "Segment identifier" attributes. For more information
+about pdb file attributes click `here <fullrmc.FAQ.pdbFile.html>`__.
+
+Molecules can be defined in two different ways in fullrmc.
+
+#. The first and more natural way of defining molecules is using a correct and
+   complete pdb file. for more information about pdb files click
+   `here <fullrmc.FAQ.pdbFile.html>`__.
+#. The second way to define molecules is by using Engine.set_molecules_index method.
+
+
+Unitcells as well can be defined in two different ways in fullrmc.
+
+#. Setting the Engine pdb structure using Engine.build_crystal_set_pdb
+   method
+#. Using Engine.set_structure_supercell method to parse the structure into
+   a supercell of unitcells.
+
+
+Engine methods such as 'set_groups_as_atoms' and 'set_groups_as_molecules'
+'set_groups_as_unitcells' make full use of molecules and unitcells definition.
+When called, list of groups will be automatically generated to respectively
+create groups of single atoms, molecules or unitcells.

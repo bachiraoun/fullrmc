@@ -1,0 +1,12 @@
+<map id="inheritance0bc6f727b9" name="inheritance0bc6f727b9">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.AxisUtils" target="_top" title="Mixin class adding axis, direction and randomization&#45;angle get/set" alt="" coords="167,157,241,184"/>
+<area shape="rect" id="node10" href="#fullrmc.Generators.Rotations.RotationGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a" alt="" coords="332,157,459,184"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PositionUtils" target="_top" title="Utils class managing position setting and runtime calculations." alt="" coords="5,157,101,184"/>
+<area shape="rect" id="node3" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="149,81,259,108"/>
+<area shape="rect" id="node4" href="#fullrmc.Generators.Rotations.OrientationGenerator" target="_top" title="Generate rotational moves upon groups of atoms to align and orient" alt="" coords="324,5,466,32"/>
+<area shape="rect" id="node5" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.PathGenerator" target="_top" title="PathGenerator is a MoveGenerator sub&#45;class where moves definitions" alt="" coords="342,56,448,83"/>
+<area shape="rect" id="node7" href="#fullrmc.Generators.Rotations.RotationRandomGenerator" target="_top" title="Generate random rotational moves upon groups of atoms." alt="" coords="307,107,483,133"/>
+<area shape="rect" id="node9" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" target="_top" title="Generate rotational moves upon groups of atoms about one of their" alt="" coords="546,56,764,83"/>
+<area shape="rect" id="node6" href="#fullrmc.Generators.Rotations.RotationAboutAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about a" alt="" coords="561,107,749,133"/>
+<area shape="rect" id="node8" href="#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" target="_top" title="Generates random rotational moves upon groups of atoms about one of" alt="" coords="531,157,779,184"/>
+</map>

@@ -1,5 +1,11 @@
-Use the cloud (Will be available soon)
-======================================
+:orphan:
+
+To check and request fullrmc on the cloud, visit fullrmc's website_ and
+contact info@fullrmc.com for any questions.
+
+
+Use the cloud
+=============
 fullrmc runs a stochastic engine that runs as a sequential process. To speed
 up the calculation for big systems, pthreads are used to parallelize certain
 parts of the computation blocks. This turns out to be beneficial when the
@@ -13,16 +19,19 @@ and systems then a single atomic system simulation will never be enough to get
 an accurate solution. For that particular reason in fullrmc we introduce the
 concept of 'multiframe' and we use softgrid_ to enable running fullrmc's
 multiframe on any set of connected commodity hardware to perform synchronous
-and asynchronous multiframe computation.
+and asynchronous multiframe computation. See :doc:`Run Modes <runModes>` for
+an explanation of the statistical, mesoscopic, and nanoscopic modes this
+enables.
 
 softgrid_ is not open sourced and it can't be distributed along with fullrmc.
-Therefore fullrmc softgrid_ enabled will be available as software as as
-solution on cloud infrastructures such as Microsoft AZURE.
+Therefore fullrmc softgrid_ enabled will be available as a software as a
+solution on cloud infrastructures such as Microsoft AZURE, Amazon AWS, Akamai Linode, etc.
 
 
 
 
 .. _softgrid: https://bachiraoun.github.io/softgrid/index.html
+.. _website: https://www.fullrmc.com
 
 .. automodule:: fullrmc.MultiframeUtils
     :members:

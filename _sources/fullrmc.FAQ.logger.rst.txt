@@ -1,6 +1,6 @@
 :orphan:
 
-Logger
+LOGGER
 ======
 fullrmc's logger is a singleton of `pysimplelog <https://bachiraoun.github.io/pysimplelog/>`_.
 You can always access fullrmc's logger instance and modify its settings. In fullrmc,
@@ -19,7 +19,7 @@ following.
 .. raw:: html
 
     <pre>
-    Logger (Version 1.0.0)
+    LOGGER (Version 1.0.0)
     log type       |log name       |level     |std flag  |file flag |
     ---------------|---------------|----------|----------|----------|
     move not tried |INFO           |-15.0     |False     |False     |
@@ -70,7 +70,7 @@ following:
 .. raw:: html
 
     <pre>
-    Logger (Version 1.0.0)
+    LOGGER (Version 1.0.0)
     log type       |log name       |level     |std flag  |file flag |
     ---------------|---------------|----------|----------|----------|
     move not tried |INFO           |-15.0     |False     |False     |
@@ -121,7 +121,7 @@ should be done.
     after stdout: {'critical': False, 'error': False}
     after file: {'critical': False, 'error': False}
 
-    Logger (Version 1.0.0)
+    LOGGER (Version 1.0.0)
     log type       |log name       |level     |std flag  |file flag |
     ---------------|---------------|----------|----------|----------|
     move not tried |INFO           |-15.0     |False     |False     |

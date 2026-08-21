@@ -1,31 +1,16 @@
-fullrmc package
-===============
 .. automodule:: fullrmc
- 
- 
-Sub-packages
-------------
+
+Modules and packages
+---------------------
 
 .. toctree::
-    
-    fullrmc.Core
+    :maxdepth: 2
+
+    fullrmc.Engine
+    fullrmc.Globals
+    fullrmc.OptimizationEngine
+    fullrmc.SystemBuilderUtils
     fullrmc.Selectors
     fullrmc.Generators
     fullrmc.Constraints
-
-
-Sub-modules
------------
-
-.. automodule:: fullrmc.Engine
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
-    
-.. automodule:: fullrmc.Globals
-    :members:
-    :undoc-members:
-    :show-inheritance:
-    :noindex:
-    
+    fullrmc.Core

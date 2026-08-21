@@ -3,10 +3,28 @@
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 
 fullrmc.Generators package
 ==========================
+
+Walks
+-----
+
+.. automodule:: fullrmc.Generators.Walks
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+    
+Translations
+------------
+
+.. automodule:: fullrmc.Generators.Translations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Rotations
 ---------
@@ -16,13 +34,24 @@ Rotations
     :undoc-members:
     :show-inheritance:
 
-Translations
-------------
 
-.. automodule:: fullrmc.Generators.Translations
+Volumes
+-------
+
+.. automodule:: fullrmc.Generators.Volumes
     :members:
     :undoc-members:
     :show-inheritance:
+
+
+
+Neighbours
+----------
+.. automodule:: fullrmc.Generators.Neighbours
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Agitations
 -----------
@@ -31,14 +60,14 @@ Agitations
     :members:
     :undoc-members:
     :show-inheritance:
-    
+
 Swap
 ----
 .. automodule:: fullrmc.Generators.Swaps
     :members:
     :undoc-members:
     :show-inheritance:
-     
+
 Removes
 -------
 .. automodule:: fullrmc.Generators.Removes

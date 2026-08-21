@@ -1,0 +1,5 @@
+<map id="inheritancec550f91c65" name="inheritancec550f91c65">
+<area shape="rect" id="node1" href="#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a user&#45;defined order of" alt="" coords="158,5,304,32"/>
+<area shape="rect" id="node3" href="#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector whose order of selection is" alt="" coords="352,5,515,32"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,5,110,32"/>
+</map>

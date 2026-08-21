@@ -3,31 +3,31 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Versions Information &mdash; fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</title>
     
-    <title>Versions Information &mdash; fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</title>
-    
-    <link rel="stylesheet" href="_static/fullrmc.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/fullrmc.css?v=8b9768f5" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '4.1.0',
+        VERSION:     '6.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
       };
     </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="_static/documentation_options.js?v=12958129"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
             <link rel="author" title="About these documents" href="about.html" />
             <link rel="index" title="Index" href="genindex.html" />
             <link rel="search" title="Search" href="search.html" />
-            <link rel="top" title="fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
+            <link rel="top" title="fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package" href="index.html" />
 
     <!-- -------------------------------------------------------------------------- -->
     <!-- ----- ADD a Mathjax CONFIGURATION SCRIPT TO EACH HTML FILE PRODUCED ------ -->
@@ -40,53 +40,122 @@
 
     <body>
         <!-- ------------------------------------- -->
-        <!-- ----- CREATE A STATIC MENU BAR ------ -->
+        <!-- ----- CREATE A RESPONSIVE MENU BAR --- -->
         <div class="menu">
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="versions.html">Versions</a></li>
-                <li><a href="QAForum.html">Q&A Forum</a></li>
-                <li><a href="fullrmc.Selectors.html">Selectors</a></li>
-                <li><a href="fullrmc.Generators.html">Generators</a></li>
-                <li><a href="fullrmc.Constraints.html">Constraints</a></li>
-                <li><a href="examples.html">Examples</a></li>
-                <li><a href="about.html">About</a></li>
-                <li><a href="cloud.html">Cloud Services</a></li>
-                <!-- pypi and github forkme link images table -->
-                <li>
-                    <table style="position: absolute; right:0; top:0;">
-                        <!-- pypi image -->
-                        <td><a href="https://pypi.python.org/pypi/fullrmc">
-                            <img height="40";
-                                 src="_static/pypi.png"
-                                 alt="Download me on PyPI"/>
-                        </a></td>
-                        <!-- github image -->
-                        <td><a href="https://github.com/bachiraoun/fullrmc.git">
-                            <img height="40";
-                                 src="_static/forkme.png"
-                                 alt="Fork me on GitHub" />
-                        </a></td>
-                    </table>
+                <li><a class="" href="index.html">Home</a></li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Stochastic <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="fullrmc.Engine.html">Engine</a></li>
+                        <li><a class="" href="fullrmc.Selectors.html">Selectors</a></li>
+                        <li><a class="" href="fullrmc.Generators.html">Generators</a></li>
+                        <li><a class="" href="fullrmc.Constraints.html">Constraints</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">Cloud Services <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="cloud.html">Overview</a></li>
+                        <li><a class="" href="fullrmc.OptimizationEngine.html">Theoretical Optimization</a></li>
+                        <li><a class="" href="fullrmc.SystemBuilderUtils.html">System Builder</a></li>
+                        <li><a class="" href="runModes.html">Run Modes</a></li>
+                    </ul>
+                </li>
+                <li class="has-dropdown">
+                    <span class="dropdown-toggle " tabindex="0">More <span class="caret">▾</span></span>
+                    <ul class="dropdown-menu">
+                        <li><a class="" href="examples.html">Examples</a></li>
+                        <li><a class="" href="about.html">About</a></li>
+                        <li><a class="" href="QAForum.html">Q&A Forum</a></li>
+                    </ul>
+                </li>
+                <!-- source links: minimal icon + text, replacing the old raster ribbon badges -->
+                <!-- PUBLIC_RELEASE_VERSION: manually tracked — update whenever a new public
+                     release is actually published on GitHub/PyPI. This intentionally can lag
+                     behind the in-progress docs version (see 'version'/'release' below, currently
+                     '6.0.0'), since the docs may describe unreleased work. -->
+                <li class="menu-icons">
+                    <a href="https://github.com/bachiraoun/fullrmc.git" title="View source on GitHub (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+                        <span>GitHub</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
+                    <a href="https://pypi.python.org/pypi/fullrmc" title="fullrmc on PyPI (public release v4.1.1)" target="_blank" rel="noopener noreferrer">
+                        <span>PyPI</span>
+                        <span class="menu-version-badge">v4.1.1</span>
+                    </a>
                 </li>
                 <!-- ------------------------------------- -->
             </ul>
-            <div class="clear"></div>
         </div>
-        <!----------  STATIC MENU BAR STYLE --------->
+        <!----------  RESPONSIVE MENU BAR STYLE --------->
         <style>
-        .menu { height: 42px; background-color:black; margin:0px;
-                z-index: 9999; position:Fixed;
-                left: 0; top: 0; width: 100%; }
-            .menu ul { list-style: none; }
-            .menu ul li{float: left; padding-left: 6px;  padding-right: 6px;  border-right: 1px solid #ACACAC;}
-            .menu ul li a { font-size:16px; color:white;}
-            .menu ul li a:hover{ text-decoration: underline;}
+        .menu { background: linear-gradient(180deg, #22262b 0%, #16181b 100%); margin:0px; padding:0px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.35);
+                z-index: 9999; position: -webkit-sticky; position: sticky;
+                left: 0; top: 0; width: 100%;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+            .menu > ul { list-style: none; margin:0; padding: 4px 10px;
+                       display: flex; flex-wrap: wrap; align-items: center; }
+            .menu > ul > li { position: relative; }
+            .menu > ul > li > a, .menu .dropdown-toggle {
+                display: inline-flex; align-items: center; gap: 4px;
+                font-size:14.5px; font-weight: 500; letter-spacing: .2px;
+                color:#d8dadd; white-space: nowrap; cursor: pointer; text-decoration: none;
+                padding: 12px 14px; border-radius: 6px;
+                transition: background-color .15s ease, color .15s ease; }
+            .menu > ul > li > a:hover, .menu .dropdown-toggle:hover,
+            .menu .has-dropdown:focus-within .dropdown-toggle { background-color: rgba(255,255,255,0.08); color:#ffffff; }
+            .menu > ul > li > a.active, .menu .dropdown-toggle.active-group,
+            .menu .dropdown-menu li a.active { color:#6cb6ff; }
+            .menu .caret { font-size: 20px; margin-left: 3px; display: inline-block; transition: transform .15s ease; }
+            .menu .has-dropdown:hover .caret, .menu .has-dropdown:focus-within .caret { transform: rotate(180deg); }
+            .menu .dropdown-menu { list-style: none; margin:0; padding: 6px;
+                                    position: absolute; top: calc(100% + 4px); left: 0; min-width: 230px;
+                                    background: #22262b; border-radius: 8px;
+                                    box-shadow: 0 10px 26px rgba(0,0,0,0.45);
+                                    opacity: 0; visibility: hidden; transform: translateY(-6px);
+                                    transition: opacity .15s ease, transform .15s ease, visibility .15s; }
+            .menu .has-dropdown:hover .dropdown-menu,
+            .menu .has-dropdown:focus-within .dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+            .menu .dropdown-menu li a { display: block; padding: 9px 12px; border-radius: 6px;
+                                        font-size: 14px; color: #c7c9cc; white-space: nowrap; text-decoration: none;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu .dropdown-menu li a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+            .menu ul li.menu-icons a { display: inline-flex; align-items: center; gap: 6px;
+                                        font-size: 13.5px; color:#c7c9cc; text-decoration: none;
+                                        padding: 8px 10px; border-radius: 6px;
+                                        transition: background-color .15s ease, color .15s ease; }
+            .menu ul li.menu-icons a:hover { background-color: rgba(255,255,255,0.08); color:#fff; }
+            .menu ul li.menu-icons svg { width: 16px; height: 16px; fill: currentColor; }
+            .menu ul li.menu-icons .menu-version-badge { font-size: 10.5px; font-weight: 600; color: #9a9da2;
+                                                          background: rgba(255,255,255,0.06); padding: 1px 6px;
+                                                          border-radius: 999px; }
+            .menu ul li.menu-icons a:hover .menu-version-badge { color: #d8dadd; }
         </style>
         <!-- ------ ENF OF MENU BAR CREATION ----- -->
         <!-- ------------------------------------- -->
+
+        <!-- ----------------------------------------------------------------------- -->
+        <!-- ----- NOTICE: docs version vs. actual publicly installable version ----- -->
+        <!-- Non-sticky on purpose: shown once at the top of every page, scrolls away -->
+        <!-- with content so it doesn't permanently eat sticky-header space.         -->
+        <div class="version-notice">
+            v6.0.0 docs &mdash; cloud-only, subscription
+            (<a href="https://www.fullrmc.com" target="_blank" rel="noopener noreferrer">fullrmc.com</a>).
+            Free download: v4.1.1.
+        </div>
+        <style>
+            .version-notice { background: #262a2f; color: #9fa4ab; font-size: 12.5px;
+                               text-align: center; padding: 6px 16px; }
+            .version-notice a { color: #8fb8e8; text-decoration: none; }
+            .version-notice a:hover { text-decoration: underline; }
+        </style>
+        <!-- ----------------------------------------------------------------------- -->
         
-        <div style="margin-top:40px"> </div>
+        <div style="margin-top:10px"> </div>
         
     <div class="related">
       <h3>Navigation</h3>
@@ -101,7 +170,7 @@
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
         
@@ -113,63 +182,60 @@
             <div class="bodywrapper">
         <div class="body">
         
-  <div class="section" id="module-fullrmc.__pkginfo__">
-<span id="versions-information"></span><h1>Versions Information<a class="headerlink" href="#module-fullrmc.__pkginfo__" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="must-know">
-<h2>Must know<a class="headerlink" href="#must-know" title="Permalink to this headline">¶</a></h2>
+  <section id="module-fullrmc.__pkginfo__">
+<span id="versions-information"></span><h1>Versions Information<a class="headerlink" href="#module-fullrmc.__pkginfo__" title="Link to this heading">¶</a></h1>
+<section id="must-know">
+<h2>Must know<a class="headerlink" href="#must-know" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li>fullrmc supported version is always the newest one. Older version are
-never supported as updating is very simple.</li>
-<li>fullrmc uses pdbparser library to parse input pdb files and to visualize
+<li><p>fullrmc supported version is always the newest one. Older version are
+never supported as updating is very simple.</p></li>
+<li><p>fullrmc uses pdbparser library to parse input pdb files and to visualize
 system’s atomic structure using <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.
 VMD which stands for Visual Molecular Dynamics is a free software for
-displaying and animating large molecular systems.</li>
-<li>pdbparser in general automatically detects VMD executable when installed.
+displaying and animating large molecular systems.</p></li>
+<li><p>pdbparser in general automatically detects VMD executable when installed.
 fullrmc will work fine without VMD, but make sure it’s installed if you
-want to use the convenient visualize method of fullrmc’s Engine.</li>
-<li>Unless <code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code> set_molecules_indexes method is used explicitly,
+want to use the convenient visualize method of fullrmc’s Engine.</p></li>
+<li><p>Unless <a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> set_molecules_indexes method is used explicitly,
 molecules are classified by parsing the structure
-<a class="reference external" href="http://deposit.rcsb.org/adit/docs/pdb_atom_format.html">‘.pdb’</a> file
+<a class="reference external" href="https://www.wwpdb.org/documentation/file-format">‘.pdb’</a> file
 <strong>Residue name</strong>, <strong>Residue sequence number</strong> and <strong>Segment identifier</strong>
 attributes. Therefore a molecule is the collection of all atoms sharing
-the same three later attributes value.</li>
+the same three later attributes value.</p></li>
 </ul>
-</div>
-<div class="section" id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Here we describe two methods to installing fullrmc.</dt>
-<dd><ol class="first last arabic">
-<li><p class="first">The first method is by using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
+<dl>
+<dt>Here we describe two methods to installing fullrmc.</dt><dd><ol class="arabic">
+<li><p>The first method is by using <a class="reference external" href="https://pip.pypa.io/en/stable/">pip</a>.
 If you don’t know what pip is and you are lazy enough not to read through
 the documentation, pip supports installing from PyPI, version control,
 local projects, and directly from distribution files. To install pip
 download <a class="reference external" href="https://bootstrap.pypa.io/get-pip.py">get_pip.py</a> file
 and run the following from the command line.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python get_pip.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>get_pip.py
 </pre></div>
 </div>
 </li>
-<li><p class="first">The second method is by fullrmc’s cloning the source code and
+<li><p>The second method is by fullrmc’s cloning the source code and
 repository from <a class="reference external" href="https://github.com/bachiraoun/fullrmc">github</a>
-and then compiling the extension files in place.</p>
-</li>
+and then compiling the extension files in place.</p></li>
 </ol>
 </dd>
-<dt>For your general understanding, fullrmc requires the following:</dt>
-<dd><ol class="first last arabic simple">
-<li>Python (&gt;= 2.7 and &lt; 3) Starting from fullrmc 4.x.y python 3 is supported</li>
-<li>NumPy (lowest version tested is 1.7.1)</li>
-<li>cython (lowest version tested is 0.21.1)</li>
-<li>matplotlib (lowest version tested is 1.4)</li>
-<li>pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from
+<dt>For your general understanding, fullrmc requires the following:</dt><dd><ol class="arabic simple">
+<li><p>Python (&gt;= 2.7 and &lt; 3) Starting from fullrmc 4.x.y python 3 is supported</p></li>
+<li><p>NumPy (lowest version tested is 1.7.1)</p></li>
+<li><p>cython (lowest version tested is 0.21.1)</p></li>
+<li><p>matplotlib (lowest version tested is 1.4)</p></li>
+<li><p>pdbparser (lowest version tested is 0.1.2 - 0.1.3 is used starting from
 fullrmc 0.3.0 - 0.1.4 is used starting from fullrmc 1.0.0 - 0.1.5 is used
-starting from fullrmc 1.0.1 - 0.1.7 is used starting from fullrmc 4.0.0)</li>
-<li>pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting
-from fullrmc 1.2.0 - 0.2.0 is used starting from fullrmc 4.0.0)</li>
-<li>pyrep (lowest version tested is 1.0.2 is used starting from fullrmc
+starting from fullrmc 1.0.1 - 0.1.7 is used starting from fullrmc 4.0.0)</p></li>
+<li><p>pysimplelog (lowest version tested is 0.1.7 -  0.1.4 is used starting
+from fullrmc 1.2.0 - 0.2.0 is used starting from fullrmc 4.0.0)</p></li>
+<li><p>pyrep (lowest version tested is 1.0.2 is used starting from fullrmc
 2.0.0 - 1.0.3 is used starting from fullrmc 3.0.0 - 1.0.4 is used
-starting rom fullrmc 3.1.0 - 3.1.0 is used starting from fullrmc 4.0.0)</li>
+starting rom fullrmc 3.1.0 - 3.1.0 is used starting from fullrmc 4.0.0)</p></li>
 </ol>
 </dd>
 </dl>
@@ -178,8 +244,8 @@ starting rom fullrmc 3.1.0 - 3.1.0 is used starting from fullrmc 4.0.0)</li>
 Firstly install numpy and cython manually and ensure that
 they meet with fullrmc’s version requirement.</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -U <span class="s2">&quot;numpy&gt;=1.17.4&quot;</span>
-pip install -U <span class="s2">&quot;cython&gt;=0.29.14&quot;</span>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;numpy&gt;=1.17.4&quot;</span>
+pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span><span class="s2">&quot;cython&gt;=0.29.14&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -187,20 +253,20 @@ pip install -U <span class="s2">&quot;cython&gt;=0.29.14&quot;</span>
 you can proceed to installing fullrmc. The rest of the dependencies will be
 automatically installed and updated while fullrmc is being installed.</p>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install fullrmc
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>fullrmc
 </pre></div>
 </div>
 </div></blockquote>
 <p><strong>Installation by cloning github repository:</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li>Ensure all fullrmc required packages are installed and up-do-date by executing the
-following python script:</li>
+<li><p>Ensure all fullrmc required packages are installed and up-do-date by executing the
+following python script:</p></li>
 </ul>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># check whether all packages are already installed</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pkg_resources</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_version</span> <span class="k">as</span> <span class="n">PV</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;numpy&#39;</span>      <span class="p">,</span><span class="s1">&#39;1.17.4&#39;</span><span class="p">)</span> <span class="p">,</span>
                   <span class="p">(</span><span class="s1">&#39;cython&#39;</span>     <span class="p">,</span><span class="s1">&#39;0.29.14&#39;</span><span class="p">),</span>
                   <span class="p">(</span><span class="s1">&#39;pyrep&#39;</span>      <span class="p">,</span><span class="s1">&#39;3.1.0&#39;</span><span class="p">)</span> <span class="p">,</span>
@@ -210,69 +276,68 @@ following python script:</li>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">lib</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must be installed for fullrmc to run properly.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> must be installed for fullrmc to run properly.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">PV</span><span class="p">(</span><span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">PV</span><span class="p">(</span><span class="n">ver</span><span class="p">):</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> installed version </span><span class="si">%s</span><span class="s1"> is below minimum suggested version </span><span class="si">%s</span><span class="s1">. Updating </span><span class="si">%s</span><span class="s1"> is highly) recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> installed version </span><span class="si">%s</span><span class="s1"> is below minimum suggested version </span><span class="si">%s</span><span class="s1">. Updating </span><span class="si">%s</span><span class="s1"> is highly) recommended.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lib</span><span class="o">.</span><span class="n">__version__</span><span class="p">,</span> <span class="n">ver</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is installed properly and minimum version requirement is met.&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
 </pre></div>
 </div>
 </div></blockquote>
 <ul>
-<li><p class="first">Locate python’s site-packages by executing the following python script:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<li><p>Locate python’s site-packages by executing the following python script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="vm">__file__</span><span class="p">),</span> <span class="s1">&#39;site_packages&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Navigate to site_packages folder and clone git repository from command line:</p>
-</li>
+<li><p>Navigate to site_packages folder and clone git repository from command line:</p></li>
 </ul>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> .../site_packages
-git clone https://github.com/bachiraoun/fullrmc.git
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>.../site_packages
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/bachiraoun/fullrmc.git
 </pre></div>
 </div>
 </div></blockquote>
 <ul class="simple">
-<li>Change directory to …/site_packages/fullrmc/Extensions. Then compile fullrmc
-extensions from command line as the following:</li>
+<li><p>Change directory to …/site_packages/fullrmc/Extensions. Then compile fullrmc
+extensions from command line as the following:</p></li>
 </ul>
 <blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> .../site_packages/fullrmc/Extensions
-python setup.py build_ext --inplace
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>.../site_packages/fullrmc/Extensions
+python<span class="w"> </span>setup.py<span class="w"> </span>build_ext<span class="w"> </span>--inplace
 </pre></div>
 </div>
 </div></blockquote>
 </div></blockquote>
-</div>
-<div class="section" id="versions">
-<h2>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="versions">
+<h2>Versions<a class="headerlink" href="#versions" title="Link to this heading">¶</a></h2>
 <p>Latest stable version source code: <a class="reference external" href="https://github.com/bachiraoun/fullrmc">https://github.com/bachiraoun/fullrmc</a></p>
 <p>Latest pypi installable version: <a class="reference external" href="https://pypi.python.org/pypi/fullrmc/">https://pypi.python.org/pypi/fullrmc/</a></p>
-<div class="section" id="version-0-1-0">
-<h3>Version 0.1.0:<a class="headerlink" href="#version-0-1-0" title="Permalink to this headline">¶</a></h3>
+<section id="version-0-1-0">
+<h3>Version 0.1.0:<a class="headerlink" href="#version-0-1-0" title="Link to this heading">¶</a></h3>
 <p>This version is not published.</p>
-<div class="section" id="modules-and-definitions">
-<h4>Modules and definitions:<a class="headerlink" href="#modules-and-definitions" title="Permalink to this headline">¶</a></h4>
+<section id="modules-and-definitions">
+<h4>Modules and definitions:<a class="headerlink" href="#modules-and-definitions" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Selectors:
+<li><p>Selectors:
 <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" title="fullrmc.Selectors.RandomSelectors.RandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">RandomSelector</span></code></a>
 <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" title="fullrmc.Selectors.RandomSelectors.WeightedRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeightedRandomSelector</span></code></a>
 <a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DefinedOrderSelector</span></code></a>
-<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalOrderSelector</span></code></a></li>
-<li>Constraints:
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code></a>
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code></a>
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalOrderSelector</span></code></a></p></li>
+<li><p>Constraints:
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a>
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a></li>
-<li>Generators:
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a></p></li>
+<li><p>Generators:
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationGenerator" title="fullrmc.Generators.Translations.TranslationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationGenerator</span></code></a>
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationAlongAxisGenerator</span></code></a>
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator" title="fullrmc.Generators.Translations.TranslationAlongSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">TranslationAlongSymmetryAxisGenerator</span></code></a>
@@ -285,124 +350,124 @@ python setup.py build_ext --inplace
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotationAboutSymmetryAxisGenerator</span></code></a>
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath" title="fullrmc.Generators.Rotations.RotationAboutSymmetryAxisPath"><code class="xref py py-class docutils literal notranslate"><span class="pre">RotationAboutSymmetryAxisPath</span></code></a>
 <a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.DistanceAgitationGenerator" title="fullrmc.Generators.Agitations.DistanceAgitationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">DistanceAgitationGenerator</span></code></a>
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngleAgitationGenerator</span></code></a></li>
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Agitations.AngleAgitationGenerator" title="fullrmc.Generators.Agitations.AngleAgitationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngleAgitationGenerator</span></code></a></p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id1">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.2.0">Version 0.2.0</a>:<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id1">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.2.0">Version 0.2.0</a>:<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
 <p>This is the first officially published version.</p>
-<div class="section" id="new-modules-and-definitions">
-<h4>New Modules and definitions:<a class="headerlink" href="#new-modules-and-definitions" title="Permalink to this headline">¶</a></h4>
+<section id="new-modules-and-definitions">
+<h4>New Modules and definitions:<a class="headerlink" href="#new-modules-and-definitions" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Selectors:
-<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmartRandomSelector</span></code></a></li>
-<li>Constraints:
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a></li>
-<li>Generators:
-<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a></li>
+<li><p>Selectors:
+<a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" title="fullrmc.Selectors.RandomSelectors.SmartRandomSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">SmartRandomSelector</span></code></a></p></li>
+<li><p>Constraints:
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a></p></li>
+<li><p>Generators:
+<a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapPositionsGenerator" title="fullrmc.Generators.Swaps.SwapPositionsGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapPositionsGenerator</span></code></a></p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="known-bugs-and-issues">
-<h4>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="known-bugs-and-issues">
+<h4>Known bugs and issues:<a class="headerlink" href="#known-bugs-and-issues" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Boundary conditions handling for all non cubic, tetragonal nor
+<li><p>Boundary conditions handling for all non cubic, tetragonal nor
 orthorhombic systems is prone to distances calculation errors
-caused by pdbparser (&lt;=0.1.2).</li>
+caused by pdbparser (&lt;=0.1.2).</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id2">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.0">Version 0.3.0</a>:<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id2">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.0">Version 0.3.0</a>:<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, pdbparser (&gt;=0.1.3) is used.</p>
-<div class="section" id="fixes-and-improvements">
-<h4>Fixes and improvements:<a class="headerlink" href="#fixes-and-improvements" title="Permalink to this headline">¶</a></h4>
+<section id="fixes-and-improvements">
+<h4>Fixes and improvements:<a class="headerlink" href="#fixes-and-improvements" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Periodic boundary conditions handling fixed and separated from pdbparser.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code></a> squared deviation computation
+<li><p>Periodic boundary conditions handling fixed and separated from pdbparser.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code> squared deviation computation
 changed from square law to absolute value. Therefore small values are not
-under-represented in the total squared deviation calculation.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code></a> ‘flexible’ flag added.</li>
+under-represented in the total squared deviation calculation.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code> ‘flexible’ flag added.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id3">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.1">Version 0.3.1</a>:<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id4">
-<h4>Fixes and improvements:<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id3">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.1">Version 0.3.1</a>:<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h3>
+<section id="id4">
+<h4>Fixes and improvements:<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Erroneous wx imports from thfSimulation Example is removed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
-check_experimental_data merged and sorted distances bug fixed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
-set_limits bug fixed.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code> add_group method allows list, set, tuples as well as integers.</li>
+<li><p>Erroneous wx imports from thfSimulation Example is removed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
+check_experimental_data merged and sorted distances bug fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
+set_limits bug fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> add_group method allows list, set, tuples as well as integers.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id5">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.2">Version 0.3.2</a>:<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id6">
-<h4>Fixes and improvements:<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id5">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.2">Version 0.3.2</a>:<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<section id="id6">
+<h4>Fixes and improvements:<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
-binning precision fixed. Histogram compiled C code adjusted accordingly.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> set_coordination_number_definition
-method error message made more clear.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> compiled C++ code boundary conditions
-distances computation fixed for multiple box separation.</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
+binning precision fixed. Histogram compiled C code adjusted accordingly.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> set_coordination_number_definition
+method error message made more clear.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> compiled C++ code boundary conditions
+distances computation fixed for multiple box separation.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id7">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.3">Version 0.3.3</a>:<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id8">
-<h4>New Modules and definitions:<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id7">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.3.3">Version 0.3.3</a>:<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<section id="id8">
+<h4>New Modules and definitions:<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapCentersGenerator" title="fullrmc.Generators.Swaps.SwapCentersGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapCentersGenerator</span></code></a></li>
+<li><p><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Swaps.SwapCentersGenerator" title="fullrmc.Generators.Swaps.SwapCentersGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapCentersGenerator</span></code></a></p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id9">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.4.0">Version 0.4.0</a>:<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id10">
-<h4>New Modules and definitions:<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id9">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/0.4.0">Version 0.4.0</a>:<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<section id="id10">
+<h4>New Modules and definitions:<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> added computing Static Structure Factor</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a> added computing Reduced Static
-Structure Factor</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> added computing Static Structure Factor</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a> added computing Reduced Static
+Structure Factor</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id11">
-<h4>Fixes and improvements:<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id11">
+<h4>Fixes and improvements:<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
-plot Y axis label units added.</li>
-<li>swap example changed to atomicSimulation and S(q) added to the fitting
-along with G(r)</li>
-<li>thfSimulation example change to molecularSimulation</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>
+plot Y axis label units added.</p></li>
+<li><p>swap example changed to atomicSimulation and S(q) added to the fitting
+along with G(r)</p></li>
+<li><p>thfSimulation example change to molecularSimulation</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id12">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.0.0">Version 1.0.0</a>:<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id12">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.0.0">Version 1.0.0</a>:<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h3>
 <p>This is a main version change from 0.x.y to 1.x.y and that’s because non-periodic
 boundary conditions are now implemented. Starting from this version shape function
 correction can be used. For non-periodic boundary conditions, very big box with periodic
@@ -413,37 +478,37 @@ computing angles for <a class="reference internal" href="fullrmc.Constraints.htm
 We recommend updating to this version if <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> is needed
 for fitting molecular systems.</p>
 <p>Starting from this version, pdbparser (&gt;=0.1.4) is used.</p>
-<div class="section" id="id13">
-<h4>New Modules and definitions:<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<section id="id13">
+<h4>New Modules and definitions:<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>fullrmc.Constraints.Collection package added along with <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction" title="fullrmc.Constraints.Collection.ShapeFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShapeFunction</span></code></a></li>
-<li>Engine numberDensity added. Used to set correct volume and density when
-InfiniteBoundaries are used</li>
-<li>fullrmc.Core.Collection.smooth function added. It can be used to smooth
-out any 1D data. This is useful for noise experimental data</li>
+<li><p>fullrmc.Constraints.Collection package added along with <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.Collection.ShapeFunction" title="fullrmc.Constraints.Collection.ShapeFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">ShapeFunction</span></code></a></p></li>
+<li><p>Engine numberDensity added. Used to set correct volume and density when
+InfiniteBoundaries are used</p></li>
+<li><p>fullrmc.Core.Collection.smooth function added. It can be used to smooth
+out any 1D data. This is useful for noise experimental data</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id14">
-<h4>Fixes and improvements:<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id14">
+<h4>Fixes and improvements:<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>BondAngles calculation bug fixed</li>
-<li>Constraints all squared deviations attributes and methods changed to
-standard error to conserve the generality</li>
-<li>Engine chiSquare attributes and methods changed to total standard error
-to conserve the generality</li>
-<li>Logger levels added</li>
-<li>rebin core method check argument added</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a>
-experimentalQValues set as property</li>
+<li><p>BondAngles calculation bug fixed</p></li>
+<li><p>Constraints all squared deviations attributes and methods changed to
+standard error to conserve the generality</p></li>
+<li><p>Engine chiSquare attributes and methods changed to total standard error
+to conserve the generality</p></li>
+<li><p>LOGGER levels added</p></li>
+<li><p>rebin core method check argument added</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a>
+experimentalQValues set as property</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id15">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.0.1">Version 1.0.1</a>:<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id15">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.0.1">Version 1.0.1</a>:<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, pdbparser (&gt;=0.1.5) is used. There is no bugs
 fixed in this version comparably to version 1.0.0.
 This version corrects for cell visualization compatibility between fullrmc
@@ -456,61 +521,61 @@ non-orthorhombic unitcells. This version uses cell plugin no more but
 draw the boundary conditions vectors directly. Also visualization method
 ‘boxToCenter’ flag is added to correct for box visualization shifts by
 translating boundary conditions vectors’ centre to atom coordinates one.</p>
-</div>
-<div class="section" id="id17">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.1.0">Version 1.1.0</a>:<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id17">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.1.0">Version 1.1.0</a>:<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
 <p>Several levels of abstractions are made allowing multiple core computations
 using openmp. Nevertheless more testing is needed and therefore the current
 version is published as single core still.
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> uses python objects which
 makes it very slow, it must be revisited.</p>
-<div class="section" id="id18">
-<h4>New Modules and definitions:<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<section id="id18">
+<h4>New Modules and definitions:<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constraint</span></code></a> computation cost property added. This is used at engine
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constraint</span></code></a> computation cost property added. This is used at engine
 runtime to minimize computations and enhance performance by computing less
-costly constraints first.</li>
+costly constraints first.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id19">
-<h4>Fixes and improvements:<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id19">
+<h4>Fixes and improvements:<a class="headerlink" href="#id19" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> computing angle right vector normalization bug fixed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a> computing improper vector bug fixed.</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> computing angle right vector normalization bug fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a> computing improper vector bug fixed.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id20">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.2.0">Version 1.2.0</a>:<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id20">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.2.0">Version 1.2.0</a>:<a class="headerlink" href="#id20" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, running fullrmc on multicore and multiprocessor computers
 is possible. Also, pysimplelog (&gt;=0.2.1) is used. Isolated system in non-periodic
 boundary conditions are treated correctly as in an infinte box using inifinite boundary
 conditions instead of a very big box with periodic boundaries.</p>
-<div class="section" id="id21">
-<h4>New Modules and definitions:<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<section id="id21">
+<h4>New Modules and definitions:<a class="headerlink" href="#id21" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> completely reimplemented and optimized.
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint" title="fullrmc.Constraints.AtomicCoordinationConstraints.AtomicCoordinationNumberConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomicCoordinationNumberConstraint</span></code></a> completely reimplemented and optimized.
 Coordination number definition is re-formatted allowing any type of core’s and
 shell’s atoms. This new implementation computes mean coordination number per shell
 definition rather than per atom. Fractional coordination numbers are allowed and
 this implementation benefits from a tremendous performance increase of 1000 times
-compared to the old one.</li>
-<li>Engine.run method ‘restartPdb’ and ‘ncore’ arguments added.</li>
+compared to the old one.</p></li>
+<li><p>Engine.run method ‘restartPdb’ and ‘ncore’ arguments added.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id22">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.2.1">Version 1.2.1</a>:<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id22">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/1.2.1">Version 1.2.1</a>:<a class="headerlink" href="#id22" title="Link to this heading">¶</a></h3>
 <p>No bugs fixed but some examples corrected.</p>
-</div>
-<div class="section" id="id23">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/2.0.0">Version 2.0.0</a>:<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id23">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/2.0.0">Version 2.0.0</a>:<a class="headerlink" href="#id23" title="Link to this heading">¶</a></h3>
 <p>This is a main version change from 1.x.y to 2.x.y. Starting from this version engine
 is no more a single file but a <a class="reference external" href="http://bachiraoun.github.io/pyrep/">pyrep</a>
 repository. Using a repository engine instead of a single file has many advantages.
@@ -529,277 +594,312 @@ repository. Interacting with fullrmc.Engine instance is what one should do to cr
 or updating engine’s repository.
 The transition to fullrmc 2.x.y. should be done seemlessly at the end of the user
 except for small modifications that were made and that are listed below.</p>
-<div class="section" id="modifications">
-<h4>Modifications:<a class="headerlink" href="#modifications" title="Permalink to this headline">¶</a></h4>
+<section id="modifications">
+<h4>Modifications:<a class="headerlink" href="#modifications" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><dl class="first docutils">
-<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code>: Several modification happened to fullrmc.Engine class definition.</dt>
-<dd><ul class="first last">
-<li>Instanciating engine arguments have changed. We found that it’s a bad practice
+<li><dl class="simple">
+<dt><a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a>: Several modification happened to fullrmc.Engine class definition.</dt><dd><ul class="simple">
+<li><p>Instanciating engine arguments have changed. We found that it’s a bad practice
 to set the pdb structure, the constraints, the groups and all other attributes
-at the engine instanciation. Therefore, now engine’s instanciation takes more
+at the engine instantiation. Therefore, now engine’s instantiation takes more
 appropriate arguments such as the engine’s repository path, the frames, the
 log file path and whether to delete a found engine at the given path and start
-fresh using freshStart flag.</li>
-<li>Engine.is_engine method is added to check whether a given path is a
-fullrmc.Engine repository.</li>
-<li>Engine frames related methods are also added to manipulate and switch between
-frames.</li>
-<li>Engine.run method takes no more savePath argument, as the path has to be the
+fresh using freshStart flag.</p></li>
+<li><p>Engine.is_engine method is added to check whether a given path is a
+fullrmc.Engine repository.</p></li>
+<li><p>Engine frames related methods are also added to manipulate and switch between
+frames.</p></li>
+<li><p>Engine.run method takes no more savePath argument, as the path has to be the
 repository. In case one wants to save in a new repository, he should save the
 engine first using Engine.save method and then run the engine using
-Engine.run method.</li>
+Engine.run method.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Constraint.Constraint" title="fullrmc.Core.Constraint.Constraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">Constraint</span></code></a>: We also found that constraints must not be allowed to change
 engine and therefore Constraint.set_engine method is now deprecated. Also
 Constraints are now instanciated without engine argument. Constraint’s engine is
-set automatically when a constraint is added to an engine.</li>
+set automatically when a constraint is added to an engine.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id24">
-<h4>Fixes and improvements:<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id24">
+<h4>Fixes and improvements:<a class="headerlink" href="#id24" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>abs function changed in all compiled files as it was creating rounding issues on
-some operating systems.</li>
-<li>arcos function cliped for floating errors in angles compiled file.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code></a>: Computing constraint data in function
-single_atomic_distances_dists of compiled atomic_distances fixed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>: bondsMap fixed from causing definition conflicts if set
-multiple times.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a>: anglesMap fixed from causing definition conflicts
-if set multiple times.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>: anglesMap fixed from causing definition
-conflicts if set multiple times.</li>
+<li><p>abs function changed in all compiled files as it was creating rounding issues on
+some operating systems.</p></li>
+<li><p>arcos function cliped for floating errors in angles compiled file.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code>: Computing constraint data in function
+single_atomic_distances_dists of compiled atomic_distances fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>: bondsMap fixed from causing definition conflicts if set
+multiple times.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a>: anglesMap fixed from causing definition conflicts
+if set multiple times.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>: anglesMap fixed from causing definition
+conflicts if set multiple times.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id25">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.0">Version 3.0.0</a>:<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id25">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.0">Version 3.0.0</a>:<a class="headerlink" href="#id25" title="Link to this heading">¶</a></h3>
 <p>This is a main version change from 2.x.y to 3.x.y where pyrep (&gt;=1.0.3) is used.
 Thusfar until versions 2.x.y, system’s number of atoms is fixed throughout the whole
 simulation. Starting from this version, fullrmc allows dynamically removing atoms
 from the system upon fitting. This is a revolutionary functionality enabling the
 reproduction of defects in systems.</p>
-<div class="section" id="id26">
-<h4>New Modules and definitions:<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h4>
+<section id="id26">
+<h4>New Modules and definitions:<a class="headerlink" href="#id26" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> implemented to control dihedral angles.</li>
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsCollector</span></code> implemented allowing the ability of dynamically remove
-and add re-insert atoms to the system.</li>
-<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsRemoveGenerator</span></code></a> implemented to generate atoms removing from system
-upon fitting.</li>
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyGroup</span></code></a> added to host Removes generators.</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> implemented to control dihedral angles.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsCollector</span></code> implemented allowing the ability of dynamically remove
+and add re-insert atoms to the system.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Removes.AtomsRemoveGenerator" title="fullrmc.Generators.Removes.AtomsRemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomsRemoveGenerator</span></code></a> implemented to generate atoms removing from system
+upon fitting.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.Group.EmptyGroup" title="fullrmc.Core.Group.EmptyGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">EmptyGroup</span></code></a> added to host Removes generators.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id27">
-<h4>Modifications:<a class="headerlink" href="#id27" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id27">
+<h4>Modifications:<a class="headerlink" href="#id27" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>all cython modules are completely de-pythonized.</li>
-<li>all angle constraints respect the same implementation and interface design.</li>
+<li><p>all cython modules are completely de-pythonized.</p></li>
+<li><p>all angle constraints respect the same implementation and interface design.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id28">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.1">Version 3.0.1</a>:<a class="headerlink" href="#id28" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id29">
-<h4>New Modules and definitions:<a class="headerlink" href="#id29" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id28">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.1">Version 3.0.1</a>:<a class="headerlink" href="#id28" title="Link to this heading">¶</a></h3>
+<section id="id29">
+<h4>New Modules and definitions:<a class="headerlink" href="#id29" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Plot method added to all of <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>,
+<li><p>Plot method added to all of <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>,
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> and
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>.</li>
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id30">
-<h4>Fixes and improvements:<a class="headerlink" href="#id30" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id30">
+<h4>Fixes and improvements:<a class="headerlink" href="#id30" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> FRAME_DATA fixed which was preventing
-constraint from saving to pyrep repository.</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> FRAME_DATA fixed which was preventing
+constraint from saving to pyrep repository.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id31">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.2">Version 3.0.2</a>:<a class="headerlink" href="#id31" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id32">
-<h4>New Modules and definitions:<a class="headerlink" href="#id32" title="Permalink to this headline">¶</a></h4>
+</section>
+</section>
+<section id="id31">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.0.2">Version 3.0.2</a>:<a class="headerlink" href="#id31" title="Link to this heading">¶</a></h3>
+<section id="id32">
+<h4>New Modules and definitions:<a class="headerlink" href="#id32" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Redundant objects global container mechanism added. This will sometimes reduce
-some engine’s attributes size, allowing fast saving and loading of data.</li>
+<li><p>Redundant objects global container mechanism added. This will sometimes reduce
+some engine’s attributes size, allowing fast saving and loading of data.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id33">
-<h4>Fixes and improvements:<a class="headerlink" href="#id33" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id33">
+<h4>Fixes and improvements:<a class="headerlink" href="#id33" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoveGeneratorCombinator</span></code></a> bug from latest update fixed.</li>
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapGenerator</span></code></a> is not allowed to be collected or combined with other
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGeneratorCombinator" title="fullrmc.Core.MoveGenerator.MoveGeneratorCombinator"><code class="xref py py-class docutils literal notranslate"><span class="pre">MoveGeneratorCombinator</span></code></a> bug from latest update fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.SwapGenerator" title="fullrmc.Core.MoveGenerator.SwapGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">SwapGenerator</span></code></a> is not allowed to be collected or combined with other
 generators. Also swapList will update automatically upon removing and
-releasing atoms.</li>
-<li><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoveGenerator</span></code></a> is not allowed to be collected or combined with other
-generators.</li>
-<li>MLSelection, refine and explore examples BiasedEngine fixed</li>
+releasing atoms.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.RemoveGenerator" title="fullrmc.Core.MoveGenerator.RemoveGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">RemoveGenerator</span></code></a> is not allowed to be collected or combined with other
+generators.</p></li>
+<li><p>MLSelection, refine and explore examples BiasedEngine fixed</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id34">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.0">Version 3.1.0</a>:<a class="headerlink" href="#id34" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id34">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.0">Version 3.1.0</a>:<a class="headerlink" href="#id34" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, it is possible to custom set atoms weight for all
 of <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a>,
 <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a>.
 Also starting from this version, pysimplelog (&gt;=0.3.0) and pyrep (&gt;=1.0.4) are used.</p>
-<div class="section" id="id35">
-<h4>New Modules and definitions:<a class="headerlink" href="#id35" title="Permalink to this headline">¶</a></h4>
+<section id="id35">
+<h4>New Modules and definitions:<a class="headerlink" href="#id35" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>All constraints export data method added.</li>
-<li>All constraints plot method added.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code></a> added again after being removed in
-early versions.</li>
+<li><p>All constraints export data method added.</p></li>
+<li><p>All constraints plot method added.</p></li>
+<li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code> added again after being removed in
+early versions.</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id36">
-<h4>Fixes and improvements:<a class="headerlink" href="#id36" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id36">
+<h4>Fixes and improvements:<a class="headerlink" href="#id36" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code> repository ACID flag is changed to False as it’s not needed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a>
-atoms removal bug fixed.</li>
-<li>Computing standard error for <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.IntraMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code></a> and
-<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint" title="fullrmc.Constraints.DistanceConstraints.InterMolecularDistanceConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code></a> is optimized for big systems and
+<li><p><a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> repository ACID flag is changed to False as it’s not needed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.ReducedStructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReducedStructureFactorConstraint</span></code></a>
+atoms removal bug fixed.</p></li>
+<li><p>Computing standard error for <code class="xref py py-class docutils literal notranslate"><span class="pre">IntraMolecularDistanceConstraint</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">InterMolecularDistanceConstraint</span></code> is optimized for big systems and
 constraint’s definition. Calculation time is thousands of times faster for
-extended definitions.</li>
+extended definitions.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id37">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.1">Version 3.1.1</a>:<a class="headerlink" href="#id37" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id37">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.1">Version 3.1.1</a>:<a class="headerlink" href="#id37" title="Link to this heading">¶</a></h3>
 <p>Some bugs are fixed and documentation is revisited.</p>
-<div class="section" id="id38">
-<h4>Fixes and improvements:<a class="headerlink" href="#id38" title="Permalink to this headline">¶</a></h4>
+<section id="id38">
+<h4>Fixes and improvements:<a class="headerlink" href="#id38" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code> set_number_density method PeriodicBoundaries bug fixed.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> set_weighting xrays and neutron
-recognized.</li>
+<li><p><a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> set_number_density method PeriodicBoundaries bug fixed.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> set_weighting xrays and neutron
+recognized.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id39">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.2">Version 3.1.2</a>:<a class="headerlink" href="#id39" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id39">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.2">Version 3.1.2</a>:<a class="headerlink" href="#id39" title="Link to this heading">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FUaDZSOdeN28%2FUdnX8yKOBAAJ">issue</a>
 bug fixed</p>
-</div>
-<div class="section" id="id40">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.3">Version 3.1.3</a>:<a class="headerlink" href="#id40" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id40">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.1.3">Version 3.1.3</a>:<a class="headerlink" href="#id40" title="Link to this heading">¶</a></h3>
 <p>Some bugs are fixed and documentation is revisited.</p>
-</div>
-<div class="section" id="id41">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.2.0">Version 3.2.0</a>:<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id41">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.2.0">Version 3.2.0</a>:<a class="headerlink" href="#id41" title="Link to this heading">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2F4L1SCEbcAi0%2FsOqvPhiSAgAJ">issue</a>
 bug fixed</p>
-</div>
-<div class="section" id="id43">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.3.0">Version 3.3.0</a>:<a class="headerlink" href="#id43" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id43">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/3.3.0">Version 3.3.0</a>:<a class="headerlink" href="#id43" title="Link to this heading">¶</a></h3>
 <p>Raised <a class="reference external" href="https://bachiraoun.github.io/fullrmc/QAForum.html?place=msg%2Ffullrmc%2FC0Vmt4Qs4bI%2FIu1guEXMAwAJ">issue</a>
 bug fixed</p>
-</div>
-<div class="section" id="version-4-0-0">
-<h3>Version 4.0.0:<a class="headerlink" href="#version-4-0-0" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="version-4-0-0">
+<h3>Version 4.0.0:<a class="headerlink" href="#version-4-0-0" title="Link to this heading">¶</a></h3>
 <p>This version is not published.</p>
-</div>
-<div class="section" id="id45">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.0.1">Version 4.0.1</a>:<a class="headerlink" href="#id45" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="id45">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.0.1">Version 4.0.1</a>:<a class="headerlink" href="#id45" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, fullrmc has become grid computing capable.
 multiframe is implemented to generate a statistical solution of multiple
 frames instead of a single frame solution. Along with this version,
 an instance of fullrmc will be available on a cloud service that can be
 used to launch fullrmc and perform multiframe computations. We will update
 all user in the Q&amp;A group when and where this service will be available</p>
-<div class="section" id="id46">
-<h4>New Modules and definitions:<a class="headerlink" href="#id46" title="Permalink to this headline">¶</a></h4>
+<section id="id46">
+<h4>New Modules and definitions:<a class="headerlink" href="#id46" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>MultiframeUtils module added which will be used to launch fullrmc
-on computation grids</li>
-<li>ExperimentalConstraints plot and data export methods factored</li>
+<li><p>MultiframeUtils module added which will be used to launch fullrmc
+on computation grids</p></li>
+<li><p>ExperimentalConstraints plot and data export methods factored</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id47">
-<h4>Fixes and improvements:<a class="headerlink" href="#id47" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id47">
+<h4>Fixes and improvements:<a class="headerlink" href="#id47" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> scale factor bug fixed</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a> scale factor bug fixed</li>
-<li>Engine run method explore bug fixed</li>
-<li>Amputation number density bug fixed for InfiniteBoundaryConditions</li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint" title="fullrmc.Constraints.StructureFactorConstraints.StructureFactorConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">StructureFactorConstraint</span></code></a> scale factor bug fixed</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint" title="fullrmc.Constraints.PairCorrelationConstraints.PairCorrelationConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairCorrelationConstraint</span></code></a> scale factor bug fixed</p></li>
+<li><p>Engine run method explore bug fixed</p></li>
+<li><p>Amputation number density bug fixed for InfiniteBoundaryConditions</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="id48">
-<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.1.0">Version 4.1.0</a>:<a class="headerlink" href="#id48" title="Permalink to this headline">¶</a></h3>
+</section>
+</section>
+<section id="id48">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/4.1.0">Version 4.1.0</a>:<a class="headerlink" href="#id48" title="Link to this heading">¶</a></h3>
 <p>Starting from this version, fullrmc stochastic Engine is codify-able. This
 is a new capability that allows exporting the engine across all systems and
 operating system without worrying about serialization compatibility.
 Also, starting from this version, fullrmc requires pylocker to be installed.</p>
-<div class="section" id="id49">
-<h4>New Modules and definitions:<a class="headerlink" href="#id49" title="Permalink to this headline">¶</a></h4>
+<section id="id49">
+<h4>New Modules and definitions:<a class="headerlink" href="#id49" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Group ‘name’ property added</li>
-<li>Engine ‘codify’ method added</li>
-<li>constraints number of tried and accepted moves are tracked now</li>
-<li>constraints advanced plotting and export helper method</li>
+<li><p>Group ‘name’ property added</p></li>
+<li><p>Engine ‘codify’ method added</p></li>
+<li><p>constraints number of tried and accepted moves are tracked now</p></li>
+<li><p>constraints advanced plotting and export helper method</p></li>
 </ol>
 </div></blockquote>
-</div>
-<div class="section" id="id50">
-<h4>Fixes and improvements:<a class="headerlink" href="#id50" title="Permalink to this headline">¶</a></h4>
+</section>
+<section id="id50">
+<h4>Fixes and improvements:<a class="headerlink" href="#id50" title="Link to this heading">¶</a></h4>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Engine remove constraint bug fixed</li>
-<li><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" title="fullrmc.Generators.Rotations.OrientationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrientationGenerator</span></code></a> bugs fixed</li>
-<li><a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalOrderSelector</span></code></a> bug fixed</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a> add_bond method deprecated. set_bonds method
-modified for performance reasons. bondsDefinition property added.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+<li><p>Engine remove constraint bug fixed</p></li>
+<li><p><a class="reference internal" href="fullrmc.Generators.html#fullrmc.Generators.Rotations.OrientationGenerator" title="fullrmc.Generators.Rotations.OrientationGenerator"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrientationGenerator</span></code></a> bugs fixed</p></li>
+<li><p><a class="reference internal" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" title="fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector"><code class="xref py py-class docutils literal notranslate"><span class="pre">DirectionalOrderSelector</span></code></a> bug fixed</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a> add_bond method deprecated. set_bonds method
+modified for performance reasons. bondsDefinition property added.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
 method modified for performance reasons. anglesDefinition property
-added.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+added.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
 method modified for performance reasons. anglesDefinition property
-added.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
+added.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a> add_bond method deprecated. set_bonds
 method modified for performance reasons. anglesDefinition property
-added.</li>
-<li><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> set_atoms_weight dump to
-repository bug fixed</li>
+added.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint" title="fullrmc.Constraints.PairDistributionConstraints.PairDistributionConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">PairDistributionConstraint</span></code></a> set_atoms_weight dump to
+repository bug fixed</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+<section id="id51">
+<h3><a class="reference external" href="https://pypi.python.org/pypi/fullrmc/5.0.0">Version 5.0.0</a>:<a class="headerlink" href="#id51" title="Link to this heading">¶</a></h3>
+<p>Starting from this version fullrmc is available on AWS along with cloud only
+new types of atomic calculations such as ‘Statistical’, ‘Mesoscopic’ and
+‘Nanoscopic’</p>
+<section id="id52">
+<h4>New Modules and definitions:<a class="headerlink" href="#id52" title="Link to this heading">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Added pdb properties (residues, segments, sequences, chainIdentifiers)
+to Engine as immutables. Those properties are used in Engine.build_groups
+helper method</p></li>
+<li><p>Neighbours move generators added</p></li>
+<li><p>SubsetGroup added</p></li>
+<li><p><a class="reference internal" href="fullrmc.Engine.html#fullrmc.Engine.Engine" title="fullrmc.Engine.Engine"><code class="xref py py-class docutils literal notranslate"><span class="pre">Engine</span></code></a> build_crystal_set_pdb method is added. This method
+can be used to build a crystal structure and set it as a pdb.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a> create_bonds_by_definition method is deprecated
+and replaced by create_molecules_bonds allowing for bonds to be set
+using atom elements and names.</p></li>
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a> create_angles_by_definition method is
+deprecated and replaced by create_molecules_angles allowing for angles
+to be set using atom elements and names.</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="id53">
+<h4>Fixes and improvements:<a class="headerlink" href="#id53" title="Link to this heading">¶</a></h4>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.BondConstraints.BondConstraint" title="fullrmc.Constraints.BondConstraints.BondConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondConstraint</span></code></a>, <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.AngleConstraints.BondsAngleConstraint" title="fullrmc.Constraints.AngleConstraints.BondsAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">BondsAngleConstraint</span></code></a>,
+<a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint" title="fullrmc.Constraints.DihedralAngleConstraints.DihedralAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">DihedralAngleConstraint</span></code></a> and <a class="reference internal" href="fullrmc.Constraints.html#fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint" title="fullrmc.Constraints.ImproperAngleConstraints.ImproperAngleConstraint"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperAngleConstraint</span></code></a>
+constraints ticks fixed</p></li>
+</ol>
+</div></blockquote>
+</section>
+</section>
+</section>
+</section>
 
 
         </div>
@@ -808,8 +908,9 @@ repository bug fixed</li>
         
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Versions Information</a><ul>
 <li><a class="reference internal" href="#must-know">Must know</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
@@ -904,24 +1005,28 @@ repository bug fixed</li>
 <li><a class="reference internal" href="#id50">Fixes and improvements:</a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#id51">Version 5.0.0:</a><ul>
+<li><a class="reference internal" href="#id52">New Modules and definitions:</a></li>
+<li><a class="reference internal" href="#id53">Fixes and improvements:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
 
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
         
@@ -940,11 +1045,13 @@ repository bug fixed</li>
              |
         
         </li>
-        <li><a href="index.html">fullrmc 4.1.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
+        <li><a href="index.html">fullrmc 6.0.0, the Reverse Monte Carlo (RMC) package</a> &raquo;</li> 
       </ul>
     </div>
             <div class="footer">
                     &copy; Copyright 2015, Bachir Aoun.
             </div>
+
+        <script type="text/javascript" src="_static/external_links.js"></script>
     </body>
 </html>

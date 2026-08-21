@@ -53,7 +53,7 @@ Usage
     from fullrmc.Core.Group import EmptyGroup
     
     # create engine 
-    ENGINE = Engine(path='my_engine.rmc')
+    ENGINE = Engine(path='my_engine.stc')
     
     # set pdb file
     ENGINE.set_pdb('system.pdb')

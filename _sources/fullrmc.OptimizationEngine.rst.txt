@@ -1,0 +1,7 @@
+fullrmc.OptimizationEngine module
+==================================
+
+.. automodule:: fullrmc.OptimizationEngine
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,5 @@
+<map id="inheritance43f2d484eb" name="inheritance43f2d484eb">
+<area shape="rect" id="node1" href="fullrmc.Core.html#fullrmc.Core.MoveGenerator.MoveGenerator" target="_top" title="It is the parent class of all moves generators." alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node2" href="#fullrmc.Generators.Neighbours.NeighboursGeneratorBase" target="_top" title="Base implementation of all &#39;Neighbours&#39; generators. This defintion" alt="" coords="164,5,338,32"/>
+<area shape="rect" id="node3" href="#fullrmc.Generators.Neighbours.TranslationTowardsNeighboursGenerator" target="_top" title="This move generator will perform random translation vectors" alt="" coords="386,5,643,32"/>
+</map>

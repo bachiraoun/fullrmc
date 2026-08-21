@@ -1,0 +1,8 @@
+<map id="inheritance41b11bc119" name="inheritance41b11bc119">
+<area shape="rect" id="node1" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DefinedOrderSelector" target="_top" title="DefinedOrderSelector is a group selector with a user&#45;defined order of" alt="" coords="158,5,304,32"/>
+<area shape="rect" id="node3" href="fullrmc.Selectors.html#fullrmc.Selectors.OrderedSelectors.DirectionalOrderSelector" target="_top" title="DirectionalOrderSelector is a group selector whose order of selection is" alt="" coords="356,5,520,32"/>
+<area shape="rect" id="node2" href="fullrmc.Core.html#fullrmc.Core.GroupSelector.GroupSelector" target="_top" title="Group selector is the parent class that selects groups to perform" alt="" coords="5,31,110,57"/>
+<area shape="rect" id="node4" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.RandomSelector" target="_top" title="RandomSelector generates group indexes randomly for engine group selection." alt="" coords="172,56,290,83"/>
+<area shape="rect" id="node6" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.WeightedRandomSelector" target="_top" title="WeightedRandomSelector generates group indexes randomly, following a" alt="" coords="352,56,524,83"/>
+<area shape="rect" id="node5" href="fullrmc.Selectors.html#fullrmc.Selectors.RandomSelectors.SmartRandomSelector" target="_top" title="SmartRandomSelector is a random group selector fed by a machine learning" alt="" coords="572,56,726,83"/>
+</map>
